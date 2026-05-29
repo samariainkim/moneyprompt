@@ -1,0 +1,17 @@
+{
+  "name": "돈 버는 프롬프트",
+  "short_name": "돈버는프롬프트",
+  "description": "AI로 부자되기 — 돈 버는 프롬프트 80개 라이브러리",
+  "start_url": "/moneyprompt/",
+  "display": "standalone",
+  "background_color": "#fafaf9",
+  "theme_color": "#d97706",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}/Users/dijaineo1/Downloads/manifest.json
