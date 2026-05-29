@@ -1,7 +1,7 @@
 {
-  "name": "돈 버는 프롬프트",
-  "short_name": "돈버는프롬프트",
-  "description": "AI로 부자되기 — 돈 버는 프롬프트 80개 라이브러리",
+  "name": "Money Prompt",
+  "short_name": "MoneyPrompt",
+  "description": "AI Rich - 80 Financial Prompts Library",
   "start_url": "/moneyprompt/",
   "display": "standalone",
   "background_color": "#fafaf9",
@@ -11,7 +11,8 @@
     {
       "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
-}/Users/dijaineo1/Downloads/manifest.json
+}
