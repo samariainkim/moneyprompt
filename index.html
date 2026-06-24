@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>돈 버는 프롬프트 — AI로 부자되기</title>
+<title>돈버프 — 돈 버는 프롬프트 | AI로 부자되기</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -16,6 +16,8 @@
     --text-muted: #9ca3af;
     --accent: #d97706;
     --accent-light: #fef3c7;
+    --brand: #d97706;
+    --brand-dark: #92400e;
     --code-bg: #1c1917;
     --code-text: #f3f4f6;
     --tag-bg: #f3f4f6;
@@ -33,7 +35,7 @@
     min-height: 100vh;
   }
 
-  /* 헤더 */
+  /* ── 헤더 & 브랜드 ───────────────────────────────── */
   header {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
@@ -44,19 +46,38 @@
   .header-inner {
     max-width: 900px;
     margin: 0 auto;
-    padding: 14px 24px;
+    padding: 12px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
   }
-  .logo { font-size: 15px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.3px; white-space: nowrap; }
-  .logo span { color: var(--accent); }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    white-space: nowrap;
+  }
+  .brand-mark {
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--brand) 0%, #b45309 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .brand-full {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: -0.2px;
+  }
   .header-btns { display: flex; align-items: center; gap: 8px; }
   .buy-btn, .community-btn {
     font-size: 12px;
     padding: 7px 14px;
-    border-radius: 6px;
+    border-radius: 7px;
     cursor: pointer;
     font-weight: 600;
     text-decoration: none;
@@ -65,25 +86,77 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
+    border: none;
   }
   .buy-btn {
     background: var(--accent);
     color: #fff;
-    border: none;
   }
   .buy-btn:hover { background: #b45309; }
   .community-btn {
-    background: #fffbeb;
+    background: var(--kakao);
     color: var(--kakao-text);
-    border: 1px solid #fde68a;
+    border: 1px solid #f5d800;
   }
-  .community-btn:hover { background: var(--kakao); border-color: var(--kakao); }
+  .community-btn:hover { background: #f5d800; }
 
-  /* 히어로 */
+  /* ── 플로팅 카톡 버튼 ─────────────────────────────── */
+  .kakao-float {
+    position: fixed;
+    right: 20px;
+    bottom: 24px;
+    z-index: 200;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--kakao);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+  }
+  .kakao-float:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(0,0,0,0.22); }
+  .kakao-float-tooltip {
+    position: absolute;
+    right: 64px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #111827;
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 500;
+    padding: 7px 12px;
+    border-radius: 7px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .kakao-float:hover .kakao-float-tooltip { opacity: 1; }
+  .kakao-float-tooltip::after {
+    content: "";
+    position: absolute;
+    right: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left: 5px solid #111827;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+  }
+  @media (max-width: 600px) {
+    .kakao-float { right: 14px; bottom: 18px; width: 50px; height: 50px; font-size: 22px; }
+    .kakao-float-tooltip { display: none; }
+  }
+
+  /* ── 히어로 ──────────────────────────────────────── */
   .hero {
     max-width: 900px;
     margin: 0 auto;
-    padding: 56px 24px 40px;
+    padding: 48px 24px 36px;
     border-bottom: 1px solid var(--border);
   }
   .hero-label {
@@ -94,19 +167,39 @@
     color: var(--text-muted);
     margin-bottom: 14px;
   }
+  .hero-title-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
   .hero-title {
-    font-size: 48px;
+    font-size: 46px;
     font-weight: 900;
     letter-spacing: -2px;
     line-height: 1;
     color: var(--text-primary);
-    margin-bottom: 8px;
   }
   .hero-title span { color: var(--accent); }
+  .brand-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+    border: 1.5px solid #fde68a;
+    color: var(--brand-dark);
+    font-size: 15px;
+    font-weight: 800;
+    padding: 7px 16px;
+    border-radius: 100px;
+    letter-spacing: -0.3px;
+  }
+  .brand-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
   .hero-sub {
     font-size: 15px;
     color: var(--text-secondary);
-    margin-bottom: 32px;
+    margin-bottom: 28px;
     line-height: 1.7;
   }
   .hero-stats {
@@ -117,11 +210,117 @@
   .stat-num { font-size: 28px; font-weight: 800; color: var(--text-primary); letter-spacing: -1px; display: block; }
   .stat-label { font-size: 12px; color: var(--text-muted); }
 
-  /* 필터 & 검색 */
+  /* ── 오늘의 프롬프트 ─────────────────────────────── */
+  .today-pick {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 0;
+  }
+  .today-card {
+    background: linear-gradient(135deg, #1c1917 0%, #292524 100%);
+    border-radius: 16px;
+    padding: 22px 24px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .today-card::before {
+    content: "";
+    position: absolute;
+    top: -40%; right: -10%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(217,119,6,0.35) 0%, transparent 70%);
+  }
+  .today-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fbbf24;
+    margin-bottom: 10px;
+  }
+  .today-date { color: rgba(255,255,255,0.4); font-weight: 500; margin-left: 4px; }
+  .today-title {
+    font-size: 19px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+  .today-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+    margin-bottom: 14px;
+    max-width: 600px;
+  }
+  .today-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .today-tag {
+    font-size: 10.5px;
+    padding: 4px 10px;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.85);
+  }
+  .today-cta {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fbbf24;
+    margin-left: auto;
+  }
+
+  /* ── BEST 5 ──────────────────────────────────────── */
+  .best5-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 24px 0;
+  }
+  .best5-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .best5-head h2 { font-size: 14px; font-weight: 800; letter-spacing: -0.2px; }
+  .best5-head .by { font-size: 11.5px; color: var(--text-muted); }
+  .best5-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .best5-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .best5-item:hover { border-color: var(--accent); background: #fffbeb; }
+  .best5-rank {
+    font-size: 17px;
+    font-weight: 900;
+    color: var(--accent);
+    min-width: 22px;
+    font-style: italic;
+  }
+  .best5-title { flex: 1; font-size: 13.5px; font-weight: 600; }
+  .best5-cat { font-size: 10.5px; color: var(--text-muted); }
+
+  /* ── 필터 & 검색 ─────────────────────────────────── */
   .controls {
     max-width: 900px;
     margin: 0 auto;
-    padding: 24px 24px 0;
+    padding: 28px 24px 0;
   }
   .search-wrap {
     position: relative;
@@ -199,11 +398,11 @@
   .ftab-sub.on { background: var(--accent-light); color: #92400e; border-color: #fde68a; }
   .ftab-sub:hover:not(.on) { background: var(--border-light); }
 
-  /* 프롬프트 목록 */
+  /* ── 프롬프트 목록 ───────────────────────────────── */
   .main {
     max-width: 900px;
     margin: 0 auto;
-    padding: 0 24px 80px;
+    padding: 0 24px 100px;
   }
   .section-label {
     font-size: 11px;
@@ -350,7 +549,7 @@
     font-weight: 500;
   }
 
-  /* 푸터 */
+  /* ── 푸터 ────────────────────────────────────────── */
   footer {
     background: #111827;
     color: rgba(255,255,255,0.5);
@@ -359,21 +558,24 @@
     font-size: 12px;
     line-height: 1.8;
   }
+  footer .footer-brand { color: rgba(255,255,255,0.85); font-weight: 700; font-size: 14px; margin-bottom: 6px; }
   footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
   footer a:hover { color: #fff; }
 
-  /* 빈 결과 */
   .empty { text-align: center; padding: 60px 0; color: var(--text-muted); font-size: 14px; display: none; }
 
-  /* 반응형 */
   @media (max-width: 600px) {
-    .hero-title { font-size: 36px; }
+    .hero-title { font-size: 34px; }
+    .brand-badge { font-size: 13px; padding: 6px 12px; }
     .hero-stats { gap: 20px; }
     .ftab { font-size: 11px; padding: 8px 4px; }
     .row-right { display: none; }
     .row-desc, .prompt-box { padding-left: 0; }
     .community-btn span.label { display: none; }
     .buy-btn span.label { display: none; }
+    .today-title { font-size: 16px; }
+    .today-cta { display: none; }
+    .brand-full { display: none; }
   }
 </style>
 </head>
@@ -381,23 +583,55 @@
 
 <header>
   <div class="header-inner">
-    <div class="logo">돈 버는 <span>프롬프트</span></div>
+    <div class="brand">
+      <span class="brand-mark">돈버프</span>
+      <span class="brand-full">돈 버는 프롬프트</span>
+    </div>
     <div class="header-btns">
-      <a class="community-btn" href="https://open.kakao.com/o/PLACEHOLDER" target="_blank">💬 <span class="label">커뮤니티</span></a>
+      <a class="community-btn" href="https://open.kakao.com/o/PLACEHOLDER" target="_blank">💬 <span class="label">오픈채팅방 — 최신 정보 받기</span></a>
       <a class="buy-btn" href="#" target="_blank">📖 <span class="label">책 구매하기</span> →</a>
     </div>
   </div>
 </header>
 
+<a class="kakao-float" href="https://open.kakao.com/o/PLACEHOLDER" target="_blank" aria-label="카카오톡 오픈채팅방 바로가기">
+  <span class="kakao-float-tooltip">독자 오픈채팅방 입장</span>
+  💬
+</a>
+
 <section class="hero">
   <div class="hero-label">『AI로 부자되기』 프롬프트 라이브러리</div>
-  <h1 class="hero-title">돈 버는<br><span>프롬프트</span></h1>
+  <div class="hero-title-row">
+    <h1 class="hero-title">돈 버는<br><span>프롬프트</span></h1>
+    <span class="brand-badge"><span class="dot"></span>돈버프</span>
+  </div>
   <p class="hero-sub">AI에게 올바른 질문을 던지면 돈이 보입니다.<br>필요한 프롬프트를 골라 바로 복사해서 쓰세요.</p>
   <div class="hero-stats">
     <div class="stat-item"><span class="stat-num">172</span><span class="stat-label">총 프롬프트</span></div>
     <div class="stat-item"><span class="stat-num">7</span><span class="stat-label">카테고리</span></div>
     <div class="stat-item"><span class="stat-num">5</span><span class="stat-label">AI 툴</span></div>
   </div>
+</section>
+
+<section class="today-pick">
+  <div class="today-card" id="todayCard">
+    <span class="today-label">⚡ 오늘의 돈버는 프롬프트<span class="today-date" id="todayDate"></span></span>
+    <div class="today-title" id="todayTitle"></div>
+    <p class="today-desc" id="todayDesc"></p>
+    <div class="today-meta">
+      <span class="today-tag" id="todayCat"></span>
+      <span class="today-tag" id="todayAi"></span>
+      <span class="today-cta">바로 보기 →</span>
+    </div>
+  </div>
+</section>
+
+<section class="best5-wrap">
+  <div class="best5-head">
+    <h2>🏆 사마리아인 추천 BEST 5</h2>
+    <span class="by">매주 업데이트</span>
+  </div>
+  <div class="best5-list" id="best5List"></div>
 </section>
 
 <div class="controls">
@@ -425,11 +659,12 @@
 <div class="empty" id="emptyMsg">검색 결과가 없습니다. 다른 키워드로 검색해보세요.</div>
 
 <footer>
+  <div class="footer-brand">돈버프 (DONBUFF)</div>
   <p>『AI로 부자되기』 | 저자 김태형(사마리아인)<br>
-  <a href="https://samariain.com" target="_blank">samariain.com</a> &nbsp;·&nbsp;
+  <a href="https://donbuff.com" target="_blank">donbuff.com</a> &nbsp;·&nbsp;
   <a href="https://youtube.com" target="_blank">사마리아인TV</a> &nbsp;·&nbsp;
-  <a href="https://open.kakao.com/o/PLACEHOLDER" target="_blank">오픈카톡방</a></p>
-  <p style="margin-top:8px;">© 2025 김태형. 이 페이지의 프롬프트는 개인 학습 목적으로만 활용하세요.</p>
+  <a href="https://open.kakao.com/o/PLACEHOLDER" target="_blank">오픈채팅방</a></p>
+  <p style="margin-top:8px;">© 2026 김태형. 이 페이지의 프롬프트는 개인 학습 목적으로만 활용하세요.</p>
 </footer>
 
 <script>
@@ -2767,6 +3002,48 @@ const catLabels = {
   "재테크루틴":"CAT-07 · 재테크루틴"
 };
 
+// ── 오늘의 돈버는 프롬프트 (날짜 시드 기반, 서버 없이 전원 동일 결과) ──
+function getTodayPrompt() {
+  const now = new Date();
+  // 한국 기준 날짜 문자열 (YYYY-MM-DD) 로 시드 생성 -> 같은 날엔 항상 같은 결과
+  const kstOffset = 9 * 60;
+  const kst = new Date(now.getTime() + (kstOffset + now.getTimezoneOffset()) * 60000);
+  const dateStr = `${kst.getFullYear()}-${kst.getMonth()+1}-${kst.getDate()}`;
+  let seed = 0;
+  for (let i = 0; i < dateStr.length; i++) seed = (seed * 31 + dateStr.charCodeAt(i)) % 100000;
+  const index = seed % PROMPTS.length;
+  return { prompt: PROMPTS[index], dateStr: `${kst.getMonth()+1}월 ${kst.getDate()}일` };
+}
+
+function renderTodayPick() {
+  const { prompt: p, dateStr } = getTodayPrompt();
+  document.getElementById("todayDate").textContent = ` · ${dateStr}`;
+  document.getElementById("todayTitle").textContent = p.title;
+  document.getElementById("todayDesc").textContent = p.desc;
+  document.getElementById("todayCat").textContent = p.cat;
+  document.getElementById("todayAi").textContent = p.ai;
+  document.getElementById("todayCard").dataset.idx = p.idx;
+}
+
+// ── BEST 5 (운영자 고정 추천 — 실시간 집계 아님, 명시적으로 고지) ──
+const BEST5_IDX = ["06/13", "05/09-2", "04/14", "06/10-1", "07/09"];
+function renderBest5() {
+  const wrap = document.getElementById("best5List");
+  wrap.innerHTML = "";
+  BEST5_IDX.forEach((idx, i) => {
+    const p = PROMPTS.find(x => x.idx === idx);
+    if (!p) return;
+    const item = document.createElement("div");
+    item.className = "best5-item";
+    item.dataset.idx = p.idx;
+    item.innerHTML = `
+      <span class="best5-rank">${i+1}</span>
+      <span class="best5-title">${p.title}</span>
+      <span class="best5-cat">${p.cat}</span>`;
+    wrap.appendChild(item);
+  });
+}
+
 // ── localStorage 기반 즐겨찾기 / 최근 본 프롬프트 ──────────
 const FAV_KEY = "moneyprompt_favorites";
 const RECENT_KEY = "moneyprompt_recent";
@@ -2820,6 +3097,7 @@ function updateRecentCount() {
 let currentCat = "전체";
 let currentSearch = "";
 let currentSpecial = null; // "favorites" | "recent" | null
+
 
 function render() {
   const main = document.getElementById("mainList");
@@ -2946,6 +3224,34 @@ function idToOrigIdx(id) {
   return found ? found.idx : null;
 }
 
+// ── 특정 idx로 이동: 전체 탭으로 전환 후 해당 행을 펼치고 스크롤 ──
+function jumpToPrompt(idx) {
+  const p = PROMPTS.find(x => x.idx === idx);
+  if (!p) return;
+
+  // 전체 탭 + 해당 카테고리로 전환, 검색/특수필터 초기화
+  currentSpecial = null;
+  currentSearch = "";
+  currentCat = p.cat;
+  document.getElementById("searchInput").value = "";
+  document.querySelectorAll(".ftab-sub").forEach(t => t.classList.remove("on"));
+  document.querySelectorAll(".ftab").forEach(t => {
+    t.classList.toggle("on", t.dataset.cat === p.cat);
+  });
+  render();
+
+  // 렌더 후 해당 행을 찾아서 펼치고 스크롤
+  requestAnimationFrame(() => {
+    const id = `row-${p.idx.replace("/", "-")}`;
+    const row = document.getElementById(id);
+    if (row) {
+      row.classList.add("open");
+      addRecent(p.idx);
+      row.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  });
+}
+
 function copyPrompt(id) {
   const el = document.getElementById("code-" + id);
   const text = el.innerText;
@@ -3024,8 +3330,22 @@ document.getElementById("searchInput").addEventListener("input", e => {
   }, 200);
 });
 
+// 오늘의 프롬프트 카드 클릭
+document.getElementById("todayCard").addEventListener("click", () => {
+  const idx = document.getElementById("todayCard").dataset.idx;
+  if (idx) jumpToPrompt(idx);
+});
+
+// BEST5 아이템 클릭
+document.getElementById("best5List").addEventListener("click", e => {
+  const item = e.target.closest(".best5-item");
+  if (item && item.dataset.idx) jumpToPrompt(item.dataset.idx);
+});
+
 updateFavCount();
 updateRecentCount();
+renderTodayPick();
+renderBest5();
 render();
 </script>
 
