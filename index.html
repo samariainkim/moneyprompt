@@ -25,6 +25,7 @@
     --success: #16a34a;
     --kakao: #FEE500;
     --kakao-text: #381e1f;
+    --naver: #03C75A;
     --star: #f59e0b;
   }
   body {
@@ -74,7 +75,7 @@
     letter-spacing: -0.2px;
   }
   .header-btns { display: flex; align-items: center; gap: 8px; }
-  .buy-btn, .community-btn {
+  .buy-btn, .community-btn, .resource-btn {
     font-size: 12px;
     padding: 7px 14px;
     border-radius: 7px;
@@ -99,6 +100,11 @@
     border: 1px solid #f5d800;
   }
   .community-btn:hover { background: #f5d800; }
+  .resource-btn {
+    background: var(--naver);
+    color: #fff;
+  }
+  .resource-btn:hover { background: #02a94d; }
 
   /* ── 플로팅 카톡 버튼 ─────────────────────────────── */
   .kakao-float {
@@ -159,6 +165,23 @@
     padding: 48px 24px 36px;
     border-bottom: 1px solid var(--border);
   }
+  .hero-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+  }
+  .hero-text { flex: 1; min-width: 0; }
+  .hero-cover {
+    flex-shrink: 0;
+    width: 240px;
+  }
+  .hero-cover img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 12px 24px rgba(0,0,0,0.18));
+  }
   .hero-label {
     font-size: 11px;
     font-weight: 600;
@@ -209,6 +232,14 @@
   .stat-item { }
   .stat-num { font-size: 28px; font-weight: 800; color: var(--text-primary); letter-spacing: -1px; display: block; }
   .stat-label { font-size: 12px; color: var(--text-muted); }
+
+  @media (max-width: 800px) {
+    .hero-title { font-size: 38px; }
+  }
+  @media (max-width: 700px) {
+    .hero-inner { flex-direction: column; align-items: flex-start; }
+    .hero-cover { width: 150px; align-self: center; order: -1; margin-bottom: 8px; }
+  }
 
   /* ── 오늘의 프롬프트 ─────────────────────────────── */
   .today-pick {
@@ -604,6 +635,7 @@
     .row-desc, .prompt-box { padding-left: 0; }
     .community-btn span.label { display: none; }
     .buy-btn span.label { display: none; }
+    .resource-btn span.label { display: none; }
     .today-title { font-size: 16px; }
     .today-cta { display: none; }
     .brand-full { display: none; }
@@ -623,6 +655,7 @@
       <span class="brand-full">돈 버는 프롬프트</span>
     </div>
     <div class="header-btns">
+      <a class="resource-btn" href="https://blog.naver.com/PostList.naver?blogId=ijesus78&from=postList&categoryNo=148" target="_blank">📂 <span class="label">자료실</span></a>
       <a class="community-btn" href="https://open.kakao.com/o/g2JnL4Ai" target="_blank">💬 <span class="label">독자 오픈채팅방</span></a>
       <a class="buy-btn" href="#" target="_blank">📖 <span class="label">책 구매하기</span> →</a>
     </div>
@@ -635,16 +668,23 @@
 </a>
 
 <section class="hero">
-  <div class="hero-label">『AI로 부자되기』 프롬프트 라이브러리</div>
-  <div class="hero-title-row">
-    <h1 class="hero-title">돈 버는<br><span>프롬프트</span></h1>
-    <span class="brand-badge"><span class="dot"></span>돈버프</span>
-  </div>
-  <p class="hero-sub">AI에게 올바른 질문을 던지면 돈이 보입니다.<br>필요한 프롬프트를 골라 바로 복사해서 쓰세요.</p>
-  <div class="hero-stats">
-    <div class="stat-item"><span class="stat-num">172</span><span class="stat-label">총 프롬프트</span></div>
-    <div class="stat-item"><span class="stat-num">7</span><span class="stat-label">카테고리</span></div>
-    <div class="stat-item"><span class="stat-num">5</span><span class="stat-label">AI 툴</span></div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-label">『AI로 부자되기』 프롬프트 라이브러리</div>
+      <div class="hero-title-row">
+        <h1 class="hero-title">돈 버는<br><span>프롬프트</span></h1>
+        <span class="brand-badge"><span class="dot"></span>돈버프</span>
+      </div>
+      <p class="hero-sub">AI에게 올바른 질문을 던지면 돈이 보입니다.<br>필요한 프롬프트를 골라 바로 복사해서 쓰세요.</p>
+      <div class="hero-stats">
+        <div class="stat-item"><span class="stat-num">172</span><span class="stat-label">총 프롬프트</span></div>
+        <div class="stat-item"><span class="stat-num">7</span><span class="stat-label">카테고리</span></div>
+        <div class="stat-item"><span class="stat-num">5</span><span class="stat-label">AI 툴</span></div>
+      </div>
+    </div>
+    <a class="hero-cover" href="#" target="_blank" aria-label="AI로 부자되기 책 표지">
+      <img src="book-cover.png" alt="『AI로 부자되기』 — AI가 알아서 굴려주는 월급쟁이 재테크 책 표지">
+    </a>
   </div>
 </section>
 
@@ -703,7 +743,7 @@
   <div class="footer-brand">돈버프 (DONBUFF)</div>
   <p>『AI로 부자되기』 | 저자 김태형(사마리아인)<br>
   <a href="https://donbuff.com" target="_blank">donbuff.com</a> &nbsp;·&nbsp;
-  <a href="https://youtube.com" target="_blank">사마리아인TV</a> &nbsp;·&nbsp;
+  <a href="https://www.youtube.com/@samariaintv" target="_blank">사마리아인TV</a> &nbsp;·&nbsp;
   <a href="https://open.kakao.com/o/g2JnL4Ai" target="_blank">독자 오픈채팅방</a></p>
   <p style="margin-top:8px;">© 2026 김태형. 이 페이지의 프롬프트는 개인 학습 목적으로만 활용하세요.</p>
 </footer>
@@ -2681,7 +2721,7 @@ ISA 계좌 보유 여부 : 있음 (납입 잔여 한도 200만 원)
     desc:"보유·거주 기간·지역 기준을 점검하고 양도소득세 비과세 요건 충족 여부를 판단합니다.",
     prompt:`"내 상황에서 1세대 1주택 비과세가 적용되는지 판단해줘.
 
-나의 상황 : 보유 주택 수원 영통구 아파트 1채 / 취득일 2021년 3월 / 취득 당시 지역 조정대상지역 / 실거주 기간 2021년 3월~2023년 6월(약 2년 3개월) / 2023년 7월부터 전세 임대 중 / 매도 시점 2025년 12월 / 예상 매도가 7억 원 / 취득가 5억 원
+나의 상황 : 보유 주택 수원 영통구 아파트 1채 / 취득일 2021년 3월 / 취득 당시 지역 조정대상지역 / 실거주 기간 2021년 3월~2023년 6월(약 2년 3개월) / 2023년 7월부터 전세 임대 중 / 매도 시점 2026년 12월 / 예상 매도가 7억 원 / 취득가 5억 원
 
 ① 현재 상황에서 1세대 1주택 비과세 요건을 충족하는지 판단
 ② 비과세 요건 중 충족되지 않는 항목이 있다면 무엇인지
