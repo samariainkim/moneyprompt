@@ -359,6 +359,8 @@
     border: 1px solid var(--border);
     border-radius: 8px;
     cursor: pointer;
+    text-decoration: none;
+    color: inherit;
     transition: border-color 0.15s, background 0.15s;
   }
   .best5-item:hover { border-color: var(--accent); background: #fffbeb; }
@@ -375,8 +377,67 @@
     justify-content: center;
     flex-shrink: 0;
   }
+  .newp-badge {
+    font-size: 8.5px;
+    font-weight: 800;
+    color: #fff;
+    background: #dc2626;
+    padding: 2px 5px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    letter-spacing: 0.2px;
+  }
   .best5-title { flex: 1; font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .best5-cat { font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
+
+  /* ── 독자 후기 (로테이션) ─────────────────────────── */
+  .review-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 36px 24px 8px;
+  }
+  .review-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .review-head h2 { font-size: 14px; font-weight: 800; letter-spacing: -0.2px; }
+  .review-head .by { font-size: 10.5px; color: var(--text-muted); }
+  .review-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .review-card {
+    display: block;
+    padding: 16px 16px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  }
+  .review-card:hover { border-color: var(--accent); background: #fffbeb; transform: translateY(-2px); }
+  .review-quote {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .review-quote::before { content: '\201C'; color: var(--accent); font-weight: 800; }
+  .review-quote::after { content: '\201D'; color: var(--accent); font-weight: 800; }
+  .review-author {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    text-align: right;
+  }
+  @media (max-width: 700px) {
+    .review-list { grid-template-columns: 1fr; }
+  }
 
   /* ── 필터 & 검색 ─────────────────────────────────── */
   .controls {
@@ -657,7 +718,7 @@
     <div class="header-btns">
       <a class="resource-btn" href="https://blog.naver.com/PostList.naver?blogId=ijesus78&from=postList&categoryNo=148" target="_blank">📂 <span class="label">자료실</span></a>
       <a class="community-btn" href="https://open.kakao.com/o/g2JnL4Ai" target="_blank">💬 <span class="label">독자 오픈채팅방</span></a>
-      <a class="buy-btn" href="https://www.yes24.com/product/goods/194600081" target="_blank">📖 <span class="label">책 구매하기</span> →</a>
+      <a class="buy-btn" href="#" target="_blank">📖 <span class="label">책 구매하기</span> →</a>
     </div>
   </div>
 </header>
@@ -682,7 +743,7 @@
         <div class="stat-item"><span class="stat-num">5</span><span class="stat-label">AI 툴</span></div>
       </div>
     </div>
-    <a class="hero-cover" href="https://www.yes24.com/product/goods/194600081" target="_blank" aria-label="AI로 부자되기 책 표지">
+    <a class="hero-cover" href="#" target="_blank" aria-label="AI로 부자되기 책 표지">
       <img src="book-cover.png" alt="『AI로 부자되기』 — AI가 알아서 굴려주는 월급쟁이 재테크 책 표지">
     </a>
   </div>
@@ -709,10 +770,18 @@
 
 <section class="best5-wrap">
   <div class="best5-head">
-    <h2>🏆 사마리아인 추천 BEST 3</h2>
-    <span class="by">매주 업데이트</span>
+    <h2>🔔 New 돈 버는 프롬프트</h2>
+    <span class="by">최근 업데이트</span>
   </div>
-  <div class="best5-list" id="best5List"></div>
+  <div class="best5-list" id="newPromptList"></div>
+</section>
+
+<section class="review-wrap">
+  <div class="review-head">
+    <h2>💬 독자님들이 남겨주신 소중한 후기</h2>
+    <span class="by">오늘의 리뷰</span>
+  </div>
+  <div class="review-list" id="reviewList"></div>
 </section>
 
 <div class="controls">
@@ -741,7 +810,7 @@
 
 <footer>
   <div class="footer-brand">돈버프 (DONBUFF)</div>
-  <p>『AI로 부자되기』 | 만든이 김태형(사마리아인)<br>
+  <p>『AI로 부자되기』 | 저자 김태형(사마리아인)<br>
   <a href="https://donbuff.com" target="_blank">donbuff.com</a> &nbsp;·&nbsp;
   <a href="https://www.youtube.com/@samariaintv" target="_blank">사마리아인TV</a> &nbsp;·&nbsp;
   <a href="https://open.kakao.com/o/g2JnL4Ai" target="_blank">독자 오픈채팅방</a> &nbsp;·&nbsp;
@@ -3068,6 +3137,56 @@ ISA 계좌 보유 여부 : 있음 (납입 잔여 한도 200만 원)
   },
 ];
 
+// ── 독자 후기 (수시 업데이트용 목록) ──────────────────────
+// 저자가 새 리뷰를 확인할 때마다 이 배열에 한 줄씩 추가하면 됩니다.
+const REVIEWS = [
+  { nick: "pumaeunji", quote: "원하는 AI프로그램에 다양하게 프롬프트를 입력해서 정보를 얻을 수 있었어요", url: "https://blog.naver.com/pumaeunji/224382250544" },
+  { nick: "fruit9526", quote: "전부터 이런 것들을 알고 있었다면, 스트레스 받지 않고 좀 편하게 모든 일을 할 수 있었을텐데", url: "https://blog.naver.com/fruit9526/224381387658" },
+  { nick: "eggnoglatte", quote: "인상적이었던 부분은 질문하는 능력의 중요성을 알려준다는 부분입니다", url: "https://blog.naver.com/eggnoglatte/224382217507" },
+  { nick: "vvyriri", quote: "최근 토스에서 매일 주식을 사면서 꾸준히 모으는 투자 방법이 괜찮은지 GPT에게 직접 물어봤습니다", url: "https://blog.naver.com/vvyriri/224381396852" },
+  { nick: "swiftcomposure", quote: "AI를 단순한 검색이나 일상 도우미가 아니라 현금흐름과 자산을 관리하는 재테크 도구로 활용할 수 있다는 점이 꽤 흥미롭게 다가왔어요", url: "https://blog.naver.com/swiftcomposure/224382206983" },
+  { nick: "minjoo9318", quote: "책을 읽다 말고 바로 핸드폰을 들어 챗GPT에 책 속 프롬프트를 입력해 보았어요", url: "https://blog.naver.com/minjoo9318/224382358186" },
+  { nick: "lempicka", quote: "AI재테크의 가장 큰 장점은 미뤄두었던 돈 이야기를 구체적인 질문으로 바꿔준다는 점이었어요", url: "https://blog.naver.com/lempickasw/224383026694" },
+];
+
+// 날짜 시드로 오늘의 리뷰 3개를 고정 선택 (전원 동일 결과, 자정 기준 로테이션)
+function getTodayReviews(count = 3) {
+  if (REVIEWS.length <= count) return REVIEWS;
+  const now = new Date();
+  const kstOffset = 9 * 60;
+  const kst = new Date(now.getTime() + (kstOffset + now.getTimezoneOffset()) * 60000);
+  const dateStr = `${kst.getFullYear()}-${kst.getMonth()+1}-${kst.getDate()}`;
+  let seed = 0;
+  for (let i = 0; i < dateStr.length; i++) seed = (seed * 31 + dateStr.charCodeAt(i)) % 100000;
+
+  // 시드 기반으로 REVIEWS 배열 인덱스를 섞은 뒤 앞에서 count개 선택
+  const indices = REVIEWS.map((_, i) => i);
+  let s = seed;
+  for (let i = indices.length - 1; i > 0; i--) {
+    s = (s * 9301 + 49297) % 233280;
+    const j = Math.floor((s / 233280) * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  return indices.slice(0, count).map(i => REVIEWS[i]);
+}
+
+function renderReviews() {
+  const wrap = document.getElementById("reviewList");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  getTodayReviews(3).forEach(r => {
+    const card = document.createElement("a");
+    card.className = "review-card";
+    card.href = r.url;
+    card.target = "_blank";
+    card.rel = "noopener";
+    card.innerHTML = `
+      <div class="review-quote">${r.quote}</div>
+      <div class="review-author">— ${r.nick}</div>`;
+    wrap.appendChild(card);
+  });
+}
+
 // ── 렌더링 ──────────────────────────────────────────────
 const catColors = {
   "재무진단":"#3b82f6","지출·저축":"#10b981","AI투자팀":"#8b5cf6",
@@ -3107,19 +3226,25 @@ function renderTodayPick() {
   document.getElementById("todayCard").dataset.idx = p.idx;
 }
 
-// ── BEST 5 (운영자 고정 추천 — 실시간 집계 아님, 명시적으로 고지) ──
-const BEST5_IDX = ["06/13", "05/09-2", "04/14"];
-function renderBest5() {
-  const wrap = document.getElementById("best5List");
+// ── New 프롬프트 (블로그에 새로 올라온 프롬프트 — 저자가 직접 관리) ──
+// 새 글을 올리면 맨 위에 한 줄 추가하고, 오래된 건 아래로 밀거나 지우면 됩니다.
+const NEW_PROMPTS = [
+  { title: "미국 생산자물가지수(PPI) 체크포인트", cat: "AI투자팀", url: "https://blog.naver.com/ijesus78/224377542889" },
+  { title: "미국 소비자물가지수(CPI) 체크포인트", cat: "AI투자팀", url: "https://blog.naver.com/ijesus78/224374767529" },
+  { title: "미국 고용보고서 체크포인트", cat: "AI투자팀", url: "https://blog.naver.com/ijesus78/224369885448" },
+];
+function renderNewPrompts() {
+  const wrap = document.getElementById("newPromptList");
+  if (!wrap) return;
   wrap.innerHTML = "";
-  BEST5_IDX.forEach((idx, i) => {
-    const p = PROMPTS.find(x => x.idx === idx);
-    if (!p) return;
-    const item = document.createElement("div");
+  NEW_PROMPTS.slice(0, 3).forEach((p, i) => {
+    const item = document.createElement("a");
     item.className = "best5-item";
-    item.dataset.idx = p.idx;
+    item.href = p.url;
+    item.target = "_blank";
+    item.rel = "noopener";
     item.innerHTML = `
-      <span class="best5-rank">${i+1}</span>
+      <span class="newp-badge">NEW</span>
       <span class="best5-title">${p.title}</span>
       <span class="best5-cat">${p.cat}</span>`;
     wrap.appendChild(item);
@@ -3418,16 +3543,11 @@ document.getElementById("todayCard").addEventListener("click", () => {
   if (idx) jumpToPrompt(idx);
 });
 
-// BEST5 아이템 클릭
-document.getElementById("best5List").addEventListener("click", e => {
-  const item = e.target.closest(".best5-item");
-  if (item && item.dataset.idx) jumpToPrompt(item.dataset.idx);
-});
-
 updateFavCount();
 updateRecentCount();
 renderTodayPick();
-renderBest5();
+renderNewPrompts();
+renderReviews();
 render();
 </script>
 
