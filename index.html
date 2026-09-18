@@ -390,7 +390,7 @@
   .best5-title { flex: 1; font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .best5-cat { font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
 
-  /* ── 독자 후기 (로테이션) ─────────────────────────── */
+  /* ── 독자 후기 (통합 캐러셀: 북 리뷰 + 챌린지 후기) ──────── */
   .review-wrap {
     max-width: 900px;
     margin: 0 auto;
@@ -404,14 +404,24 @@
   }
   .review-head h2 { font-size: 14px; font-weight: 800; letter-spacing: -0.2px; }
   .review-head .by { font-size: 10.5px; color: var(--text-muted); }
-  .review-list {
+  .review-viewport { overflow: hidden; }
+  .review-track {
+    display: flex;
+    transition: transform 0.5s ease;
+  }
+  .review-page {
+    flex: 0 0 100%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
+    box-sizing: border-box;
+    padding-right: 2px;
   }
   .review-card {
-    display: block;
-    padding: 16px 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 14px 12px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -421,22 +431,51 @@
     transition: border-color 0.15s, background 0.15s, transform 0.15s;
   }
   .review-card:hover { border-color: var(--accent); background: #fffbeb; transform: translateY(-2px); }
+  .review-badge {
+    align-self: flex-start;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .review-badge.book { background: #eff6ff; color: #1d4ed8; }
+  .review-badge.challenge { background: #fef3c7; color: #92400e; }
   .review-quote {
-    font-size: 13px;
-    line-height: 1.6;
+    font-size: 12.5px;
+    line-height: 1.55;
     color: var(--text-primary);
     font-weight: 500;
-    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .review-quote::before { content: '\201C'; color: var(--accent); font-weight: 800; }
   .review-quote::after { content: '\201D'; color: var(--accent); font-weight: 800; }
   .review-author {
-    font-size: 11.5px;
+    font-size: 11px;
     color: var(--text-muted);
     text-align: right;
   }
+  .review-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .review-dot {
+    width: 6px;
+    height: 6px;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--border);
+    border: none;
+    cursor: pointer;
+  }
+  .review-dot.on { background: var(--accent); }
   @media (max-width: 700px) {
-    .review-list { grid-template-columns: 1fr; }
+    .review-page { grid-template-columns: 1fr; }
   }
 
   /* ── 필터 & 검색 ─────────────────────────────────── */
@@ -718,7 +757,7 @@
     <div class="header-btns">
       <a class="resource-btn" href="https://blog.naver.com/PostList.naver?blogId=ijesus78&from=postList&categoryNo=148" target="_blank">📂 <span class="label">자료실</span></a>
       <a class="community-btn" href="https://open.kakao.com/o/g2JnL4Ai" target="_blank">💬 <span class="label">독자 오픈채팅방</span></a>
-      <a class="buy-btn" href="https://www.yes24.com/Product/Goods/194600081" target="_blank">📖 <span class="label">책 구매하기</span> →</a>
+      <a class="buy-btn" href="#" target="_blank">📖 <span class="label">책 구매하기</span> →</a>
     </div>
   </div>
 </header>
@@ -743,7 +782,7 @@
         <div class="stat-item"><span class="stat-num">5</span><span class="stat-label">AI 툴</span></div>
       </div>
     </div>
-    <a class="hero-cover" href="https://www.yes24.com/Product/Goods/194600081" target="_blank" aria-label="AI로 부자되기 책 표지">
+    <a class="hero-cover" href="#" target="_blank" aria-label="AI로 부자되기 책 표지">
       <img src="book-cover.png" alt="『AI로 부자되기』 — AI가 알아서 굴려주는 월급쟁이 재테크 책 표지">
     </a>
   </div>
@@ -781,7 +820,10 @@
     <h2>💬 독자님들이 남겨주신 소중한 후기</h2>
     <span class="by">오늘의 리뷰</span>
   </div>
-  <div class="review-list" id="reviewList"></div>
+  <div class="review-viewport">
+    <div class="review-track" id="reviewTrack"></div>
+  </div>
+  <div class="review-dots" id="reviewDots"></div>
 </section>
 
 <div class="controls">
@@ -3139,6 +3181,7 @@ ISA 계좌 보유 여부 : 있음 (납입 잔여 한도 200만 원)
 
 // ── 독자 후기 (수시 업데이트용 목록) ──────────────────────
 // 저자가 새 리뷰를 확인할 때마다 이 배열에 한 줄씩 추가하면 됩니다.
+// 북 리뷰 (네이버 블로그·예스24·티스토리 등에서 확인된 독자 후기)
 const REVIEWS = [
   { nick: "pumaeunji", quote: "원하는 AI프로그램에 다양하게 프롬프트를 입력해서 정보를 얻을 수 있었어요", url: "https://blog.naver.com/pumaeunji/224382250544" },
   { nick: "fruit9526", quote: "전부터 이런 것들을 알고 있었다면, 스트레스 받지 않고 좀 편하게 모든 일을 할 수 있었을텐데", url: "https://blog.naver.com/fruit9526/224381387658" },
@@ -3148,43 +3191,74 @@ const REVIEWS = [
   { nick: "minjoo9318", quote: "책을 읽다 말고 바로 핸드폰을 들어 챗GPT에 책 속 프롬프트를 입력해 보았어요", url: "https://blog.naver.com/minjoo9318/224382358186" },
   { nick: "lempicka", quote: "AI재테크의 가장 큰 장점은 미뤄두었던 돈 이야기를 구체적인 질문으로 바꿔준다는 점이었어요", url: "https://blog.naver.com/lempickasw/224383026694" },
   { nick: "h*******7", quote: "프리랜서인 저에게 딱 필요했던 부분. 37장은 사실상 저를 위해 쓰인 장 같았어요", url: "https://sarak.yes24.com/review/22356398" },
-  { nick: "w*****6", quote: "내가 어떤 정보를 원하는지 정확히 질문하고, 여러 자료를 확인하고, 그것을 반복 가능한 루틴으로 만드는 것이 더 중요했다", url: "https://sarak.yes24.com/review/22356071"  },
+  { nick: "w*****6", quote: "내가 어떤 정보를 원하는지 정확히 질문하고, 여러 자료를 확인하고, 그것을 반복 가능한 루틴으로 만드는 것이 더 중요했다", url: "https://sarak.yes24.com/review/22356071" },
   { nick: "c********0", quote: "요즘 AI든 주식 시장이든 모든 게 너무 빨리 바뀌다 보니, 그걸 쫓아가는 데만 급급해 본질을 보지 못하고 오히려 제자리에서 맴도는 제 자신을 발견했습니다", url: "https://sarak.yes24.com/review/22359909" },
   { nick: "alicetaiwan11", quote: "저처럼 AI는 매일 쓰는데 재테크에는 어떻게 활용해야 할지 몰랐던 사람에게 특히 도움이 될 것 같아요", url: "https://blog.naver.com/alicetaiwan11/224386486691" },
-  { nick: "kk0jjin", quote: "이 책 한 권 읽었다고, 갑자기 돈 관리를 잘하게 된 건 아니에요. 대신 우리집 상황을 이렇게 넣어 물어볼 수도 있구나. 이건 제대로 건졌어요", url: "https://blog.naver.com/kk0jjin/224386194478" },
+  { nick: "kk0jjin", quote: "이 책 한 권 읽었다고, 갑자기 돈 관리를 잘하게 된 건 아니에요. 대신 우리집 상황을 이렇게 넣어 물어볼 수도 있구나, 이건 제대로 건졌어요", url: "https://blog.naver.com/kk0jjin/224386194478" },
   { nick: "suwoncomes", quote: "특히 이 책이 흥미로웠던 것은 하나의 AI만 만능도구처럼 소개하지 않는다는 점입니다. 챗GPT, 제미나이, 클로드, 제미나이노트북 각각의 역할을 나눕니다", url: "https://blog.naver.com/suwoncomes/224385835822" },
   { nick: "tfg5907", quote: "AI를 써본 사람이라면 질문을 어떻게 해야 할지 몰라서 원하는 답을 얻지 못하거나, 너무 일반적인 답변만 해줘서 결국 검색창으로 돌아가는 경험이 있을겁니다", url: "https://blog.naver.com/tfg5907/224384852470" },
   { nick: "project_pop", quote: "AI마다 역할을 나누면 하나의 재테크 자동화 시스템을 만들어볼 수 있다는 점이 흥미로웠다", url: "https://blog.naver.com/project_pop/224380455808" },
-  { nick: "p*****n", quote: "SNS와 유튜브, 정보가 너무 많아 오히려 더 못하게 되었던 저에게 이 책을 알게 되었습니다. 사실 요즘 모든 곳에 AI가 있는데 재테크를 할 때도 사용할 수 있을 거란 생각은 못했습니다", url: "https://sarak.yes24.com/review/22363884" },
-  { nick: "eunsour", quote: "특히 종목 스크리닝 부분이 흥미로웠다. 단순히 AI에게 좋은 종목을 골라달라고 하는 것이 아니라, 먼저 자신이 어떤 투자 스타일을 가지고 있는지를 정하고 그에 맞는 기준을 만든 뒤 AI를 활용한다", url: "https://eunsour.tistory.com/143" },
+  { nick: "p*****n", quote: "SNS와 유튜브, 정보가 너무 많아 오히려 더 못하게 되었던 저에게 이 책을 알게 되었습니다", url: "https://sarak.yes24.com/review/22363884" },
+  { nick: "eunsour", quote: "특히 종목 스크리닝 부분이 흥미로웠다. 먼저 자신이 어떤 투자 스타일을 가지고 있는지를 정하고 그에 맞는 기준을 만든 뒤 AI를 활용한다", url: "https://eunsour.tistory.com/143" },
   { nick: "까칠현", quote: "특히 마음에 들었던 건, 'AI로 재테크 하세요'라고 끝나는 게 아니라 실제로 어떤 질문을 해야 하는지 프롬프트가 구체적으로 나온다는 점이었어요", url: "https://blog.naver.com/limhyunae/224388983354" },
-  { nick: "책근육", quote: "이 책의 차별점은 돈버프(donbuff.com)와 함께 활용할 수 있다는 점입니다. 한 권의 책으로 기본기를 익히고 온라인 공간에서 계속 보완할 수 있다는 점이 이 활용서의 실용성을 높여줍니다", url: "https://blog.naver.com/hai0416/224388835478" },
-  { nick: "rainbi92", quote: "요즘 진짜 주변사람들 주식투자하고, 부동산 얘기하고 돈 얘기할 때 마다 입꾹닫았는데, 내가 사랑하는 AI인 챗GPT를 활용해서 재테크를 할 수 있다니", url: "https://blog.naver.com/rainbi92/224388815826" },
-  { nick: "하나리스트", quote: "시중의 일반 주식 및 부동산 서적들과 비교해 보면 실용성 차원이 달라요. 이 도서는 복사해서 붙여넣기만 하면 되는 자동화 명령어를 제공해서 비교 불가 수준으로 빠른 실행력을 보여줘요", url: "https://blog.naver.com/02haeun/224387702108" },
+  { nick: "책근육", quote: "이 책의 차별점은 돈버프(donbuff.com)와 함께 활용할 수 있다는 점입니다. 책으로 기본기를 익히고 온라인 공간에서 계속 보완할 수 있어요", url: "https://blog.naver.com/hai0416/224388835478" },
+  { nick: "rainbi92", quote: "주변에서 주식투자, 부동산 얘기할 때마다 입 꾹 닫았는데, 챗GPT를 활용해서 재테크를 할 수 있다니", url: "https://blog.naver.com/rainbi92/224388815826" },
+  { nick: "하나리스트", quote: "시중 주식·부동산 서적들과 비교해 보면 실용성 차원이 달라요. 복사해서 붙여넣기만 하면 되는 자동화 명령어를 제공해줘요", url: "https://blog.naver.com/02haeun/224387702108" },
   { nick: "woqkrdk", quote: "긴 질문을 직접 작성해야 하는 번거로움 없이 필요한 프롬프트를 찾아 바로 활용할 수 있다는 점이 너무 간편해요", url: "https://blog.naver.com/woqkrdk/224388393707" },
   { nick: "오반짝", quote: "어떤 프롬프트를 써야지 내가 원하는 값을 얻을 수 있는지 핵심만 쏙쏙 알려주는 책이라니, 그 동안 내가 적었던 프롬프트가 문제였다니", url: "https://blog.naver.com/sy900523/224388172853" },
   { nick: "아마따", quote: "단순히 상투적인 조언에 그치지 않고, 구체적인 수치와 단계별 가이드를 제공해 주어 매우 놀랍고 신기했습니다", url: "https://blog.naver.com/jjiya09/224387772323" },
   { nick: "장갑이", quote: "무적의 AI팀을 구축해 놓으니 마치 나만의 전담 자산관리 비서를 둔 것 같이 든든합니다", url: "https://blog.naver.com/s199102/224387294361" },
   { nick: "라미롸미", quote: "제공된 프롬프트 몇 가지를 직접 실행해 보니, 스스로 분석했던 것보다 훨씬 더 정교하고 유의미한 결과를 얻을 수 있었다", url: "https://podo1017.tistory.com/525" },
-  { nick: "뚜루룽", quote: "생각해보면 업무 자동화, 효율화를 위해 그렇게나 AI를 공부하고 활용하려고 노력들을 하고 있는데, 막상 왜 나의 자산관리에는 AI를 잘 활용하지 않고 있는가에 대해 반성을 하게 되었다", url: "https://blog.naver.com/csucom/224395438710" },
-  { nick: "칼퇴의품격", quote: "AI에게 내 판단을 의존하는 게 아니라 AI를 이용해 불필요한 반복을 줄임으로써 시간을 효율적으로 쓰는 것. 이를 통해 나의 소중한 돈을 잘 관리하는 방법을 알려주는 책이다", url: "https://boom2580.tistory.com/988" },
-  { nick: "바우", quote: "개인적으로 가장 재미있었던 건 AI하나로 모든 걸 해결하려 하지 않는다는 점이다. 챗GPT 하나만 잘 쓰면 되는 거 아닌가 싶었는데 아예 AI를 하나의 투자팀처럼 다룬다", url: "https://blog.naver.com/jangpal08/224394950924" },
+  { nick: "뚜루룽", quote: "그렇게나 AI를 공부하고 업무에 활용하려 노력하면서, 막상 왜 내 자산관리에는 AI를 잘 활용하지 않고 있는가 반성하게 되었다", url: "https://blog.naver.com/csucom/224395438710" },
+  { nick: "칼퇴의품격", quote: "AI에게 판단을 의존하는 게 아니라, 불필요한 반복을 줄여 시간을 효율적으로 쓰는 것. 그렇게 내 돈을 잘 관리하는 법을 알려주는 책이다", url: "https://boom2580.tistory.com/988" },
+  { nick: "바우", quote: "개인적으로 가장 재미있었던 건 AI 하나로 모든 걸 해결하려 하지 않는다는 점이다. 아예 AI를 하나의 투자팀처럼 다룬다", url: "https://blog.naver.com/jangpal08/224394950924" },
   { nick: "엘리쌤", quote: "전체적으로 나에게 도움이 많이 되는 책이었다. 이 전체 과정을 자동화 할 수 있다면 참 좋겠다", url: "https://blog.naver.com/aimento/224394902229" },
-  { nick: "무니", quote: "잘 설계된 AI 도구 몇 가지만 적재적소에 활용하면, 퇴근 후 30분만으로도 충분히 굴러가는 재테크 시스템을 만들 수 있다는 것, 이 책은 바로 그 방법을 실전 순서에 맞춰 보여주는 책이었습니다", url: "https://blog.naver.com/moonysl/224394788759" },
-  { nick: "호영", quote: "개인적으로 가장 좋았던 부분은 마지막 7장이었습니다. 매일 10분 경제 브리핑, 주말 30분 자산 점검처럼 재테크를 루틴으로 만드는 방법을 제안합니다", url: "https://blog.naver.com/axiomatic/224394605429" },
-  { nick: "임자", quote: "평소 AI도구를 활용해서 끊임없이 검증해보고 설계에 도움을 받곤 했는데, 재테크에는 활용하지 못했던 것 같아서 이번 기회에 활용하는 법을 제대로 배워서 써먹어야겠단 생각이 들었어요", url: "https://blog.naver.com/lolo1126/224394092269" },
+  { nick: "무니", quote: "잘 설계된 AI 도구 몇 가지만 적재적소에 활용하면, 퇴근 후 30분만으로도 충분히 굴러가는 재테크 시스템을 만들 수 있다는 것", url: "https://blog.naver.com/moonysl/224394788759" },
+  { nick: "호영", quote: "개인적으로 가장 좋았던 부분은 마지막 7장이었습니다. 매일 10분 경제 브리핑처럼 재테크를 루틴으로 만드는 방법을 제안합니다", url: "https://blog.naver.com/axiomatic/224394605429" },
+  { nick: "임자", quote: "평소 AI도구로 끊임없이 검증하고 설계에 도움을 받곤 했는데, 재테크에는 활용하지 못했던 것 같아 제대로 배워서 써먹어야겠단 생각이 들었어요", url: "https://blog.naver.com/lolo1126/224394092269" },
   { nick: "슈마", quote: "저는 AI와 함께 너무나도 많은 시간을 보내고 있어서 이 책을 통해 재무전문가의 노하우를 쪽쪽 뽑아 먹었으면 합니다", url: "https://blog.naver.com/shuma-/224393171285" },
-  { nick: "m****0", quote: "프롬프트 엔지니어가 되어보자! AI에게 원하는 답을 얻기 위해 제대로 질문할 줄 아는 사람이 되어보자는 의미다. 이 책에서 내가 얻은 가장 큰 메시지도 바로 이것이었다", url: "https://sarak.yes24.com/review/22380029" },
-  { nick: "c****m", quote: "나도 아주 조금씩은 재테크 쪽에 관심을 가져보자는 생각에서 도서를 읽어보았는데, 예적금부터 주식, 펀드, 부동산, 절세 전략에 이르기까지 생각보다 접근하기 쉬우면서도 유익한 노하우들이 많이 들어 있어 놀랐다", url: "https://sarak.yes24.com/review/22379055" },
-  { nick: "j*******8", quote: "AI를 이용해 내가 내 돈을 조금 더 잘 관리하게 만드는 책. 책상 옆에 두고 필요할 때 프롬프트를 하나씩 꺼내 쓰며 두고두고 우려먹기 좋은 실전형 재테크 책이라는 생각이 든다", url: "https://sarak.yes24.com/review/22377501" },
-  { nick: "m*****l", quote: "가장 먼저 와닿은 건 지출 진단이었습니다. 카드명세서를 AI에 넣고 분석해 보니, 무심코 넘기던 구독 서비스 비용이 한눈에 드러나고 습관처럼 반복되던 소비도 항목별로 정리되어 보이더군요", url: "https://sarak.yes24.com/review/22377046" },
-  { nick: "l******6", quote: "AI 도구를 이용할 때는 질문도 잘해야 하고 학습을 잘 시켜야 원하는 대답을 검증까지 받고 할 수 있다고 하는데, 프롬프트까지 알려주고 있어 이것만 따라하면 완벽한 AI와 함께 돈을 굴려보는 시스템을 배워볼 수 있더라고요", url: "https://sarak.yes24.com/review/22375254" },
-  { nick: "s****2", quote: "그동안 AI를 잘 알지 못했던 것도 나의 실수였던 것 같다. 나이가 있다 보니 젊은 사람들보다는 이런 신기술에 능숙하지 않기에 남의 이야기인 양 좀 멀리했던 것이 실수였던 거 같다", url: "https://sarak.yes24.com/review/22367977" }, 
+  { nick: "m****0", quote: "프롬프트 엔지니어가 되어보자! AI에게 원하는 답을 얻기 위해 제대로 질문할 줄 아는 사람이 되어보자는 의미다", url: "https://sarak.yes24.com/review/22380029" },
+  { nick: "c****m", quote: "나도 아주 조금씩은 재테크 쪽에 관심을 가져보자는 생각에서 읽어보았는데, 접근하기 쉬우면서도 유익한 노하우들이 많이 들어 있어 놀랐다", url: "https://sarak.yes24.com/review/22379055" },
+  { nick: "j*******8", quote: "AI를 이용해 내 돈을 조금 더 잘 관리하게 만드는 책. 두고두고 우려먹기 좋은 실전형 재테크 책이라는 생각이 든다", url: "https://sarak.yes24.com/review/22377501" },
+  { nick: "m*****l", quote: "가장 먼저 와닿은 건 지출 진단이었습니다. 카드명세서를 AI에 넣고 분석해 보니 무심코 넘기던 구독 서비스 비용이 한눈에 드러나더군요", url: "https://sarak.yes24.com/review/22377046" },
+  { nick: "l******6", quote: "프롬프트까지 알려주고 있어 이것만 따라하면 완벽한 AI와 함께 돈을 굴려보는 시스템을 배워볼 수 있더라고요", url: "https://sarak.yes24.com/review/22375254" },
+  { nick: "s****2", quote: "그동안 AI를 잘 알지 못했던 것도 나의 실수였던 것 같다", url: "https://sarak.yes24.com/review/22367977" },
 ];
 
-// 날짜 시드로 오늘의 리뷰 3개를 고정 선택 (전원 동일 결과, 자정 기준 로테이션)
-function getTodayReviews(count = 3) {
-  if (REVIEWS.length <= count) return REVIEWS;
+// 챌린저스 후기 (AI재테크 3주 챌린지 참여자 경험담)
+const CHALLENGE_REVIEWS = [
+  { nick: "Sophie", quote: "처음에는 월급쟁이가 AI까지 써가며 재테크를 할 수 있을까? 반신반의 했는데, 완주하고나니 막연했던 두려움이 사라지고 든든한 개인비서를 얻은 기분입니다", url: "https://blog.naver.com/usopo/224410545209" },
+  { nick: "obllub", quote: "길다면 길고 짧다면 짧은 3주였지만, 막연했던 금융 공부가 손에 잡히는 일상 시스템으로 확실히 자리 잡았어요", url: "https://blog.naver.com/obllub/224410530881" },
+  { nick: "kyoodol", quote: "40대인지라 어린 친구들만큼 능수능란하게 AI를 사용하지는 못했지만, 책에서 알려주는 프롬프트를 내가 원하는 형식으로 바꿔가며 자산을 불려갈 거라는 확신을 가지고 움직인 3주였다", url: "https://blog.naver.com/kyoodol/224410520731" },
+  { nick: "softpulse", quote: "AI가 대신 돈을 벌어다 주는 마법 상자는 아니더라도 가장 든든하고 똑똑한 '1:1 자산관리 비서'가 되어준다는 사실을 느꼈습니다", url: "https://blog.naver.com/softpulse/224410514698" },
+  { nick: "오유", quote: "정말 AI가 내 자산을 관리해 줄 수 있을까 반신반의하며 시작했는데, 마지막 장을 덮은 지금은 금융 생활의 든든한 페이스메이커를 얻은 기분이에요", url: "https://blog.naver.com/osuoo/224410500904" },
+  { nick: "잔잔모시", quote: "30분 비교하는 게 귀찮아서 수백만원을 날릴 수 있다는 구절을 마주했을 때는 정신이 번쩍 들었습니다", url: "https://blog.naver.com/ksjfleig/224410483280" },
+  { nick: "해썹", quote: "매일 회사 업무에 치이다 보면 통장 잔고 확인조차 버거웠는데, AI로 자산을 점검하고 관리하는 법을 익히면서 돈 관리를 바라보는 시야가 완전히 바뀌었네요", url: "https://blog.naver.com/hessp/224410466331" },
+  { nick: "무니닝", quote: "바쁜 직장인에게 금융 공부는 늘 밀리기 십상인 숙제 같았는데, 이제는 든든한 AI 조수가 곁에서 데이터를 척척 분석해주니 든든하네요", url: "https://blog.naver.com/moonyapp/224410450261" },
+  { nick: "카썬", quote: "회사 일할 때는 챗GPT나 검색 툴을 그렇게 열심히 쓰면서, 정작 제일 소중한 내 월급과 자산 관리에는 왜 써볼 생각을 못했을까요", url: "https://blog.naver.com/casunbu/224410437616" },
+  { nick: "검은여우", quote: "내 소득과 금융소득 구조를 입력하자마자 신고 대상 여부와 공제항목을 짚어주는 모습을 보며, 세는 돈을 막는 것이야말로 가장 확실한 재테크라는 말을 실감했어요", url: "https://blog.naver.com/gpgptgp/224410421042" },
+  { nick: "몽실이", quote: "금리 변동 시나리오나 정책 대출을 비교해주는 프롬프트까지 직접 돌려보면서, 막연한 불안감 대신 상황별로 구체적인 기준을 세울 수 있어 든든했습니다", url: "https://blog.naver.com/gpowm/224410407433" },
+  { nick: "white puppy", quote: "퇴근길 10분만 투자해도 전문가 수준의 리포트를 요약받고, 월 1회 체계적으로 자산을 점검할 수 있는 시스템이 손안에 갖춰졌습니다", url: "https://blog.naver.com/spnwg/224410389430" },
+  { nick: "배고픈 현미양", quote: "매일 야근과 업무에 치여 통장 잔고 들여다볼 시간도 없던 직장인인 저에게, 지난 3주는 재테크의 패러다임이 완전히 바뀌는 소중한 경험이었습니다", url: "https://blog.naver.com/wnvlse/224410366564" },
+  { nick: "SoYi", quote: "과연 AI가 내 돈 관리를 얼마나 도와줄 수 있을까 반신반의했는데, 질문을 던지고 쏟아지는 분석을 직접 확인하면서 완전히 생각이 바뀌었어요", url: "https://blog.naver.com/jnsppoj/224410354883" },
+  { nick: "Sarah", quote: "프롬프트를 활용해 재무현황표를 정리해보니 생각보다 불필요한 구독료와 외식비가 꽤 많아서 깜짝 놀랐습니다", url: "https://blog.naver.com/8265021/224410339138" },
+];
+
+const REVIEW_PAGE_SIZE = 3;
+const REVIEW_POOL_MAX = 9;
+const REVIEW_AUTOPLAY_MS = 3000;
+let reviewTimer = null;
+let reviewPageCount = 1;
+let reviewCurrentPage = 0;
+
+// 날짜 시드로 오늘의 통합 후기(북 리뷰+챌린지 후기)를 최대 9개 고정 선택 (전원 동일 결과, 자정 기준 로테이션)
+function getTodayReviewPool() {
+  const pool = [
+    ...REVIEWS.map(r => ({ ...r, source: "book" })),
+    ...CHALLENGE_REVIEWS.map(r => ({ ...r, source: "challenge" })),
+  ];
+  if (pool.length <= REVIEW_POOL_MAX) return pool;
+
   const now = new Date();
   const kstOffset = 9 * 60;
   const kst = new Date(now.getTime() + (kstOffset + now.getTimezoneOffset()) * 60000);
@@ -3192,32 +3266,83 @@ function getTodayReviews(count = 3) {
   let seed = 0;
   for (let i = 0; i < dateStr.length; i++) seed = (seed * 31 + dateStr.charCodeAt(i)) % 100000;
 
-  // 시드 기반으로 REVIEWS 배열 인덱스를 섞은 뒤 앞에서 count개 선택
-  const indices = REVIEWS.map((_, i) => i);
+  const indices = pool.map((_, i) => i);
   let s = seed;
   for (let i = indices.length - 1; i > 0; i--) {
     s = (s * 9301 + 49297) % 233280;
     const j = Math.floor((s / 233280) * (i + 1));
     [indices[i], indices[j]] = [indices[j], indices[i]];
   }
-  return indices.slice(0, count).map(i => REVIEWS[i]);
+  return indices.slice(0, REVIEW_POOL_MAX).map(i => pool[i]);
 }
 
 function renderReviews() {
-  const wrap = document.getElementById("reviewList");
-  if (!wrap) return;
-  wrap.innerHTML = "";
-  getTodayReviews(3).forEach(r => {
-    const card = document.createElement("a");
-    card.className = "review-card";
-    card.href = r.url;
-    card.target = "_blank";
-    card.rel = "noopener";
-    card.innerHTML = `
-      <div class="review-quote">${r.quote}</div>
-      <div class="review-author">— ${r.nick}</div>`;
-    wrap.appendChild(card);
+  const track = document.getElementById("reviewTrack");
+  const dotsWrap = document.getElementById("reviewDots");
+  if (!track || !dotsWrap) return;
+
+  const items = getTodayReviewPool();
+  const pages = [];
+  for (let i = 0; i < items.length; i += REVIEW_PAGE_SIZE) {
+    pages.push(items.slice(i, i + REVIEW_PAGE_SIZE));
+  }
+  reviewPageCount = pages.length || 1;
+  reviewCurrentPage = 0;
+
+  track.innerHTML = "";
+  pages.forEach(page => {
+    const pageEl = document.createElement("div");
+    pageEl.className = "review-page";
+    page.forEach(r => {
+      const card = document.createElement("a");
+      card.className = "review-card";
+      card.href = r.url;
+      card.target = "_blank";
+      card.rel = "noopener";
+      const badgeClass = r.source === "challenge" ? "challenge" : "book";
+      const badgeText = r.source === "challenge" ? "챌린저스 후기" : "Book 리뷰";
+      card.innerHTML = `
+        <span class="review-badge ${badgeClass}">${badgeText}</span>
+        <div class="review-quote">${r.quote}</div>
+        <div class="review-author">— ${r.nick}</div>`;
+      pageEl.appendChild(card);
+    });
+    track.appendChild(pageEl);
   });
+
+  dotsWrap.innerHTML = "";
+  pages.forEach((_, i) => {
+    const dot = document.createElement("button");
+    dot.className = "review-dot" + (i === 0 ? " on" : "");
+    dot.setAttribute("aria-label", `${i + 1}페이지`);
+    dot.addEventListener("click", () => {
+      goToReviewPage(i);
+      startReviewAutoplay();
+    });
+    dotsWrap.appendChild(dot);
+  });
+
+  goToReviewPage(0);
+  startReviewAutoplay();
+}
+
+function goToReviewPage(i) {
+  const track = document.getElementById("reviewTrack");
+  const dotsWrap = document.getElementById("reviewDots");
+  if (!track || !dotsWrap) return;
+  reviewCurrentPage = i;
+  track.style.transform = `translateX(-${i * 100}%)`;
+  Array.from(dotsWrap.children).forEach((d, idx) => {
+    d.classList.toggle("on", idx === i);
+  });
+}
+
+function startReviewAutoplay() {
+  if (reviewTimer) clearInterval(reviewTimer);
+  if (reviewPageCount <= 1) return;
+  reviewTimer = setInterval(() => {
+    goToReviewPage((reviewCurrentPage + 1) % reviewPageCount);
+  }, REVIEW_AUTOPLAY_MS);
 }
 
 // ── 렌더링 ──────────────────────────────────────────────
@@ -3262,9 +3387,9 @@ function renderTodayPick() {
 // ── New 프롬프트 (블로그에 새로 올라온 프롬프트 — 저자가 직접 관리) ──
 // 새 글을 올리면 맨 위에 한 줄 추가하고, 오래된 건 아래로 밀거나 지우면 됩니다.
 const NEW_PROMPTS = [
-  { title: "미국 생산자물가지수(PPI) 체크포인트", cat: "주식투자", url: "https://blog.naver.com/ijesus78/224377542889" },
-  { title: "미국 소비자물가지수(CPI) 체크포인트", cat: "주식투자", url: "https://blog.naver.com/ijesus78/224374767529" },
-  { title: "미국 고용보고서 체크포인트", cat: "주식투자", url: "https://blog.naver.com/ijesus78/224369885448" },
+  { title: "미국 생산자물가지수(PPI) 체크포인트", cat: "AI투자팀", url: "https://blog.naver.com/ijesus78/224377542889" },
+  { title: "미국 소비자물가지수(CPI) 체크포인트", cat: "AI투자팀", url: "https://blog.naver.com/ijesus78/224374767529" },
+  { title: "미국 고용보고서 체크포인트", cat: "AI투자팀", url: "https://blog.naver.com/ijesus78/224369885448" },
 ];
 function renderNewPrompts() {
   const wrap = document.getElementById("newPromptList");
