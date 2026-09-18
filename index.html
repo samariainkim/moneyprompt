@@ -3246,7 +3246,7 @@ const CHALLENGE_REVIEWS = [
 
 const REVIEW_PAGE_SIZE = 3;
 const REVIEW_POOL_MAX = 9;
-const REVIEW_AUTOPLAY_MS = 3000;
+const REVIEW_AUTOPLAY_MS = 5000;
 let reviewTimer = null;
 let reviewPageCount = 1;
 let reviewCurrentPage = 0;
@@ -3341,7 +3341,13 @@ function startReviewAutoplay() {
   if (reviewTimer) clearInterval(reviewTimer);
   if (reviewPageCount <= 1) return;
   reviewTimer = setInterval(() => {
-    goToReviewPage((reviewCurrentPage + 1) % reviewPageCount);
+    const next = reviewCurrentPage + 1;
+    if (next >= reviewPageCount) {
+      clearInterval(reviewTimer);
+      reviewTimer = null;
+      return;
+    }
+    goToReviewPage(next);
   }, REVIEW_AUTOPLAY_MS);
 }
 
