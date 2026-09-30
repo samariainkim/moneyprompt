@@ -359,11 +359,12 @@ const TYPES = {
 // 이미지 에셋 준비된 유형 목록 (지금은 비어있음 — 추후 파일 추가 시 코드만 넣으면 됨)
 const READY_ILLUST_TYPES = ["OSTL","OSTQ","CSTL","CSTQ","OSFL","OSFQ","CSFL","CSFQ",
   "ONTL","ONTQ","CNTL","CNTQ","ONFL","ONFQ","CNFL","CNFQ"]; // 16유형 전체 결과화면 일러스트 준비 완료
-const READY_SHARE_TYPES = []; // 공유카드는 아직 준비 전 (예: ["OSFL"])
+const READY_SHARE_TYPES = ["OSTL","OSTQ","CSTL","CSTQ","OSFL","OSFQ","CSFL","CSFQ",
+  "ONTL","ONTQ","CNTL","CNTQ","ONFL","ONFQ","CNFL","CNFQ"]; // 16유형 전체 공유카드 준비 완료
 function assetPath(code, kind){
   return kind === "illustration"
     ? "/assets/invest-type/invest-type-"+code+".jpg"
-    : "/assets/share/share-type-"+code+".png";
+    : "/assets/share/share-type-"+code+".jpg";
 }
 function hasIllustration(code){ return READY_ILLUST_TYPES.includes(code); }
 function hasShareCard(code){ return READY_SHARE_TYPES.includes(code); }
@@ -1324,9 +1325,12 @@ function openShareSheet(r){
   const overlay = document.getElementById("shareOverlay");
   const sheet = document.getElementById("shareSheet");
   const shareUrl = "https://donbuff.com/invest-mbti";
-  sheet.innerHTML = `
-    <div style="text-align:center;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px;">주변분들과 내 투자 성향을 나눠보세요</div><div style="text-align:center;font-size:11.5px;color:var(--muted);margin-bottom:14px;">공유용 카드 미리보기</div>
-    <div class="share-card-preview">
+
+  const previewHtml = hasShareCard(r.type_code)
+    ? `<img src="${assetPath(r.type_code,'shareCard')}" alt="${r.type_name} 공유카드"
+         style="width:100%;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.12);display:block;"
+         onerror="this.outerHTML='<div class=&quot;share-card-preview&quot;></div>';">`
+    : `<div class="share-card-preview">
       <div style="font-size:11px;letter-spacing:0.08em;color:var(--amber);font-weight:600;">나는 어떤 투자자일까?</div>
       <div class="serif" style="margin-top:12px;font-size:22px;color:var(--ink);">${r.type_name}</div>
       <div class="serif" style="margin-top:8px;font-size:13px;line-height:1.6;color:var(--amberdk);">${r.type_catchline.replace(/, /g,",<br>")}</div>
@@ -1336,7 +1340,11 @@ function openShareSheet(r){
       <div style="margin-top:18px;font-size:12px;color:var(--ink);font-weight:500;">나는 ${r.type_name} ${r.type_emoji}</div>
       <div style="margin-top:2px;font-size:12px;color:var(--ink);">당신은 어떤 투자자일까요?</div>
       <div style="margin-top:6px;font-size:10.5px;color:var(--muted2);">donbuff.com/invest-mbti</div>
-    </div>
+    </div>`;
+
+  sheet.innerHTML = `
+    <div style="text-align:center;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px;">주변분들과 내 투자 성향을 나눠보세요</div><div style="text-align:center;font-size:11.5px;color:var(--muted);margin-bottom:14px;">공유용 카드 미리보기</div>
+    ${previewHtml}
     <button class="cta-btn on" id="shSave" style="width:100%;margin-top:16px;">이미지 저장</button>
     <button class="btn-secondary" id="shCopy" style="width:100%;margin-top:10px;">링크 복사</button>
     <button class="btn-secondary" id="shNative" style="width:100%;margin-top:10px;">공유하기</button>
@@ -1367,7 +1375,7 @@ function openShareSheet(r){
     if(asset){
       // 실제 유형별 공유카드 이미지가 준비된 경우: 그 파일을 그대로 다운로드
       const a=document.createElement("a");
-      a.href=asset; a.download="invest-type-"+r.type_code+".png";
+      a.href=asset; a.download="donbuff-invest-mbti-"+r.type_code+".jpg";
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       toast("이미지가 저장되었어요");
       return;
