@@ -2,113 +2,1423 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HITS란? — HITS Brand Lab</title>
-<meta name="description" content="팔리는 상품에는 반드시 HITS가 있다.">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="/css/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>나의 투자 성향 찾기 | 돈버프</title>
+<meta name="description" content="40개의 단어 중에서 고르고, 또 내려놓으며 투자할 때 나를 이끄는 성향을 만나는 5분짜리 테스트입니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#3B2A1E; --muted:#8A6A55; --muted2:#B0A493;
+    --amber:#B45309; --amberdk:#92400E;
+    --bg1:#FBF0E6; --bg2:#FAF6F0; --bg3:#F2EBE0;
+    --card:#FFFCF8; --line:#E8DDCF; --line2:#EFE4D6;
+    --pick-bg:#FDECD2; --pick-line:#B45309; --pick-ink:#92400E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg2);}
+  body{
+    font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;
+    color:var(--ink);
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  .serif{font-family:'Noto Serif KR','Nanum Myeongjo',Georgia,serif;}
+  #app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg2);position:relative;overflow-x:hidden;}
+  .hidden{display:none !important;}
+
+  /* 헤더 (인트로/결과에만 노출) */
+  .app-header{
+    display:flex;align-items:baseline;gap:6px;padding:11px 22px;
+    background:rgba(255,252,248,0.6);border-bottom:1px solid rgba(232,221,207,0.7);
+    text-decoration:none;
+  }
+  .app-header b{font-weight:700;font-size:14px;color:#A97A44;}
+  .app-header span{font-size:11px;color:#B8AFA4;}
+
+  /* 진행 바 (1~5단계 공통) */
+  .step-topbar{
+    padding:12px 20px 12px;background:rgba(255,252,248,0.92);
+    border-bottom:1px solid var(--line2);
+    display:flex;align-items:center;justify-content:space-between;
+    position:sticky;top:0;z-index:20;
+  }
+  .step-back{width:28px;font-size:18px;color:var(--muted);cursor:pointer;user-select:none;}
+  .step-back.invisible{visibility:hidden;}
+  .step-progress{font-size:12.5px;color:#9A8878;}
+
+  /* 인트로 */
+  .intro-wrap{text-align:center;padding:46px 24px 52px;}
+  .intro-icon{font-size:42px;line-height:1;}
+  .intro-eyebrow{margin-top:22px;font-size:13px;letter-spacing:0.08em;font-weight:500;color:var(--amber);}
+  .intro-title{margin-top:12px;font-size:29px;line-height:1.4;color:var(--ink);}
+  .intro-body{margin-top:26px;font-size:15px;line-height:2;color:#6B4F3A;}
+  .intro-body b{color:var(--amber);font-weight:500;}
+  .intro-note{margin-top:18px;font-size:14px;line-height:1.85;color:var(--muted);}
+  .intro-cards{display:flex;justify-content:center;gap:10px;margin-top:32px;}
+  .intro-card{flex:1;max-width:96px;padding:14px 6px;background:var(--card);border:1px solid var(--line2);border-radius:16px;}
+  .intro-card .num{font-family:'Noto Serif KR',Georgia,serif;font-size:24px;color:var(--amber);}
+  .intro-card .lbl{margin-top:2px;font-size:11px;color:var(--muted);}
+  .btn-primary{
+    display:inline-block;padding:16px 42px;border-radius:999px;border:none;cursor:pointer;
+    background:linear-gradient(135deg,var(--amber),var(--amberdk));color:#fff;
+    font-family:inherit;font-size:16px;font-weight:500;
+    box-shadow:0 10px 22px rgba(146,64,14,.25);
+  }
+  .btn-primary:disabled{background:#E6DED2;color:#A09282;box-shadow:none;cursor:not-allowed;}
+  .btn-secondary{
+    padding:14px 24px;border-radius:999px;border:1.5px solid #D9CDBB;background:var(--card);
+    color:#5A4433;font-family:inherit;font-size:14px;cursor:pointer;
+  }
+
+  /* 단계 공통 */
+  .step-scroll{padding:22px 20px 130px;}
+  .step-eyebrow{font-size:12px;letter-spacing:0.08em;font-weight:600;color:var(--amber);}
+  .step-heading{margin-top:9px;font-size:23px;line-height:1.45;color:var(--ink);}
+  .step-sub{margin-top:10px;font-size:13.5px;line-height:1.7;color:var(--muted);}
+  .counter-row{display:flex;align-items:baseline;justify-content:space-between;margin-top:22px;}
+  .counter-row .lbl{font-size:12.5px;color:var(--muted);}
+  .counter-row .val{font-size:13px;color:var(--muted);}
+  .counter-row .val b{color:var(--amber);font-size:15px;}
+  .progress-bar{margin-top:7px;height:5px;border-radius:99px;background:var(--line2);overflow:hidden;}
+  .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#D97706,var(--amber));transition:width .25s;}
+  .hint-line{margin-top:20px;font-size:11.5px;color:var(--muted2);}
+
+  .chip-wrap{display:flex;flex-wrap:wrap;gap:11px 9px;margin-top:16px;}
+  .chip{
+    font-family:inherit;font-size:14.5px;line-height:1.2;padding:11px 17px;min-height:44px;
+    display:inline-flex;align-items:center;border-radius:999px;border:1.5px solid #D9CDBB;
+    background:var(--card);color:#5A4433;cursor:pointer;white-space:nowrap;
+    transition:background .2s,border-color .2s,color .2s,opacity .2s,transform .2s;
+  }
+  .chip:hover{border-color:#C9B89F;}
+  .chip[aria-pressed="true"]{background:var(--pick-bg);border-color:var(--pick-line);color:var(--pick-ink);font-weight:500;transform:scale(1.03);}
+  .chip[aria-pressed="true"]::before{content:"✓ ";}
+  .chip.dropped{background:#F4EFE7;border-color:#E3D9C9;color:#B7A78F;opacity:.42;transform:scale(.96);}
+  .chip.fadeout{opacity:0;transform:scale(.85);pointer-events:none;}
+  @media (prefers-reduced-motion: reduce){.chip{transition:none;}}
+
+  .bottom-cta{position:absolute;left:0;right:0;bottom:0;padding:20px;background:linear-gradient(to top,var(--bg2) 72%,rgba(250,246,240,0));}
+  .cta-btn{width:100%;font-family:inherit;font-size:15.5px;font-weight:500;padding:16px;border-radius:999px;border:none;transition:background .2s,box-shadow .2s;cursor:pointer;}
+  .cta-btn:disabled{background:#E6DED2;color:#A09282;cursor:not-allowed;}
+  .cta-btn.on{background:linear-gradient(135deg,var(--amber),var(--amberdk));color:#fff;box-shadow:0 10px 22px rgba(146,64,14,.25);}
+
+  .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;
+    padding:9px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap;z-index:80;max-width:88%;text-align:center;}
+  .toast.show{opacity:1;}
+
+  .full-overlay{position:absolute;inset:0;background:var(--bg2);display:flex;align-items:center;justify-content:center;
+    padding:40px;text-align:center;opacity:1;transition:opacity .4s;z-index:30;}
+  .full-overlay.hide{opacity:0;pointer-events:none;}
+
+  .rword{display:inline-block;padding:12px 20px;margin:4px;border-radius:16px;background:var(--pick-bg);
+    border:1px solid #EFCFA0;color:var(--amberdk);font-size:16px;font-weight:500;font-family:'Noto Serif KR',Georgia,serif;}
+  .rword-lg{padding:14px 22px;border-radius:16px;background:var(--amber);color:#fff;font-size:17px;font-weight:600;
+    font-family:'Noto Serif KR',Georgia,serif;box-shadow:0 8px 18px rgba(180,83,9,.28);}
+
+  /* 4단계 카드 */
+  .scn-card{border:1.5px solid #D9CDBB;background:var(--card);border-radius:18px;padding:20px;font-size:15px;line-height:1.55;
+    color:var(--ink);cursor:pointer;transition:background .25s,border-color .25s,transform .2s,opacity .3s;}
+  .scn-card:hover{border-color:#C9B89F;}
+  .scn-card.picked{background:var(--pick-bg);border-color:var(--pick-line);transform:scale(1.015);}
+  .scn-card.faded{opacity:.25;}
+  .scn-divider{display:flex;align-items:center;gap:10px;padding:12px 0;}
+  .scn-divider .ln{flex:1;height:1px;background:#E3D6C2;}
+  .scn-divider span{font-size:11.5px;color:var(--muted2);white-space:nowrap;}
+
+  /* 5단계 리스트 옵션 */
+  .opt-item{width:100%;text-align:left;border:1.5px solid #D9CDBB;background:var(--card);border-radius:14px;
+    padding:15px 16px;min-height:48px;font-size:14.5px;line-height:1.5;color:var(--ink);cursor:pointer;
+    transition:background .25s,border-color .25s,transform .2s,opacity .3s;display:flex;align-items:center;gap:10px;}
+  .opt-item:hover{border-color:#C9B89F;}
+  .opt-item .num{flex-shrink:0;width:24px;height:24px;border-radius:50%;border:1.5px solid #D9CDBB;display:flex;
+    align-items:center;justify-content:center;font-size:12px;color:var(--muted);}
+  .opt-item.picked{background:var(--pick-bg);border-color:var(--pick-line);transform:scale(1.01);}
+  .opt-item.picked .num{background:var(--amber);border-color:var(--amber);color:#fff;}
+  .opt-item.faded{opacity:.3;}
+
+  /* 결과 화면 */
+  .res-sec{padding:30px 22px;border-bottom:1px solid var(--line2);}
+  .res-sec:last-child{border-bottom:none;}
+  .res-hero{text-align:center;padding-top:38px;}
+  .res-code{font-size:13px;color:var(--muted2);letter-spacing:0.15em;}
+  .res-name{margin-top:8px;font-size:30px;color:var(--ink);}
+  .res-catch{margin-top:14px;font-size:15.5px;line-height:1.7;color:var(--amberdk);}
+  .res-illust{margin-top:22px;width:100%;aspect-ratio:4/3;border-radius:18px;overflow:hidden;}
+  .res-illust img{width:100%;height:100%;object-fit:cover;display:block;}
+  .res-desc{margin-top:20px;font-size:13.5px;line-height:1.8;color:#6B4F3A;max-width:300px;margin-left:auto;margin-right:auto;}
+
+  .axis-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+  .axis-card{background:var(--card);border:1px solid var(--line2);border-radius:14px;padding:14px;}
+  .axis-badge{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;
+    background:var(--amber);color:#fff;font-size:12px;font-weight:700;margin-right:8px;}
+  .axis-name{font-size:13.5px;color:var(--ink);font-weight:700;}
+  .axis-desc{margin-top:8px;font-size:12px;line-height:1.5;color:var(--muted);}
+  .axis-note{margin-top:6px;font-size:10.5px;color:#C2620A;}
+
+  .words-wrap{margin-top:14px;text-align:center;}
+  .word-chip{display:inline-block;padding:10px 16px;border-radius:999px;background:var(--pick-bg);
+    border:1px solid #EFCFA0;color:var(--amberdk);font-size:14px;font-family:'Noto Serif KR',Georgia,serif;margin:4px;}
+
+  .temp-block{text-align:center;}
+  .temp-emoji{font-size:30px;margin-top:6px;}
+  .temp-val{font-family:'Noto Serif KR',Georgia,serif;font-size:20px;color:var(--amber);margin-top:4px;}
+  .temp-desc{margin-top:10px;font-size:13px;line-height:1.7;color:var(--muted);max-width:270px;margin-left:auto;margin-right:auto;}
+
+  #promptBox{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+  #promptBox.open{max-height:1200px;}
+  .prompt-text{font-size:11.5px;line-height:1.7;color:#6B4F3A;white-space:pre-wrap;background:#FBF6EE;
+    border:1px solid var(--line2);border-radius:10px;padding:14px;margin-top:12px;max-height:320px;overflow-y:auto;}
+  .copy-btn{width:100%;padding:13px;border-radius:12px;border:1.5px solid #D9CDBB;background:var(--card);
+    color:#5A4433;font-size:13.5px;font-family:inherit;cursor:pointer;margin-top:10px;}
+  .copy-btn.done{border-color:var(--amber);color:var(--amberdk);background:var(--pick-bg);}
+  .ai-tool-tag{display:inline-block;font-size:11.5px;color:var(--muted2);padding:5px 10px;border:1px solid #EAE0D2;
+    border-radius:999px;margin-right:6px;margin-top:8px;}
+
+  .share-row{display:flex;gap:10px;}
+  .share-btn{flex:1;padding:14px;border-radius:999px;font-size:14px;font-family:inherit;cursor:pointer;}
+  .disclaimer{margin-top:22px;font-size:10.5px;line-height:1.7;color:var(--muted2);text-align:center;}
+
+  /* 공유 시트 */
+  #shareOverlay{position:fixed;inset:0;background:rgba(59,42,30,0.45);display:none;align-items:flex-end;justify-content:center;z-index:200;}
+  #shareOverlay.open{display:flex;}
+  #shareSheet{width:100%;max-width:480px;background:var(--bg2);border-radius:22px 22px 0 0;padding:22px 22px calc(26px + env(safe-area-inset-bottom,0px));
+    animation:sheetUp .25s ease;}
+  @keyframes sheetUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .share-card-preview{background:linear-gradient(165deg,var(--bg1) 0%,var(--bg2) 42%,var(--bg3) 100%);
+    border:1px solid #EFE1CB;border-radius:16px;padding:26px 20px;text-align:center;}
+
+  /* 이어하기 안내 */
+  #resumeOverlay{position:fixed;inset:0;background:rgba(59,42,30,0.5);display:none;align-items:center;justify-content:center;z-index:210;padding:24px;}
+  #resumeOverlay.open{display:flex;}
+  #resumeCard{max-width:340px;width:100%;background:var(--bg2);border-radius:18px;padding:28px 24px;text-align:center;}
+
+  a{color:inherit;}
+</style>
 </head>
-<body data-nav="about">
+<body>
+<div id="app"></div>
+<div id="toast" class="toast" role="status"></div>
 
-<div id="site-header-mount"></div>
-
-<section class="page-header">
-  <div class="wrap">
-    <p class="eyebrow">HITS란?</p>
-    <h1>팔리는 상품에는 반드시 HITS가 있다.</h1>
-    <p>HITS는 Hook × Insight × Tale × System,<br>
-    16년간 상품기획 현장에서 반복적으로 발견한<br>
-    팔리는 상품의 공식입니다. 덧셈이 아니라 곱셈으로 작동합니다 —<br>
-    하나라도 0이면 결과는 0입니다.</p>
+<div id="resumeOverlay">
+  <div id="resumeCard">
+    <div class="serif" style="font-size:18px;color:var(--ink);">이어서 진행할까요?</div>
+    <div style="margin-top:10px;font-size:13px;line-height:1.7;color:var(--muted);">하던 곳에서 이어가시거나,<br>처음부터 다시 시작할 수 있어요.</div>
+    <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px;">
+      <button id="resumeContinueBtn" class="cta-btn on" style="width:100%;">이어하기</button>
+      <button id="resumeRestartBtn" class="btn-secondary" style="width:100%;">처음부터</button>
+    </div>
   </div>
-</section>
+</div>
 
-<section class="section section-white">
-  <div class="wrap">
-   <div class="about-reading">
+<div id="shareOverlay">
+  <div id="shareSheet"></div>
+</div>
 
-    <p class="about-label">WHY HITS?</p>
-    <p class="about-question">왜 좋은 상품이 팔리지 않을까?</p>
-    <div class="about-body">
-      <p>16년 동안 수많은 상품을 기획하고 판매하면서<br>이상한 장면을 반복해서 목격했습니다.</p>
-      <p>좋은 상품이 반드시 팔리는 것은 아니었습니다.<br>반대로 평범해 보였던 상품이 시장을 움직이기도 했습니다.</p>
-      <p>성공한 상품과 실패한 상품을 되짚으며<br>하나의 질문을 던졌습니다.</p>
-      <p style="font-weight:800;color:var(--text-dark)">"팔리는 상품에는 무엇이 있는가?"</p>
-      <p>그 질문 끝에서 반복적으로 발견한 네 가지 요소가<br>Hook × Insight × Tale × System, HITS입니다.</p>
+<script>
+/* =========================================================
+   1. DATA
+========================================================= */
+const CURRENT_VERSION = "1.0";
+
+const AXES = ["decision","information","judgment","operation"];
+const AXIS_POLES = {
+  decision:["C","O"], information:["S","N"], judgment:["T","F"], operation:["L","Q"]
+};
+const AXIS_LABELS = {
+  C:{name:"참고형", desc:"여러 의견과 정보를 폭넓게 모아서"},
+  O:{name:"독립형", desc:"정보를 참고하되 결론은 내 판단으로"},
+  S:{name:"감각형", desc:"현재 확인되는 사실과 숫자를 먼저"},
+  N:{name:"직관형", desc:"앞으로의 흐름과 가능성을 먼저"},
+  T:{name:"분석형", desc:"원칙과 기준을 세워 판단"},
+  F:{name:"감성형", desc:"마음이 가는 신뢰와 애정으로 판단"},
+  L:{name:"장기계획형", desc:"정해둔 계획과 루틴으로 오래"},
+  Q:{name:"단기대응형", desc:"상황 변화에 맞춰 기민하게"}
+};
+
+// 40 키워드 = 8극 x 5
+const KEYWORDS_RAW = {
+  C:["전문가 의견","다양한 관점","집단지성","멘토","리포트"],
+  O:["소신","직접 공부","내 판단","나만의 시각","자기 주도"],
+  S:["현재 실적","재무제표","현금흐름","실제 수치","팩트"],
+  N:["미래 성장","산업 트렌드","혁신","새로운 시장","가능성"],
+  T:["원칙","정해둔 기준","체크리스트","매수 조건","손절선"],
+  F:["기업 신뢰","가치 공감","브랜드 호감","마음의 끌림","애정"],
+  L:["복리","꾸준한 적립","긴 호흡","정기 점검","루틴"],
+  Q:["타이밍","발 빠른 대처","유연함","민첩함","수시 점검"]
+};
+let _kwId = 0;
+const KEYWORDS = [];
+Object.keys(KEYWORDS_RAW).forEach(pole=>{
+  const axis = AXES.find(a=>AXIS_POLES[a].includes(pole));
+  KEYWORDS_RAW[pole].forEach(text=>{
+    KEYWORDS.push({ id:"k"+(_kwId++), text, pole, axis });
+  });
+});
+const KW_BY_ID = {}; KEYWORDS.forEach(k=>KW_BY_ID[k.id]=k);
+
+// 4단계: 투자의 갈림길 (축 4문항)
+const SCENARIOS = [
+  { axis:"decision",
+    situation:"충분히 공부한 종목인데,\n전문가들의 의견은\n내 생각과 다릅니다.",
+    A:{ pole:"C", text:"여러 전문가의 의견과 자료를 더 비교해본다" },
+    B:{ pole:"O", text:"내가 직접 판단한 방향을 따라간다" } },
+  { axis:"information",
+    situation:"처음 알게 된 기업을\n투자 후보로 살펴보려고\n합니다.",
+    A:{ pole:"S", text:"현재 실적과 확인할 수 있는 숫자부터 살펴본다" },
+    B:{ pole:"N", text:"앞으로의 성장과 산업의 흐름부터 살펴본다" } },
+  { axis:"judgment",
+    situation:"두 기업을 충분히 살펴봤지만\n마지막 하나를 골라야\n합니다.",
+    A:{ pole:"T", text:"미리 정해둔 기준과 수치에 맞는 쪽을 고른다" },
+    B:{ pole:"F", text:"직접 느껴온 신뢰와 호감이 더 큰 쪽을 고른다" } },
+  { axis:"operation",
+    situation:"투자한 뒤 시장 상황이\n예상보다 빠르게\n변하고 있습니다.",
+    A:{ pole:"L", text:"세운 계획과 투자 원칙을 조금 더 유지한다" },
+    B:{ pole:"Q", text:"달라진 상황에 맞춰 전략을 빠르게 조정한다" } }
+];
+
+// 5단계: 나의 투자 온도 (위험 성향, 유형과 분리)
+const RISK_QUESTIONS = [
+  { label:"첫 번째 질문",
+    text:"투자처를 고를 때\n나는 어느 쪽이 더 편할까요?",
+    options:[
+      { text:"수익이 작더라도 가격 변화가 적은 투자", val:-2 },
+      { text:"어느 정도의 등락은 받아들이는 투자", val:-1 },
+      { text:"큰 등락이 있어도 높은 수익 기회를 노리는 투자", val:1 },
+      { text:"큰 손실 가능성까지 감수하며 큰 수익을 노리는 투자", val:2 }
+    ]},
+  { label:"마지막 질문",
+    text:"투자한 돈이 일시적으로 줄어들 때\n어느 정도부터 마음이\n크게 불편해질까요?",
+    options:[
+      { text:"5% 정도부터", val:-2 },
+      { text:"10~15% 정도부터", val:-1 },
+      { text:"20~30% 정도부터", val:1 },
+      { text:"40% 이상부터", val:2 }
+    ]}
+];
+
+const RISK_TEMP_DESC = {
+  "신중":"확신이 설 때까지 지켜보고, 안전한 쪽을 먼저 택하는 편이에요.",
+  "균형":"기회와 위험 사이에서 자신이 받아들일 수 있는 균형점을 찾으려는 편이에요.",
+  "과감":"가능성이 보이면 다소 큰 흔들림도 기꺼이 받아들이는 편이에요."
+};
+
+// 16유형
+const TYPES = {
+  OSTL:{ name:"정석 설계자", emoji:"📐",
+    catch:"숫자로 확인하고, 원칙으로 쌓아가는 투자자",
+    desc:"스스로 확인한 실적과 숫자를 믿습니다. 한 번 세운 기준은 쉽게 흔들지 않고, 좋은 투자라고 판단하면 시간을 내 편으로 만들며 차곡차곡 쌓아갑니다." },
+  OSTQ:{ name:"정밀 저격수", emoji:"🎯",
+    catch:"확인된 순간에, 망설임 없이 움직이는 투자자",
+    desc:"스스로 확인한 숫자가 기준에 딱 들어맞을 때를 기다립니다. 평소엔 조용히 지켜보다가도, 조건이 맞으면 망설이지 않고 빠르게 움직입니다." },
+  CSTL:{ name:"이사회 의장", emoji:"📋",
+    catch:"여럿의 목소리를 모아, 원칙으로 다지는 투자자",
+    desc:"여러 의견과 자료를 폭넓게 모아 비교하는 걸 좋아합니다. 그렇게 모은 정보를 자신만의 기준으로 정리해, 시간을 두고 차분히 쌓아갑니다." },
+  CSTQ:{ name:"리서치 사령관", emoji:"📡",
+    catch:"정보를 모아, 기준이 맞으면 빠르게 움직이는 투자자",
+    desc:"여러 자료와 의견을 빠르게 모으는 데 능숙합니다. 그렇게 모은 정보가 자신의 기준에 맞아떨어지면, 지체 없이 판단하고 움직입니다." },
+  OSFL:{ name:"텃밭 농부", emoji:"🌱",
+    catch:"내가 고른 기업을 믿고, 천천히 키워가는 투자자",
+    desc:"직접 살펴보고 마음에 든 기업이라면 단기적인 흔들림에 쉽게 마음을 바꾸지 않습니다. 숫자만큼 기업에 대한 신뢰와 애착을 중요하게 여기며, 시간을 들여 결실을 기다리는 편입니다." },
+  OSFQ:{ name:"골목 탐정", emoji:"🔍",
+    catch:"발로 확인한 사실에, 마음이 끌리면 바로 움직이는 투자자",
+    desc:"직접 확인한 사실과 현장의 느낌을 중요하게 여깁니다. 눈앞의 기업에 신뢰와 호감이 생기면, 오래 고민하지 않고 바로 행동으로 옮깁니다." },
+  CSFL:{ name:"든든한 짝꿍", emoji:"🤝",
+    catch:"믿을 만한 사람들과, 오래 함께 가는 투자자",
+    desc:"주변의 신뢰할 만한 의견과 사실을 소중히 여깁니다. 그렇게 확인한 기업에 애정이 생기면, 긴 시간을 두고 함께 가는 편입니다." },
+  CSFQ:{ name:"소문 안테나", emoji:"👂",
+    catch:"주변 소식에 민감하게, 빠르게 반응하는 투자자",
+    desc:"주변의 이야기와 확인된 사실에 귀를 기울입니다. 마음이 가는 소식을 들으면, 망설임 없이 재빠르게 움직입니다." },
+  ONTL:{ name:"미래 지도 제작자", emoji:"🗺️",
+    catch:"아직 오지 않은 미래를 그리고, 원칙으로 길을 확인하는 투자자",
+    desc:"지금의 숫자만 보기보다 산업과 세상이 어디로 움직이는지를 먼저 바라봅니다. 하지만 가능성만 믿고 달리기보다는 자신의 기준으로 검증하고, 방향이 맞다고 판단하면 긴 호흡으로 미래를 기다립니다." },
+  ONTQ:{ name:"타이밍 장인", emoji:"⏱️",
+    catch:"흐름을 읽고, 기준이 맞으면 놓치지 않는 투자자",
+    desc:"산업의 흐름과 가능성을 스스로 먼저 살핍니다. 그 흐름이 자신의 기준에 맞아떨어지는 순간을 포착해, 빠르게 움직입니다." },
+  CNTL:{ name:"트렌드 박사", emoji:"🔬",
+    catch:"여러 전망을 모아, 원칙으로 검증하며 오래 연구하는 투자자",
+    desc:"여러 전문가의 전망과 자료를 폭넓게 모으는 걸 즐깁니다. 그렇게 모은 정보를 자신의 기준으로 검증한 뒤, 긴 호흡으로 지켜봅니다." },
+  CNTQ:{ name:"이슈 사냥꾼", emoji:"📰",
+    catch:"뉴스 속에서, 기준에 맞는 기회를 잡아내는 투자자",
+    desc:"여러 뉴스와 전망을 빠르게 살피는 데 능숙합니다. 그 정보가 자신의 기준에 맞다고 판단되면, 곧바로 움직입니다." },
+  ONFL:{ name:"믿음의 항해사", emoji:"⛵",
+    catch:"스스로 믿는 미래를 향해, 소신 있게 나아가는 투자자",
+    desc:"산업과 세상의 흐름을 스스로 먼저 읽습니다. 그 방향에 확신이 서면, 긴 시간 흔들리지 않고 나아갑니다." },
+  ONFQ:{ name:"기회의 모험가", emoji:"🚀",
+    catch:"가능성이 보이면, 주저 없이 먼저 움직이는 투자자",
+    desc:"앞으로의 가능성과 흐름에 마음이 먼저 끌립니다. 그 느낌이 확신으로 바뀌면, 남들보다 먼저 움직이는 걸 두려워하지 않습니다." },
+  CNFL:{ name:"덕질 응원단장", emoji:"📣",
+    catch:"함께 믿는 미래를, 애정으로 오래 응원하는 투자자",
+    desc:"여러 사람이 함께 그리는 미래 이야기에 마음이 갑니다. 그 이야기에 애정이 생기면, 오랜 시간 곁에서 함께 응원합니다." },
+  CNFQ:{ name:"파도 위 서퍼", emoji:"🏄",
+    catch:"분위기를 읽고, 유연하게 올라타는 투자자",
+    desc:"주변의 이슈와 분위기에 마음이 먼저 반응합니다. 그 흐름이 맞다고 느껴지면, 가볍고 유연하게 올라탑니다." }
+};
+
+// 이미지 에셋 준비된 유형 목록 (지금은 비어있음 — 추후 파일 추가 시 코드만 넣으면 됨)
+const READY_TYPES = []; // 예: ["OSFL"]
+function assetPath(code, kind){
+  return kind === "illustration"
+    ? "/assets/invest-type/invest-type-"+code+".png"
+    : "/assets/share/share-type-"+code+".png";
+}
+function hasAsset(code){ return READY_TYPES.includes(code); }
+
+/* =========================================================
+   2. 유틸
+========================================================= */
+// 구형 인앱브라우저 대응 폴백
+const raf = (typeof requestAnimationFrame === "function")
+  ? requestAnimationFrame
+  : function(fn){ setTimeout(fn, 16); };
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+/* =========================================================
+   3. 상태관리 (localStorage)
+========================================================= */
+const STORAGE_KEY = "invest_mbti_session";
+
+function freshSession(){
+  return {
+    test_version: CURRENT_VERSION,
+    current_step: 1,           // 1~5, "resume-check" 아님. 완료 시 "result"
+    keyword_order: shuffle(KEYWORDS.map(k=>k.id)),  // 1단계 최초 랜덤 순서 (세션 고정)
+    step2_order: null,          // 2단계 재배열 순서 (진입 시 1회 생성)
+    scenario_card_order: null,  // 4단계 각 문항 상/하 배치 (진입 시 1회 생성)
+    step1_selected: [],
+    step2_dropped: [],
+    step3_kept: [],
+    step4_answers: [null,null,null,null],   // 각 원소는 선택한 '극 글자'(C/O/S/N/T/F/L/Q)
+    step5_answers: [null,null],             // 각 원소는 선택한 옵션의 val(-2~2)
+    result: null,
+    updated_at: Date.now()
+  };
+}
+
+let SESSION = null;
+
+function loadSession(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return null;
+    const s = JSON.parse(raw);
+    if(s.test_version !== CURRENT_VERSION) return null; // 버전 불일치 시 폐기
+    return s;
+  }catch(e){ return null; }
+}
+function saveSession(){
+  SESSION.updated_at = Date.now();
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(SESSION)); }catch(e){}
+}
+function clearSession(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+}
+
+/* =========================================================
+   4. 판정 엔진 — 입력(session)만으로 결과를 반환하는 순수 함수
+========================================================= */
+function calculateResult(session){
+  // 4.1 극별 점수 계산
+  const score = {}; Object.keys(AXIS_LABELS).forEach(p=>score[p]=0);
+
+  session.step1_selected.forEach(id=>{ score[KW_BY_ID[id].pole] += 1; });                 // 선택 +1
+  const survivors8 = session.step1_selected.filter(id=>!session.step2_dropped.includes(id));
+  survivors8.forEach(id=>{ score[KW_BY_ID[id].pole] += 2; });                              // 8개 생존 +2
+  session.step3_kept.forEach(id=>{ score[KW_BY_ID[id].pole] += 3; });                      // 최종 4개 +3
+  AXES.forEach((axis,i)=>{
+    const ans = session.step4_answers[i];
+    if(ans) score[ans] += 4;                                                               // 갈림길 +4
+  });
+
+  // 4.2 축별 근거 개수 (1단계에서 해당 극을 고른 횟수)
+  function evidenceCount(pole){
+    return session.step1_selected.filter(id=>KW_BY_ID[id].pole===pole).length;
+  }
+
+  // 4.3 축별 판정
+  const axis_result = {};
+  const axis_scores_detail = {};
+  const typeCodeParts = [];
+  AXES.forEach((axis,i)=>{
+    const [p1,p2] = AXIS_POLES[axis];
+    const A = score[p1], B = score[p2];
+    let winner;
+    if(A===B){
+      // 동점 → 그 축 갈림길에서 고른 극 (항상 강제 응답이라 반드시 존재)
+      winner = session.step4_answers[i];
+    } else {
+      winner = A>B ? p1 : p2;
+    }
+    const diff = Math.abs(A-B), sum = A+B;
+    const raw = sum ? diff/sum : 0;
+    const evid = evidenceCount(winner);
+    // 강도 라벨 구간값: 베타 후 확정 예정 (임시값)
+    let strength_label;
+    if(evid<=1) strength_label = "경계";
+    else if(raw>=0.5) strength_label = "뚜렷함";
+    else strength_label = "보통";
+
+    axis_result[axis] = winner;
+    axis_scores_detail[axis] = { A:{pole:p1,score:A}, B:{pole:p2,score:B}, strength_raw:raw, evidence_count:evid, strength_label };
+    typeCodeParts.push(winner);
+  });
+  const type_code = typeCodeParts.join("");
+
+  // 4.4 notable_dropped: 1단계에서 골랐지만 최종4개엔 없고, 그 축의 승자 극과 반대인 단어
+  const core4Ids = session.step3_kept;
+  const candidates = session.step1_selected.filter(id=>!core4Ids.includes(id)).map(id=>{
+    const kw = KW_BY_ID[id];
+    const winnerPole = axis_result[kw.axis];
+    const opposes = (winnerPole !== kw.pole); // 승자와 다른 극이면 "대조적"
+    const survived_until = survivors8.includes(id) ? "top8" : "top16";
+    return { id, word:kw.text, pole:kw.pole, axis:kw.axis, opposes, survived_until };
+  }).filter(c=>c.opposes);
+  candidates.sort((a,b)=>{
+    const rank = v=> v.survived_until==="top8" ? 1 : 0;
+    return rank(b)-rank(a);
+  });
+  const notable_dropped = candidates.slice(0,2).map(c=>({
+    word: c.word,
+    opposes: AXIS_LABELS[axis_result[c.axis]].name,
+    survived_until: c.survived_until
+  }));
+
+  // 4.5 위험 온도 (유형과 완전 분리)
+  const riskSum = session.step5_answers.reduce((a,b)=>a+(b||0),0);
+  let risk_temperature;
+  if(riskSum<=-2) risk_temperature = "신중";
+  else if(riskSum>=2) risk_temperature = "과감";
+  else risk_temperature = "균형";
+
+  // 4.6 선택 문장 그대로 (프롬프트용)
+  const scenario_answers = SCENARIOS.map((s,i)=>{
+    const pole = session.step4_answers[i];
+    const choice = (s.A.pole===pole) ? s.A.text : s.B.text;
+    return { situation: s.situation.replace(/\n/g," "), choice };
+  });
+
+  const core_keywords = session.step3_kept.map(id=>KW_BY_ID[id].text);
+  const typeInfo = TYPES[type_code] || { name:"("+type_code+")", catch:"", desc:"", emoji:"✨" };
+
+  return {
+    type_code,
+    type_name: typeInfo.name,
+    type_catchline: typeInfo.catch,
+    type_desc: typeInfo.desc,
+    type_emoji: typeInfo.emoji,
+    axis_result,                 // {decision:'O', information:'S', ...}
+    axis_scores_detail,          // 내부용 원점수 (raw/label 분리)
+    core_keywords,                // 최종 4개 단어 텍스트
+    notable_dropped,
+    scenario_answers,
+    risk_temperature,
+    risk_sum: riskSum,
+    computed_at: Date.now(),
+    scoring_version: "1.0"
+  };
+}
+
+/* =========================================================
+   5. 공통 UI 유틸
+========================================================= */
+const $app = document.getElementById("app");
+let toastTimer = null;
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove("show"), 2000);
+}
+
+function topBar(stepNum, onBack, backEnabled){
+  return `
+  <div class="step-topbar">
+    <span class="step-back ${backEnabled?'':'invisible'}" id="stepBackBtn">←</span>
+    <span class="step-progress">${stepNum} / 5</span>
+    <span style="width:28px;"></span>
+  </div>`;
+}
+
+function headerBlock(){
+  return `<a class="app-header" href="https://donbuff.com"><b>돈버프</b><span>돈 버는 프롬프트</span></a>`;
+}
+
+/* =========================================================
+   6. 화면: 인트로
+========================================================= */
+function renderIntro(){
+  $app.innerHTML = `
+    ${headerBlock()}
+    <div class="intro-wrap">
+      <div class="intro-icon">🧭</div>
+      <div class="intro-eyebrow">나의 투자 성향 찾기</div>
+      <div class="intro-title serif">나는 어떤 투자자일까?</div>
+      <div class="intro-body">
+        마음이 가는 것에는 이유가 있고,<br>
+        끝까지 남는 것에는 더 깊은 이유가 있습니다.<br>
+        고르고, 내려놓고, 다시 선택하는 동안<br>
+        미처 몰랐던 <b>투자하는 나</b>를 만나보세요.
+      </div>
+      <div class="intro-note">정답은 없어요.<br>평소의 나와 가까운 쪽을 따라가 보세요.</div>
+      <div class="intro-cards">
+        <div class="intro-card"><div class="num serif">5</div><div class="lbl">단계</div></div>
+        <div class="intro-card"><div class="num serif">5</div><div class="lbl">분 소요</div></div>
+        <div class="intro-card"><div class="num serif">16</div><div class="lbl">투자 유형</div></div>
+      </div>
+      <div style="margin-top:36px;">
+        <button class="btn-primary" id="startBtn">테스트 시작 &nbsp;→</button>
+      </div>
+    </div>`;
+  document.getElementById("startBtn").addEventListener("click", ()=>{
+    SESSION = freshSession();
+    saveSession();
+    renderStep1();
+  });
+}
+
+/* =========================================================
+   7. 1단계 — 끌리는 단어 (40 → 16)
+========================================================= */
+function renderStep1(){
+  const LIMIT = 16;
+  $app.innerHTML = `
+    ${topBar(1,null,false)}
+    <div class="step-scroll">
+      <div class="step-eyebrow">1단계 · 끌리는 단어</div>
+      <div class="step-heading serif">투자할 때 나와 가까운<br>단어 16개를 골라주세요</div>
+      <div class="step-sub">좋은 투자법이라고 생각하는 단어가 아니라,<br>평소 투자하는 나와 가까운 단어예요.</div>
+      <div class="counter-row">
+        <span class="lbl">선택한 단어</span>
+        <span class="val">선택 <b id="s1cnt">0</b> / ${LIMIT}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="s1bar"></div></div>
+      <div class="hint-line">너무 오래 고민하지 않아도 괜찮아요. 처음 마음이 가는 단어부터 골라보세요.</div>
+      <div class="chip-wrap" id="s1chips"></div>
+    </div>
+    <div class="bottom-cta"><button class="cta-btn" id="s1cta" disabled>16개를 선택해주세요</button></div>`;
+
+  const box = document.getElementById("s1chips");
+  const cnt = document.getElementById("s1cnt");
+  const bar = document.getElementById("s1bar");
+  const cta = document.getElementById("s1cta");
+  const order = SESSION.keyword_order;
+
+  function label(n){
+    if(n===0) return LIMIT+"개를 선택해주세요";
+    if(n===LIMIT) return LIMIT+"개 골랐어요  →";
+    const left = LIMIT-n;
+    return left<=3 ? left+"개만 더 골라주세요" : left+"개 더 골라주세요";
+  }
+  function update(){
+    const n = SESSION.step1_selected.length;
+    cnt.textContent = n;
+    bar.style.width = (n/LIMIT*100)+"%";
+    Array.from(box.children).forEach(el=>{
+      el.setAttribute("aria-pressed", SESSION.step1_selected.includes(el.dataset.id) ? "true":"false");
+    });
+    cta.textContent = label(n);
+    if(n===LIMIT){ cta.disabled=false; cta.classList.add("on"); }
+    else{ cta.disabled=true; cta.classList.remove("on"); }
+  }
+
+  order.forEach(id=>{
+    const kw = KW_BY_ID[id];
+    const b = document.createElement("button");
+    b.className="chip"; b.type="button"; b.textContent=kw.text; b.dataset.id=id;
+    b.setAttribute("aria-pressed","false");
+    b.addEventListener("click", ()=>{
+      const sel = SESSION.step1_selected;
+      const idx = sel.indexOf(id);
+      if(idx>=0){ sel.splice(idx,1); }
+      else{
+        if(sel.length>=LIMIT){ toast(LIMIT+"개까지 고를 수 있어요"); return; }
+        sel.push(id);
+      }
+      saveSession();
+      update();
+    });
+    box.appendChild(b);
+  });
+  update();
+
+  cta.addEventListener("click", ()=>{
+    if(cta.disabled) return;
+    SESSION.current_step = 2;
+    saveSession();
+    renderStep2();
+  });
+}
+
+/* =========================================================
+   8. 2단계 — 내려놓기 (16 → 8)
+========================================================= */
+function renderStep2(){
+  const TARGET = 8;
+  if(!SESSION.step2_order){
+    SESSION.step2_order = shuffle(SESSION.step1_selected);
+    saveSession();
+  }
+  const order = SESSION.step2_order;
+
+  $app.innerHTML = `
+    ${topBar(2,null,true)}
+    <div class="step-scroll">
+      <div class="step-eyebrow">두 번째 선택</div>
+      <div class="step-heading serif">이제, 절반을<br>내려놓아 주세요</div>
+      <div class="step-sub">모두 나와 가까운 단어들이지만,<br>지금의 나에게 조금 덜 중요한 것부터<br>내려놓아 보세요.</div>
+      <div class="counter-row">
+        <span class="lbl">내려놓은 단어</span>
+        <span class="val">내려놓기 <b id="s2cnt">0</b> / ${TARGET}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="s2bar"></div></div>
+      <div class="hint-line">단어를 누르면 내려놓을 수 있어요. 다시 누르면 되돌릴 수 있어요.</div>
+      <div class="chip-wrap" id="s2chips"></div>
+    </div>
+    <div class="bottom-cta"><button class="cta-btn" id="s2cta" disabled>${TARGET}개를 내려놓아주세요</button></div>`;
+
+  const box=document.getElementById("s2chips"), cnt=document.getElementById("s2cnt"),
+        bar=document.getElementById("s2bar"), cta=document.getElementById("s2cta");
+
+  function label(n){
+    if(n===0) return TARGET+"개를 내려놓아주세요";
+    if(n===TARGET) return TARGET+"개를 남겼어요  →";
+    const left=TARGET-n;
+    return left<=3 ? left+"개만 더 내려놓아주세요" : left+"개 더 내려놓아주세요";
+  }
+  function update(){
+    const n = SESSION.step2_dropped.length;
+    cnt.textContent=n; bar.style.width=(n/TARGET*100)+"%";
+    Array.from(box.children).forEach(el=>{
+      el.classList.toggle("dropped", SESSION.step2_dropped.includes(el.dataset.id));
+    });
+    cta.textContent=label(n);
+    if(n===TARGET){ cta.disabled=false; cta.classList.add("on"); }
+    else{ cta.disabled=true; cta.classList.remove("on"); }
+  }
+
+  order.forEach(id=>{
+    const kw = KW_BY_ID[id];
+    const b=document.createElement("button");
+    b.className="chip"; b.type="button"; b.textContent=kw.text; b.dataset.id=id;
+    b.addEventListener("click", ()=>{
+      const d = SESSION.step2_dropped;
+      const idx = d.indexOf(id);
+      if(idx>=0){ d.splice(idx,1); saveSession(); update(); return; }
+      if(d.length>=TARGET){ toast(TARGET+"개를 남겨야 해요. 되돌리고 다시 골라보세요."); return; }
+      d.push(id); saveSession(); update();
+    });
+    box.appendChild(b);
+  });
+  update();
+
+  cta.addEventListener("click", ()=>{
+    if(cta.disabled) return;
+    const remain = order.filter(id=>!SESSION.step2_dropped.includes(id));
+    $app.querySelector(".step-scroll").style.opacity="0";
+    setTimeout(()=>{
+      const overlay = document.createElement("div");
+      overlay.className="full-overlay";
+      overlay.innerHTML = `
+        <div>
+          <div style="font-size:12px;letter-spacing:0.08em;color:var(--amber);font-weight:600;">나에게 남은 ${remain.length}개의 단어</div>
+          <div style="margin-top:18px;display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:300px;">
+            ${remain.map(id=>`<span class="rword" style="padding:8px 14px;font-size:14px;">${KW_BY_ID[id].text}</span>`).join("")}
+          </div>
+        </div>`;
+      $app.appendChild(overlay);
+      setTimeout(()=>{
+        SESSION.current_step = 3;
+        saveSession();
+        renderStep3();
+      }, 1200);
+    }, 150);
+  });
+
+  bindBack();
+}
+
+/* =========================================================
+   9. 3단계 — 끝까지 남길 단어 (8 → 4) — 선택 모델
+========================================================= */
+function renderStep3(){
+  const TARGET = 4;
+  const source = SESSION.step2_order.filter(id=>!SESSION.step2_dropped.includes(id)); // 8개
+
+  $app.innerHTML = `
+    ${topBar(3,null,true)}
+    <div class="step-scroll" id="s3scroll">
+      <div class="step-eyebrow">세 번째 선택</div>
+      <div class="step-heading serif">이제, 끝까지 남길<br>4개를 골라주세요</div>
+      <div class="step-sub">여기까지 남은 단어들은 모두<br>당신과 가깝습니다. 그중에서도<br>쉽게 내려놓을 수 없는 4개를<br>선택해주세요.</div>
+      <div class="counter-row">
+        <span class="lbl">끝까지 남길 단어</span>
+        <span class="val"><b id="s3cnt">0</b> / ${TARGET}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="s3bar"></div></div>
+      <div class="chip-wrap" id="s3chips" style="justify-content:center;margin-top:26px;"></div>
+    </div>
+    <div class="bottom-cta"><button class="cta-btn" id="s3cta" disabled>${TARGET}개를 골라주세요</button></div>`;
+
+  const box=document.getElementById("s3chips"), cnt=document.getElementById("s3cnt"),
+        bar=document.getElementById("s3bar"), cta=document.getElementById("s3cta");
+
+  function label(n){
+    if(n===0) return TARGET+"개를 골라주세요";
+    if(n===TARGET) return "이 4개로 정할게요  →";
+    return (TARGET-n)+"개 더 골라주세요";
+  }
+  function update(){
+    const n = SESSION.step3_kept.length;
+    cnt.textContent=n; bar.style.width=(n/TARGET*100)+"%";
+    Array.from(box.children).forEach(el=>{
+      el.setAttribute("aria-pressed", SESSION.step3_kept.includes(el.dataset.id) ? "true":"false");
+    });
+    cta.textContent=label(n);
+    if(n===TARGET){ cta.disabled=false; cta.classList.add("on"); }
+    else{ cta.disabled=true; cta.classList.remove("on"); }
+  }
+
+  source.forEach(id=>{
+    const kw=KW_BY_ID[id];
+    const b=document.createElement("button");
+    b.className="chip"; b.type="button"; b.textContent=kw.text; b.dataset.id=id;
+    b.style.fontSize="15.5px"; b.style.padding="14px 20px";
+    b.setAttribute("aria-pressed","false");
+    b.addEventListener("click", ()=>{
+      const k = SESSION.step3_kept;
+      const idx = k.indexOf(id);
+      if(idx>=0){ k.splice(idx,1); saveSession(); update(); return; }
+      if(k.length>=TARGET){ toast(TARGET+"개까지만 고를 수 있어요."); return; }
+      k.push(id); saveSession(); update();
+    });
+    box.appendChild(b);
+  });
+  update();
+
+  cta.addEventListener("click", ()=>{
+    if(cta.disabled) return;
+    Array.from(box.children).forEach(el=>{
+      if(!SESSION.step3_kept.includes(el.dataset.id)) el.classList.add("fadeout");
+    });
+    setTimeout(()=>{
+      const overlay = document.createElement("div");
+      overlay.className="full-overlay";
+      $app.appendChild(overlay);
+      raf(()=>{ overlay.style.opacity="1"; });
+      setTimeout(()=>{
+        const kept = SESSION.step3_kept;
+        overlay.innerHTML = `
+          <div>
+            <div style="font-size:15px;line-height:1.7;color:var(--ink);" class="serif">당신이 끝까지 남긴<br><span style="color:var(--amber);">4개의 단어</span>입니다</div>
+            <div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:280px;">
+              ${kept.map(id=>`<div class="rword-lg">${KW_BY_ID[id].text}</div>`).join("")}
+            </div>
+            <button class="btn-primary" id="s3next" style="margin-top:32px;padding:14px 30px;font-size:14.5px;">이 단어들로 나를 알아보기 &nbsp;→</button>
+          </div>`;
+        document.getElementById("s3next").addEventListener("click", ()=>{
+          SESSION.current_step = 4;
+          saveSession();
+          renderStep4();
+        });
+      }, 800);
+    }, 350);
+  });
+
+  bindBack();
+}
+
+/* =========================================================
+   10. 4단계 — 투자의 갈림길 (4문항, 이진선택)
+========================================================= */
+function renderStep4(){
+  if(!SESSION.scenario_card_order){
+    SESSION.scenario_card_order = SCENARIOS.map(()=>Math.random()<0.5);
+    saveSession();
+  }
+  const swap = SESSION.scenario_card_order;
+  let idx = SESSION.step4_answers.findIndex(a=>a===null);
+  if(idx===-1) idx = 3; // 전부 응답됨(뒤로가기로 돌아온 경우) → 마지막 문항부터 보여줌
+
+  $app.innerHTML = `
+    ${topBar(4,null,true)}
+    <div class="full-overlay" id="s4entry">
+      <div>
+        <div style="font-size:12px;letter-spacing:0.08em;color:var(--amber);font-weight:600;">투자의 갈림길</div>
+        <div class="serif" style="margin-top:16px;font-size:22px;line-height:1.6;color:var(--ink);">단어 속의 나는 여기까지.<br>실제 투자 순간의<br>나는 어떨까요?</div>
+        <div style="margin-top:18px;font-size:13px;line-height:1.7;color:var(--muted);">네 번의 갈림길이 기다리고 있어요.<br>정답보다 평소의 나와<br>더 가까운 쪽을 골라주세요.</div>
+      </div>
+    </div>
+    <div class="full-overlay hide" id="s4bridge">
+      <div>
+        <div class="serif" style="font-size:19px;line-height:1.7;color:var(--ink);">네 번의 선택이<br>끝났습니다</div>
+        <div style="margin-top:14px;font-size:13.5px;line-height:1.7;color:var(--muted);">이제 마지막으로<br>나의 투자 온도를<br>확인해볼게요</div>
+      </div>
+    </div>
+    <div class="step-scroll" id="s4wrap" style="opacity:0;transition:opacity .25s;min-height:400px;">
+      <div class="step-eyebrow">갈림길 <span id="s4no"></span> · <span id="s4frac"></span></div>
+      <div class="step-heading serif" id="s4text" style="font-size:19px;"></div>
+      <div style="margin-top:24px;" id="s4cardA" class="scn-card"></div>
+      <div class="scn-divider"><span class="ln"></span><span>또는</span><span class="ln"></span></div>
+      <div id="s4cardB" class="scn-card"></div>
+    </div>`;
+
+  const wrap=document.getElementById("s4wrap"), qno=document.getElementById("s4no"), qfrac=document.getElementById("s4frac"),
+        qtext=document.getElementById("s4text"), cardA=document.getElementById("s4cardA"), cardB=document.getElementById("s4cardB");
+
+  function renderQ(i){
+    idx=i;
+    const s = SCENARIOS[i];
+    qno.textContent = String(i+1).padStart(2,"0");
+    qfrac.textContent = (i+1)+" / 4";
+    qtext.innerHTML = s.situation.replace(/\n/g,"<br>");
+    const top = swap[i] ? s.B : s.A;
+    const bot = swap[i] ? s.A : s.B;
+    cardA.textContent = top.text; cardA.dataset.pole = top.pole;
+    cardB.textContent = bot.text; cardB.dataset.pole = bot.pole;
+    cardA.className="scn-card"; cardB.className="scn-card";
+    const ans = SESSION.step4_answers[i];
+    if(ans===top.pole) cardA.classList.add("picked");
+    if(ans===bot.pole) cardB.classList.add("picked");
+  }
+
+  function pick(el, otherEl, pole){
+    SESSION.step4_answers[idx] = pole;
+    saveSession();
+    el.classList.add("picked");
+    setTimeout(()=>{
+      otherEl.classList.add("faded");
+      setTimeout(()=>{
+        if(idx<3){
+          wrap.style.opacity="0";
+          setTimeout(()=>{ renderQ(idx+1); wrap.style.opacity="1"; }, 220);
+        } else {
+          setTimeout(()=>{
+            const bridge=document.getElementById("s4bridge");
+            bridge.classList.remove("hide");
+            setTimeout(()=>{
+              SESSION.current_step=5; saveSession();
+              renderStep5();
+            }, 900);
+          }, 350);
+        }
+      }, 300);
+    }, 60);
+  }
+  cardA.addEventListener("click", ()=>{ if(cardA.classList.contains("picked")) return; pick(cardA,cardB,cardA.dataset.pole); });
+  cardB.addEventListener("click", ()=>{ if(cardB.classList.contains("picked")) return; pick(cardB,cardA,cardB.dataset.pole); });
+
+  renderQ(idx);
+  setTimeout(()=>{
+    document.getElementById("s4entry").classList.add("hide");
+    wrap.style.opacity="1";
+  }, 1100);
+
+  bindBack(()=>{
+    if(idx>0){
+      wrap.style.opacity="0";
+      setTimeout(()=>{ renderQ(idx-1); wrap.style.opacity="1"; }, 200);
+      return true; // custom back handled, don't navigate to step3
+    }
+    return false;
+  });
+}
+
+/* =========================================================
+   11. 5단계 — 나의 투자 온도 (2문항, 4지선다)
+========================================================= */
+function renderStep5(){
+  let idx = SESSION.step5_answers.findIndex(a=>a===null);
+  if(idx===-1) idx = 1;
+
+  $app.innerHTML = `
+    ${topBar(5,null,true)}
+    <div class="full-overlay" id="s5entry">
+      <div>
+        <div style="font-size:34px;">🌡️</div>
+        <div style="margin-top:16px;font-size:12px;letter-spacing:0.08em;color:var(--amber);font-weight:600;">마지막 단계</div>
+        <div class="serif" style="margin-top:10px;font-size:21px;line-height:1.6;color:var(--ink);">나의 투자 온도는<br>몇 도일까요?</div>
+        <div style="margin-top:16px;font-size:13px;line-height:1.75;color:var(--muted);">투자에는 언제나 기대와 흔들림이<br>함께 찾아옵니다. 정답은 없어요.</div>
+      </div>
+    </div>
+    <div class="full-overlay hide" id="s5bridge" style="display:none;"></div>
+    <div class="step-scroll" id="s5wrap" style="opacity:0;transition:opacity .25s;">
+      <div class="step-eyebrow">투자 온도 · <span id="s5lbl"></span></div>
+      <div class="step-heading serif" id="s5text" style="font-size:18px;"></div>
+      <div id="s5opts" style="display:flex;flex-direction:column;gap:10px;margin-top:22px;"></div>
+    </div>`;
+
+  const wrap=document.getElementById("s5wrap"), lbl=document.getElementById("s5lbl"),
+        qtext=document.getElementById("s5text"), opts=document.getElementById("s5opts");
+
+  function renderQ(i){
+    idx=i;
+    const q = RISK_QUESTIONS[i];
+    lbl.textContent=q.label;
+    qtext.innerHTML = q.text.replace(/\n/g,"<br>");
+    opts.innerHTML="";
+    q.options.forEach((op,oi)=>{
+      const b=document.createElement("button");
+      b.className="opt-item";
+      b.innerHTML = `<span class="num">${oi+1}</span><span>${op.text}</span>`;
+      if(SESSION.step5_answers[i]===op.val) b.classList.add("picked");
+      b.addEventListener("click", ()=>{ if(b.classList.contains("picked")) return; pick(i,oi,op.val); });
+      opts.appendChild(b);
+    });
+  }
+
+  function pick(qi, oi, val){
+    SESSION.step5_answers[qi]=val;
+    saveSession();
+    const btns = opts.children;
+    Array.from(btns).forEach((b,k)=>{ if(k===oi) b.classList.add("picked"); else b.classList.add("faded"); });
+    setTimeout(()=>{
+      if(qi<1){
+        wrap.style.opacity="0";
+        setTimeout(()=>{ renderQ(qi+1); wrap.style.opacity="1"; }, 220);
+      } else {
+        setTimeout(runBridge, 260);
+      }
+    }, 500);
+  }
+
+  function runBridge(){
+    wrap.style.display="none";
+    const bridge=document.getElementById("s5bridge");
+    bridge.style.display="flex";
+    const kept = SESSION.step3_kept;
+    bridge.innerHTML = `
+      <div>
+        <div id="s5bLine1" style="font-size:13px;color:var(--muted);">당신의 선택을 모으고 있어요</div>
+        <div id="s5bWords" style="margin-top:18px;max-width:280px;"></div>
+        <div id="s5bLine2" style="margin-top:22px;font-size:14px;color:var(--muted);opacity:0;transition:opacity .4s;">선택의 흐름을 연결하는 중…</div>
+        <div id="s5bFinal" style="margin-top:16px;font-size:18px;color:var(--ink);opacity:0;transition:opacity .4s;" class="serif">투자 성향을 찾았어요.</div>
+      </div>`;
+    const bw=document.getElementById("s5bWords");
+    kept.forEach((id,i)=>{
+      const s=document.createElement("span");
+      s.textContent = KW_BY_ID[id].text;
+      s.style.cssText="display:inline-block;padding:9px 16px;margin:4px;border-radius:12px;background:var(--pick-bg);border:1px solid #EFCFA0;color:var(--amberdk);font-size:14px;font-family:'Noto Serif KR',Georgia,serif;opacity:0;transform:translateY(6px);transition:opacity .4s,transform .4s;";
+      bw.appendChild(s);
+      setTimeout(()=>{ s.style.opacity="1"; s.style.transform="translateY(0)"; }, 200+i*220);
+    });
+    setTimeout(()=>{ document.getElementById("s5bLine2").style.opacity="1"; }, 1150);
+    setTimeout(()=>{ document.getElementById("s5bFinal").style.opacity="1"; }, 1750);
+    setTimeout(()=>{
+      SESSION.result = calculateResult(SESSION);
+      SESSION.current_step = "result";
+      saveSession();
+      renderResult();
+    }, 2400);
+  }
+
+  renderQ(idx);
+  setTimeout(()=>{
+    document.getElementById("s5entry").classList.add("hide");
+    wrap.style.opacity="1";
+  }, 1000);
+
+  bindBack(()=>{
+    if(idx>0){
+      wrap.style.opacity="0";
+      setTimeout(()=>{ renderQ(idx-1); wrap.style.opacity="1"; }, 200);
+      return true;
+    }
+    return false;
+  });
+}
+
+/* =========================================================
+   12. 뒤로가기 공통 바인딩
+========================================================= */
+function bindBack(customHandler){
+  const btn = document.getElementById("stepBackBtn");
+  if(!btn) return;
+  btn.addEventListener("click", ()=>{
+    if(customHandler && customHandler()===true) return;
+    const step = SESSION.current_step;
+    if(step===2){ SESSION.current_step=1; saveSession(); renderStep1(); }
+    else if(step===3){ SESSION.current_step=2; saveSession(); renderStep2(); }
+    else if(step===4){ SESSION.current_step=3; saveSession(); renderStep3(); }
+    else if(step===5){ SESSION.current_step=4; saveSession(); renderStep4(); }
+  });
+}
+
+/* =========================================================
+   13. AI 프롬프트 생성
+========================================================= */
+function buildPrompt(result){
+  const ar = result.axis_result;
+  const data = {
+    type: { code: result.type_code, name: result.type_name, catchline: result.type_catchline },
+    axis_result: {
+      decision: AXIS_LABELS[ar.decision].name,
+      information: AXIS_LABELS[ar.information].name,
+      judgment: AXIS_LABELS[ar.judgment].name,
+      operation: AXIS_LABELS[ar.operation].name
+    },
+    axis_note: Object.keys(result.axis_scores_detail)
+      .filter(a=>result.axis_scores_detail[a].strength_label==="경계")
+      .map(a=>AXIS_LABELS[ar[a]].name+" 축은 아직 뚜렷하지 않을 수 있습니다")
+      .join(" ") || undefined,
+    selection_journey: {
+      final_core_4: result.core_keywords,
+      notable_dropped: result.notable_dropped.length ? result.notable_dropped : undefined
+    },
+    scenario_answers: result.scenario_answers,
+    risk_temperature: result.risk_temperature,
+    behavior_note: undefined
+  };
+  const dataStr = JSON.stringify(data, (k,v)=>v===undefined?undefined:v, 2);
+
+  return `당신은 투자 추천가가 아니라, 투자자의 의사결정 습관과
+행동 편향을 분석하는 투자 행동 코치입니다.
+
+아래는 한 사람이 '나의 투자 성향 찾기'라는 테스트를 통해
+남긴 선택 데이터입니다. 이 테스트는 MBTI가 아니라
+투자 행동을 스스로 돌아보기 위한 자체 체계이며,
+네 가지 축으로 구성됩니다.
+
+- 의사결정: 참고형(여러 의견과 정보를 폭넓게 모아서) ↔ 독립형(정보를 참고하되 결론은 내 판단으로)
+- 정보: 감각형(현재 확인되는 사실과 숫자를 먼저) ↔ 직관형(앞으로의 흐름과 가능성을 먼저)
+- 판단: 분석형(원칙과 기준을 세워 판단) ↔ 감성형(마음이 가는 신뢰와 애정으로 판단)
+- 운영: 장기계획형(정해둔 계획과 루틴으로 오래) ↔ 단기대응형(상황 변화에 맞춰 기민하게)
+
+--- MY DATA ---
+${dataStr}
+--- END DATA ---
+
+위 데이터를 바탕으로 아래 6가지를 분석해주세요.
+type.catchline과 비슷한 톤(짧고 은유적인 한 문장 + 이어지는
+2~3문장의 장면 묘사)으로, 이 사람이 읽었을 때 자신의
+이야기처럼 느껴지도록 써주세요. 좋은 말만 늘어놓지 마시고
+진짜 친한 친구가 조심스럽게 건네는 말처럼 따뜻하면서도
+솔직하게 써주세요. 아래 selection_journey의 선택 기록을
+직접적인 근거로 삼아 분석해주세요. 유형만으로 성격을
+단정하지 말고, 실제 선택에서 그 근거를 찾아주세요.
+notable_dropped가 있다면, 최종 유형과 다소 모순돼 보이는
+지점도 억지로 지우지 말고 입체적인 특징으로 다뤄주세요.
+
+① 나의 투자 타이틀
+   네 가지 축이 결합되어 나타나는 이 사람의 투자 스타일을
+   한 문장으로 압축해서 표현해주세요.
+
+② 내 선택에서 읽힌 나
+   최종 유형이 왜 이렇게 나왔는지, final_core_4와
+   notable_dropped를 근거로 설명해주세요.
+
+③ 투자 여정 속의 나
+   종목 발견 → 분석 → 매수 → 보유 → 매도, 각 단계에서
+   이 사람이 어떤 모습으로 행동할지 구체적으로 묘사해주세요.
+   scenario_answers에 나타난 실제 선택을 근거로 삼아주세요.
+
+④ 잘할 때 vs 흔들릴 때
+   이 유형의 강점이 발휘되는 상황과, 확증편향·FOMO·
+   손실회피·과잉확신 등 빠지기 쉬운 행동 편향을 구체적인
+   상황 예시와 함께 짚어주세요.
+
+⑤ 상승장 vs 하락장의 나
+   시장이 오를 때와 흔들릴 때, 이 사람의 반응이 각각
+   어떻게 달라질지 비교해서 설명해주세요.
+
+⑥ 나만의 투자 원칙 체크리스트
+   이 사람이 투자 결정을 내리기 전 스스로에게 물어볼
+   체크리스트를 7개 만들어주세요.
+
+마지막으로 【나에게 필요한 AI 질문】
+이 사람의 약점을 보완할 수 있는 실전 AI 질문(프롬프트)
+5개를 만들어주세요. 반대 논리 검증, 리스크 점검, 감정
+상태 점검, 가설 검증, 매수·보유·매도 기준 점검처럼
+서로 다른 역할이 되도록 구성해주세요. 지금 바로 ChatGPT나
+Claude 같은 AI에 복사해서 쓸 수 있는 형태로 써주세요.
+
+[지켜야 할 조건]
+- 위 유형과 축 결과를 다시 판정하거나 다른 유형으로
+  바꾸지 마세요. 주어진 결과를 그대로 사용해주세요.
+- 데이터에서 직접 확인되지 않는 성격, 경험, 재산 수준,
+  투자 실력 등을 사실처럼 단정하지 마세요. 해석이 필요한
+  부분은 "~하는 경향이 있을 수 있습니다"처럼 가능성으로
+  표현해주세요.
+- notable_dropped는 사용자가 해당 가치를 중요하지 않다고
+  판단했다는 의미가 아닙니다. 여러 선택지 중 상대적으로
+  끝까지 남지 않은 기록일 뿐이므로, 가치의 거부나 성향의
+  변화로 단정하지 마세요.
+- 유형 코드를 실제 MBTI 성격 유형처럼 해석하지 마세요.
+- 투자 온도를 공식적인 위험등급으로 해석하지 마세요.
+- 특정 종목이나 금융 상품을 추천하지 마세요.
+- 이 결과는 자기 이해를 돕기 위한 참고용이며, 투자
+  조언이나 투자자 적합성 진단이 아니라는 점을 마지막에
+  한 줄로 짧게 덧붙여주세요.`;
+}
+
+/* =========================================================
+   14. 결과 화면
+========================================================= */
+function renderResult(){
+  const r = SESSION.result;
+  const ar = r.axis_result;
+  const axisOrder = ["decision","information","judgment","operation"];
+
+  const illustHtml = hasAsset(r.type_code)
+    ? `<div class="res-illust"><img src="${assetPath(r.type_code,'illustration')}" alt="${r.type_name} 캐릭터 일러스트" onerror="this.closest('.res-illust').remove();"></div>`
+    : ``;
+
+  $app.innerHTML = `
+    ${headerBlock()}
+    <div class="res-sec res-hero">
+      <div class="step-eyebrow" style="color:var(--amber);">나의 투자 성향</div>
+      <div class="res-code">${r.type_code}</div>
+      <div class="res-name serif">${r.type_name}</div>
+      <div class="res-catch serif">${r.type_catchline.replace(/, /g,",<br>")}</div>
+      ${illustHtml}
+      <div class="res-desc">${r.type_desc}</div>
     </div>
 
-    <div class="flow-inline">
-      <p class="flow-eyebrow">HITS FLOW</p>
-      <p class="flow-big">발견 → 설계 → 설득 → 성장</p>
-      <p class="flow-mid">문제를 발견하고, 가치를 설계하고,<br>이야기로 설득하고, 성장을 반복한다</p>
-      <p class="flow-small">HOOK → INSIGHT → TALE → SYSTEM</p>
-    </div>
-
-    <div class="hits-block">
-      <h2>H — Hook, 고객의 문제를 낚아채라</h2>
-      <p>고객은 제품이 아니라 문제가 사라진 상태를 구매합니다. 좋은 상품은 고객이 미처 말하지 못한 불편함과 욕망을 정확히 발견하고, 이를 상품에 반영합니다.</p>
-      <div class="question-box">
-        <p class="question-label">QUESTION</p>
-        <p class="question-text">우리는 고객의 어떤 진짜 문제를 해결하는가?</p>
+    <div class="res-sec">
+      <div class="serif" style="font-size:15px;color:var(--ink);">나를 만든 4가지 성향</div>
+      <div class="axis-grid">
+        ${axisOrder.map(axis=>{
+          const pole = ar[axis];
+          const lab = AXIS_LABELS[pole];
+          const strength = r.axis_scores_detail[axis].strength_label;
+          const note = strength==="경계" ? `<div class="axis-note">이 성향은 아직 뚜렷하지 않아요</div>` : ``;
+          return `<div class="axis-card">
+            <span class="axis-badge">${pole}</span><span class="axis-name">${lab.name}</span>
+            <div class="axis-desc">${lab.desc}</div>
+            ${note}
+          </div>`;
+        }).join("")}
       </div>
     </div>
 
-    <div class="hits-block">
-      <h2>I — Insight, 문제를 꿰뚫는 설계와 컨셉</h2>
-      <p>설계는 '어떻게 만들 것인가'에 대한 답이며, 컨셉은 '왜 사야 하는가'에 대한 답입니다. 이 두 지점이 하나로 맞물릴 때 비로소 팔리는 상품이 탄생합니다.</p>
-      <div class="question-box">
-        <p class="question-label">QUESTION</p>
-        <p class="question-text">그 문제를 어떤 가치와 상품으로 번역했는가?</p>
+    <div class="res-sec">
+      <div class="serif" style="font-size:15px;color:var(--ink);">내가 끝까지 남긴 4개의 단어</div>
+      <div class="words-wrap">
+        ${r.core_keywords.map(w=>`<span class="word-chip">${w}</span>`).join("")}
       </div>
     </div>
 
-    <div class="hits-block">
-      <h2>T — Tale, 고객을 주인공으로 만드는 스토리</h2>
-      <p>잘 팔리는 상품은 구구절절 설명하지 않습니다. 고객이 이 상품을 통해 어떤 변화를 경험할 수 있는지, 드라마 속 주인공이 된 것처럼 보여주는 서사를 만듭니다.</p>
-      <div class="question-box">
-        <p class="question-label">QUESTION</p>
-        <p class="question-text">그 가치를 어떤 이야기로 고객에게 전달할 것인가?</p>
+    <div class="res-sec temp-block">
+      <div style="font-size:13px;color:var(--muted);">나의 투자 온도</div>
+      <div class="temp-emoji">🌡️</div>
+      <div class="temp-val serif">${r.risk_temperature}</div>
+      <div class="temp-desc">${RISK_TEMP_DESC[r.risk_temperature]}</div>
+    </div>
+
+    <div class="res-sec">
+      <div class="serif" style="font-size:16px;line-height:1.6;color:var(--ink);text-align:center;">그런데, 같은 ${r.type_code}도<br>모두 다릅니다.</div>
+      <div style="margin-top:10px;font-size:13px;line-height:1.7;color:var(--muted);text-align:center;">당신이 고르고, 내려놓고, 끝까지 남긴<br>선택을 AI에게 보여주면 조금 더<br>깊은 이야기를 들을 수 있어요.</div>
+      <div style="margin-top:20px;"><button class="btn-primary" id="aiCta" style="width:100%;">AI로 내 투자 습관 더 깊이 알아보기  →</button></div>
+      <div id="promptBox">
+        <div style="margin-top:16px;font-size:12px;color:var(--muted);">아래 프롬프트에 당신의 선택 기록이 담겨 있어요.</div>
+        <div class="prompt-text" id="promptText"></div>
+        <button class="copy-btn" id="copyBtn">프롬프트 복사하기</button>
+        <div style="text-align:center;margin-top:4px;">
+          <span class="ai-tool-tag">ChatGPT</span><span class="ai-tool-tag">Claude</span><span class="ai-tool-tag">Gemini</span>
+        </div>
       </div>
     </div>
 
-    <div class="hits-block">
-      <h2>S — System, 한 번이 아니라 계속 팔리게 하라</h2>
-      <p>완벽한 상품과 기획이라도 시스템이 부재하면 히트는 단발성으로 끝이 납니다. 재구매, 채널 전략, 팬덤, 브랜드 경험, 운영 프로세스가 함께 작동할 때 지속 가능한 브랜드가 완성됩니다.</p>
-      <div class="question-box">
-        <p class="question-label">QUESTION</p>
-        <p class="question-text">한 번의 선택을 어떻게 다음 선택과 성장으로 연결할 것인가?</p>
+    <div class="res-sec" style="padding-bottom:30px;">
+      <div class="share-row">
+        <button class="share-btn" id="shareBtn" style="border:none;background:linear-gradient(135deg,var(--amber),var(--amberdk));color:#fff;box-shadow:0 8px 18px rgba(146,64,14,.2);">내 결과 공유하기</button>
+        <button class="share-btn" id="restartBtn" style="border:1.5px solid #D9CDBB;background:var(--card);color:#5A4433;">다시 해보기</button>
       </div>
+      <div class="disclaimer">이 결과는 자기 이해를 돕기 위한 참고용이며,<br>투자 조언이나 투자자 적합성 진단이 아닙니다.</div>
+    </div>`;
+
+  const promptStr = buildPrompt(r);
+  document.getElementById("promptText").textContent = promptStr;
+
+  let open=false;
+  const aiCta=document.getElementById("aiCta"), box=document.getElementById("promptBox");
+  aiCta.addEventListener("click", ()=>{
+    open=!open;
+    box.classList.toggle("open", open);
+    aiCta.textContent = open ? "AI 분석 프롬프트 접기 ▲" : "AI로 내 투자 습관 더 깊이 알아보기  →";
+  });
+  document.getElementById("copyBtn").addEventListener("click", ()=>{
+    const btn = document.getElementById("copyBtn");
+    copyText(promptStr).then(ok=>{
+      if(ok){ btn.textContent="복사되었어요 ✓"; btn.classList.add("done"); }
+      else{ btn.textContent="복사에 실패했어요, 직접 선택해 복사해주세요"; }
+      setTimeout(()=>{ btn.textContent="프롬프트 복사하기"; btn.classList.remove("done"); }, 1800);
+    });
+  });
+
+  document.getElementById("shareBtn").addEventListener("click", ()=>openShareSheet(r));
+  document.getElementById("restartBtn").addEventListener("click", ()=>{
+    clearSession();
+    SESSION=null;
+    renderIntro();
+  });
+}
+
+function copyText(str){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    return navigator.clipboard.writeText(str).then(()=>true).catch(()=>false);
+  }
+  return Promise.resolve(false);
+}
+
+/* =========================================================
+   15. 공유 시트 + 캔버스 이미지 생성
+========================================================= */
+function openShareSheet(r){
+  const overlay = document.getElementById("shareOverlay");
+  const sheet = document.getElementById("shareSheet");
+  const shareUrl = "https://donbuff.com/invest-mbti";
+  sheet.innerHTML = `
+    <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:14px;">공유용 카드 미리보기</div>
+    <div class="share-card-preview">
+      <div style="font-size:11px;letter-spacing:0.08em;color:var(--amber);font-weight:600;">나는 어떤 투자자일까?</div>
+      <div class="serif" style="margin-top:12px;font-size:22px;color:var(--ink);">${r.type_name}</div>
+      <div class="serif" style="margin-top:8px;font-size:13px;line-height:1.6;color:var(--amberdk);">${r.type_catchline.replace(/, /g,",<br>")}</div>
+      <div style="margin-top:14px;font-size:11px;color:var(--muted);">
+        ${["decision","information","judgment","operation"].map(a=>AXIS_LABELS[r.axis_result[a]].name).join(" · ")}
+      </div>
+      <div style="margin-top:18px;font-size:12px;color:var(--ink);font-weight:500;">나는 ${r.type_name} ${r.type_emoji}</div>
+      <div style="margin-top:2px;font-size:12px;color:var(--ink);">당신은 어떤 투자자일까요?</div>
+      <div style="margin-top:6px;font-size:10.5px;color:var(--muted2);">donbuff.com/invest-mbti</div>
     </div>
+    <button class="cta-btn on" id="shSave" style="width:100%;margin-top:16px;">이미지 저장</button>
+    <button class="btn-secondary" id="shCopy" style="width:100%;margin-top:10px;">링크 복사</button>
+    <button class="btn-secondary" id="shNative" style="width:100%;margin-top:10px;">공유하기 (기기 공유창)</button>
+    <div style="text-align:center;margin-top:14px;"><span id="shClose" style="font-size:12.5px;color:var(--muted2);cursor:pointer;">닫기</span></div>`;
+  overlay.classList.add("open");
 
-   </div>
-  </div>
-</section>
+  document.getElementById("shClose").addEventListener("click", ()=>overlay.classList.remove("open"));
+  overlay.addEventListener("click", (e)=>{ if(e.target===overlay) overlay.classList.remove("open"); });
 
-<section class="multiply-section">
-  <div class="wrap">
-    <p class="multiply-eyebrow">WHY MULTIPLY?</p>
-    <p class="multiply-formula">H × I × T × S</p>
-    <p class="multiply-slogan">하나라도 0이면, 전체가 0이다.</p>
-    <div class="multiply-fails">
-      <p>문제를 잘못 찾으면<br>좋은 상품도 팔리지 않는다.</p>
-      <p>가치로 번역하지 못하면<br>고객은 선택하지 않는다.</p>
-      <p>이야기로 전달하지 못하면<br>가치는 전해지지 않는다.</p>
-      <p>다음 선택으로 연결하지 못하면<br>히트는 한 번으로 끝난다.</p>
-    </div>
-    <p class="multiply-closing">그래서 HITS는 더하는 공식이 아니라 곱하는 공식입니다.</p>
-  </div>
-</section>
+  document.getElementById("shCopy").addEventListener("click", ()=>{
+    copyText(shareUrl).then(ok=> toast(ok ? "링크가 복사되었어요" : "복사에 실패했어요"));
+  });
 
-<section class="section section-white">
-  <div class="wrap" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:12px 0">
-    <a href="/library/" class="btn btn-ghost" style="color:#111110;border-color:#DEDDD8">HITS Library에서 실제 사례 보기 →</a>
-    <a href="/canvas/" class="btn btn-accent">HITS LAB CANVAS로 실험하기 →</a>
-  </div>
-</section>
+  document.getElementById("shNative").addEventListener("click", ()=>{
+    if(navigator.share){
+      navigator.share({
+        title:"나의 투자 성향 찾기",
+        text:"나는 "+r.type_name+" "+r.type_emoji+"! 당신은 어떤 투자자일까요?",
+        url:shareUrl
+      }).catch(()=>{});
+    } else {
+      toast("이 브라우저는 기기 공유창을 지원하지 않아요");
+    }
+  });
 
-<div id="site-footer-mount"></div>
-<div id="float-newsletter-mount"></div>
+  document.getElementById("shSave").addEventListener("click", ()=>{
+    const asset = hasAsset(r.type_code) ? assetPath(r.type_code,'shareCard') : null;
+    if(asset){
+      // 실제 유형별 공유카드 이미지가 준비된 경우: 그 파일을 그대로 다운로드
+      const a=document.createElement("a");
+      a.href=asset; a.download="invest-type-"+r.type_code+".png";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      toast("이미지가 저장되었어요");
+      return;
+    }
+    drawShareCanvas(r, function(blob){
+      const url = URL.createObjectURL(blob);
+      const a=document.createElement("a");
+      a.href=url; a.download="invest-type-"+r.type_code+".png";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(()=>URL.revokeObjectURL(url), 1000);
+      toast("이미지가 저장되었어요");
+    });
+  });
+}
 
-<script src="/js/main.js"></script>
+function drawShareCanvas(r, cb){
+  const W=640, H=800;
+  const c=document.createElement("canvas"); c.width=W; c.height=H;
+  const ctx=c.getContext("2d");
+  const grad=ctx.createLinearGradient(0,0,W,H);
+  grad.addColorStop(0,"#FBF0E6"); grad.addColorStop(0.5,"#FAF6F0"); grad.addColorStop(1,"#F2EBE0");
+  ctx.fillStyle=grad; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle="#EFE1CB"; ctx.lineWidth=3; ctx.strokeRect(20,20,W-40,H-40);
+
+  ctx.textAlign="center";
+  ctx.fillStyle="#B45309"; ctx.font="600 22px sans-serif";
+  ctx.fillText("나는 어떤 투자자일까?", W/2, 130);
+
+  ctx.fillStyle="#3B2A1E"; ctx.font="700 50px serif";
+  ctx.fillText(r.type_name, W/2, 230);
+
+  ctx.fillStyle="#92400E"; ctx.font="400 24px serif";
+  const catchLines = r.type_catchline.split(", ");
+  ctx.fillText(catchLines[0]+(catchLines[1]?",":""), W/2, 288);
+  if(catchLines[1]) ctx.fillText(catchLines[1], W/2, 322);
+
+  ctx.fillStyle="#8A6A55"; ctx.font="400 18px sans-serif";
+  const axisLine = ["decision","information","judgment","operation"].map(a=>AXIS_LABELS[r.axis_result[a]].name).join(" · ");
+  ctx.fillText(axisLine, W/2, 400);
+
+  // 핵심 키워드 4개
+  ctx.font="400 17px serif";
+  const kwLine = r.core_keywords.join("  ·  ");
+  ctx.fillStyle="#B45309";
+  ctx.fillText(kwLine, W/2, 460);
+
+  ctx.fillStyle="#3B2A1E"; ctx.font="500 24px sans-serif";
+  ctx.fillText("나는 "+r.type_name+" "+r.type_emoji, W/2, 600);
+  ctx.font="500 22px sans-serif";
+  ctx.fillText("당신은 어떤 투자자일까요?", W/2, 636);
+
+  ctx.fillStyle="#B0A493"; ctx.font="400 18px sans-serif";
+  ctx.fillText("donbuff.com/invest-mbti", W/2, 690);
+
+  c.toBlob(function(blob){ cb(blob); }, "image/png");
+}
+
+/* =========================================================
+   16. 부팅
+========================================================= */
+function boot(){
+  const saved = loadSession();
+  if(saved && saved.result){
+    SESSION = saved;
+    renderResult();
+    return;
+  }
+  if(saved && saved.current_step > 1){
+    SESSION = saved;
+    renderIntro();
+    showResumePrompt();
+    return;
+  }
+  renderIntro();
+}
+
+function showResumePrompt(){
+  const overlay = document.getElementById("resumeOverlay");
+  overlay.classList.add("open");
+  document.getElementById("resumeContinueBtn").onclick = ()=>{
+    overlay.classList.remove("open");
+    const step = SESSION.current_step;
+    if(step===1) renderStep1();
+    else if(step===2) renderStep2();
+    else if(step===3) renderStep3();
+    else if(step===4) renderStep4();
+    else if(step===5) renderStep5();
+    else renderStep1();
+  };
+  document.getElementById("resumeRestartBtn").onclick = ()=>{
+    overlay.classList.remove("open");
+    clearSession();
+    SESSION = null;
+    renderIntro();
+  };
+}
+
+boot();
+</script>
 </body>
 </html>
