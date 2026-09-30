@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>돈버프 | 돈에 AI를 더하다</title>
+<meta name="description" content="AI라는 버프로 돈을 벌고, 모으고, 투자하는 나의 능력을 한 단계 높여보세요. 돈 버는 프롬프트, 나의 투자 성향 찾기 등 돈버프의 서비스를 만나보세요.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fafaf9; --surface:#ffffff; --border:#e5e7eb;
+    --ink:#111827; --muted:#6b7280;
+    --accent:#d97706; --accent-light:#fef3c7;
+    --lab:#FBF3E9; --lab-border:#EFE1CB;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--surface);}
+  body{
+    font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;
+    color:var(--ink);
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  a{color:inherit;}
+  #app{max-width:640px;margin:0 auto;background:var(--surface);}
+
+  /* ── 헤더 ─────────────────────────────────────── */
+  .lh{padding:16px 24px;border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;}
+  .lbadge{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;
+    color:var(--ink);text-decoration:none;}
+  .lbadge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+  .lnav{display:flex;gap:18px;font-size:12.5px;color:var(--muted);font-weight:600;}
+  .lnav a{text-decoration:none;color:inherit;}
+  .lnav a:hover{color:var(--accent);}
+
+  /* ── 히어로 ───────────────────────────────────── */
+  .hero{text-align:center;padding:52px 24px 38px;}
+  .heroEyebrow{font-size:12px;font-weight:800;letter-spacing:0.12em;color:var(--muted);}
+  .heroMain{margin-top:14px;font-size:29px;font-weight:800;color:var(--ink);letter-spacing:-0.7px;}
+  .heroSub{margin-top:9px;font-size:15px;font-weight:700;color:var(--accent);}
+  .heroDesc{margin-top:13px;font-size:13.5px;line-height:1.7;color:var(--muted);}
+  .heroTags{margin-top:18px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+  .htag{font-size:10.5px;font-weight:800;color:var(--accent);background:var(--accent-light);
+    padding:5px 12px;border-radius:999px;}
+
+  .sec-title{text-align:center;margin:0 24px 16px;font-size:16px;font-weight:800;color:var(--ink);}
+
+  /* ── 서비스 카드 ─────────────────────────────── */
+  .svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0 22px 48px;}
+  .svc-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 15px;
+    display:flex;flex-direction:column;text-decoration:none;color:inherit;
+    transition:border-color .15s,background .15s,transform .15s;}
+  .svc-card:hover{border-color:var(--accent);background:#fffbeb;transform:translateY(-2px);}
+  .kicker{font-size:10px;font-weight:800;letter-spacing:0.06em;color:var(--accent);}
+  .svc-title{margin-top:5px;font-size:15px;font-weight:800;color:var(--ink);}
+  .svc-line{margin-top:5px;font-size:11px;color:var(--muted);line-height:1.45;font-weight:600;min-height:32px;}
+
+  /* 왼쪽 카드: 책 → 프롬프트 → AI 흐름 */
+  .flow-visual{margin-top:14px;height:118px;border-radius:12px;background:var(--bg);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-around;padding:10px 8px;overflow:hidden;}
+  .flow-book{width:46px;height:62px;border-radius:4px;background:linear-gradient(160deg,#3B2A1E,#1a130d);
+    box-shadow:0 4px 10px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;
+    color:#F5C77E;font-size:9px;font-weight:800;text-align:center;line-height:1.3;padding:4px;flex-shrink:0;}
+  .flow-book img{width:100%;height:100%;object-fit:cover;border-radius:4px;}
+  .flow-arrow{font-size:16px;color:#D1BFA3;flex-shrink:0;}
+  .flow-card{width:58px;height:70px;border-radius:8px;background:var(--surface);border:1px solid var(--border);
+    box-shadow:0 3px 8px rgba(0,0,0,.08);padding:6px 5px;display:flex;flex-direction:column;
+    justify-content:center;gap:3px;flex-shrink:0;}
+  .flow-card .r{font-size:6px;font-weight:800;color:var(--accent);}
+  .flow-card .t{font-size:6.5px;color:#374151;line-height:1.3;}
+  .flow-star{font-size:20px;color:var(--accent);flex-shrink:0;}
+  .book-caption{margin-top:10px;font-size:9.5px;color:#9ca3af;line-height:1.5;}
+  .book-caption b{color:var(--accent);}
+
+  /* 오른쪽 카드: 캐릭터 겹침 클러스터 */
+  .char-cluster{margin-top:14px;height:118px;display:flex;align-items:flex-end;justify-content:center;}
+  .char-thumb{border-radius:14px;border:3px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.14);
+    object-fit:cover;flex-shrink:0;}
+  .cluster-caption{margin-top:9px;text-align:center;font-size:11px;font-weight:700;color:var(--ink);}
+
+  .svc-tags{margin-top:11px;display:flex;gap:5px;flex-wrap:wrap;}
+  .stag{font-size:9.5px;font-weight:700;background:#f3f4f6;color:#6b7280;padding:3px 7px;border-radius:6px;}
+  .svc-cta{margin-top:13px;padding:10px;border-radius:10px;font-size:12px;font-weight:700;text-align:center;
+    background:linear-gradient(160deg,var(--accent) 0%,#b45309 100%);color:#fff;}
+
+  /* ── DONBUFF LAB ─────────────────────────────── */
+  .lab-section{background:var(--lab);padding:44px 24px 40px;
+    border-top:1px solid var(--lab-border);border-bottom:1px solid var(--lab-border);}
+  .lab-title{text-align:center;}
+  .lab-eyebrow{font-size:11px;font-weight:800;letter-spacing:0.1em;color:#B45309;}
+  .lab-head{margin-top:8px;font-size:15.5px;font-weight:800;color:var(--ink);}
+  .lab-grid{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .lab-card{background:rgba(255,255,255,0.6);border:1px dashed var(--lab-border);border-radius:14px;
+    padding:14px 8px;text-align:center;}
+  .lab-icon{font-size:18px;opacity:.5;}
+  .lab-name{margin-top:7px;font-size:10.5px;font-weight:700;color:#5A4433;}
+  .lab-desc{margin-top:3px;font-size:9px;color:#8A6A55;line-height:1.4;}
+  .lab-exp{margin-top:7px;display:inline-block;font-size:8px;font-weight:800;color:#B45309;
+    background:rgba(180,83,9,0.08);padding:2px 6px;border-radius:999px;letter-spacing:0.04em;}
+  .lab-foot{text-align:center;margin-top:14px;font-size:11px;color:#8A6A55;}
+
+  /* ── 클로징 ───────────────────────────────────── */
+  .closing{text-align:center;padding:42px 24px 36px;}
+  .closing-q{font-size:15px;font-weight:700;color:var(--ink);}
+  .closing-plus{margin-top:6px;font-size:15px;font-weight:800;color:var(--accent);}
+  .closing-brand{margin-top:20px;font-size:12px;font-weight:800;color:var(--accent);letter-spacing:0.08em;}
+  .closing-slogan{margin-top:4px;font-size:12px;color:var(--muted);}
+
+  /* ── 푸터 (기존 사이트 스타일 재사용) ─────────── */
+  footer{background:#111827;color:rgba(255,255,255,0.5);text-align:center;
+    padding:32px 24px;font-size:12px;line-height:1.8;}
+  footer .footer-brand{color:rgba(255,255,255,0.85);font-weight:700;font-size:14px;margin-bottom:6px;}
+  footer a{color:rgba(255,255,255,0.7);text-decoration:none;}
+  footer a:hover{color:#fff;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* =========================================================
+   에셋 자리 — 준비되는 대로 파일 경로만 넣으면 자동 반영됩니다.
+   (invest-mbti.html의 READY_TYPES 방식과 동일한 원리)
+   예: BOOK_COVER = "/assets/book/cover.png";
+       CHAR_ASSETS.OSTL = "/assets/invest-type/invest-type-OSTL.png";
+========================================================= */
+const BOOK_COVER = null;   // 책 표지 이미지 경로 (준비되면 여기에 지정)
+const CHAR_ASSETS = {      // 캐릭터 클러스터에 쓸 5개 유형 이미지 경로
+  OSFL: null,   // 텃밭 농부
+  OSFQ: null,   // 골목 탐정
+  OSTL: null,   // 정석 설계자 (가운데, 크게)
+  ONTL: null,   // 미래 지도 제작자
+  CNFQ: null    // 파도 위 서퍼
+};
+
+/* =========================================================
+   링크 — 실제 서비스 경로
+   ⚠ PROMPT_HREF: 지금은 기존 프롬프트 사이트가 루트(/)에 있어
+     "/"로 둡니다. 나중에 기존 index.html을 /prompt/index.html로
+     옮기고 이 페이지를 루트로 승격할 때 "/prompt/"로 바꿔주세요.
+========================================================= */
+const PROMPT_HREF = "/";
+const INVEST_HREF = "/invest-mbti/";
+
+/* =========================================================
+   렌더링
+========================================================= */
+function bookVisual(){
+  if (BOOK_COVER) {
+    return `<div class="flow-book"><img src="${BOOK_COVER}" alt="AI가 알아서 굴려주는 월급쟁이 재테크 책 표지" onerror="this.parentElement.innerHTML='AI가<br>알아서<br>굴려주는';"></div>`;
+  }
+  return `<div class="flow-book">AI가<br>알아서<br>굴려주는</div>`;
+}
+
+function charCluster(){
+  const order = [
+    { code:"OSFL", size:38, rot:-8, margin:"0 -8px 4px" },
+    { code:"OSFQ", size:42, rot:-4, margin:"0 -8px 8px" },
+    { code:"OSTL", size:52, rot:0,  margin:"0 -6px 0" },
+    { code:"ONTL", size:42, rot:4,  margin:"0 -8px 8px" },
+    { code:"CNFQ", size:38, rot:8,  margin:"0 -8px 4px" }
+  ];
+  const palette = ["#EFE1CB","#E8D9C5","#D9C6A3","#E8D9C5","#EFE1CB"];
+  return order.map((c,i)=>{
+    const path = CHAR_ASSETS[c.code];
+    const z = c.code === "OSTL" ? "z-index:2;" : "";
+    if (path) {
+      return `<img class="char-thumb" style="width:${c.size}px;height:${c.size}px;transform:rotate(${c.rot}deg);margin:${c.margin};${z}"
+        src="${path}" alt="${c.code}" onerror="this.style.background='${palette[i]}';this.removeAttribute('src');">`;
+    }
+    return `<div class="char-thumb" style="width:${c.size}px;height:${c.size}px;background:${palette[i]};transform:rotate(${c.rot}deg);margin:${c.margin};${z}"></div>`;
+  }).join("");
+}
+
+document.getElementById("app").innerHTML = `
+  <div class="lh">
+    <a class="lbadge" href="/"><span class="dot"></span>돈버프</a>
+    <div class="lnav">
+      <a href="${PROMPT_HREF}">돈 버는 프롬프트</a>
+      <a href="${INVEST_HREF}">나의 투자성향 찾기</a>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="heroEyebrow">DONBUFF</div>
+    <div class="heroMain">돈에 AI를 더하다.</div>
+    <div class="heroSub">내 돈에도 버프가 필요하니까.</div>
+    <div class="heroDesc">AI라는 버프로 돈을 벌고, 모으고, 투자하는<br>나의 능력을 한 단계 높여보세요.</div>
+    <div class="heroTags">
+      <span class="htag">PROMPT BUFF</span><span class="htag">INVEST BUFF</span><span class="htag">+ MORE BUFFS</span>
+    </div>
+  </div>
+
+  <div class="sec-title">어떤 버프가 필요하세요?</div>
+  <div class="svc-grid">
+
+    <a class="svc-card" href="${PROMPT_HREF}">
+      <div class="kicker">PROMPT BUFF</div>
+      <div class="svc-title">돈 버는 프롬프트</div>
+      <div class="svc-line">좋은 질문으로 AI의 능력을 끌어내는 힘</div>
+      <div class="flow-visual">
+        ${bookVisual()}
+        <span class="flow-arrow">→</span>
+        <div class="flow-card"><div class="r">AI 재무분석</div><div class="t">지출 분석<br>예산 설계</div></div>
+        <span class="flow-arrow">→</span>
+        <span class="flow-star">✦</span>
+      </div>
+      <div class="book-caption"><b>BOOK → AI</b> · 책에서 읽고, 돈버프에서 바로 실행하세요</div>
+      <div class="svc-tags"><span class="stag">172 PROMPTS</span><span class="stag">바로 복사</span></div>
+      <div class="svc-cta">프롬프트 둘러보기 →</div>
+    </a>
+
+    <a class="svc-card" href="${INVEST_HREF}">
+      <div class="kicker">INVEST BUFF</div>
+      <div class="svc-title">나의 투자 성향 찾기</div>
+      <div class="svc-line">나를 알고 더 나답게 투자하는 힘</div>
+      <div class="char-cluster">${charCluster()}</div>
+      <div class="cluster-caption">당신은 이들 중 누구일까요?</div>
+      <div class="svc-tags"><span class="stag">16 TYPES</span><span class="stag">5 MIN</span><span class="stag">AI DEEP DIVE</span></div>
+      <div class="svc-cta">테스트 시작하기 →</div>
+    </a>
+
+  </div>
+
+  <div class="lab-section">
+    <div class="lab-title">
+      <div class="lab-eyebrow">DONBUFF LAB</div>
+      <div class="lab-head">새로운 버프를 실험하고 있어요</div>
+    </div>
+    <div class="lab-grid">
+      <div class="lab-card">
+        <div class="lab-icon">💧</div>
+        <div class="lab-name">소비습관 BUFF</div>
+        <div class="lab-desc">내 돈은 어디로<br>새고 있을까?</div>
+        <div class="lab-exp">IN THE LAB</div>
+      </div>
+      <div class="lab-card">
+        <div class="lab-icon">🩺</div>
+        <div class="lab-name">포트폴리오 BUFF</div>
+        <div class="lab-desc">내 투자는 지금<br>건강할까?</div>
+        <div class="lab-exp">IN THE LAB</div>
+      </div>
+      <div class="lab-card">
+        <div class="lab-icon">🔥</div>
+        <div class="lab-name">FIRE BUFF</div>
+        <div class="lab-desc">나는 언제<br>자유로워질까?</div>
+        <div class="lab-exp">IN THE LAB</div>
+      </div>
+    </div>
+    <div class="lab-foot">새로운 버프가 계속 추가됩니다.</div>
+  </div>
+
+  <div class="closing">
+    <div class="closing-q">오늘보다 돈을 잘 다루는 나로.</div>
+    <div class="closing-plus">+1</div>
+    <div class="closing-brand">DONBUFF</div>
+    <div class="closing-slogan">돈에 AI를 더하다.</div>
+  </div>
+
+  <footer>
+    <div class="footer-brand">돈버프 (DONBUFF)</div>
+    <p>『AI가 알아서 굴려주는 월급쟁이 재테크』 | 저자 김태형(사마리아인)<br>
+    <a href="https://donbuff.com" target="_blank">donbuff.com</a> &nbsp;·&nbsp;
+    <a href="https://www.youtube.com/@samariaintv" target="_blank">사마리아인TV</a> &nbsp;·&nbsp;
+    <a href="https://open.kakao.com/o/g2JnL4Ai" target="_blank">독자 오픈채팅방</a> &nbsp;·&nbsp;
+    <a href="mailto:samariain.kim@gmail.com">✉️ 협업·강연 문의</a></p>
+  </footer>
+`;
+</script>
+</body>
+</html>
