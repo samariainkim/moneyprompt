@@ -105,7 +105,7 @@
   .cta-btn.on{background:linear-gradient(135deg,var(--amber),var(--amberdk));color:#fff;box-shadow:0 10px 22px rgba(146,64,14,.25);}
 
   .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;
-    padding:9px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap;z-index:80;max-width:88%;text-align:center;}
+    padding:9px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap;z-index:300;max-width:88%;text-align:center;}
   .toast.show{opacity:1;}
 
   .full-overlay{position:absolute;inset:0;background:var(--bg2);display:flex;align-items:center;justify-content:center;
@@ -357,13 +357,16 @@ const TYPES = {
 };
 
 // 이미지 에셋 준비된 유형 목록 (지금은 비어있음 — 추후 파일 추가 시 코드만 넣으면 됨)
-const READY_TYPES = []; // 예: ["OSFL"]
+const READY_ILLUST_TYPES = ["OSTL","OSTQ","CSTL","CSTQ","OSFL","OSFQ","CSFL","CSFQ",
+  "ONTL","ONTQ","CNTL","CNTQ","ONFL","ONFQ","CNFL","CNFQ"]; // 16유형 전체 결과화면 일러스트 준비 완료
+const READY_SHARE_TYPES = []; // 공유카드는 아직 준비 전 (예: ["OSFL"])
 function assetPath(code, kind){
   return kind === "illustration"
-    ? "/assets/invest-type/invest-type-"+code+".png"
+    ? "/assets/invest-type/invest-type-"+code+".jpg"
     : "/assets/share/share-type-"+code+".png";
 }
-function hasAsset(code){ return READY_TYPES.includes(code); }
+function hasIllustration(code){ return READY_ILLUST_TYPES.includes(code); }
+function hasShareCard(code){ return READY_SHARE_TYPES.includes(code); }
 
 /* =========================================================
    2. 유틸
@@ -728,19 +731,24 @@ function renderStep2(){
     setTimeout(()=>{
       const overlay = document.createElement("div");
       overlay.className="full-overlay";
+      overlay.style.opacity="0";
+      overlay.style.transform="translateY(10px)";
+      overlay.style.transition="opacity .45s ease, transform .45s ease";
       overlay.innerHTML = `
-        <div>
-          <div style="font-size:12px;letter-spacing:0.08em;color:var(--amber);font-weight:600;">나에게 남은 ${remain.length}개의 단어</div>
-          <div style="margin-top:18px;display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:300px;">
+        <div style="width:100%;">
+          <div style="font-size:12px;letter-spacing:0.08em;color:var(--amber);font-weight:600;text-align:center;">나에게 남은 ${remain.length}개의 단어</div>
+          <div style="margin-top:18px;display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:300px;margin-left:auto;margin-right:auto;">
             ${remain.map(id=>`<span class="rword" style="padding:8px 14px;font-size:14px;">${KW_BY_ID[id].text}</span>`).join("")}
           </div>
+          <div class="bottom-cta" style="margin:0 -40px -40px;"><button class="cta-btn on" id="s2next">다음 여정으로 &nbsp;→</button></div>
         </div>`;
       $app.appendChild(overlay);
-      setTimeout(()=>{
+      raf(()=>{ overlay.style.opacity="1"; overlay.style.transform="translateY(0)"; });
+      document.getElementById("s2next").addEventListener("click", ()=>{
         SESSION.current_step = 3;
         saveSession();
         renderStep3();
-      }, 1200);
+      });
     }, 150);
   });
 
@@ -818,12 +826,12 @@ function renderStep3(){
       setTimeout(()=>{
         const kept = SESSION.step3_kept;
         overlay.innerHTML = `
-          <div>
+          <div style="width:100%;">
             <div style="font-size:15px;line-height:1.7;color:var(--ink);" class="serif">당신이 끝까지 남긴<br><span style="color:var(--amber);">4개의 단어</span>입니다</div>
-            <div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:280px;">
+            <div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:280px;margin-left:auto;margin-right:auto;">
               ${kept.map(id=>`<div class="rword-lg">${KW_BY_ID[id].text}</div>`).join("")}
             </div>
-            <button class="btn-primary" id="s3next" style="margin-top:32px;padding:14px 30px;font-size:14.5px;">이 단어들로 나를 알아보기 &nbsp;→</button>
+            <div class="bottom-cta" style="margin:0 -40px -40px;"><button class="cta-btn on" id="s3next">이 단어들로 나를 알아보기 &nbsp;→</button></div>
           </div>`;
         document.getElementById("s3next").addEventListener("click", ()=>{
           SESSION.current_step = 4;
@@ -852,16 +860,18 @@ function renderStep4(){
   $app.innerHTML = `
     ${topBar(4,null,true)}
     <div class="full-overlay" id="s4entry">
-      <div>
+      <div style="width:100%;">
         <div style="font-size:12px;letter-spacing:0.08em;color:var(--amber);font-weight:600;">투자의 갈림길</div>
         <div class="serif" style="margin-top:16px;font-size:22px;line-height:1.6;color:var(--ink);">단어 속의 나는 여기까지.<br>실제 투자 순간의<br>나는 어떨까요?</div>
         <div style="margin-top:18px;font-size:13px;line-height:1.7;color:var(--muted);">네 번의 갈림길이 기다리고 있어요.<br>정답보다 평소의 나와<br>더 가까운 쪽을 골라주세요.</div>
+        <div class="bottom-cta" style="margin:0 -40px -40px;"><button class="cta-btn on" id="s4entryNext">다음 여정으로 &nbsp;→</button></div>
       </div>
     </div>
     <div class="full-overlay hide" id="s4bridge">
-      <div>
+      <div style="width:100%;">
         <div class="serif" style="font-size:19px;line-height:1.7;color:var(--ink);">네 번의 선택이<br>끝났습니다</div>
         <div style="margin-top:14px;font-size:13.5px;line-height:1.7;color:var(--muted);">이제 마지막으로<br>나의 투자 온도를<br>확인해볼게요</div>
+        <div class="bottom-cta" style="margin:0 -40px -40px;"><button class="cta-btn on" id="s4bridgeNext">다음 여정으로 &nbsp;→</button></div>
       </div>
     </div>
     <div class="step-scroll" id="s4wrap" style="opacity:0;transition:opacity .25s;min-height:400px;">
@@ -905,10 +915,6 @@ function renderStep4(){
           setTimeout(()=>{
             const bridge=document.getElementById("s4bridge");
             bridge.classList.remove("hide");
-            setTimeout(()=>{
-              SESSION.current_step=5; saveSession();
-              renderStep5();
-            }, 900);
           }, 350);
         }
       }, 300);
@@ -917,11 +923,16 @@ function renderStep4(){
   cardA.addEventListener("click", ()=>{ if(cardA.classList.contains("picked")) return; pick(cardA,cardB,cardA.dataset.pole); });
   cardB.addEventListener("click", ()=>{ if(cardB.classList.contains("picked")) return; pick(cardB,cardA,cardB.dataset.pole); });
 
+  document.getElementById("s4bridgeNext").addEventListener("click", ()=>{
+    SESSION.current_step=5; saveSession();
+    renderStep5();
+  });
+
   renderQ(idx);
-  setTimeout(()=>{
+  document.getElementById("s4entryNext").addEventListener("click", ()=>{
     document.getElementById("s4entry").classList.add("hide");
     wrap.style.opacity="1";
-  }, 1100);
+  });
 
   bindBack(()=>{
     if(idx>0){
@@ -943,11 +954,12 @@ function renderStep5(){
   $app.innerHTML = `
     ${topBar(5,null,true)}
     <div class="full-overlay" id="s5entry">
-      <div>
+      <div style="width:100%;">
         <div style="font-size:34px;">🌡️</div>
         <div style="margin-top:16px;font-size:12px;letter-spacing:0.08em;color:var(--amber);font-weight:600;">마지막 단계</div>
         <div class="serif" style="margin-top:10px;font-size:21px;line-height:1.6;color:var(--ink);">나의 투자 온도는<br>몇 도일까요?</div>
         <div style="margin-top:16px;font-size:13px;line-height:1.75;color:var(--muted);">투자에는 언제나 기대와 흔들림이<br>함께 찾아옵니다. 정답은 없어요.</div>
+        <div class="bottom-cta" style="margin:0 -40px -40px;"><button class="cta-btn on" id="s5entryNext">다음 여정으로 &nbsp;→</button></div>
       </div>
     </div>
     <div class="full-overlay hide" id="s5bridge" style="display:none;"></div>
@@ -1022,10 +1034,10 @@ function renderStep5(){
   }
 
   renderQ(idx);
-  setTimeout(()=>{
+  document.getElementById("s5entryNext").addEventListener("click", ()=>{
     document.getElementById("s5entry").classList.add("hide");
     wrap.style.opacity="1";
-  }, 1000);
+  });
 
   bindBack(()=>{
     if(idx>0){
@@ -1168,7 +1180,7 @@ function renderResult(){
   const ar = r.axis_result;
   const axisOrder = ["decision","information","judgment","operation"];
 
-  const illustHtml = hasAsset(r.type_code)
+  const illustHtml = hasIllustration(r.type_code)
     ? `<div class="res-illust"><img src="${assetPath(r.type_code,'illustration')}" alt="${r.type_name} 캐릭터 일러스트" onerror="this.closest('.res-illust').remove();"></div>`
     : ``;
 
@@ -1184,7 +1196,12 @@ function renderResult(){
     </div>
 
     <div class="res-sec">
-      <div class="serif" style="font-size:15px;color:var(--ink);">나를 만든 4가지 성향</div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div class="serif" style="font-size:15px;color:var(--ink);">나를 만든 4가지 성향</div>
+        <button id="glossaryBtn" aria-label="용어 설명 보기" style="width:18px;height:18px;border-radius:50%;border:1.5px solid var(--muted2);
+          background:none;color:var(--muted2);font-size:11px;font-weight:700;line-height:1;cursor:pointer;
+          display:inline-flex;align-items:center;justify-content:center;padding:0;">i</button>
+      </div>
       <div class="axis-grid">
         ${axisOrder.map(axis=>{
           const pole = ar[axis];
@@ -1197,6 +1214,26 @@ function renderResult(){
             ${note}
           </div>`;
         }).join("")}
+      </div>
+    </div>
+
+    <div id="glossaryOverlay" style="display:none;position:fixed;inset:0;background:rgba(59,42,30,0.5);
+      align-items:center;justify-content:center;z-index:300;padding:24px;">
+      <div style="max-width:420px;width:100%;max-height:80vh;overflow-y:auto;background:var(--bg2);border-radius:18px;padding:26px 22px;">
+        <div class="serif" style="font-size:17px;color:var(--ink);">투자 성향 8가지 용어</div>
+        <div style="margin-top:4px;font-size:12px;color:var(--muted);">4가지 축마다 두 극이 있어요. 나는 그중 한쪽에 더 가까워요.</div>
+        <div style="margin-top:18px;display:flex;flex-direction:column;gap:10px;">
+          ${Object.keys(AXIS_LABELS).map(p=>{
+            const l = AXIS_LABELS[p];
+            return `<div style="display:flex;gap:10px;align-items:flex-start;">
+              <span class="axis-badge" style="flex-shrink:0;">${p}</span>
+              <div><b style="font-size:13px;color:var(--ink);">${l.name}</b>
+              <div style="margin-top:2px;font-size:12px;color:var(--muted);line-height:1.5;">${l.desc}</div></div>
+            </div>`;
+          }).join("")}
+        </div>
+        <button id="glossaryClose" style="margin-top:20px;width:100%;padding:12px;border-radius:10px;border:1.5px solid #D9CDBB;
+          background:var(--card);color:#5A4433;font-family:inherit;font-size:13.5px;cursor:pointer;">닫기</button>
       </div>
     </div>
 
@@ -1217,7 +1254,7 @@ function renderResult(){
     <div class="res-sec">
       <div class="serif" style="font-size:16px;line-height:1.6;color:var(--ink);text-align:center;">그런데, 같은 ${r.type_code}도<br>모두 다릅니다.</div>
       <div style="margin-top:10px;font-size:13px;line-height:1.7;color:var(--muted);text-align:center;">당신이 고르고, 내려놓고, 끝까지 남긴<br>선택을 AI에게 보여주면 조금 더<br>깊은 이야기를 들을 수 있어요.</div>
-      <div style="margin-top:20px;"><button class="btn-primary" id="aiCta" style="width:100%;">AI로 내 투자 습관 더 깊이 알아보기  →</button></div>
+      <div style="margin-top:20px;"><button class="btn-primary" id="aiCta" style="width:100%;">좀 더 깊은 내면의 나를 알아보세요 →</button></div>
       <div id="promptBox">
         <div style="margin-top:16px;font-size:12px;color:var(--muted);">아래 프롬프트에 당신의 선택 기록이 담겨 있어요.</div>
         <div class="prompt-text" id="promptText"></div>
@@ -1244,7 +1281,7 @@ function renderResult(){
   aiCta.addEventListener("click", ()=>{
     open=!open;
     box.classList.toggle("open", open);
-    aiCta.textContent = open ? "AI 분석 프롬프트 접기 ▲" : "AI로 내 투자 습관 더 깊이 알아보기  →";
+    aiCta.textContent = open ? "AI 분석 프롬프트 접기 ▲" : "좀 더 깊은 내면의 나를 알아보세요 →";
   });
   document.getElementById("copyBtn").addEventListener("click", ()=>{
     const btn = document.getElementById("copyBtn");
@@ -1253,6 +1290,16 @@ function renderResult(){
       else{ btn.textContent="복사에 실패했어요, 직접 선택해 복사해주세요"; }
       setTimeout(()=>{ btn.textContent="프롬프트 복사하기"; btn.classList.remove("done"); }, 1800);
     });
+  });
+
+  document.getElementById("glossaryBtn").addEventListener("click", ()=>{
+    document.getElementById("glossaryOverlay").style.display = "flex";
+  });
+  document.getElementById("glossaryClose").addEventListener("click", ()=>{
+    document.getElementById("glossaryOverlay").style.display = "none";
+  });
+  document.getElementById("glossaryOverlay").addEventListener("click", (e)=>{
+    if(e.target.id === "glossaryOverlay") e.target.style.display = "none";
   });
 
   document.getElementById("shareBtn").addEventListener("click", ()=>openShareSheet(r));
@@ -1278,7 +1325,7 @@ function openShareSheet(r){
   const sheet = document.getElementById("shareSheet");
   const shareUrl = "https://donbuff.com/invest-mbti";
   sheet.innerHTML = `
-    <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:14px;">공유용 카드 미리보기</div>
+    <div style="text-align:center;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px;">주변분들과 내 투자 성향을 나눠보세요</div><div style="text-align:center;font-size:11.5px;color:var(--muted);margin-bottom:14px;">공유용 카드 미리보기</div>
     <div class="share-card-preview">
       <div style="font-size:11px;letter-spacing:0.08em;color:var(--amber);font-weight:600;">나는 어떤 투자자일까?</div>
       <div class="serif" style="margin-top:12px;font-size:22px;color:var(--ink);">${r.type_name}</div>
@@ -1292,7 +1339,7 @@ function openShareSheet(r){
     </div>
     <button class="cta-btn on" id="shSave" style="width:100%;margin-top:16px;">이미지 저장</button>
     <button class="btn-secondary" id="shCopy" style="width:100%;margin-top:10px;">링크 복사</button>
-    <button class="btn-secondary" id="shNative" style="width:100%;margin-top:10px;">공유하기 (기기 공유창)</button>
+    <button class="btn-secondary" id="shNative" style="width:100%;margin-top:10px;">공유하기</button>
     <div style="text-align:center;margin-top:14px;"><span id="shClose" style="font-size:12.5px;color:var(--muted2);cursor:pointer;">닫기</span></div>`;
   overlay.classList.add("open");
 
@@ -1316,7 +1363,7 @@ function openShareSheet(r){
   });
 
   document.getElementById("shSave").addEventListener("click", ()=>{
-    const asset = hasAsset(r.type_code) ? assetPath(r.type_code,'shareCard') : null;
+    const asset = hasShareCard(r.type_code) ? assetPath(r.type_code,'shareCard') : null;
     if(asset){
       // 실제 유형별 공유카드 이미지가 준비된 경우: 그 파일을 그대로 다운로드
       const a=document.createElement("a");
