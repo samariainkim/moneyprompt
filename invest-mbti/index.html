@@ -1028,6 +1028,7 @@ function renderStep5(){
   function runBridge(){
     wrap.style.display="none";
     const bridge=document.getElementById("s5bridge");
+    bridge.classList.remove("hide");
     bridge.style.display="flex";
     const kept = SESSION.step3_kept;
     bridge.innerHTML = `
