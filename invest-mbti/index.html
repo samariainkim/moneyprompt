@@ -1054,34 +1054,34 @@ function renderStep5(){
           final=document.getElementById("s5bFinal"),
           bw=document.getElementById("s5bWords");
 
-    // 0~1초: 첫 문구 페이드인 → 페이드아웃
+    // 0~2초: 첫 문구 페이드인 → 페이드아웃
     raf(()=>{ line1.style.opacity="1"; });
-    setTimeout(()=>{ line1.style.opacity="0"; }, 700);
+    setTimeout(()=>{ line1.style.opacity="0"; }, 1400);
 
-    // 1~2초: 끝까지 남긴 4단어가 하나씩 등장
+    // 2~4초: 끝까지 남긴 4단어가 하나씩 등장
     kept.forEach((id,i)=>{
       const s=document.createElement("span");
       s.textContent = KW_BY_ID[id].text;
       s.style.cssText="display:inline-block;padding:9px 16px;margin:4px;border-radius:12px;background:var(--pick-bg);border:1px solid #EFCFA0;color:var(--amberdk);font-size:14px;font-family:'Noto Serif KR',Georgia,serif;opacity:0;transform:translateY(6px);transition:opacity .4s,transform .4s;";
       bw.appendChild(s);
-      setTimeout(()=>{ s.style.opacity="1"; s.style.transform="translateY(0)"; }, 1000+i*200);
+      setTimeout(()=>{ s.style.opacity="1"; s.style.transform="translateY(0)"; }, 2000+i*400);
     });
 
-    // 2~3초: 두번째 문구 페이드인 → 페이드아웃
-    setTimeout(()=>{ line2.style.opacity="1"; }, 2000);
-    setTimeout(()=>{ line2.style.opacity="0"; }, 2700);
+    // 4~6초: 두번째 문구 페이드인 → 페이드아웃
+    setTimeout(()=>{ line2.style.opacity="1"; }, 4000);
+    setTimeout(()=>{ line2.style.opacity="0"; }, 5400);
 
-    // 3~4초: 마지막 문구 페이드인 → 페이드아웃
-    setTimeout(()=>{ final.style.opacity="1"; }, 3000);
-    setTimeout(()=>{ final.style.opacity="0"; }, 3700);
+    // 6~8초: 마지막 문구 페이드인 → 페이드아웃
+    setTimeout(()=>{ final.style.opacity="1"; }, 6000);
+    setTimeout(()=>{ final.style.opacity="0"; }, 7400);
 
-    // 4초: 결과 화면 전환
+    // 8초: 결과 화면 전환
     setTimeout(()=>{
       SESSION.result = calculateResult(SESSION);
       SESSION.current_step = "result";
       saveSession();
       renderResult();
-    }, 4000);
+    }, 8000);
   }
 
   renderQ(idx);
@@ -1436,6 +1436,10 @@ function openShareSheet(r){
   document.getElementById("shNative").addEventListener("click", async ()=>{
     const shareText = "나는 "+r.type_name+" "+r.type_emoji+"! 당신은 어떤 투자자일까요?";
     const baseData = { title:"나의 투자 성향 찾기", text:shareText, url:shareUrl };
+    // 파일과 함께 공유할 때는 url을 별도 필드로 두지 않고 text에 합쳐 넣는다.
+    // (카카오톡·인스타그램 등 일부 공유 대상 앱은 files가 있으면 url 필드를 그냥
+    //  무시하고 이미지만 받는 경우가 많음 — text 안에 링크를 심으면 보존 확률이 올라간다)
+    const fileShareData = { title:"나의 투자 성향 찾기", text: shareText+"\n"+shareUrl };
 
     // A — 파일 공유 가능 여부 확인 후 이미지 포함 공유
     if(navigator.share && navigator.canShare){
@@ -1443,7 +1447,7 @@ function openShareSheet(r){
         const file = await buildShareFile();
         if(file && navigator.canShare({ files:[file] })){
           try{
-            await navigator.share({ ...baseData, files:[file] });
+            await navigator.share({ ...fileShareData, files:[file] });
             return;
           }catch(err){
             if(err && err.name === "AbortError") return; // 사용자가 공유창에서 취소 - 정상 종료
