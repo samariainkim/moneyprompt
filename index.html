@@ -26,7 +26,7 @@
     padding-bottom:env(safe-area-inset-bottom,0px);
   }
   a{color:inherit;}
-  #app{max-width:640px;margin:0 auto;background:var(--surface);}
+  #app{max-width:900px;margin:0 auto;background:var(--surface);}
 
   /* ── 헤더 ─────────────────────────────────────── */
   .lh{padding:16px 24px;border-bottom:1px solid var(--border);
@@ -106,6 +106,53 @@
   footer .footer-brand{color:rgba(255,255,255,0.85);font-weight:700;font-size:14px;margin-bottom:6px;}
   footer a{color:rgba(255,255,255,0.7);text-decoration:none;}
   footer a:hover{color:#fff;}
+  /* ── 넓은 화면(태블릿·데스크톱) 확대 규칙 ───────
+     900px 컨테이너에 맞춰 로고·타이포·이미지·여백을 키움.
+     420px/340px 이하 모바일 쿼리와는 겹치지 않으므로 모바일 디자인은 그대로 유지됨. ── */
+  @media (min-width: 700px){
+    .lh{padding:12px 24px;}
+    .logo-header-img{height:46px;}
+    .lnav{gap:28px;font-size:15px;}
+
+    .hero{padding:72px 40px 52px;}
+    .heroEyebrow{font-size:14px;}
+    .heroMain{margin-top:18px;font-size:44px;letter-spacing:-1.2px;}
+    .heroSub{margin-top:12px;font-size:19px;}
+    .heroDesc{margin-top:18px;font-size:16px;}
+    .heroTags{margin-top:24px;gap:10px;}
+    .htag{font-size:13px;padding:7px 16px;}
+
+    .sec-title{margin:0 40px 24px;font-size:22px;}
+
+    .svc-grid{gap:24px;padding:0 40px 72px;}
+    .svc-card{padding:30px 26px;border-radius:20px;}
+    .kicker{font-size:12.5px;}
+    .svc-title{margin-top:8px;font-size:21px;}
+    .svc-line{margin-top:8px;font-size:14px;min-height:auto;}
+
+    .flow-visual-img,.char-cluster{height:190px;margin-top:22px;}
+    .char-cluster{transform:scale(1.55);transform-origin:center bottom;}
+    .book-caption{margin-top:16px;font-size:12.5px;}
+
+    .svc-tags{margin-top:16px;gap:7px;}
+    .stag{font-size:12px;padding:5px 10px;}
+    .svc-cta{margin-top:18px;padding:15px;font-size:15px;border-radius:12px;}
+
+    .lab-section{padding:68px 40px 60px;}
+    .lab-eyebrow{font-size:13px;}
+    .lab-head{margin-top:10px;font-size:22px;}
+    .lab-grid{margin-top:28px;gap:18px;}
+    .lab-card{padding:22px 14px;border-radius:18px;}
+    .lab-icon{font-size:26px;}
+    .lab-name{margin-top:10px;font-size:14px;}
+    .lab-desc{margin-top:5px;font-size:12px;}
+    .lab-exp{margin-top:10px;font-size:10px;padding:3px 9px;}
+    .lab-foot{margin-top:20px;font-size:13px;}
+
+    .closing{padding:68px 40px 56px;}
+    .logo-closing-img{height:76px;}
+  }
+
   /* ── 모바일 최적화 ────────────────────────────── */
   @media (max-width: 420px){
     .lh{padding:14px 18px;}
@@ -130,6 +177,7 @@
 </head>
 <body>
 <div id="app"></div>
+<footer id="siteFooter"></footer>
 
 <script>
 /* =========================================================
@@ -259,15 +307,15 @@ document.getElementById("app").innerHTML = `
   <div class="closing">
     <img class="logo-closing-img" src="${LOGO_FULL}" alt="DONBUFF 오늘보다 돈을 잘 다루는 나로 +1">
   </div>
+`;
 
-  <footer>
-    <div class="footer-brand"><img class="footer-symbol" src="${LOGO_SYMBOL}" alt="">돈버프 (DONBUFF)</div>
-    <p>『AI가 알아서 굴려주는 월급쟁이 재테크』 | 저자 김태형(사마리아인)<br>
-    <a href="https://donbuff.com" target="_blank">donbuff.com</a> &nbsp;·&nbsp;
-    <a href="https://www.youtube.com/@samariaintv" target="_blank">사마리아인TV</a> &nbsp;·&nbsp;
-    <a href="https://open.kakao.com/o/g2JnL4Ai" target="_blank">독자 오픈채팅방</a> &nbsp;·&nbsp;
-    <a href="mailto:samariain.kim@gmail.com">✉️ 협업·강연 문의</a></p>
-  </footer>
+document.getElementById("siteFooter").innerHTML = `
+  <div class="footer-brand"><img class="footer-symbol" src="${LOGO_SYMBOL}" alt="">돈버프 (DONBUFF)</div>
+  <p>『AI로 부자되기』 | 저자 김태형(사마리아인)<br>
+  <a href="https://donbuff.com" target="_blank">donbuff.com</a> &nbsp;·&nbsp;
+  <a href="https://www.youtube.com/@samariaintv" target="_blank">사마리아인TV</a> &nbsp;·&nbsp;
+  <a href="https://open.kakao.com/o/g2JnL4Ai" target="_blank">독자 오픈채팅방</a> &nbsp;·&nbsp;
+  <a href="mailto:samariain.kim@gmail.com">✉️ 협업·강연 문의</a></p>
 `;
 </script>
 </body>
