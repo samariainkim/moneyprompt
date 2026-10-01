@@ -192,12 +192,20 @@
   #shareOverlay{position:fixed;inset:0;background:rgba(59,42,30,0.45);display:none;align-items:flex-end;justify-content:center;z-index:200;}
   #shareOverlay.open{display:flex;}
   #shareSheet{width:100%;max-width:480px;background:var(--bg2);border-radius:22px 22px 0 0;
-    padding:22px 22px calc(26px + env(safe-area-inset-bottom,0px));
-    max-height:85vh;max-height:85dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:16px 22px calc(22px + env(safe-area-inset-bottom,0px));
+    max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);
+    overflow-y:auto;-webkit-overflow-scrolling:touch;
     animation:sheetUp .25s ease;}
   @keyframes sheetUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .sheet-handle{width:40px;height:4px;border-radius:99px;background:#E6D9C3;margin:0 auto 16px;cursor:pointer;}
+  .share-preview{height:min(42dvh,420px);height:min(42vh,420px);display:flex;align-items:center;justify-content:center;}
+  @media (max-height:700px){ .share-preview{height:38dvh;height:38vh;} }
+  .share-preview img{height:100%;width:auto;max-width:100%;object-fit:contain;border-radius:14px;
+    box-shadow:0 6px 18px rgba(0,0,0,.12);display:block;margin:0 auto;}
+  .btn-ghost-sm{padding:12px;border-radius:12px;border:1.5px solid #D9CDBB;background:transparent;
+    color:#5A4433;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;}
   .share-card-preview{background:linear-gradient(165deg,var(--bg1) 0%,var(--bg2) 42%,var(--bg3) 100%);
-    border:1px solid #EFE1CB;border-radius:16px;padding:26px 20px;text-align:center;}
+    border:1px solid #EFE1CB;border-radius:16px;padding:20px 16px;text-align:center;max-height:100%;overflow-y:auto;}
 
   /* 이어하기 안내 */
   #resumeOverlay{position:fixed;inset:0;background:rgba(59,42,30,0.5);display:none;align-items:center;justify-content:center;z-index:210;padding:24px;}
@@ -1371,7 +1379,6 @@ function openShareSheet(r){
 
   const previewHtml = hasShareCard(r.type_code)
     ? `<img src="${assetPath(r.type_code,'shareCard')}" alt="${r.type_name} 공유카드"
-         style="width:100%;max-height:52vh;max-height:52dvh;object-fit:contain;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.12);display:block;margin:0 auto;"
          onerror="this.outerHTML='<div class=&quot;share-card-preview&quot;></div>';">`
     : `<div class="share-card-preview">
       <div style="font-size:11px;letter-spacing:0.08em;color:var(--amber);font-weight:600;">나는 어떤 투자자일까?</div>
@@ -1386,31 +1393,80 @@ function openShareSheet(r){
     </div>`;
 
   sheet.innerHTML = `
-    <div style="text-align:center;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px;">주변분들과 내 투자 성향을 나눠보세요</div><div style="text-align:center;font-size:11.5px;color:var(--muted);margin-bottom:14px;">공유용 카드 미리보기</div>
-    ${previewHtml}
-    <button class="cta-btn on" id="shSave" style="width:100%;margin-top:16px;">이미지 저장</button>
-    <button class="btn-secondary" id="shCopy" style="width:100%;margin-top:10px;">링크 복사</button>
-    <button class="btn-secondary" id="shNative" style="width:100%;margin-top:10px;">공유하기</button>
-    <div style="text-align:center;margin-top:14px;"><span id="shClose" style="font-size:12.5px;color:var(--muted2);cursor:pointer;">닫기</span></div>`;
+    <div class="sheet-handle" id="shHandle"></div>
+    <div style="text-align:center;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:14px;">내 투자 성향 공유하기</div>
+    <div class="share-preview">${previewHtml}</div>
+    <button class="cta-btn on" id="shNative" style="width:100%;margin-top:18px;">공유하기 &nbsp;→</button>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="btn-ghost-sm" id="shSave" style="flex:1;">↓&nbsp; 이미지 저장</button>
+      <button class="btn-ghost-sm" id="shCopy" style="flex:1;">🔗&nbsp; 링크 복사</button>
+    </div>
+    `;
   overlay.classList.add("open");
 
-  document.getElementById("shClose").addEventListener("click", ()=>overlay.classList.remove("open"));
+  document.getElementById("shHandle").addEventListener("click", ()=>overlay.classList.remove("open"));
   overlay.addEventListener("click", (e)=>{ if(e.target===overlay) overlay.classList.remove("open"); });
 
   document.getElementById("shCopy").addEventListener("click", ()=>{
     copyText(shareUrl).then(ok=> toast(ok ? "링크가 복사되었어요" : "복사에 실패했어요"));
   });
 
-  document.getElementById("shNative").addEventListener("click", ()=>{
-    if(navigator.share){
-      navigator.share({
-        title:"나의 투자 성향 찾기",
-        text:"나는 "+r.type_name+" "+r.type_emoji+"! 당신은 어떤 투자자일까요?",
-        url:shareUrl
-      }).catch(()=>{});
-    } else {
-      toast("이 브라우저는 기기 공유창을 지원하지 않아요");
+  // 공유용 이미지를 Blob/File로 만드는 공통 헬퍼
+  // - 실제 유형별 공유카드가 준비된 경우: fetch로 가져와 File 변환
+  // - 없는 경우: 기존 drawShareCanvas(캔버스 텍스트 카드)를 재사용
+  function buildShareFile(){
+    return new Promise((resolve)=>{
+      const asset = hasShareCard(r.type_code) ? assetPath(r.type_code,'shareCard') : null;
+      if(asset){
+        fetch(asset).then(res=>{
+          if(!res.ok) throw new Error("fetch failed");
+          return res.blob();
+        }).then(blob=>{
+          resolve(new File([blob], "donbuff-invest-mbti-"+r.type_code+".jpg", {type: blob.type || "image/jpeg"}));
+        }).catch(()=> resolve(null));
+      } else {
+        drawShareCanvas(r, function(blob){
+          if(!blob){ resolve(null); return; }
+          resolve(new File([blob], "invest-type-"+r.type_code+".png", {type:"image/png"}));
+        });
+      }
+    });
+  }
+
+  document.getElementById("shNative").addEventListener("click", async ()=>{
+    const shareText = "나는 "+r.type_name+" "+r.type_emoji+"! 당신은 어떤 투자자일까요?";
+    const baseData = { title:"나의 투자 성향 찾기", text:shareText, url:shareUrl };
+
+    // A — 파일 공유 가능 여부 확인 후 이미지 포함 공유
+    if(navigator.share && navigator.canShare){
+      try{
+        const file = await buildShareFile();
+        if(file && navigator.canShare({ files:[file] })){
+          try{
+            await navigator.share({ ...baseData, files:[file] });
+            return;
+          }catch(err){
+            if(err && err.name === "AbortError") return; // 사용자가 공유창에서 취소 - 정상 종료
+            // 실제 전송 실패 -> B로 폴백
+          }
+        }
+      }catch(e){ /* 파일 생성 실패 -> B로 폴백 */ }
     }
+
+    // B — 텍스트 + URL 공유
+    if(navigator.share){
+      try{
+        await navigator.share(baseData);
+        return;
+      }catch(err){
+        if(err && err.name === "AbortError") return; // 사용자가 공유창에서 취소 - 정상 종료
+        // 실패 -> C로 폴백
+      }
+    }
+
+    // C — Web Share 자체가 없거나 완전히 실패한 경우: 링크 자동 복사
+    const ok = await copyText(shareUrl);
+    toast(ok ? "공유 링크를 복사했어요" : "복사에 실패했어요");
   });
 
   document.getElementById("shSave").addEventListener("click", ()=>{
