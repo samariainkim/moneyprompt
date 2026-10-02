@@ -225,6 +225,13 @@
 
   a{color:inherit;}
 </style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW588P483F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GW588P483F');
+</script>
 </head>
 <body>
 <div id="app"></div>
@@ -630,6 +637,7 @@ function renderIntro(){
       </div>
     </div>`;
   document.getElementById("startBtn").addEventListener("click", ()=>{
+    if(typeof gtag === "function") gtag("event", "test_start");
     SESSION = freshSession();
     saveSession();
     renderStep1();
@@ -1100,6 +1108,7 @@ function renderStep5(){
       SESSION.result = calculateResult(SESSION);
       SESSION.current_step = "result";
       saveSession();
+      if(typeof gtag === "function") gtag("event", "test_complete", { result_type: SESSION.result.type_code });
       renderResult();
     }, 8000);
   }
@@ -1354,6 +1363,7 @@ function renderResult(){
     open=!open;
     box.classList.toggle("open", open);
     aiCta.textContent = open ? "AI 분석 프롬프트 접기 ▲" : "좀 더 깊은 내면의 나를 알아보세요 →";
+    if(open && typeof gtag === "function") gtag("event", "ai_deepdive_click", { result_type: r.type_code });
   });
   document.getElementById("copyBtn").addEventListener("click", ()=>{
     const btn = document.getElementById("copyBtn");
@@ -1446,6 +1456,7 @@ function openShareSheet(r){
   overlay.addEventListener("click", (e)=>{ if(e.target===overlay) overlay.classList.remove("open"); });
 
   document.getElementById("shCopy").addEventListener("click", ()=>{
+    if(typeof gtag === "function") gtag("event", "link_share", { channel: "copy_button", result_type: r.type_code });
     copyText(shareUrl).then(ok=> toast(ok ? "링크가 복사되었어요" : "복사에 실패했어요"));
   });
 
@@ -1472,6 +1483,7 @@ function openShareSheet(r){
   // 카카오톡 — 유형별 OG 랜딩 URL 공유 (SDK 키가 없어 OS 공유창을 거치지만,
   // 유형별 링크라 준비된 유형은 카카오톡에서 이미지 포함 리치 카드로 보임)
   document.getElementById("chKakao").addEventListener("click", async ()=>{
+    if(typeof gtag === "function") gtag("event", "link_share", { channel: "kakao", result_type: r.type_code });
     const landingUrl = shareLandingUrl(r.type_code);
     if(navigator.share){
       try{
@@ -1487,6 +1499,7 @@ function openShareSheet(r){
 
   // Instagram — 이미지 중심 공유 전용 (url/text를 함께 보내려 하지 않음)
   document.getElementById("chInsta").addEventListener("click", async ()=>{
+    if(typeof gtag === "function") gtag("event", "link_share", { channel: "instagram", result_type: r.type_code });
     if(navigator.share && navigator.canShare){
       try{
         const file = await buildShareFile();
@@ -1506,6 +1519,7 @@ function openShareSheet(r){
 
   // 기타 공유 — 범용 텍스트 + URL
   document.getElementById("chEtc").addEventListener("click", async ()=>{
+    if(typeof gtag === "function") gtag("event", "link_share", { channel: "other", result_type: r.type_code });
     if(navigator.share){
       try{
         await navigator.share({ title:"나의 투자 성향 찾기", text:shareText, url:shareUrl });
@@ -1541,6 +1555,7 @@ function openShareSheet(r){
   }
 
   document.getElementById("shSave").addEventListener("click", ()=>{
+    if(typeof gtag === "function") gtag("event", "image_save", { result_type: r.type_code });
     saveShareImage();
     toast("이미지가 저장되었어요");
   });
