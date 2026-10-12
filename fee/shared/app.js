@@ -48,11 +48,10 @@
     var rows = [['적용 지역', r.region_label + ' 주택'], ['적용 거래금액', fmt(r.transaction_amount_krw) + '원' + (r.converted_from_rent ? ' (월세 환산)' : '')],
       ['상한 요율', (r.applied_max_rate_bps / 100).toFixed(2) + '%'], ['한도액', r.cap_krw === null ? '없음' : fmt(r.cap_krw) + '원' + (r.cap_applied ? ' (적용됨)' : '')]];
     if (r.negotiated_rate_bps !== null) rows.push(['협의 요율 ' + (r.negotiated_rate_bps / 100).toFixed(2) + '%', fmt(r.negotiated_fee_krw) + '원' + (r.negotiated_cap_applied ? ' (한도액 적용)' : '')], ['상한 대비 차이', fmt(r.difference_krw) + '원 (확정 절감액 아님)']);
-    var ver = r.verified_at ? ' · 최종 검증: ' + r.verified_at : '';
     box.hidden = false;
     box.innerHTML = '<h2 id="rh">계산 결과</h2><p class="hint">상한 중개보수 (부가세 미포함)</p><div class="big">' + fmt(r.max_fee_krw) + '원</div><dl>' +
       rows.map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('') + '</dl>' +
-      '<p class="hint">요율 기준: ' + r.region_label + ver + (r.rules_status !== 'verified' ? '<br><strong>※ 요율 검증 전 테스트 버전입니다. 결과는 참고용이며 공식 확인 후 사용하세요.</strong>' : '') + '</p>' +
+      '<p class="note">※ 부동산 중개보수 요율 기준은 서울특별시 조례 기준을 적용하였습니다. 지역, 시점에 따라 기준 요율이 다소 상이할 수 있으므로 해당 결과는 참고자료로만 활용 바랍니다.</p>' +
       '<h2>함께 확인해 보세요</h2><ul class="ins">' + FeeInsights.evaluate(r, insights, copy).map(function (i) { return '<li>' + i.text + '</li>'; }).join('') + '</ul>';
     $('ai').hidden = false; updatePrompt();
     box.setAttribute('tabindex', '-1'); box.focus();
@@ -85,6 +84,7 @@
     $('open-rates').addEventListener('click', openModal); $('close-modal').addEventListener('click', closeModal);
     $('modal-bg').addEventListener('click', function (e) { if (e.target.id === 'modal-bg') closeModal(); });
     document.querySelectorAll('.ai-it').forEach(function (c) { c.addEventListener('change', updatePrompt); });
+    $('show-prompt').addEventListener('click', function () { var box = $('prompt-box'), open = box.hidden; box.hidden = !open; this.setAttribute('aria-expanded', open); this.textContent = open ? '프롬프트 접기' : '프롬프트 보기'; });
     $('copy-ai').addEventListener('click', function () { copyText($('prompt').textContent, 'calc_ai_copy'); });
     $('copy-res').addEventListener('click', function () {
       if (!last || last.status !== 'success') return;
@@ -92,7 +92,6 @@
       copyText(t, 'calc_share');
     });
     $('neg').addEventListener('focus', function () {});
-    if (rules.status !== 'verified') $('beta').hidden = false;
     setType('sale'); FeeAnalytics.track('calc_view');
   }
   Promise.all([FeeConfig.RULES_FILE, FeeConfig.INSIGHTS_FILE, FeeConfig.COPY_FILE].map(function (u) { return fetch(u).then(function (r) { return r.json(); }); }))

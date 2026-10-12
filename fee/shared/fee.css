@@ -1,4 +1,4 @@
-:root{--bg:#fff;--fg:#1d1d1f;--mut:#6b7280;--line:#e5e7eb;--brand:#f26b21;--soft:#fff4ec;--err:#c0392b}
+:root{--site-max:1080px;--bg:#fff;--fg:#1d1d1f;--mut:#6b7280;--line:#e5e7eb;--brand:#f26b21;--soft:#fff4ec;--err:#c0392b}
 @media(prefers-color-scheme:dark){:root{--bg:#141414;--fg:#f2f2f2;--mut:#a0a4ab;--line:#2c2c2e;--soft:#2a1d14}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 -apple-system,"Pretendard","Noto Sans KR",sans-serif}
 header.h{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}header.h a{color:var(--fg);text-decoration:none;font-weight:700}
@@ -20,3 +20,8 @@ ul.ins{padding-left:18px}details summary{cursor:pointer;font-weight:600}pre{whit
 .modal{background:var(--bg);border-radius:14px;max-width:560px;width:100%;max-height:85vh;overflow:auto;padding:20px}
 .link{background:none;border:0;color:var(--brand);text-decoration:underline;font:inherit;cursor:pointer;padding:0}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:10px;display:none}.toast.on{display:block}
+
+ul.ins{font-size:.8rem;color:var(--mut);opacity:.85}
+.note{font-size:.78rem;color:var(--mut);opacity:.85;margin:12px 0 0}
+.site-ft{border-top:1px solid var(--line);margin-top:32px}.site-ft .wrap{max-width:var(--site-max);margin:0 auto;padding:24px 16px 28px;font-size:12.5px;line-height:1.7;color:var(--mut)}
+.ft-links{display:flex;gap:16px;margin-bottom:8px}.ft-links a{color:var(--mut);text-decoration:underline}.site-ft p{margin:0}

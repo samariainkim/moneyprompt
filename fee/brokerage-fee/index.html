@@ -7,12 +7,11 @@
 <meta property="og:description" content="서울특별시 주택 매매·전세·월세 중개보수 상한 계산"><meta property="og:image" content="https://donbuff.com/fee/og/brokerage-fee.png">
 <meta property="og:url" content="https://donbuff.com/fee/brokerage-fee/">
 <link rel="stylesheet" href="/fee/shared/fee.css">
-<!-- TODO(gate): GA4 gtag 스니펫 삽입(측정 ID 확정 후) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW588P483F"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-GW588P483F');</script>
 </head><body>
 <header class="h"><a href="https://donbuff.com/">돈버프 홈</a></header>
 <main>
-<div class="card" id="beta" hidden role="note" style="background:var(--soft)"><strong>테스트 버전</strong> · 요율 검증 전이라 결과가 정확하지 않을 수 있습니다. 실제 계약에는 사용하지 마세요.</div>
-<span class="pill">현재 서울특별시 주택 거래 기준으로 계산합니다.</span>
 <h1>부동산 중개보수 계산기</h1>
 <p class="hint">특정 지역 조례 및 법령에 따라 실제 수수료율은 상이할 수 있습니다.</p>
 <div class="card">
@@ -23,7 +22,7 @@
  <label for="neg">협의 요율 % (선택)</label><input id="neg" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 0.30">
  <div class="err" id="err" role="alert"></div>
  <button class="btn" id="go" type="button">중개보수 계산하기</button>
- <p><button class="link" id="open-rates" type="button">요율 기준표 보기</button></p>
+ <p style="text-align:right;margin:12px 0 0"><button class="link" id="open-rates" type="button">요율 기준표 보기</button></p>
 </div>
 <section id="result" class="card" hidden aria-live="polite"></section>
 <section id="ai" class="card" hidden>
@@ -35,12 +34,13 @@
   <label><input class="ai-it" type="checkbox" value="negotiate" checked> 협의 시나리오</label>
   <label><input class="ai-it" type="checkbox" value="risk"> 계약 위험 점검</label>
   <label><input class="ai-it" type="checkbox" value="checklist" checked> 실행 체크리스트</label></fieldset>
- <details><summary>프롬프트 미리보기</summary><pre id="prompt"></pre></details>
- <button class="btn" id="copy-ai" type="button">프롬프트 복사</button>
+ <button class="btn" id="show-prompt" type="button" aria-expanded="false" aria-controls="prompt-box">프롬프트 보기</button>
+ <div id="prompt-box" hidden><pre id="prompt"></pre><button class="btn sec" id="copy-ai" type="button">프롬프트 복사</button></div>
  <p class="hint">AI 답변은 공식 자료와 교차 확인해 주세요.</p>
- <button class="btn sec" id="copy-res" type="button">결과 요약 복사</button>
+ <button class="btn sec" id="copy-res" type="button">공유용 문구 복사</button>
 </div>
 </main>
+<footer class="site-ft"><div class="wrap" style="max-width:720px"><div class="ft-links"><a href="https://www.youtube.com/@samariaintv" target="_blank" rel="noopener">YouTube</a><a href="mailto:samariain.kim@gmail.com">협업·강연 문의</a></div><p>계산 결과는 참고용이며 실제 금액은 계약 조건과 기관 기준에 따라 달라질 수 있습니다. 금융 상품 가입의 권유가 아닙니다.</p></div></footer>
 <div class="modal-bg" id="modal-bg"><div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
  <h2 id="modal-title" tabindex="-1">요율 기준표</h2><div id="modal-body"></div>
  <p><a href="/fee/brokerage-rates/">전체 페이지로 보기</a></p><button class="btn sec" id="close-modal" type="button">닫기</button></div></div>
