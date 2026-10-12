@@ -17,6 +17,7 @@
     env: env,
     RULES_FILE: '/fee/data/brokerage-fee.rules.v1.0.0.json',
     INSIGHTS_FILE: '/fee/data/brokerage-fee.insights.json',
+    PROMPT_FILE: '/fee/data/brokerage-fee.prompt.v2.0.0.json',
     COPY_FILE: '/fee/data/brokerage-fee.copy.json',
     CALCULATOR_ID: 'brokerage-fee',
     CATEGORY: 'real_estate',

@@ -51,6 +51,28 @@
     return { fee: fee, capApplied: capApplied };
   }
 
+  // 협의 시나리오: 모든 금액은 엔진이 산출. 사용자가 협의 요율을 넣었으면 [법정 상한, 입력 요율], 아니면 [상한, -0.10%p, -0.20%p] (0% 미만 제외, 한도액 적용 후 금액이 같으면 중복 제거).
+  var AUTO_DELTAS_BPS = [0n, 10n, 20n];
+  function buildScenarios(amount, bps, cap, userBps) {
+    var legal = feeFor(amount, bps, cap);
+    var out = [{ id: 'legal_max', kind: 'legal_max', rate_bps: Number(bps), delta_bps: 0, fee_krw: Number(legal.fee), cap_applied: legal.capApplied, diff_krw: 0, is_assumption: false }];
+    if (userBps !== null) {
+      var u = feeFor(amount, userBps, cap);
+      out.push({ id: 'user_input', kind: 'user_input', rate_bps: Number(userBps), delta_bps: Number(bps - userBps), fee_krw: Number(u.fee), cap_applied: u.capApplied, diff_krw: Number(legal.fee - u.fee), is_assumption: false });
+      return out;
+    }
+    var seen = [legal.fee];
+    for (var i = 1; i < AUTO_DELTAS_BPS.length; i++) {
+      var r = bps - AUTO_DELTAS_BPS[i];
+      if (r < 0n) continue;
+      var f = feeFor(amount, r, cap);
+      if (seen.indexOf(f.fee) >= 0) continue;
+      seen.push(f.fee);
+      out.push({ id: 'assumed_' + String(AUTO_DELTAS_BPS[i]), kind: 'assumed', rate_bps: Number(r), delta_bps: Number(AUTO_DELTAS_BPS[i]), fee_krw: Number(f.fee), cap_applied: f.capApplied, diff_krw: Number(legal.fee - f.fee), is_assumption: true });
+    }
+    return out;
+  }
+
   function findBand(bands, amount) {
     for (var i = 0; i < bands.length; i++) {
       var b = bands[i];
@@ -96,6 +118,7 @@
     var max = BigInt(rules.limits.max_amount_krw);
     var amount;
     var converted = false;
+    var depOut = null, monOut = null, multOut = null;
 
     if (ttype === 'rent') {
       var dep = (input.depositKrw === undefined || input.depositKrw === null || input.depositKrw === '') ? 0n : toBigInt(input.depositKrw);
@@ -108,8 +131,9 @@
       if (mon > max) return fail(STATUS.INVALID_INPUT, 'monthlyKrw', 'out_of_range');
       var mr = rules.monthly_rent;
       var primary = dep + mon * BigInt(mr.primary_multiplier);
-      amount = primary < BigInt(mr.fallback_threshold_krw) ? dep + mon * BigInt(mr.fallback_multiplier) : primary;
-      converted = true;
+      var useFallback = primary < BigInt(mr.fallback_threshold_krw);
+      amount = useFallback ? dep + mon * BigInt(mr.fallback_multiplier) : primary;
+      converted = true; depOut = Number(dep); monOut = Number(mon); multOut = useFallback ? mr.fallback_multiplier : mr.primary_multiplier;
     } else {
       if (input.amountKrw === undefined || input.amountKrw === null || input.amountKrw === '') return fail(STATUS.INVALID_INPUT, 'amountKrw', 'required_missing');
       amount = toBigInt(input.amountKrw);
@@ -136,6 +160,9 @@
       transaction_type: ttype,
       transaction_amount_krw: Number(amount),
       converted_from_rent: converted,
+      rent_deposit_krw: depOut,
+      rent_monthly_krw: monOut,
+      rent_multiplier: multOut,
       band_id: band.band_id,
       applied_max_rate_bps: Number(bps),
       cap_krw: cap === null ? null : Number(cap),
@@ -145,6 +172,7 @@
       negotiated_fee_krw: null,
       negotiated_cap_applied: false,
       difference_krw: null,
+      scenarios: null,
       vat_status: 'not_calculated',
       rules_version: rules.rules_version,
       source_ids: [band.source_id],
@@ -154,6 +182,7 @@
     };
 
     // 협의 요율 비교 (선택)
+    var userBps = null;
     var np = input.negotiatedRatePercent;
     if (np !== undefined && np !== null && String(np).trim() !== '') {
       var nbps = percentToBps(np);
@@ -168,7 +197,9 @@
       result.negotiated_fee_krw = Number(neg.fee);
       result.negotiated_cap_applied = neg.capApplied;
       result.difference_krw = Number(base.fee - neg.fee);
+      userBps = nbps;
     }
+    result.scenarios = buildScenarios(amount, bps, cap, userBps);
     return result;
   }
 

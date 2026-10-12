@@ -2,7 +2,7 @@
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   var env = FeeConfig.env(location.hostname);
-  var rules, insights, copy, last = null, ttype = 'sale', started = false, lastFocus = null;
+  var rules, insights, copy, promptData, last = null, ttype = 'sale', started = false, lastFocus = null;
 
   function toast(m) { var t = $('toast'); t.textContent = m; t.className = 'toast on'; setTimeout(function () { t.className = 'toast'; }, 2000); }
   function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
@@ -47,17 +47,28 @@
     FeeAnalytics.track('calc_result');
     var rows = [['적용 지역', r.region_label + ' 주택'], ['적용 거래금액', fmt(r.transaction_amount_krw) + '원' + (r.converted_from_rent ? ' (월세 환산)' : '')],
       ['상한 요율', (r.applied_max_rate_bps / 100).toFixed(2) + '%'], ['한도액', r.cap_krw === null ? '없음' : fmt(r.cap_krw) + '원' + (r.cap_applied ? ' (적용됨)' : '')]];
-    if (r.negotiated_rate_bps !== null) rows.push(['협의 요율 ' + (r.negotiated_rate_bps / 100).toFixed(2) + '%', fmt(r.negotiated_fee_krw) + '원' + (r.negotiated_cap_applied ? ' (한도액 적용)' : '')], ['상한 대비 차이', fmt(r.difference_krw) + '원 (확정 절감액 아님)']);
     box.hidden = false;
     box.innerHTML = '<h2 id="rh">계산 결과</h2><p class="hint">상한 중개보수 (부가세 미포함)</p><div class="big">' + fmt(r.max_fee_krw) + '원</div><dl>' +
-      rows.map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('') + '</dl>' +
+      rows.map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('') + '</dl>' + scenarioHtml(r) +
       '<p class="note">※ 부동산 중개보수 요율 기준은 서울특별시 조례 기준을 적용하였습니다. 지역, 시점에 따라 기준 요율이 다소 상이할 수 있으므로 해당 결과는 참고자료로만 활용 바랍니다.</p>' +
       '<h2>함께 확인해 보세요</h2><ul class="ins">' + FeeInsights.evaluate(r, insights, copy).map(function (i) { return '<li>' + i.text + '</li>'; }).join('') + '</ul>';
-    $('ai').hidden = false; updatePrompt();
+    $('ai').hidden = false; $('copy-res').hidden = false; $('cost-desc').textContent = ttype === 'sale' ? '취득세·등기 등 추가 비용 확인' : '보증보험·확정일자 등 추가 비용 확인'; if (!$('prompt-box').hidden) updatePrompt();
     box.setAttribute('tabindex', '-1'); box.focus();
   }
+  function scenarioHtml(r) {
+    if (!r.scenarios || r.scenarios.length < 2) return '';
+    var h = '<h3 class="sc-t">협의 요율 비교</h3><table class="rt"><caption class="sr">협의 요율별 중개보수</caption><thead><tr><th scope="col">구분</th><th scope="col">요율</th><th scope="col">중개보수</th><th scope="col">상한 대비</th></tr></thead><tbody>';
+    r.scenarios.forEach(function (sc) {
+      h += '<tr><td>' + FeePrompt.scenarioLabel(sc) + (sc.is_assumption ? ' <span class="asm">가정</span>' : '') + '</td><td>' + (sc.rate_bps / 100).toFixed(2) + '%</td><td>' + fmt(sc.fee_krw) + '원' + (sc.cap_applied ? '<br><small>한도액 적용</small>' : '') + '</td><td>' + (sc.diff_krw ? '−' + fmt(sc.diff_krw) + '원' : '-') + '</td></tr>';
+    });
+    return h + '</tbody></table><p class="note">' + (r.negotiated_rate_bps === null ? '가정 요율은 예시이며 실제 협의 요율이 아닙니다. ' : '') + '상한 대비 차이는 확정 절감액이 아닙니다.</p>';
+  }
   function selected() { return Array.prototype.map.call(document.querySelectorAll('.ai-it:checked'), function (c) { return c.value; }); }
-  function updatePrompt() { if (last && last.status === 'success') $('prompt').textContent = FeePrompt.build(last, selected()); }
+  function updatePrompt() { if (last && last.status === 'success') $('prompt').textContent = FeePrompt.build(last, selected(), promptData, rules); }
+  function makePrompt() {
+    if (!selected().length) { $('ai-err').textContent = '분석 항목을 하나 이상 선택해 주세요.'; return; }
+    $('ai-err').textContent = ''; updatePrompt(); var box = $('prompt-box'); box.hidden = false; $('make-prompt').setAttribute('aria-expanded', 'true'); $('make-prompt').textContent = '프롬프트 다시 만들기'; $('prompt-badge').hidden = !(last && last.rules_status !== 'verified'); FeeAnalytics.track('calc_ai_generate');
+  }
   function copyText(text, ev) {
     function done() { toast('복사했습니다'); FeeAnalytics.track(ev, ev === 'calc_share' ? { channel: 'copy_button' } : {}); }
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
@@ -83,8 +94,8 @@
     $('go').addEventListener('click', calc);
     $('open-rates').addEventListener('click', openModal); $('close-modal').addEventListener('click', closeModal);
     $('modal-bg').addEventListener('click', function (e) { if (e.target.id === 'modal-bg') closeModal(); });
-    document.querySelectorAll('.ai-it').forEach(function (c) { c.addEventListener('change', updatePrompt); });
-    $('show-prompt').addEventListener('click', function () { var box = $('prompt-box'), open = box.hidden; box.hidden = !open; this.setAttribute('aria-expanded', open); this.textContent = open ? '프롬프트 접기' : '프롬프트 보기'; });
+    document.querySelectorAll('.ai-it').forEach(function (c) { c.addEventListener('change', function () { $('ai-err').textContent = ''; if (!$('prompt-box').hidden) updatePrompt(); }); });
+    $('make-prompt').addEventListener('click', makePrompt);
     $('copy-ai').addEventListener('click', function () { copyText($('prompt').textContent, 'calc_ai_copy'); });
     $('copy-res').addEventListener('click', function () {
       if (!last || last.status !== 'success') return;
@@ -94,7 +105,7 @@
     $('neg').addEventListener('focus', function () {});
     setType('sale'); FeeAnalytics.track('calc_view');
   }
-  Promise.all([FeeConfig.RULES_FILE, FeeConfig.INSIGHTS_FILE, FeeConfig.COPY_FILE].map(function (u) { return fetch(u).then(function (r) { return r.json(); }); }))
-    .then(function (d) { rules = d[0]; insights = d[1]; copy = d[2]; init(); })
+  Promise.all([FeeConfig.RULES_FILE, FeeConfig.INSIGHTS_FILE, FeeConfig.COPY_FILE, FeeConfig.PROMPT_FILE].map(function (u) { return fetch(u).then(function (r) { return r.json(); }); }))
+    .then(function (d) { rules = d[0]; insights = d[1]; copy = d[2]; promptData = d[3]; init(); })
     .catch(function () { $('err').textContent = '기준 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'; });
 })();
