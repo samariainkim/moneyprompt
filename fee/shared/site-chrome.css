@@ -1,0 +1,10 @@
+/* 돈버프 대문과 동일한 헤더·푸터 (폭 900px) */
+.dbx-h{background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:100}
+.dbx-h-in{max-width:900px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.dbx-brand{display:flex;align-items:baseline;gap:7px;white-space:nowrap;text-decoration:none}
+.dbx-brand b{font-size:16px;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,#d97706 0%,#b45309 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.dbx-brand span{font-size:12px;font-weight:500;color:#9ca3af;letter-spacing:-.2px}
+.dbx-f{background:#111827;color:rgba(255,255,255,.5);text-align:center;padding:32px 24px;font-size:12px;line-height:1.8;margin-top:40px}
+.dbx-f .fb{color:rgba(255,255,255,.85);font-weight:700;font-size:14px;margin-bottom:6px}
+.dbx-f a{color:rgba(255,255,255,.7);text-decoration:none}.dbx-f a:hover{color:#fff}
+.dbx-f p{margin:0}.dbx-f p+p{margin-top:8px}

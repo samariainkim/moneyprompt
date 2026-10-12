@@ -1,8 +1,8 @@
-:root{--site-max:1080px;--bg:#fff;--fg:#1d1d1f;--mut:#6b7280;--line:#e5e7eb;--brand:#f26b21;--soft:#fff4ec;--err:#c0392b}
+:root{--site-max:1080px;--bg:#fafaf9;--fg:#1d1d1f;--mut:#6b7280;--line:#e5e7eb;--brand:#d97706;--soft:#fef3c7;--err:#c0392b}
 @media(prefers-color-scheme:dark){:root{--bg:#141414;--fg:#f2f2f2;--mut:#a0a4ab;--line:#2c2c2e;--soft:#2a1d14}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 -apple-system,"Pretendard","Noto Sans KR",sans-serif}
 header.h{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}header.h a{color:var(--fg);text-decoration:none;font-weight:700}
-main{max-width:720px;margin:0 auto;padding:20px 16px 64px}h1{font-size:1.5rem;margin:.2em 0}h2{font-size:1.15rem;margin:1.6em 0 .6em}
+main{max-width:900px;margin:0 auto;padding:28px 24px 56px}h1{font-size:1.5rem;margin:.2em 0}h2{font-size:1.15rem;margin:1.6em 0 .6em}
 .pill{display:inline-block;background:var(--soft);color:var(--brand);border-radius:999px;padding:4px 12px;font-size:.85rem;font-weight:600}
 .card{border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
 label{display:block;font-weight:600;margin:12px 0 4px}input[type=text],input[type=number]{width:100%;font:inherit;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg)}
@@ -23,8 +23,6 @@ ul.ins{padding-left:18px}details summary{cursor:pointer;font-weight:600}pre{whit
 
 ul.ins{font-size:.8rem;color:var(--mut);opacity:.85}
 .note{font-size:.78rem;color:var(--mut);opacity:.85;margin:12px 0 0}
-.site-ft{border-top:1px solid var(--line);margin-top:32px}.site-ft .wrap{max-width:var(--site-max);margin:0 auto;padding:24px 16px 28px;font-size:12.5px;line-height:1.7;color:var(--mut)}
-.ft-links{display:flex;gap:16px;margin-bottom:8px}.ft-links a{color:var(--mut);text-decoration:underline}.site-ft p{margin:0}
 
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .ai-card{background:#0f1829;color:#fff;border-radius:20px;padding:22px;margin:14px 0}

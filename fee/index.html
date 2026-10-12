@@ -12,17 +12,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GW588P483F"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-GW588P483F');</script>
+<link rel="stylesheet" href="/fee/shared/site-chrome.css?v=0.8">
 <style>
-:root{--site-max:1080px;--ink:#111827;--mut:#4B5563;--sub:#6B7280;--bg:#FBF8F2;--line:#EADFCB;--chip:#F3EEE4;--amber:#B45309;--gold:#D97706;--soft:#FDEBD0}
+:root{--site-max:900px;--ink:#111827;--mut:#4B5563;--sub:#6B7280;--bg:#fafaf9;--line:#EADFCB;--chip:#F3EEE4;--amber:#B45309;--gold:#D97706;--soft:#FDEBD0}
 *{box-sizing:border-box}
 body{margin:0;font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
 a{color:inherit;text-decoration:none}button{font-family:inherit}
 a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .wrap{max-width:var(--site-max);width:100%;margin:0 auto;padding:0 24px}
-header{border-bottom:1px solid var(--line)}header .wrap{height:64px;display:flex;align-items:center}
-.logo{display:flex;align-items:baseline;gap:7px;white-space:nowrap}
-.logo b{font-size:16px;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,#d97706,#b45309);-webkit-background-clip:text;background-clip:text;color:transparent}
-.logo span{font-size:12px;font-weight:500;color:var(--sub)}
 main.wrap{padding-top:40px;padding-bottom:48px;display:flex;flex-direction:column;gap:40px;flex:1}
 .eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--amber)}
 h1{margin:10px 0;font-size:clamp(28px,5vw,40px);line-height:1.25;font-weight:900;letter-spacing:-.035em}h1 em{font-style:normal;color:var(--gold)}
@@ -33,7 +30,7 @@ h1{margin:10px 0;font-size:clamp(28px,5vw,40px);line-height:1.25;font-weight:900
 .arrow{color:#9CA3AF}.more{color:#FCD9A8;margin-left:8px}
 section#calc-list{display:flex;flex-direction:column;gap:14px;scroll-margin-top:24px}
 .sec-t{font-size:16px;font-weight:700}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
 .card{display:flex;flex-direction:column;gap:16px;padding:26px;background:#fff;border:1px solid var(--line);border-radius:20px}
 a.card:hover{border-color:var(--gold)}
 .ic{width:52px;height:52px;border-radius:14px;background:var(--chip);display:flex;align-items:center;justify-content:center}
@@ -42,12 +39,11 @@ a.card:hover{border-color:var(--gold)}
 .ai{align-self:flex-start;font-size:11.5px;font-weight:700;color:#92400E;background:var(--soft);border-radius:999px;padding:3px 10px;margin-top:4px}
 .foot{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--sub);margin-top:auto}.go{font-weight:700;color:var(--amber)}
 .card.off{opacity:.6}.card.off .go{color:var(--sub)}
-.up{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.up{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
 .u{padding:20px;background:#fff;border:1px dashed #D6C9AE;border-radius:16px;display:flex;flex-direction:column;gap:10px}
 .u b{font-size:15px}.u small{font-size:12px;color:var(--sub)}
 .u button{height:44px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:1px solid var(--amber);background:#fff;color:var(--amber)}
 .u button[aria-pressed=true]{background:var(--amber);color:#fff}
-.site-ft{border-top:1px solid var(--line)}.site-ft .wrap{padding-top:24px;padding-bottom:28px;font-size:12.5px;line-height:1.7;color:var(--sub)}.ft-links{display:flex;gap:16px;margin-bottom:8px}.ft-links a{color:var(--mut);text-decoration:underline}.site-ft p{margin:0}
 .bg{position:fixed;inset:0;z-index:50;background:rgba(17,24,39,.55);display:none;align-items:center;justify-content:center;padding:24px}.bg.on{display:flex}
 .dlg{width:100%;max-width:640px;max-height:100%;overflow-y:auto;background:var(--bg);border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:20px}
 .dlg .hd{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
@@ -62,7 +58,7 @@ a.card:hover{border-color:var(--gold)}
 </style>
 </head>
 <body>
-<header><div class="wrap"><a class="logo" href="https://donbuff.com/" aria-label="돈버프 홈으로 이동"><b>돈버프</b><span>FEE BUFF 수수료 계산기</span></a></div></header>
+<header class="dbx-h"><div class="dbx-h-in"><a class="dbx-brand" href="https://donbuff.com/" aria-label="돈버프 홈으로 이동"><b>돈버프</b><span>FEE BUFF 수수료 계산기</span></a></div></header>
 <main class="wrap">
 <section>
  <div class="eyebrow">FEE BUFF · 금융 수수료 계산기</div>
@@ -101,7 +97,13 @@ a.card:hover{border-color:var(--gold)}
  <div class="up" id="up"></div>
 </section>
 </main>
-<footer class="site-ft"><div class="wrap"><div class="ft-links"><a href="https://www.youtube.com/@samariaintv" target="_blank" rel="noopener">YouTube</a><a href="mailto:samariain.kim@gmail.com">협업·강연 문의</a></div><p>계산 결과는 참고용이며 실제 금액은 계약 조건과 기관 기준에 따라 달라질 수 있습니다. 금융 상품 가입의 권유가 아닙니다.</p></div></footer>
+<footer class="dbx-f">
+<div class="fb">돈버프 (DONBUFF)</div>
+<p>『AI로 부자되기』 | 저자 김태형(사마리아인)<br>
+<a href="https://donbuff.com">donbuff.com</a> &nbsp;·&nbsp; <a href="https://www.youtube.com/@samariaintv" target="_blank" rel="noopener">사마리아인TV</a> &nbsp;·&nbsp; <a href="https://open.kakao.com/o/g2JnL4Ai" target="_blank" rel="noopener">독자 오픈채팅방</a></p>
+<p>계산 결과는 참고용이며 실제 금액은 계약 조건과 기관 기준에 따라 달라질 수 있습니다. 금융 상품 가입의 권유가 아닙니다.</p>
+<p>© 2026 김태형</p>
+</footer>
 
 <div class="bg" id="bg"><div class="dlg" id="dlg" role="dialog" aria-modal="true" aria-labelledby="dt">
  <div class="hd"><div><span class="k">WHY FEE BUFF?</span><h2 id="dt" tabindex="-1">돈버프 계산기는 숫자만 알려주지 않습니다.</h2></div>
