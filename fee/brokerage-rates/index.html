@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>서울 주택 중개보수 요율 기준표 · FEE BUFF</title><meta name="robots" content="noindex,nofollow"><!-- TODO(gate) -->
+<link rel="stylesheet" href="/fee/shared/fee.css"></head><body>
+<header class="h"><a href="https://donbuff.com/">돈버프 홈</a></header>
+<main><h1>서울 주택 중개보수 요율 기준표</h1><p class="hint">특정 지역 조례 및 법령에 따라 실제 수수료율은 상이할 수 있습니다.</p><div id="t">불러오는 중…</div>
+<p><a href="/fee/brokerage-fee/">계산기로 돌아가기</a></p></main>
+<script src="/fee/shared/config.js"></script><script src="/fee/shared/rates.js"></script>
+<script>fetch(FeeConfig.RULES_FILE).then(function(r){return r.json()}).then(function(r){document.getElementById('t').innerHTML=FeeRates.render(r)}).catch(function(){document.getElementById('t').textContent='기준 데이터를 불러오지 못했습니다.'})</script>
+</body></html>

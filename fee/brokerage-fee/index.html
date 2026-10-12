@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>부동산 중개보수 계산기 · FEE BUFF</title>
+<meta name="description" content="서울특별시 주택 매매·전세·월세 중개보수 상한을 계산하고 협의 요율과 비교해 보세요.">
+<meta name="robots" content="noindex,nofollow"><!-- TODO(gate): 오픈 게이트 통과 후 제거 -->
+<meta property="og:type" content="website"><meta property="og:title" content="부동산 중개보수 계산기 · FEE BUFF">
+<meta property="og:description" content="서울특별시 주택 매매·전세·월세 중개보수 상한 계산"><meta property="og:image" content="https://donbuff.com/fee/og/brokerage-fee.png">
+<meta property="og:url" content="https://donbuff.com/fee/brokerage-fee/">
+<link rel="stylesheet" href="/fee/shared/fee.css">
+<!-- TODO(gate): GA4 gtag 스니펫 삽입(측정 ID 확정 후) -->
+</head><body>
+<header class="h"><a href="https://donbuff.com/">돈버프 홈</a></header>
+<main>
+<div class="card" id="beta" hidden role="note" style="background:var(--soft)"><strong>테스트 버전</strong> · 요율 검증 전이라 결과가 정확하지 않을 수 있습니다. 실제 계약에는 사용하지 마세요.</div>
+<span class="pill">현재 서울특별시 주택 거래 기준으로 계산합니다.</span>
+<h1>부동산 중개보수 계산기</h1>
+<p class="hint">특정 지역 조례 및 법령에 따라 실제 수수료율은 상이할 수 있습니다.</p>
+<div class="card">
+ <div class="seg" role="group" aria-label="부동산 종류"><button type="button" aria-pressed="true">주택</button><button type="button" disabled aria-disabled="true">오피스텔 · 준비 중</button><button type="button" disabled aria-disabled="true">기타 · 준비 중</button></div>
+ <div class="seg" role="group" aria-label="거래 유형" style="margin-top:10px"><button type="button" data-t="sale" aria-pressed="true">매매</button><button type="button" data-t="jeonse" aria-pressed="false">전세</button><button type="button" data-t="rent" aria-pressed="false">월세</button></div>
+ <div id="f-amount"><label for="amt" id="lbl-amount">매매가격</label><input id="amt" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 500,000,000"><div class="hint" id="amt-h" aria-live="polite"></div></div>
+ <div id="f-rent" hidden><label for="dep">보증금 (없으면 비워 두세요)</label><input id="dep" type="text" inputmode="numeric" autocomplete="off"><label for="mon">월세</label><input id="mon" type="text" inputmode="numeric" autocomplete="off"></div>
+ <label for="neg">협의 요율 % (선택)</label><input id="neg" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 0.30">
+ <div class="err" id="err" role="alert"></div>
+ <button class="btn" id="go" type="button">중개보수 계산하기</button>
+ <p><button class="link" id="open-rates" type="button">요율 기준표 보기</button></p>
+</div>
+<section id="result" class="card" hidden aria-live="polite"></section>
+<section id="ai" class="card" hidden>
+ <h2>AI에게 물어볼 프롬프트 만들기</h2>
+ <p class="hint">이 서비스는 프롬프트만 만들어 드립니다. 복사해서 사용하는 AI에 붙여넣으세요.</p>
+ <fieldset style="border:0;padding:0"><legend class="hint">분석 항목</legend>
+  <label><input class="ai-it" type="checkbox" value="verify" checked> 중개보수 검증</label>
+  <label><input class="ai-it" type="checkbox" value="cost"> 총거래비용 분석</label>
+  <label><input class="ai-it" type="checkbox" value="negotiate" checked> 협의 시나리오</label>
+  <label><input class="ai-it" type="checkbox" value="risk"> 계약 위험 점검</label>
+  <label><input class="ai-it" type="checkbox" value="checklist" checked> 실행 체크리스트</label></fieldset>
+ <details><summary>프롬프트 미리보기</summary><pre id="prompt"></pre></details>
+ <button class="btn" id="copy-ai" type="button">프롬프트 복사</button>
+ <p class="hint">AI 답변은 공식 자료와 교차 확인해 주세요.</p>
+ <button class="btn sec" id="copy-res" type="button">결과 요약 복사</button>
+</div>
+</main>
+<div class="modal-bg" id="modal-bg"><div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+ <h2 id="modal-title" tabindex="-1">요율 기준표</h2><div id="modal-body"></div>
+ <p><a href="/fee/brokerage-rates/">전체 페이지로 보기</a></p><button class="btn sec" id="close-modal" type="button">닫기</button></div></div>
+<div class="toast" id="toast" role="status"></div>
+<script src="/fee/shared/config.js"></script><script src="/fee/shared/engine.js"></script><script src="/fee/shared/insights.js"></script>
+<script src="/fee/shared/prompt.js"></script><script src="/fee/shared/rates.js"></script><script src="/fee/shared/analytics.js"></script><script src="/fee/shared/app.js"></script>
+</body></html>
