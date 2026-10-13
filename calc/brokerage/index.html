@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>부동산 중개보수 계산기 · CALC BUFF 돈버프 금융계산기</title>
+<meta name="description" content="서울특별시 주택 매매·전세·월세 중개보수 상한을 계산하고 협의 요율과 비교해 보세요.">
+<meta name="robots" content="noindex,nofollow"><!-- TODO(공개 시점): 공개하기로 결정하면 noindex 제거 -->
+<meta property="og:type" content="website"><meta property="og:title" content="부동산 중개보수 계산기 · CALC BUFF 돈버프 금융계산기">
+<meta property="og:description" content="서울특별시 주택 매매·전세·월세 중개보수 상한 계산"><meta property="og:image" content="https://donbuff.com/calc/og/brokerage.png">
+<meta property="og:url" content="https://donbuff.com/calc/brokerage/">
+<link rel="stylesheet" href="/calc/shared/calc.css?v=1.0">
+<link rel="stylesheet" href="/calc/shared/site-chrome.css?v=1.0">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW588P483F"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-GW588P483F');</script>
+</head><body>
+<div id="dbx-header"></div><script src="/calc/shared/site-chrome.js?v=1.0"></script>
+<main>
+<h1>부동산 중개보수 계산기</h1>
+<p class="hint">특정 지역 조례 및 법령에 따라 실제 수수료율은 상이할 수 있습니다.</p>
+<div class="card">
+ <div class="seg" role="group" aria-label="부동산 종류"><button type="button" aria-pressed="true">주택</button><button type="button" disabled aria-disabled="true">오피스텔 · 준비 중</button><button type="button" disabled aria-disabled="true">기타 · 준비 중</button></div>
+ <div class="seg" role="group" aria-label="거래 유형" style="margin-top:10px"><button type="button" data-t="sale" aria-pressed="true">매매</button><button type="button" data-t="jeonse" aria-pressed="false">전세</button><button type="button" data-t="rent" aria-pressed="false">월세</button></div>
+ <div id="f-amount"><label for="amt" id="lbl-amount">매매가격</label><input id="amt" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 500,000,000"><div class="hint" id="amt-h" aria-live="polite"></div></div>
+ <div id="f-rent" hidden><label for="dep">보증금 (없으면 비워 두세요)</label><input id="dep" type="text" inputmode="numeric" autocomplete="off"><label for="mon">월세</label><input id="mon" type="text" inputmode="numeric" autocomplete="off"></div>
+ <label for="neg">협의 요율 % (선택)</label><input id="neg" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 0.30">
+ <div class="err" id="err" role="alert"></div>
+ <button class="btn" id="go" type="button">중개보수 계산하기</button>
+ <p style="text-align:right;margin:12px 0 0"><button class="link" id="open-rates" type="button">요율 기준표 보기</button></p>
+</div>
+<section id="result" class="card" hidden aria-live="polite"></section>
+<section id="ai" class="ai-card" hidden aria-labelledby="ai-t">
+ <div class="ai-k">★ AI 심층분석</div>
+ <h2 id="ai-t">계약 준비를 AI로 한 단계 더</h2>
+ <p class="ai-sub">내 계산 결과를 바탕으로 필요한 분석을 선택하세요.</p>
+ <fieldset class="ai-list"><legend class="sr">분석 항목 선택</legend>
+  <label class="opt"><input class="ai-it" type="checkbox" value="verify" checked><span><b>중개보수 검증</b><small>적용 요율·상한액·협의 요율 확인</small></span></label>
+  <label class="opt"><input class="ai-it" type="checkbox" value="cost"><span><b>총거래비용 분석</b><small id="cost-desc">취득세·등기 등 추가 비용 확인</small></span></label>
+  <label class="opt"><input class="ai-it" type="checkbox" value="negotiate" checked><span><b>협의 시나리오</b><small>서로 다른 협의 요율에 따른 금액 비교</small></span></label>
+  <label class="opt"><input class="ai-it" type="checkbox" value="risk"><span><b>계약 위험 점검</b><small>거래 유형별 서류와 계약 조건</small></span></label>
+  <label class="opt"><input class="ai-it" type="checkbox" value="checklist" checked><span><b>실행 체크리스트</b><small>중개사에게 확인할 질문과 준비사항</small></span></label>
+ </fieldset>
+ <div class="ai-err" id="ai-err" role="alert"></div>
+ <button class="ai-btn" id="make-prompt" type="button" aria-expanded="false" aria-controls="prompt-box">AI 심층분석 프롬프트 만들기</button>
+ <div id="prompt-box" hidden>
+  <div class="ai-ph"><span>생성된 프롬프트</span><button class="ai-copy" id="copy-ai" type="button">프롬프트 복사</button></div>
+  <pre id="prompt" tabindex="0" aria-label="생성된 AI 프롬프트"></pre>
+ </div>
+ <p class="ai-foot">생성된 프롬프트를 복사해 원하는 AI 서비스에 붙여넣어 보세요.<br>AI 답변은 공식 자료와 교차 확인해 주세요.</p>
+</section>
+<button class="btn sec" id="copy-res" type="button" hidden>공유용 문구 복사</button>
+</main>
+<footer id="dbx-footer"></footer>
+<div class="modal-bg" id="modal-bg"><div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+ <h2 id="modal-title" tabindex="-1">요율 기준표</h2><div id="modal-body"></div>
+ <p><a href="/calc/brokerage/rates/">전체 페이지로 보기</a></p><button class="btn sec" id="close-modal" type="button">닫기</button></div></div>
+<div class="toast" id="toast" role="status"></div>
+<script src="/calc/shared/config.js?v=1.0"></script><script src="/calc/shared/engine.js?v=1.0"></script><script src="/calc/shared/format.js?v=1.0"></script><script src="/calc/shared/insights.js?v=1.0"></script>
+<script src="/calc/shared/prompt.js?v=1.0"></script><script src="/calc/shared/rates.js?v=1.0"></script><script src="/calc/shared/analytics.js?v=1.0"></script><script src="/calc/shared/app.js?v=1.0"></script>
+</body></html>

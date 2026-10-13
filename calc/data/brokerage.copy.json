@@ -1,0 +1,25 @@
+{
+  "insights": {
+    "fee_not_fixed": {
+      "title": "{max_fee}은 반드시 내야 하는 금액이 아니에요.",
+      "desc": "{cap_label}이며, 실제 보수는 상한 범위 내에서 협의할 수 있어요."
+    },
+    "negotiated_user": {
+      "title": "입력하신 협의 요율 {user_rate}를 적용하면 {user_diff} 적어요.",
+      "desc": "상한과 비교한 예시이며, 실제 협의 결과를 보장하지 않아요."
+    },
+    "negotiated_assumed": {
+      "title": "요율이 {step_pct}%p 낮아지면 {step_diff} 차이가 나요.",
+      "desc": "{basis} 기준으로 계산한 예시이며, 실제 협의 결과를 보장하지 않아요."
+    },
+    "vat": {
+      "title": "부가세는 별도로 확인해야 해요.",
+      "desc": "중개사무소의 과세 유형과 청구 조건에 따라 확인이 필요해요."
+    }
+  },
+  "notices": {
+    "region": "현재 서울특별시 주택 거래 기준으로 계산합니다.",
+    "disclaimer": "특정 지역 조례 및 법령에 따라 실제 수수료율은 상이할 수 있습니다. 참고용 계산 결과입니다.",
+    "ai_check": "AI 답변은 공식 자료와 교차 확인해 주세요."
+  }
+}

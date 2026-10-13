@@ -1,0 +1,53 @@
+{
+  "calculator_id": "brokerage",
+  "rules_version": "1.0.0",
+  "region": "SEOUL",
+  "region_label": "서울특별시",
+  "status": "pending_final_verification",
+  "effective_from": null,
+  "verified_at": null,
+  "as_of_date_policy": "current_only",
+  "rounding": "floor_won",
+  "limits": { "max_amount_krw": 100000000000 },
+  "sources": [
+    {
+      "id": "src_ydp_2021",
+      "name": "영등포구청 · 중개보수 안내 (공인중개사법 시행규칙 2021.10.19 시행본 표기)",
+      "url": "https://www.ydp.go.kr/www/contents.do?key=2725&",
+      "note": "서울 조례 원문 대조 전 초안. verified_at 기입 전까지 프로덕션 계산 차단."
+    }
+  ],
+  "monthly_rent": {
+    "primary_multiplier": 100,
+    "fallback_threshold_krw": 50000000,
+    "fallback_multiplier": 70,
+    "fallback_condition": "primary_value_lt_threshold"
+  },
+  "property_types": {
+    "housing": {
+      "sale": {
+        "bands": [
+          { "band_id": "sale_1", "min_krw": 0,          "max_exclusive_krw": 50000000,   "max_rate_bps": 60, "cap_krw": 250000, "source_id": "src_ydp_2021" },
+          { "band_id": "sale_2", "min_krw": 50000000,   "max_exclusive_krw": 200000000,  "max_rate_bps": 50, "cap_krw": 800000, "source_id": "src_ydp_2021" },
+          { "band_id": "sale_3", "min_krw": 200000000,  "max_exclusive_krw": 900000000,  "max_rate_bps": 40, "cap_krw": null,   "source_id": "src_ydp_2021" },
+          { "band_id": "sale_4", "min_krw": 900000000,  "max_exclusive_krw": 1200000000, "max_rate_bps": 50, "cap_krw": null,   "source_id": "src_ydp_2021" },
+          { "band_id": "sale_5", "min_krw": 1200000000, "max_exclusive_krw": 1500000000, "max_rate_bps": 60, "cap_krw": null,   "source_id": "src_ydp_2021" },
+          { "band_id": "sale_6", "min_krw": 1500000000, "max_exclusive_krw": null,         "max_rate_bps": 70, "cap_krw": null,   "source_id": "src_ydp_2021" }
+        ]
+      },
+      "lease": {
+        "bands": [
+          { "band_id": "lease_1", "min_krw": 0,          "max_exclusive_krw": 50000000,   "max_rate_bps": 50, "cap_krw": 200000, "source_id": "src_ydp_2021" },
+          { "band_id": "lease_2", "min_krw": 50000000,   "max_exclusive_krw": 100000000,  "max_rate_bps": 40, "cap_krw": 300000, "source_id": "src_ydp_2021" },
+          { "band_id": "lease_3", "min_krw": 100000000,  "max_exclusive_krw": 600000000,  "max_rate_bps": 30, "cap_krw": null,   "source_id": "src_ydp_2021" },
+          { "band_id": "lease_4", "min_krw": 600000000,  "max_exclusive_krw": 1200000000, "max_rate_bps": 40, "cap_krw": null,   "source_id": "src_ydp_2021" },
+          { "band_id": "lease_5", "min_krw": 1200000000, "max_exclusive_krw": 1500000000, "max_rate_bps": 50, "cap_krw": null,   "source_id": "src_ydp_2021" },
+          { "band_id": "lease_6", "min_krw": 1500000000, "max_exclusive_krw": null,         "max_rate_bps": 60, "cap_krw": null,   "source_id": "src_ydp_2021" }
+        ]
+      }
+    },
+    "officetel_qualified":   { "sale": null, "lease": null },
+    "officetel_unqualified": { "sale": null, "lease": null },
+    "other":                 { "sale": null, "lease": null }
+  }
+}
