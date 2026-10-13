@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const E = require('../shared/engine.js');
 const P = require('../shared/prompt.js');
 const rules = require('../data/brokerage-fee.rules.v1.0.0.json');
-const data = require('../data/brokerage-fee.prompt.v2.0.0.json');
+const data = require('../data/brokerage-fee.prompt.v2.1.0.json');
 
 const calc = (i, r = rules) => E.calculate(Object.assign({ propertyType: 'housing' }, i), r, { env: 'development' });
 const verifiedRules = Object.assign({}, rules, { status: 'verified', effective_from: '2021-10-19', verified_at: '2026-10-20' });
@@ -64,13 +64,13 @@ test('프롬프트: 역할·절사·한도액 규칙·FACT/VERIFY/SIMULATE/ACT',
 test('프롬프트: 미검증 규칙 → 미검증 명시, 시행일·검증일·출처·placeholder 없음', () => {
   const t = P.build(calc({ transactionType: 'sale', amountKrw: 500000000 }), null, data, rules);
   assert.match(t, /미검증/); assert.match(t, /검증이 끝났다고 표현하지 마세요/);
-  assert.doesNotMatch(t, /시행일|검증일|근거:|ydp\.go\.kr|\[공식|삽입\]/);
+  assert.doesNotMatch(t, /적용 규정 시행일:|최종 요율 검증일:|근거:|ydp\.go\.kr|\[공식|삽입\]/);
   assert.doesNotMatch(t, /검증 완료/);
 });
 
 test('프롬프트: 검증 완료 규칙이면 시행일·검증일·출처 포함', () => {
   const t = P.build(calc({ transactionType: 'sale', amountKrw: 500000000 }, verifiedRules), null, data, verifiedRules);
-  assert.match(t, /검증 완료/); assert.match(t, /2021-10-19/); assert.match(t, /2026-10-20/); assert.match(t, /ydp\.go\.kr/);
+  assert.match(t, /법령 검증 상태: 검증 완료/); assert.match(t, /2021-10-19/); assert.match(t, /2026-10-20/); assert.match(t, /ydp\.go\.kr/);
   assert.doesNotMatch(t, /미검증/);
 });
 
@@ -78,7 +78,7 @@ test('프롬프트: 시나리오 금액은 엔진 값과 일치, 사용자 입�
   const a = P.build(calc({ transactionType: 'sale', amountKrw: 500000000 }), null, data, rules);
   assert.match(a, /1,500,000원/); assert.match(a, /1,000,000원/); assert.match(a, /가정/);
   const b = P.build(calc({ transactionType: 'sale', amountKrw: 500000000, negotiatedRatePercent: '0.25' }), null, data, rules);
-  assert.match(b, /입력 협의 요율/); assert.match(b, /1,250,000원/); assert.doesNotMatch(b, /−0\.20%p \|/);
+  assert.match(b, /입력 협의 요율/); assert.match(b, /1,250,000원/); assert.doesNotMatch(b, /가정 1/);
 });
 
 test('프롬프트: 매매 vs 전세·월세 문구 분리', () => {
@@ -103,4 +103,84 @@ test('게이트 유지: 프로덕션 + 미검증 → 계산 자체가 차단되�
   const r = E.calculate({ propertyType: 'housing', transactionType: 'sale', amountKrw: 500000000 }, rules, { env: 'production' });
   assert.equal(r.status, 'rule_unverified');
   assert.equal(P.build(r, null, data, rules), '');
+});
+
+const F = require('../shared/format.js');
+const I = require('../shared/insights.js');
+const ins = require('../data/brokerage-fee.insights.json');
+const copy = require('../data/brokerage-fee.copy.json');
+const sale5 = (r = rules, extra = {}) => calc(Object.assign({ transactionType: 'sale', amountKrw: 500000000 }, extra), r);
+
+test('v2.1-1: 미검증이면 "계산기 적용 상한", 검증 완료일 때만 "법정 상한" (표·FACT)', () => {
+  const u = P.build(sale5(), null, data, rules);
+  assert.match(u, /\| 계산기 적용 상한 \|/); assert.doesNotMatch(u, /\| 법정 상한 \|/);
+  assert.match(u, /- 계산기 적용 상한 중개보수: 2,000,000원/);
+  const v = P.build(sale5(verifiedRules), null, data, verifiedRules);
+  assert.match(v, /\| 법정 상한 \|/); assert.match(v, /- 법정 상한 중개보수: 2,000,000원/);
+  assert.doesNotMatch(v, /계산기 적용 상한 중개보수/);
+});
+
+test('v2.1-2: 산술 검증 상태와 법령 검증 상태가 분리되어 표기', () => {
+  const t = P.build(sale5(), null, data, rules);
+  assert.match(t, /산술 검증 상태:/); assert.match(t, /법령 검증 상태: 미검증/);
+});
+
+test('v2.1-3: 반복 지시는 공통 규칙으로 — 모듈에 중복 문구 없음', () => {
+  const t = P.build(sale5(), ['verify', 'negotiate', 'risk'], data, rules);
+  const count = (re) => (t.match(re) || []).length;
+  assert.equal(count(/임의로 추정하지 마세요/g), 1);
+  assert.equal(count(/실제 합의된 계약 조건으로 취급하지 마세요/g), 1);
+});
+
+test('v2.1-4: 가정 요율은 시장 통상·협의 가능 요율이 아님', () => {
+  assert.match(P.build(sale5(), null, data, rules), /시장의 통상 요율이나 실제 협의 가능한 요율을 의미하지 않으며/);
+});
+
+test('v2.1-5: 법령 조회 시 규정명·시행일·조회일·적용 지역·거래 시점 일치 확인', () => {
+  assert.match(P.build(sale5(), null, data, rules), /규정명, 시행일, 조회일, 적용 지역, 거래 시점이 이 거래와 일치하는지/);
+});
+
+test('v2.1-6: FACT에 계산 규칙 버전, 검증 완료 시 출처·검증일', () => {
+  assert.match(P.build(sale5(), null, data, rules), /계산 규칙 버전: 1\.0\.0/);
+  const v = P.build(sale5(verifiedRules), null, data, verifiedRules);
+  assert.match(v, /최종 요율 검증일: 2026-10-20/); assert.match(v, /근거: .*ydp\.go\.kr/);
+});
+
+test('v2.1-7: 비용 부담 주체 구분, 단정 금지 (매매·임대차)', () => {
+  assert.match(P.build(sale5(), null, data, rules), /매수인·매도인 중 어느 쪽인지 제공되지 않았습니다[\s\S]*반드시 발생한다고 단정하지 마세요/);
+  assert.match(P.build(calc({ transactionType: 'jeonse', amountKrw: 300000000 }), null, data, rules), /임차인·임대인 중 어느 쪽인지 제공되지 않았습니다/);
+});
+
+test('v2.1-8: 핵심 요약 5줄 이내 + 핵심 항목 중심·위험 생략 금지', () => {
+  const t = P.build(sale5(), null, data, rules);
+  assert.match(t, /5줄 이내/); assert.match(t, /중요한 위험이나 필수 확인사항은 생략하지 마세요/);
+});
+
+test('화면 라벨: 시나리오 행 라벨이 프롬프트와 동일 (가정 1, 가정 2 + 가정 배지)', () => {
+  const rows = P.scenarioRows(sale5());
+  assert.deepEqual(rows.map(r => [r.label, r.sub, r.badge]), [['계산기 적용 상한', '', ''], ['가정 1', '상한 −0.10%p', '가정'], ['가정 2', '상한 −0.20%p', '가정']]);
+  assert.equal(P.scenarioRows(sale5(verifiedRules))[0].label, '법정 상한');
+});
+
+test('금액 표기: 만 원 단위 / 억 / 원 단위', () => {
+  assert.equal(F.man(2000000), '200만 원'); assert.equal(F.man(500000), '50만 원'); assert.equal(F.man(100000000), '1억 원');
+  assert.equal(F.man(150000000), '1억 5,000만 원'); assert.equal(F.man(155000), '155,000원'); assert.equal(F.man(31000), '31,000원');
+});
+
+test('인사이트: 사용자의 계산값으로 문구 생성 (가정 / 입력 / 라벨)', () => {
+  const a = I.evaluate(sale5(), ins, copy);
+  assert.equal(a.length, 3);
+  assert.equal(a[0].title, '200만 원은 반드시 내야 하는 금액이 아니에요.');
+  assert.match(a[0].desc, /계산기 적용 상한액이며/);
+  assert.equal(a[1].title, '요율이 0.10%p 낮아지면 50만 원 차이가 나요.');
+  assert.match(a[1].desc, /5억 원 거래 기준으로 계산한 예시/);
+  assert.equal(a[2].title, '부가세는 별도로 확인해야 해요.');
+  assert.match(I.evaluate(sale5(verifiedRules), ins, copy)[0].desc, /법정 상한액이며/);
+  const b = I.evaluate(sale5(rules, { negotiatedRatePercent: '0.30' }), ins, copy);
+  assert.equal(b[1].title, '입력하신 협의 요율 0.30%를 적용하면 50만 원 적어요.');
+});
+
+test('인사이트: 최대 3개, 실패 결과는 빈 배열', () => {
+  assert.ok(I.evaluate(sale5(), ins, copy).length <= 3);
+  assert.deepEqual(I.evaluate({ status: 'invalid_input' }, ins, copy), []);
 });

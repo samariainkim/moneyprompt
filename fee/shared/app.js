@@ -51,23 +51,31 @@
     box.innerHTML = '<h2 id="rh">계산 결과</h2><p class="hint">상한 중개보수 (부가세 미포함)</p><div class="big">' + fmt(r.max_fee_krw) + '원</div><dl>' +
       rows.map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('') + '</dl>' + scenarioHtml(r) +
       '<p class="note">※ 부동산 중개보수 요율 기준은 서울특별시 조례 기준을 적용하였습니다. 지역, 시점에 따라 기준 요율이 다소 상이할 수 있으므로 해당 결과는 참고자료로만 활용 바랍니다.</p>' +
-      '<h2>함께 확인해 보세요</h2><ul class="ins">' + FeeInsights.evaluate(r, insights, copy).map(function (i) { return '<li>' + i.text + '</li>'; }).join('') + '</ul>';
+      insightHtml(r);
     $('ai').hidden = false; $('copy-res').hidden = false; $('cost-desc').textContent = ttype === 'sale' ? '취득세·등기 등 추가 비용 확인' : '보증보험·확정일자 등 추가 비용 확인'; if (!$('prompt-box').hidden) updatePrompt();
     box.setAttribute('tabindex', '-1'); box.focus();
   }
+  function diffText(sc) { return sc.kind === 'legal_max' ? '기준' : (sc.diff_krw > 0 ? FeeFormat.man(sc.diff_krw) + ' 적음' : '차이 없음'); }
   function scenarioHtml(r) {
     if (!r.scenarios || r.scenarios.length < 2) return '';
-    var h = '<h3 class="sc-t">협의 요율 비교</h3><table class="rt"><caption class="sr">협의 요율별 중개보수</caption><thead><tr><th scope="col">구분</th><th scope="col">요율</th><th scope="col">중개보수</th><th scope="col">상한 대비</th></tr></thead><tbody>';
-    r.scenarios.forEach(function (sc) {
-      h += '<tr><td>' + FeePrompt.scenarioLabel(sc) + (sc.is_assumption ? ' <span class="asm">가정</span>' : '') + '</td><td>' + (sc.rate_bps / 100).toFixed(2) + '%</td><td>' + fmt(sc.fee_krw) + '원' + (sc.cap_applied ? '<br><small>한도액 적용</small>' : '') + '</td><td>' + (sc.diff_krw ? '−' + fmt(sc.diff_krw) + '원' : '-') + '</td></tr>';
+    var h = '<h3 class="sc-t">협의 요율 비교</h3><table class="rt sc"><caption class="sr">협의 요율별 중개보수</caption><thead><tr><th scope="col">구분</th><th scope="col">요율</th><th scope="col">중개보수</th><th scope="col">상한 대비 차이</th></tr></thead><tbody>';
+    FeePrompt.scenarioRows(r).forEach(function (row) {
+      var sc = row.scenario;
+      h += '<tr><td>' + row.label + (row.badge ? ' <span class="asm">' + row.badge + '</span>' : '') + (row.sub ? '<br><small>' + row.sub + '</small>' : '') + '</td><td>' + FeeFormat.pct(sc.rate_bps) + '</td><td>' + FeeFormat.man(sc.fee_krw) + (sc.cap_applied ? '<br><small>한도액 적용</small>' : '') + '</td><td>' + diffText(sc) + '</td></tr>';
     });
-    return h + '</tbody></table><p class="note">' + (r.negotiated_rate_bps === null ? '가정 요율은 예시이며 실제 협의 요율이 아닙니다. ' : '') + '상한 대비 차이는 확정 절감액이 아닙니다.</p>';
+    return h + '</tbody></table><p class="note">' + (r.negotiated_rate_bps === null ? '가정 요율은 계산기가 비교를 위해 둔 예시이며 실제 협의 요율이 아닙니다. ' : '') + '차이는 확정 절감액이 아닙니다.</p>';
+  }
+  var TXL = { sale: '매매', jeonse: '전세', rent: '월세' };
+  function insightHtml(r) {
+    var items = FeeInsights.evaluate(r, insights, copy);
+    return '<section class="ins-box" aria-labelledby="ins-t"><div class="ins-h"><h2 id="ins-t">돈버프 인사이트</h2><span class="ins-sub">' + TXL[r.transaction_type] + ' · 주택</span></div><ul class="ins2">' +
+      items.map(function (i) { return '<li><b>' + i.title + '</b><span>' + i.desc + '</span></li>'; }).join('') + '</ul></section>';
   }
   function selected() { return Array.prototype.map.call(document.querySelectorAll('.ai-it:checked'), function (c) { return c.value; }); }
   function updatePrompt() { if (last && last.status === 'success') $('prompt').textContent = FeePrompt.build(last, selected(), promptData, rules); }
   function makePrompt() {
     if (!selected().length) { $('ai-err').textContent = '분석 항목을 하나 이상 선택해 주세요.'; return; }
-    $('ai-err').textContent = ''; updatePrompt(); var box = $('prompt-box'); box.hidden = false; $('make-prompt').setAttribute('aria-expanded', 'true'); $('make-prompt').textContent = '프롬프트 다시 만들기'; $('prompt-badge').hidden = !(last && last.rules_status !== 'verified'); FeeAnalytics.track('calc_ai_generate');
+    $('ai-err').textContent = ''; updatePrompt(); var box = $('prompt-box'); box.hidden = false; $('make-prompt').setAttribute('aria-expanded', 'true'); $('make-prompt').textContent = '프롬프트 다시 만들기'; FeeAnalytics.track('calc_ai_generate');
   }
   function copyText(text, ev) {
     function done() { toast('복사했습니다'); FeeAnalytics.track(ev, ev === 'calc_share' ? { channel: 'copy_button' } : {}); }

@@ -1,13 +1,10 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "max_items": 3,
   "rules": [
-    { "id": "ins_cap_applied", "priority": 10, "when": [{ "field": "cap_applied", "op": "eq", "value": true }], "copy_id": "cap_applied" },
-    { "id": "ins_negotiated", "priority": 20, "when": [{ "field": "difference_krw", "op": "gt", "value": 0 }], "copy_id": "negotiated_diff" },
-    { "id": "ins_rent_converted", "priority": 30, "when": [{ "field": "converted_from_rent", "op": "eq", "value": true }], "copy_id": "rent_converted" },
-    { "id": "ins_high_band", "priority": 40, "when": [{ "field": "transaction_amount_krw", "op": "gte", "value": 900000000 }], "copy_id": "high_band" },
-    { "id": "ins_common_negotiable", "priority": 90, "when": [], "copy_id": "common_negotiable" },
-    { "id": "ins_common_vat", "priority": 91, "when": [], "copy_id": "common_vat" },
-    { "id": "ins_common_receipt", "priority": 92, "when": [], "copy_id": "common_receipt" }
+    { "id": "ins_fee_not_fixed", "priority": 10, "when": [], "copy_id": "fee_not_fixed" },
+    { "id": "ins_negotiated_user", "priority": 20, "when": [{ "field": "negotiated_rate_bps", "op": "neq", "value": null }, { "field": "difference_krw", "op": "gt", "value": 0 }], "copy_id": "negotiated_user" },
+    { "id": "ins_negotiated_assumed", "priority": 21, "when": [{ "field": "negotiated_rate_bps", "op": "eq", "value": null }, { "field": "assumed_count", "op": "gt", "value": 0 }], "copy_id": "negotiated_assumed" },
+    { "id": "ins_vat", "priority": 30, "when": [], "copy_id": "vat" }
   ]
 }

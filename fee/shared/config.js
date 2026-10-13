@@ -16,9 +16,9 @@
     PREVIEW_UNVERIFIED: PREVIEW_UNVERIFIED,
     env: env,
     RULES_FILE: '/fee/data/brokerage-fee.rules.v1.0.0.json',
-    INSIGHTS_FILE: '/fee/data/brokerage-fee.insights.json?v=0.8',
-    PROMPT_FILE: '/fee/data/brokerage-fee.prompt.v2.0.0.json',
-    COPY_FILE: '/fee/data/brokerage-fee.copy.json?v=0.8',
+    INSIGHTS_FILE: '/fee/data/brokerage-fee.insights.json?v=0.9',
+    PROMPT_FILE: '/fee/data/brokerage-fee.prompt.v2.1.0.json',
+    COPY_FILE: '/fee/data/brokerage-fee.copy.json?v=0.9',
     CALCULATOR_ID: 'brokerage-fee',
     CATEGORY: 'real_estate',
     ERROR_REPORT_URL: null // TODO(O-gate): 실제 환경 확인 후 확정
