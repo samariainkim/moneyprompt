@@ -4,7 +4,7 @@
   var LINKS = [
     { href: '/prompt/', label: '돈 버는 프롬프트', key: 'prompt' },
     { href: '/invest-mbti/', label: '나의 투자성향 찾기', key: 'invest' },
-    { href: '/calc/', label: '돈버프 금융계산기', key: 'calc' }
+    { href: '/calc/', label: '금융계산기', key: 'calc' }
   ];
   function track(n, p) { try { if (typeof gtag === 'function') gtag('event', n, p || {}); } catch (e) {} }
   function nav(cls, withArrow) {
@@ -15,7 +15,7 @@
   var h = document.getElementById('dbx-header');
   if (h) {
     h.className = 'dbx-h';
-    h.innerHTML = '<div class="dbx-h-in"><a class="dbx-brand" href="https://donbuff.com/" aria-label="돈버프 홈으로 이동"><b>돈버프</b><span>CALC BUFF 금융계산기</span></a>' +
+    h.innerHTML = '<div class="dbx-h-in"><a class="dbx-brand" href="https://donbuff.com/" aria-label="돈버프 홈으로 이동"><b>돈버프</b><span>금융계산기</span></a>' +
       '<nav class="dbx-nav" aria-label="서비스">' + nav() + '</nav>' +
       '<button class="dbx-menu-btn" id="dbx-btn" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="dbx-menu"><span></span><span></span><span></span></button>' +
       '<nav class="dbx-menu" id="dbx-menu" aria-label="서비스 메뉴" hidden>' + nav('', true) + '</nav><div class="dbx-scrim" id="dbx-scrim" hidden></div></div>';

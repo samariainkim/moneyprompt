@@ -1,9 +1,67 @@
 {
   "version": "1.0.0",
-  "brand": { "name": "CALC BUFF", "name_ko": "돈버프 금융계산기", "tagline": "돈을 불려주는 스마트한 금융 계산기" },
+  "brand": {
+    "name": "CALC BUFF",
+    "name_ko": "돈버프 금융계산기",
+    "tagline": "돈을 불려주는 스마트한 금융 계산기"
+  },
   "calculators": [
-    { "id": "brokerage", "path": "/calc/brokerage/", "name": "부동산 중개보수 계산기", "short_name": "부동산 중개보수", "desc": "거래 시 예상 중개보수를 계산해요", "category": "real_estate", "icon": "home", "status": "open", "ai": true, "badge": "기준일 · 2026년", "order": 1 },
-    { "id": "loan-prepay", "path": "/calc/loan-prepay/", "name": "대출 중도상환수수료 계산기", "short_name": "대출 중도상환", "desc": "대출을 미리 갚을 때 드는 비용이에요", "category": "loan", "icon": "loan", "status": "coming_soon", "ai": true, "badge": null, "order": 2 },
-    { "id": "fx", "path": "/calc/fx/", "name": "환전수수료 계산기", "short_name": "환전", "desc": "환율 우대율에 따른 실제 환전 비용", "category": "fx", "icon": "fx", "status": "coming_soon", "ai": true, "badge": null, "order": 3 }
+    {
+      "id": "brokerage",
+      "path": "/calc/brokerage/",
+      "name": "부동산 중개보수 계산기",
+      "short_name": "부동산 중개보수",
+      "desc": "거래 시 예상 중개보수를 계산해요",
+      "category": "real_estate",
+      "icon": "home",
+      "status": "open",
+      "ai": true,
+      "badge": "기준일 · 2026년",
+      "order": 1
+    },
+    {
+      "id": "loan-prepay",
+      "path": "/calc/loan-prepay/",
+      "name": "대출 중도상환수수료 계산기",
+      "short_name": "대출 중도상환",
+      "desc": "대출을 미리 갚을 때 드는 비용이에요",
+      "category": "loan",
+      "icon": "loan",
+      "status": "coming_soon",
+      "ai": true,
+      "badge": null,
+      "order": 2
+    },
+    {
+      "id": "fx",
+      "path": "/calc/fx/",
+      "name": "환전수수료 계산기",
+      "short_name": "환전",
+      "desc": "환율 우대율에 따른 실제 환전 비용",
+      "category": "fx",
+      "icon": "fx",
+      "status": "coming_soon",
+      "ai": true,
+      "badge": null,
+      "order": 3
+    }
+  ],
+  "wishlist": [
+    {
+      "id": "remittance",
+      "name": "해외송금 수수료"
+    },
+    {
+      "id": "stock-fee",
+      "name": "주식 거래수수료"
+    },
+    {
+      "id": "card-installment",
+      "name": "카드 할부수수료"
+    },
+    {
+      "id": "etf-cost",
+      "name": "ETF 총비용"
+    }
   ]
 }

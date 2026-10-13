@@ -20,7 +20,7 @@
     INSIGHTS_FILE: '/calc/data/brokerage.insights.json?v=1.0',
     PROMPT_FILE: '/calc/data/brokerage.prompt.v2.1.0.json',
     COPY_FILE: '/calc/data/brokerage.copy.json?v=1.0',
-    REGISTRY_FILE: '/calc/data/calculators.json?v=1.0',
+    REGISTRY_FILE: '/calc/data/calculators.json?v=1.1',
     CALCULATOR_ID: 'brokerage',
     CATEGORY: 'real_estate',
     ERROR_REPORT_URL: null // TODO(O-gate): 실제 환경 확인 후 확정

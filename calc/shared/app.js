@@ -107,7 +107,7 @@
     $('copy-ai').addEventListener('click', function () { copyText($('prompt').textContent, 'calc_ai_copy'); });
     $('copy-res').addEventListener('click', function () {
       if (!last || last.status !== 'success') return;
-      var t = '[CALC BUFF 돈버프 금융계산기] ' + last.region_label + ' 주택 중개보수 상한 ' + fmt(last.max_fee_krw) + '원 (부가세 미포함, 참고용)\n' + location.origin + '/calc/brokerage/';
+      var t = '[돈버프 금융계산기] ' + last.region_label + ' 주택 중개보수 상한 ' + fmt(last.max_fee_krw) + '원 (부가세 미포함, 참고용)\n' + location.origin + '/calc/brokerage/';
       copyText(t, 'calc_share');
     });
     $('neg').addEventListener('focus', function () {});

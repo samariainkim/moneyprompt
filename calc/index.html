@@ -2,10 +2,10 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CALC BUFF · 돈버프 금융계산기 | 돈버프</title>
+<title>돈버프 금융계산기 · CALC BUFF</title>
 <meta name="description" content="돈을 불려주는 스마트한 금융 계산기. 부동산 중개보수 등 금융 계산을 한 곳에서 하고, AI 심층분석 프롬프트까지 만들어 보세요.">
 <meta name="robots" content="noindex,nofollow"><!-- TODO(공개 시점): 공개하기로 결정하면 noindex 제거 -->
-<meta property="og:type" content="website"><meta property="og:title" content="CALC BUFF · 돈버프 금융계산기">
+<meta property="og:type" content="website"><meta property="og:title" content="돈버프 금융계산기 · CALC BUFF">
 <meta property="og:description" content="돈을 불려주는 스마트한 금융 계산기"><meta property="og:url" content="https://donbuff.com/calc/">
 <meta property="og:image" content="https://donbuff.com/calc/og/hub.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,7 +44,7 @@ a.card:hover{border-color:var(--gold)}
 .u{padding:20px;background:#fff;border:1px dashed #D6C9AE;border-radius:16px;display:flex;flex-direction:column;gap:10px}
 .u b{font-size:15px}.u small{font-size:12px;color:var(--sub)}
 .u button{height:44px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:1px solid var(--amber);background:#fff;color:var(--amber)}
-.u button[aria-pressed=true]{background:var(--amber);color:#fff}
+.u button[aria-pressed=true]{background:var(--amber);color:#fff;cursor:default}
 .bg{position:fixed;inset:0;z-index:50;background:rgba(17,24,39,.55);display:none;align-items:center;justify-content:center;padding:24px}.bg.on{display:flex}
 .dlg{width:100%;max-width:640px;max-height:100%;overflow-y:auto;background:var(--bg);border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:20px}
 .dlg .hd{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
@@ -62,7 +62,7 @@ a.card:hover{border-color:var(--gold)}
 <div id="dbx-header"></div><script src="/calc/shared/site-chrome.js?v=1.0"></script>
 <main class="wrap">
 <section>
- <div class="eyebrow">CALC BUFF · 돈버프 금융계산기</div>
+ <div class="eyebrow">CALC BUFF</div>
  <h1>돈을 불려주는 <em>스마트한</em> 금융 계산기</h1>
  <p class="lead">계산부터 AI 심층분석까지, 돈이 나가기 전에 먼저 확인하세요.</p>
 </section>
@@ -78,7 +78,7 @@ a.card:hover{border-color:var(--gold)}
 </section>
 
 <section aria-labelledby="nx">
- <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:14px"><div class="sec-t" id="nx">다음엔 어떤 계산기가 필요하세요?</div><div style="font-size:13.5px;color:var(--mut)">필요한 계산기를 눌러 주세요. 개발 우선순위를 정할 때 참고합니다.</div></div>
+ <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:14px"><div class="sec-t" id="nx">다음엔 어떤 계산기가 필요하세요?</div><div style="font-size:13.5px;color:var(--mut)">필요한 계산기에 '필요해요'를 눌러주세요. 여러분의 선택을 다음 개발에 참고할게요.</div></div>
  <div class="up" id="up"></div>
 </section>
 </main>
@@ -119,15 +119,25 @@ a.card:hover{border-color:var(--gold)}
   fetch(FeeConfig.REGISTRY_FILE).then(function(r){return r.json()}).then(function(d){
     d.calculators.sort(function(a,b){return a.order-b.order});
     $('grid').innerHTML=d.calculators.map(card).join('');
+    (d.wishlist||[]).forEach(wish);
   }).catch(function(){$('grid').innerHTML='<p style="color:var(--mut);font-size:14px">계산기 목록을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>'});
-  var names=['해외송금 수수료','주식 거래수수료','카드 할부수수료','ETF 총비용'],picked={};
-  names.forEach(function(n){
+  // '필요해요' 집계: 항목별 GA4 이벤트(calc_interest, interest_item) 1회 전송. 같은 브라우저에서는 새로고침 후에도 중복 전송하지 않음(best-effort).
+  var KEY='calc_interest_v1',picked={};
+  try{picked=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){picked={}}
+  function remember(id){picked[id]=1;try{localStorage.setItem(KEY,JSON.stringify(picked))}catch(e){}}
+  function mark(btn){btn.setAttribute('aria-pressed','true');btn.setAttribute('aria-disabled','true');btn.textContent='의견을 전달했어요';}
+  function wish(w){
     var d=document.createElement('div');d.className='u';
     d.innerHTML='<b></b><small>추가 검토 중</small><button type="button" aria-pressed="false">필요해요</button>';
-    d.querySelector('b').textContent=n;var b=d.querySelector('button');
-    b.addEventListener('click',function(){if(picked[n])return;picked[n]=true;b.setAttribute('aria-pressed','true');b.textContent='반영했어요';track('calc_interest',{calculator_id:'hub',category:'interest'});});
+    d.querySelector('b').textContent=w.name;var btn=d.querySelector('button');
+    if(picked[w.id])mark(btn);
+    btn.addEventListener('click',function(){
+      if(picked[w.id])return;
+      remember(w.id);mark(btn);
+      track('calc_interest',{calculator_id:'hub',category:'interest',interest_item:w.id});
+    });
     $('up').appendChild(d);
-  });
+  }
   function open(){last=document.activeElement;$('bg').classList.add('on');$('dt').focus();}
   function close(){$('bg').classList.remove('on');if(last)last.focus();}
   $('open-why').addEventListener('click',open);$('close-why').addEventListener('click',close);
