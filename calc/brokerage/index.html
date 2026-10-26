@@ -6,18 +6,25 @@
 <meta property="og:type" content="website"><meta property="og:title" content="부동산 중개보수 계산기 · 돈버프 금융계산기">
 <meta property="og:description" content="서울특별시 주택 매매·전세·월세 중개보수 상한 계산"><meta property="og:image" content="https://donbuff.com/calc/og/brokerage.png">
 <meta property="og:url" content="https://donbuff.com/calc/brokerage/">
-<link rel="stylesheet" href="/calc/shared/calc.css?v=1.0">
-<link rel="stylesheet" href="/calc/shared/site-chrome.css?v=1.0">
+<link rel="stylesheet" href="/calc/shared/calc.css?v=1.2">
+<link rel="stylesheet" href="/calc/shared/site-chrome.css?v=1.2">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GW588P483F"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-GW588P483F');</script>
 </head><body>
-<div id="dbx-header"></div><script src="/calc/shared/site-chrome.js?v=1.0"></script>
+<div id="dbx-header"></div><script src="/calc/shared/site-chrome.js?v=1.2"></script>
 <main>
 <h1>부동산 중개보수 계산기</h1>
 <p class="hint">특정 지역 조례 및 법령에 따라 실제 수수료율은 상이할 수 있습니다.</p>
 <div class="card">
- <div class="seg" role="group" aria-label="부동산 종류"><button type="button" aria-pressed="true">주택</button><button type="button" disabled aria-disabled="true">오피스텔 · 준비 중</button><button type="button" disabled aria-disabled="true">기타 · 준비 중</button></div>
- <div class="seg" role="group" aria-label="거래 유형" style="margin-top:10px"><button type="button" data-t="sale" aria-pressed="true">매매</button><button type="button" data-t="jeonse" aria-pressed="false">전세</button><button type="button" data-t="rent" aria-pressed="false">월세</button></div>
+ <div class="seg" role="group" aria-label="부동산 종류"><button type="button" data-p="housing" aria-pressed="true">주택</button><button type="button" data-p="officetel" aria-pressed="false">오피스텔</button><button type="button" data-p="other" aria-pressed="false">주택 외(상가, 토지 등)</button></div>
+ <div id="f-officetel" hidden>
+  <div class="req-t" id="req-a">전용면적이 85㎡ 이하인가요?</div>
+  <div class="seg" role="group" aria-labelledby="req-a"><button type="button" data-oa="1" aria-pressed="false">예</button><button type="button" data-oa="0" aria-pressed="false">아니요</button></div>
+  <div class="req-t" id="req-f">상·하수도 시설이 갖춰진 전용 입식 부엌, 전용 수세식 화장실, 목욕시설을 모두 갖췄나요?</div>
+  <div class="seg" role="group" aria-labelledby="req-f"><button type="button" data-of="1" aria-pressed="false">예</button><button type="button" data-of="0" aria-pressed="false">아니요</button></div>
+  <div class="hint" style="margin-top:8px">두 가지를 모두 갖추면 오피스텔 요율(매매 0.5%·임대차 0.4%)을, 아니면 0.9% 이내 협의 요율을 적용해요. 건축물대장 등으로 확인해 보세요.</div>
+ </div>
+ <div class="seg" role="group" aria-label="거래 유형" style="margin-top:10px"><button type="button" data-t="sale" aria-pressed="true">매매</button><button type="button" data-t="jeonse" aria-pressed="false" id="t-jeonse">전세</button><button type="button" data-t="rent" aria-pressed="false" id="t-rent">월세</button></div>
  <div id="f-amount"><label for="amt" id="lbl-amount">매매가격</label><input id="amt" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 500,000,000"><div class="hint" id="amt-h" aria-live="polite"></div></div>
  <div id="f-rent" hidden><label for="dep">보증금 (없으면 비워 두세요)</label><input id="dep" type="text" inputmode="numeric" autocomplete="off"><label for="mon">월세</label><input id="mon" type="text" inputmode="numeric" autocomplete="off"></div>
  <label for="neg">협의 요율 % (선택)</label><input id="neg" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 0.30">
@@ -52,6 +59,6 @@
  <h2 id="modal-title" tabindex="-1">요율 기준표</h2><div id="modal-body"></div>
  <p><a href="/calc/brokerage/rates/">전체 페이지로 보기</a></p><button class="btn sec" id="close-modal" type="button">닫기</button></div></div>
 <div class="toast" id="toast" role="status"></div>
-<script src="/calc/shared/config.js?v=1.0"></script><script src="/calc/shared/engine.js?v=1.0"></script><script src="/calc/shared/format.js?v=1.0"></script><script src="/calc/shared/insights.js?v=1.0"></script>
-<script src="/calc/shared/prompt.js?v=1.0"></script><script src="/calc/shared/rates.js?v=1.0"></script><script src="/calc/shared/analytics.js?v=1.0"></script><script src="/calc/shared/app.js?v=1.0"></script>
+<script src="/calc/shared/config.js?v=1.2"></script><script src="/calc/shared/engine.js?v=1.2"></script><script src="/calc/shared/format.js?v=1.2"></script><script src="/calc/shared/insights.js?v=1.2"></script>
+<script src="/calc/shared/prompt.js?v=1.2"></script><script src="/calc/shared/rates.js?v=1.2"></script><script src="/calc/shared/analytics.js?v=1.2"></script><script src="/calc/shared/app.js?v=1.2"></script>
 </body></html>

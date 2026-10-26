@@ -3,12 +3,15 @@
 (검증 전 요율은 결과에 "계산기 적용 상한"·참고용 안내가 표시됩니다. 미검증 규칙을 막고 싶을 때만 `config.js`의 `BLOCK_UNVERIFIED`를 true로.)
 
 ## 계산기별 (부동산 중개보수)
+- [ ] 오피스텔(요건 충족 0.5%/0.4%, 미충족 0.9% 이내)·주택 외(0.9% 이내) 요율을 시행규칙 원문과 대조 (현재 근거: 업로드 요율표 `src_upload_table`, 발행처·기준일 미표기)
+- [ ] 오피스텔·주택 외의 월세 환산(×100, 5천만 원 미만 ×70) 적용 여부 원문 확인 (현재 주택과 동일하게 적용)
+- [ ] 주택 요율표: 업로드 요율표(구판 추정)와 현재 규칙(2021.10.19 시행본 표기)이 달라 조례 원문 대조 시 현행 확정
 - [ ] 서울 조례 원문 대조(구간·요율·한도액) 후 rules JSON에 `effective_from`·`verified_at` 기입, `status: "verified"`
 - [ ] 공식 계산 결과와 몇 건 대조, 원 단위 처리(절사) 기준 확인
 - [ ] 적용 범위(소재지 기준, 월세 환산 범위, 오피스텔 요건) 확정
 
 ## 사이트 공통
-- [ ] GA4: 커스텀 차원(calculator_id, category, error_type, channel, target, interest_item) 등록, DebugView 확인
+- [ ] GA4: 커스텀 차원(calculator_id, category, error_type, channel, target, interest_item, property_type) 등록, DebugView 확인
 - [ ] 카카오 OG: `/calc/og/brokerage.png`, `/calc/og/hub.png`(1200×630) 제작 후 실기기 미리보기
 - [ ] 접근성: 키보드만으로 사용, 스크린리더, 모달·모바일 메뉴 포커스(Esc/복귀)
 - [ ] 호스팅(GitHub Pages) 실환경 확인, 서버에 남은 옛 `/fee/` 폴더 삭제

@@ -188,11 +188,8 @@ test('개발 환경에서는 pending 규칙으로도 계산 가능', () => {
   assert.equal(run({ transactionType: 'sale', amountKrw: 500000000 }, DEV).status, 'success');
 });
 
-test('오피스텔·기타 부동산 → unsupported (규칙 null)', () => {
-  for (const p of ['officetel_qualified', 'officetel_unqualified', 'other']) {
-    const r = calculate({ propertyType: p, transactionType: 'sale', amountKrw: 500000000 }, rules, DEV);
-    assert.equal(r.status, 'unsupported', p);
-  }
+test('지원하지 않는 부동산 종류(land 등) → unsupported', () => {
+  // 오피스텔·주택 외 규칙은 tests/property-types.test.js 에서 검증
   assert.equal(calculate({ propertyType: 'land', transactionType: 'sale', amountKrw: 1 }, rules, DEV).status, 'unsupported');
 });
 

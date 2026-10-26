@@ -1,10 +1,67 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "max_items": 3,
   "rules": [
-    { "id": "ins_fee_not_fixed", "priority": 10, "when": [], "copy_id": "fee_not_fixed" },
-    { "id": "ins_negotiated_user", "priority": 20, "when": [{ "field": "negotiated_rate_bps", "op": "neq", "value": null }, { "field": "difference_krw", "op": "gt", "value": 0 }], "copy_id": "negotiated_user" },
-    { "id": "ins_negotiated_assumed", "priority": 21, "when": [{ "field": "negotiated_rate_bps", "op": "eq", "value": null }, { "field": "assumed_count", "op": "gt", "value": 0 }], "copy_id": "negotiated_assumed" },
-    { "id": "ins_vat", "priority": 30, "when": [], "copy_id": "vat" }
+    {
+      "id": "ins_fee_not_fixed",
+      "priority": 10,
+      "when": [],
+      "copy_id": "fee_not_fixed"
+    },
+    {
+      "id": "ins_negotiated_user",
+      "priority": 20,
+      "when": [
+        {
+          "field": "negotiated_rate_bps",
+          "op": "neq",
+          "value": null
+        },
+        {
+          "field": "difference_krw",
+          "op": "gt",
+          "value": 0
+        }
+      ],
+      "copy_id": "negotiated_user"
+    },
+    {
+      "id": "ins_negotiated_assumed",
+      "priority": 21,
+      "when": [
+        {
+          "field": "negotiated_rate_bps",
+          "op": "eq",
+          "value": null
+        },
+        {
+          "field": "assumed_count",
+          "op": "gt",
+          "value": 0
+        }
+      ],
+      "copy_id": "negotiated_assumed"
+    },
+    {
+      "id": "ins_officetel_req",
+      "priority": 25,
+      "when": [
+        {
+          "field": "property_type",
+          "op": "in",
+          "value": [
+            "officetel_qualified",
+            "officetel_unqualified"
+          ]
+        }
+      ],
+      "copy_id": "officetel_req"
+    },
+    {
+      "id": "ins_vat",
+      "priority": 30,
+      "when": [],
+      "copy_id": "vat"
+    }
   ]
 }

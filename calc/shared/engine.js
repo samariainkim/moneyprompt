@@ -86,7 +86,7 @@
   /**
    * calculate(input, rules, opts)
    * input: {
-   *   propertyType: 'housing',
+   *   propertyType: 'housing' | 'officetel' | 'other'  (officetel 은 officetelAreaOk, officetelFacilityOk boolean 필수),
    *   transactionType: 'sale' | 'jeonse' | 'rent',
    *   amountKrw:  매매가격 / 전세보증금 (sale, jeonse)
    *   depositKrw, monthlyKrw: 월세 (rent)
@@ -105,6 +105,14 @@
 
     var ptype = input && input.propertyType;
     var ttype = input && input.transactionType;
+    // 오피스텔: 면적·시설 요건 입력으로 적용 규칙 키를 결정 (둘 다 true → officetel_qualified)
+    var officetelInput = null;
+    if (ptype === 'officetel') {
+      if (typeof input.officetelAreaOk !== 'boolean') return fail(STATUS.INVALID_INPUT, 'officetelAreaOk', 'required_missing');
+      if (typeof input.officetelFacilityOk !== 'boolean') return fail(STATUS.INVALID_INPUT, 'officetelFacilityOk', 'required_missing');
+      officetelInput = { area_ok: input.officetelAreaOk, facility_ok: input.officetelFacilityOk };
+      ptype = (input.officetelAreaOk && input.officetelFacilityOk) ? 'officetel_qualified' : 'officetel_unqualified';
+    }
     var group = rules.property_types[ptype];
     if (!group) return fail(STATUS.UNSUPPORTED, 'propertyType', 'unsupported_property_type');
     var kind = ttype === 'sale' ? 'sale' : (ttype === 'jeonse' || ttype === 'rent') ? 'lease' : null;
@@ -180,6 +188,14 @@
       verified_at: rules.verified_at,
       rules_status: rules.status
     };
+
+    // 주택 외 유형(오피스텔·주택 외)만 표시용 정보를 추가 — 주택 결과 객체는 그대로 둠
+    if (group.label) {
+      result.property_label = group.label;
+      result.property_group = group.group;
+      result.basis_kind = group.basis_kind || 'regulation';
+      if (officetelInput) { result.officetel_area_ok = officetelInput.area_ok; result.officetel_facility_ok = officetelInput.facility_ok; }
+    }
 
     // 협의 요율 비교 (선택)
     var userBps = null;

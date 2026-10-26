@@ -32,10 +32,23 @@
     });
   }
 
+  // 주택 외 유형은 modules[id].by_type[group][g] 가 있으면 그것을, 없으면 기존(주택) 문구를 사용
+  function specFor(m, r, g) {
+    var t = r.property_group && m.by_type && m.by_type[r.property_group];
+    return (t && t[g]) || m.by_group[g];
+  }
   function factSection(r, rules) {
     var L = [], ver = isVerified(r), cl = capLabel(r);
-    L.push('- 적용 기준 지역: ' + r.region_label);
-    L.push('- 부동산 유형: 주택');
+    if (r.property_group) {
+      L.push('- 적용 기준: 공인중개사법 시행규칙 (계산기 규칙 데이터 기준)');
+      L.push('- 부동산 유형: ' + r.property_label);
+      if (r.property_group === 'officetel') {
+        L.push('- 오피스텔 요건 (사용자 입력): 전용면적 85㎡ 이하 ' + (r.officetel_area_ok ? '예' : '아니오') + ', 전용 입식 부엌·수세식 화장실·목욕시설 갖춤 ' + (r.officetel_facility_ok ? '예' : '아니오'));
+      }
+    } else {
+      L.push('- 적용 기준 지역: ' + r.region_label);
+      L.push('- 부동산 유형: 주택');
+    }
     L.push('- 거래 유형: ' + TX[r.transaction_type]);
     if (r.converted_from_rent) {
       var mr = rules && rules.monthly_rent;
@@ -95,7 +108,7 @@
 
     L.push('# ' + (n++) + '. 요청 분석'); L.push('');
     ids.forEach(function (id, i) {
-      var m = data.modules[id], spec = m.by_group[g], tasks = spec.tasks.slice();
+      var m = data.modules[id], spec = specFor(m, r, g), tasks = spec.tasks.slice();
       if (spec.rent_extra_tasks && r.converted_from_rent) tasks = tasks.concat(spec.rent_extra_tasks);
       L.push('## ' + LETTERS[i] + '. ' + m.title + ' [' + m.phase + ']');
       tasks.forEach(function (t, k) { L.push((k + 1) + '. ' + t); });
@@ -103,14 +116,14 @@
     });
 
     L.push('# 분석 규칙');
-    var rulesList = data.common_rules.concat((data.group_rules && data.group_rules[g]) || []);
+    var rulesList = data.common_rules.concat((data.group_rules && data.group_rules[g]) || []).concat((r.property_group && data.type_rules && data.type_rules[r.property_group]) || []);
     rulesList.forEach(function (x, i) { L.push((i + 1) + '. ' + x); }); L.push('');
 
     L.push('# 답변 형식'); L.push('다음 순서로 작성하세요.');
     var k = 1;
     L.push((k++) + '. **' + data.format.summary_title + '** — ' + data.format.summary_max_lines + '줄 이내로, 확인된 내용과 중요한 주의사항');
     ids.forEach(function (id) {
-      var o = data.modules[id].by_group[g].output, mt = /^([^(]+)\((.*)\)$/.exec(o);
+      var o = specFor(data.modules[id], r, g).output, mt = /^([^(]+)\((.*)\)$/.exec(o);
       L.push((k++) + '. **' + (mt ? mt[1] : o) + '**' + (mt ? ' — ' + mt[2] + ' 포함' : ''));
     });
     L.push((k++) + '. **' + data.format.closing_title + '** — "' + data.format.closing_labels.join('" / "') + '" 라벨로 구분');

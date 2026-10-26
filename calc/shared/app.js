@@ -3,6 +3,7 @@
   var $ = function (id) { return document.getElementById(id); };
   var env = FeeConfig.env(location.hostname);
   var rules, insights, copy, promptData, last = null, ttype = 'sale', started = false, lastFocus = null;
+  var ptype = 'housing', oa = null, of = null;
 
   function toast(m) { var t = $('toast'); t.textContent = m; t.className = 'toast on'; setTimeout(function () { t.className = 'toast'; }, 2000); }
   function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
@@ -22,7 +23,20 @@
     ttype = t;
     document.querySelectorAll('[data-t]').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.t === t); });
     $('f-amount').hidden = t === 'rent'; $('f-rent').hidden = t !== 'rent';
-    $('lbl-amount').textContent = t === 'sale' ? '매매가격' : '전세 보증금';
+    $('lbl-amount').textContent = t === 'sale' ? '매매가격' : (ptype === 'other' ? '보증금' : '전세 보증금');
+  }
+  // 부동산 종류: 주택 / 오피스텔 / 주택 외(상가, 토지 등)
+  function setProperty(p) {
+    ptype = p;
+    document.querySelectorAll('[data-p]').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.p === p); });
+    $('f-officetel').hidden = p !== 'officetel';
+    $('t-jeonse').textContent = p === 'other' ? '임대(보증금만)' : '전세';
+    $('t-rent').textContent = p === 'other' ? '임대(월세)' : '월세';
+    setType(ttype);
+  }
+  function pick(attr, val) {
+    document.querySelectorAll('[' + attr + ']').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute(attr) === val); });
+    return val === '1';
   }
   function showErr(field, msg) { $('err').textContent = msg; FeeAnalytics.error(msg.indexOf('범위') >= 0 ? 'out_of_range' : 'required_missing'); }
   var MSG = {
@@ -32,7 +46,11 @@
   };
   function calc() {
     $('err').textContent = '';
-    var input = { propertyType: 'housing', transactionType: ttype, negotiatedRatePercent: $('neg').value };
+    var input = { propertyType: ptype, transactionType: ttype, negotiatedRatePercent: $('neg').value };
+    if (ptype === 'officetel') {
+      if (oa === null || of === null) { $('err').textContent = '오피스텔 요건 두 가지를 선택해 주세요.'; FeeAnalytics.error('required_missing'); $('result').hidden = true; return; }
+      input.officetelAreaOk = oa; input.officetelFacilityOk = of;
+    }
     if (ttype === 'rent') { input.depositKrw = digits($('dep')); input.monthlyKrw = digits($('mon')); }
     else input.amountKrw = digits($('amt'));
     var r;
@@ -44,13 +62,17 @@
       var code = r.errors[0].code; $('err').textContent = MSG[code] || '입력값을 확인해 주세요.';
       FeeAnalytics.error(code === 'out_of_range' ? 'out_of_range' : 'required_missing'); box.hidden = true; return;
     }
-    FeeAnalytics.track('calc_result');
-    var rows = [['적용 지역', r.region_label + ' 주택'], ['적용 거래금액', fmt(r.transaction_amount_krw) + '원' + (r.converted_from_rent ? ' (월세 환산)' : '')],
+    FeeAnalytics.track('calc_result', { property_type: r.property_group || 'housing' });
+    var rows = [r.property_group ? ['적용 대상', r.property_label] : ['적용 지역', r.region_label + ' 주택'], ['적용 거래금액', fmt(r.transaction_amount_krw) + '원' + (r.converted_from_rent ? ' (월세 환산)' : '')],
       ['상한 요율', (r.applied_max_rate_bps / 100).toFixed(2) + '%'], ['한도액', r.cap_krw === null ? '없음' : fmt(r.cap_krw) + '원' + (r.cap_applied ? ' (적용됨)' : '')]];
+    if (r.property_group) rows.splice(1, 0, ['적용 기준', '공인중개사법 시행규칙']);
     box.hidden = false;
     box.innerHTML = '<h2 id="rh">계산 결과</h2><p class="hint">상한 중개보수 (부가세 미포함)</p><div class="big">' + fmt(r.max_fee_krw) + '원</div><dl>' +
       rows.map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('') + '</dl>' + scenarioHtml(r) +
-      '<p class="note">※ 부동산 중개보수 요율 기준은 서울특별시 조례 기준을 적용하였습니다. 지역, 시점에 따라 기준 요율이 다소 상이할 수 있으므로 해당 결과는 참고자료로만 활용 바랍니다.</p>' +
+      (r.property_group && copy.type_hints ? '<p class="hint">' + copy.type_hints[r.property_type] + '</p>' : '') +
+      (r.property_group
+        ? '<p class="note">' + copy.notices.result_note_regulation + '</p>'
+        : '<p class="note">※ 부동산 중개보수 요율 기준은 서울특별시 조례 기준을 적용하였습니다. 지역, 시점에 따라 기준 요율이 다소 상이할 수 있으므로 해당 결과는 참고자료로만 활용 바랍니다.</p>') +
       insightHtml(r);
     $('ai').hidden = false; $('copy-res').hidden = false; $('cost-desc').textContent = ttype === 'sale' ? '취득세·등기 등 추가 비용 확인' : '보증보험·확정일자 등 추가 비용 확인'; if (!$('prompt-box').hidden) updatePrompt();
     box.setAttribute('tabindex', '-1'); box.focus();
@@ -68,7 +90,7 @@
   var TXL = { sale: '매매', jeonse: '전세', rent: '월세' };
   function insightHtml(r) {
     var items = FeeInsights.evaluate(r, insights, copy);
-    return '<section class="ins-box" aria-labelledby="ins-t"><div class="ins-h"><h2 id="ins-t">돈버프 인사이트</h2><span class="ins-sub">' + TXL[r.transaction_type] + ' · 주택</span></div><ul class="ins2">' +
+    return '<section class="ins-box" aria-labelledby="ins-t"><div class="ins-h"><h2 id="ins-t">돈버프 인사이트</h2><span class="ins-sub">' + TXL[r.transaction_type] + ' · ' + (r.property_group === 'officetel' ? '오피스텔' : (r.property_group === 'other' ? '주택 외' : '주택')) + '</span></div><ul class="ins2">' +
       items.map(function (i) { return '<li><b>' + i.title + '</b><span>' + i.desc + '</span></li>'; }).join('') + '</ul></section>';
   }
   function selected() { return Array.prototype.map.call(document.querySelectorAll('.ai-it:checked'), function (c) { return c.value; }); }
@@ -98,6 +120,9 @@
   function init() {
     ['amt', 'dep', 'mon'].forEach(function (i) { bindMoney($(i)); });
     document.querySelectorAll('[data-t]').forEach(function (b) { b.addEventListener('click', function () { setType(b.dataset.t); }); });
+    document.querySelectorAll('[data-p]').forEach(function (b) { b.addEventListener('click', function () { setProperty(b.dataset.p); }); });
+    document.querySelectorAll('[data-oa]').forEach(function (b) { b.addEventListener('click', function () { oa = pick('data-oa', b.getAttribute('data-oa')); $('err').textContent = ''; }); });
+    document.querySelectorAll('[data-of]').forEach(function (b) { b.addEventListener('click', function () { of = pick('data-of', b.getAttribute('data-of')); $('err').textContent = ''; }); });
     $('amt').addEventListener('input', function () { $('amt-h').textContent = manwon(+digits($('amt'))); });
     $('go').addEventListener('click', calc);
     $('open-rates').addEventListener('click', openModal); $('close-modal').addEventListener('click', closeModal);
@@ -107,7 +132,7 @@
     $('copy-ai').addEventListener('click', function () { copyText($('prompt').textContent, 'calc_ai_copy'); });
     $('copy-res').addEventListener('click', function () {
       if (!last || last.status !== 'success') return;
-      var t = '[돈버프 금융계산기] ' + last.region_label + ' 주택 중개보수 상한 ' + fmt(last.max_fee_krw) + '원 (부가세 미포함, 참고용)\n' + location.origin + '/calc/brokerage/';
+      var t = '[돈버프 금융계산기] ' + (last.property_group ? last.property_label : last.region_label + ' 주택') + ' 중개보수 상한 ' + fmt(last.max_fee_krw) + '원 (부가세 미포함, 참고용)\n' + location.origin + '/calc/brokerage/';
       copyText(t, 'calc_share');
     });
     $('neg').addEventListener('focus', function () {});
