@@ -1,0 +1,34 @@
+{
+  "id": "loan-prepay",
+  "version": "1.0.0",
+  "status": "simple_estimate_policy",
+  "effective_from": null,
+  "verified_at": null,
+  "note": "이 파일의 값은 계산기 운영 정책(입력 범위·비교 간격)입니다. 법령 수치가 아니며 금융상품별 약정 요율·산정기간을 대체하지 않습니다.",
+  "model": {
+    "type": "remaining_period_proportional",
+    "formula": "floor(상환금액 × 요율(bps) × 잔여일수 ÷ (10000 × 전체일수))",
+    "day_count": "calendar_actual",
+    "end_date_rule": "실행일 + N개월(달력 가산). 대상 월에 같은 일자가 없으면 그 달의 말일",
+    "end_date_fee": "zero",
+    "rounding": "floor_krw"
+  },
+  "limits": {
+    "amount_max_krw": 10000000000000,
+    "rate_max_bps": 500,
+    "rate_decimals": 2,
+    "period_months_min": 1,
+    "period_months_max": 36,
+    "period_buttons_months": [12, 24, 36],
+    "date_year_min": 1990,
+    "date_year_max": 2100
+  },
+  "compare": { "offsets_days": [30, 90] },
+  "assumptions": [
+    { "id": "proportional", "label": "단순 비례식" },
+    { "id": "no_exemption", "label": "면제·감면 미반영" },
+    { "id": "end_date_zero", "label": "종료일 당일 0원 가정" },
+    { "id": "calendar_days", "label": "달력 기준 실제 일수" }
+  ],
+  "sources": []
+}

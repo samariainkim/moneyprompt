@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>대출 중도상환수수료 계산기 · 돈버프 금융계산기</title>
+<meta name="description" content="대출을 미리 갚을 때 드는 중도상환수수료를 핵심 정보 5가지로 간편하게 추정하고, AI 심층분석으로 내 상황에 맞게 확인해 보세요.">
+<meta name="robots" content="noindex,nofollow"><!-- TODO(공개 시점): 공개하기로 결정하면 noindex 제거 -->
+<meta property="og:type" content="website"><meta property="og:title" content="대출 중도상환수수료 계산기 · 돈버프 금융계산기">
+<meta property="og:description" content="핵심 5가지만 입력하면 예상 중도상환수수료를 알려드려요"><meta property="og:image" content="https://donbuff.com/calc/og/loan-prepay.png">
+<meta property="og:url" content="https://donbuff.com/calc/loan-prepay/">
+<link rel="stylesheet" href="/calc/shared/calc.css?v=1.3">
+<link rel="stylesheet" href="/calc/shared/site-chrome.css?v=1.3">
+<link rel="stylesheet" href="/calc/shared/loan.css?v=1.3">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW588P483F"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-GW588P483F');</script>
+</head><body>
+<div id="dbx-header"></div><script src="/calc/shared/site-chrome.js?v=1.3"></script>
+<main>
+<h1>대출 중도상환수수료 계산기</h1>
+<p class="hint">핵심 정보 5가지만 입력하면 예상 수수료를 알려드려요. 실제 수수료는 대출 약정과 면제 조건에 따라 달라질 수 있어요.</p>
+
+<div class="card">
+ <span class="k">간편 계산</span>
+ <label for="amt">중도상환 예정금액 (원)</label><input id="amt" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 30,000,000">
+ <div class="row2"><div><label for="d-ex">대출 실행일</label><input id="d-ex" type="text" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="YYYY-MM-DD"></div><div><label for="d-rp">상환 예정일</label><input id="d-rp" type="text" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="YYYY-MM-DD"></div></div>
+ <div class="req-t" id="per-t" style="margin-top:12px">수수료 부과기간 <small style="font-weight:400">(약정서 기준으로 선택)</small></div>
+ <div class="seg" role="group" aria-labelledby="per-t" id="g-per"><button type="button" data-m="12" aria-pressed="false">1년</button><button type="button" data-m="24" aria-pressed="false">2년</button><button type="button" data-m="36" aria-pressed="false">3년</button><button type="button" data-m="custom" aria-pressed="false">직접 입력</button></div>
+ <div class="sub" id="f-mon" hidden><label for="mon" style="margin-top:0">부과기간 (개월)</label><input id="mon" type="text" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="예: 18"></div>
+ <label for="rate">약정 수수료율 %</label><input id="rate" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 0.65">
+ <div class="notice"><b>간편 계산 안내</b>잔여 부과기간에 비례하는 일반적인 계산 방식을 가정합니다. 실제 수수료는 대출 약정과 면제 조건에 따라 달라질 수 있어요.</div>
+ <div class="err" id="err" role="alert"></div>
+ <button class="btn" id="go" type="button">중도상환수수료 계산하기</button>
+</div>
+
+<section id="result" class="card" hidden aria-live="polite" aria-labelledby="rh"></section>
+
+<section id="ai" class="ai-card" hidden aria-labelledby="ai-t">
+ <div class="ai-k">★ AI 심층분석</div>
+ <h2 id="ai-t">어떤 내용을 더 알아보고 싶으세요?</h2>
+ <p class="ai-sub">궁금한 항목을 선택해 AI 분석 요청문을 만들 수 있어요.</p>
+ <fieldset class="ai-list" id="ai-list"><legend class="sr">분석 항목 선택</legend></fieldset>
+ <div class="ai-err" id="ai-err" role="alert"></div>
+ <button class="ai-btn" id="make-prompt" type="button" aria-expanded="false" aria-controls="prompt-box">선택한 분석 요청문 만들기</button>
+ <div id="prompt-box" hidden>
+  <div class="ai-ph"><span>생성된 프롬프트</span><button class="ai-copy" id="copy-ai" type="button">프롬프트 복사</button></div>
+  <pre id="prompt" tabindex="0" aria-label="생성된 AI 프롬프트"></pre>
+ </div>
+ <p class="ai-foot">생성된 프롬프트를 복사해 원하는 AI 서비스에 붙여넣어 보세요.<br>AI 답변은 약정서·금융사 공식 자료와 교차 확인해 주세요.</p>
+</section>
+<button class="btn sec" id="copy-res" type="button" hidden>공유용 문구 복사</button>
+</main>
+<footer id="dbx-footer"></footer>
+<div class="toast" id="toast" role="status"></div>
+<script src="/calc/shared/loan-engine.js?v=1.3"></script><script src="/calc/shared/loan-prompt.js?v=1.3"></script><script src="/calc/shared/loan-analytics.js?v=1.3"></script><script src="/calc/shared/loan-app.js?v=1.3"></script>
+</body></html>

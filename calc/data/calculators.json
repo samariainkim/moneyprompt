@@ -27,7 +27,7 @@
       "desc": "대출을 미리 갚을 때 드는 비용이에요",
       "category": "loan",
       "icon": "loan",
-      "status": "coming_soon",
+      "status": "open",
       "ai": true,
       "badge": null,
       "order": 2

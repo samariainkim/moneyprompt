@@ -1,0 +1,14 @@
+/* 대출 중도상환수수료 계산기 전용 스타일 (calc.css 변수 재사용) */
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.row2{grid-template-columns:1fr}}
+.k{display:inline-block;font-size:.72rem;font-weight:700;color:var(--brand);background:var(--soft);border-radius:999px;padding:2px 10px;margin-bottom:6px}
+.sub{margin-top:8px}
+.notice{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:.88rem;line-height:1.55}
+.notice b{display:block;margin-bottom:2px}
+.explain{margin-top:14px;background:var(--soft);border-radius:12px;padding:12px 14px;font-size:.9rem;line-height:1.6}
+.explain b{display:block;margin-bottom:4px}
+details.cmp{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:0 14px}
+details.cmp summary{cursor:pointer;font-weight:700;padding:12px 0}
+details.cmp[open] summary{border-bottom:1px solid var(--line)}
+.asm.tag{font-style:normal}
+.ai-btn[aria-disabled=true]{opacity:.55}
