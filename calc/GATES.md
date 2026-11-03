@@ -35,3 +35,21 @@
 - [ ] 제보하기 폼 + 메일 수신 연결 후 푸터/결과 화면에 링크
 - [ ] 공개하기로 한 시점에 `noindex` 메타 제거 (허브·계산기·기준표)
 - [ ] 대문 `index.html`에 CALC BUFF 배너·내비·칩·푸터 반영
+
+---
+
+## 환전수수료 계산기 (fx) — 공개 전 게이트
+
+| # | 항목 | 상태 |
+|---|------|------|
+| FX-1 | 한국수출입은행 환율 데이터 이용허락조건(공공누리 유형) 확인 — 상업적 이용·출처표시 가능 여부 | 미확인 |
+| FX-2 | GitHub Secrets에 `KOREAEXIM_AUTHKEY` 등록(코드·저장소에 키 금지). 채팅에 노출된 기존 키는 재발급 | 대기 |
+| FX-3 | Actions → "FX rates" 워크플로를 수동 실행(workflow_dispatch) 1회, 성공 및 `calc/data/fx/rates.json` 커밋 확인 | 대기 |
+| FX-4 | 봇 커밋 후 GitHub Pages 자동 재배포 여부 확인(안 되면 PAT/배포 트리거 방식 변경) | 대기 |
+| FX-5 | `rates.json` 기준일 2026-10-30이 실제 고시 기준일인지 첫 자동 수집값으로 교체·확인 | 대기 |
+| FX-6 | 현찰 스프레드는 "일반 참고값(개념 전달용)". THB·HKD 등은 값 확인 후 `fx.rules`의 `cash_spread`에 {buy,sell}로 추가하면 자동 활성화 | 미반영 |
+| FX-7 | OG 이미지 `/calc/og/fx.png` 제작 | 미제작 |
+| FX-8 | GA4 맞춤 측정기준 등록: mode, direction, currency (금액은 전송하지 않음) | 대기 |
+| FX-9 | 공개 시: `calculators.json`의 fx `status`를 `live`로, `calc/fx/index.html`의 `noindex` 제거, sitemap 반영 | 사용자 결정 |
+| FX-10 | 저장소 공개 시 PRD·GATES·tests는 업로드 제외 가능 | 선택 |
+| FX-11 | Actions는 저장소 60일 무활동 시 스케줄이 중지될 수 있음 — 주기 확인 | 참고 |

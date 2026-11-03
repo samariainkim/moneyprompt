@@ -1,0 +1,27 @@
+/* 환전수수료 계산기 전용 스타일 (calc.css 변수 재사용) */
+.scope{display:inline-block;background:var(--soft);color:var(--brand);border-radius:999px;padding:3px 12px;font-size:.82rem;font-weight:700;margin-bottom:8px}
+.banner{border-radius:12px;padding:12px 14px;font-size:.88rem;margin:12px 0}
+.banner.warn{background:var(--soft);color:var(--brand)}
+.banner.block{background:#fdecea;color:var(--err)}
+@media(prefers-color-scheme:dark){.banner.block{background:#3a1d1a}}
+details.src{font-size:.84rem;color:var(--mut);margin:4px 0 12px}
+details.src summary{cursor:pointer;color:var(--brand);font-weight:600}
+details.src ul{margin:6px 0 0;padding-left:18px}
+.row2{display:block}
+@media(min-width:640px){.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}}
+.in{position:relative}
+.in input{width:100%;font:inherit;padding:13px 52px 13px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);text-align:right}
+.in .u{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--mut);font-weight:600;pointer-events:none}
+.help{font-size:.83rem;color:var(--mut);background:var(--soft);border-radius:8px;padding:8px 10px;margin-top:10px}
+.src-line{text-align:center;margin-top:10px}
+.res .k{color:var(--mut);font-size:.9rem}
+.res .big{line-height:1.2;margin:2px 0}
+.res .why{font-size:.92rem;margin:6px 0 10px}
+.diff{background:var(--soft);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:.9rem}
+.diff b{color:var(--brand)}
+.diff small{display:block;margin-top:6px;color:var(--mut);font-size:.82rem}
+.notapply{margin-top:12px;font-size:.85rem;color:var(--mut)}
+.notapply b{color:var(--fg)}
+.notapply ul,.check ul{margin:4px 0 0;padding-left:18px}
+.check{margin-top:12px;font-size:.88rem;border-top:1px solid var(--line);padding-top:10px}
+.seg.two button{flex:1}

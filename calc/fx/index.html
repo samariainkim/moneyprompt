@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>환전수수료 계산기 · 돈버프 금융계산기</title>
+<meta name="description" content="외화 금액과 환율 우대율만 넣으면 현찰·송금 환전 시 기준환율 대비 얼마나 더 내는지 간편하게 추정하고, AI 심층분석으로 내 상황에 맞게 확인해 보세요.">
+<meta name="robots" content="noindex,nofollow"><!-- TODO(공개 시점): 공개하기로 결정하면 noindex 제거 -->
+<meta property="og:type" content="website"><meta property="og:title" content="환전수수료 계산기 · 돈버프 금융계산기">
+<meta property="og:description" content="외화 금액과 우대율만 넣으면 기준환율 대비 예상 차액을 알려드려요"><meta property="og:image" content="https://donbuff.com/calc/og/fx.png">
+<meta property="og:url" content="https://donbuff.com/calc/fx/">
+<link rel="stylesheet" href="/calc/shared/calc.css?v=1.4">
+<link rel="stylesheet" href="/calc/shared/site-chrome.css?v=1.4">
+<link rel="stylesheet" href="/calc/shared/fx.css?v=1.4">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW588P483F"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-GW588P483F');</script>
+</head><body>
+<div id="dbx-header"></div><script src="/calc/shared/site-chrome.js?v=1.4"></script>
+<main>
+<span class="scope">현찰·송금 환율 기준</span>
+<h1>환전수수료 계산기</h1>
+<p class="hint">외화 금액과 우대율만 넣으면, 기준환율 대비 얼마나 더 내고(덜 받고) 있는지 바로 알려드려요.</p>
+<div class="banner" id="banner" role="status" hidden></div>
+<details class="src" id="src-details" hidden><summary id="src-sum"></summary><ul id="src-list"></ul></details>
+
+<div class="card">
+ <div class="req-t" id="l-mode">어떤 방식으로 거래하나요?</div>
+ <div class="seg two" role="group" aria-labelledby="l-mode" id="g-mode"><button type="button" data-m="cash" aria-pressed="true">현찰 환전</button><button type="button" data-m="wire" aria-pressed="false">해외송금</button></div>
+ <div class="seg two" role="group" aria-label="거래 방향" id="g-dir" style="margin-top:8px"><button type="button" data-d="out" aria-pressed="true">외화를 살 때</button><button type="button" data-d="in" aria-pressed="false">외화를 팔 때</button></div>
+ <div class="req-t" id="l-cur" style="margin-top:14px">통화</div>
+ <div class="seg" role="group" aria-labelledby="l-cur" id="g-cur"></div>
+ <div class="hint" id="cur-h" hidden></div>
+ <div class="row2">
+  <div><label for="amt" id="l-amt">살 외화 금액</label>
+   <div class="in"><input id="amt" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 1,000"><span class="u" id="amt-u">USD</span></div>
+   <div class="hint" id="amt-h"></div></div>
+  <div><label for="pref">환율 우대율 (%)</label>
+   <div class="in"><input id="pref" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 90"><span class="u">%</span></div>
+   <div class="hint">앱이나 영업점에서 안내받은 우대율을 직접 넣어 주세요. 우대가 없으면 0을 입력하세요.</div></div>
+ </div>
+ <div class="help" id="pref-help"></div>
+ <div class="err" id="err" role="alert"></div>
+ <button class="btn" id="go" type="button">예상 금액 계산하기</button>
+ <div class="hint src-line" id="srcline"></div>
+</div>
+
+<section id="result" class="card res" hidden aria-live="polite">
+ <div class="k" id="r-k"></div>
+ <div class="big" id="r-big"></div>
+ <p class="why" id="r-why"></p>
+ <dl>
+  <div><dt id="t-applied"></dt><dd id="r-ap"></dd></div>
+  <div><dt id="t-base"></dt><dd id="r-base"></dd></div>
+  <div><dt id="t-basetot"></dt><dd id="r-basetot"></dd></div>
+  <div><dt id="t-date"></dt><dd id="r-date"></dd></div>
+ </dl>
+ <div class="hint" id="r-round" style="margin-top:8px"></div>
+ <div class="diff" id="r-diff"></div>
+ <div class="notapply"><b id="na-t"></b><ul id="r-na"></ul></div>
+ <div class="check"><b id="ck-t"></b><ul id="r-ck"></ul></div>
+</section>
+
+<section id="ai" class="ai-card" hidden aria-labelledby="ai-t">
+ <div class="ai-k">★ AI 심층분석</div>
+ <h2 id="ai-t">환전·송금 전, AI로 한 단계 더</h2>
+ <p class="ai-sub">내 계산 결과를 바탕으로 필요한 분석을 선택하세요.</p>
+ <fieldset class="ai-list" id="ai-list"><legend class="sr">분석 항목 선택</legend></fieldset>
+ <div class="ai-err" id="ai-err" role="alert"></div>
+ <button class="ai-btn" id="make-prompt" type="button" aria-expanded="false" aria-controls="prompt-box">AI 심층분석 프롬프트 만들기</button>
+ <div id="prompt-box" hidden>
+  <div class="ai-ph"><span>생성된 프롬프트</span><button class="ai-copy" id="copy-ai" type="button">프롬프트 복사</button></div>
+  <pre id="prompt" tabindex="0" aria-label="생성된 AI 프롬프트"></pre>
+ </div>
+ <p class="ai-foot">생성된 프롬프트를 복사해 원하는 AI 서비스에 붙여넣어 보세요.<br>AI 답변은 은행·앱의 실제 안내와 교차 확인해 주세요.</p>
+</section>
+<button class="btn sec" id="copy-res" type="button" hidden>공유용 문구 복사</button>
+</main>
+<footer id="dbx-footer"></footer>
+<div class="toast" id="toast" role="status"></div>
+<script src="/calc/shared/fx-engine.js?v=1.4"></script><script src="/calc/shared/fx-prompt.js?v=1.4"></script><script src="/calc/shared/fx-analytics.js?v=1.4"></script><script src="/calc/shared/fx-app.js?v=1.4"></script>
+</body></html>

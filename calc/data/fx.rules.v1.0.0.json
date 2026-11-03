@@ -1,0 +1,58 @@
+{
+  "id": "fx",
+  "version": "1.0.0",
+  "status": "simple_estimate_policy",
+  "effective_from": null,
+  "verified_at": null,
+  "note": "이 파일의 값은 계산기 운영 정책(입력 범위·통화 구성·신선도 기준·현찰 스프레드 참고값)입니다. 법령 수치가 아니며 은행·환전소의 실제 환율·우대 방식을 대체하지 않습니다.",
+  "model": {
+    "wire_out": "적용환율 = 매매기준율 + (TTS − 매매기준율) × (1 − 우대율)",
+    "wire_in": "적용환율 = 매매기준율 − (매매기준율 − TTB) × (1 − 우대율)",
+    "cash_out": "적용환율 = 매매기준율 × [1 + 스프레드(buy) × (1 − 우대율)]",
+    "cash_in": "적용환율 = 매매기준율 × [1 − 스프레드(sell) × (1 − 우대율)]",
+    "total": "floor(외화금액 ÷ 단위 × 적용환율)",
+    "diff": "|floor(외화금액 ÷ 단위 × 매매기준율) − 결과금액|",
+    "rounding": "floor_krw"
+  },
+  "limits": {
+    "amount_min_cents": 1,
+    "amount_max_cents": 10000000000,
+    "spread_max_bp": 2000,
+    "units_allowed": [1, 100]
+  },
+  "freshness": {
+    "checked_at_max_days": 3,
+    "base_date_max_days": 7,
+    "warn_base_days": 5
+  },
+  "currencies": {
+    "priority": ["USD", "JPY", "EUR", "CNH", "THB", "VND", "HKD", "PHP", "TWD", "MXN"],
+    "fallback": ["GBP", "AUD", "CAD", "SGD", "CHF"],
+    "max_display": 10,
+    "labels": { "CNH": "CNY(위안)" },
+    "input_suffix": { "JPY": "엔" },
+    "names": {
+      "USD": "미국 달러", "JPY": "일본 엔", "EUR": "유로", "CNH": "중국 위안", "THB": "태국 바트",
+      "HKD": "홍콩 달러", "GBP": "영국 파운드", "AUD": "호주 달러", "CAD": "캐나다 달러", "SGD": "싱가포르 달러",
+      "CHF": "스위스 프랑", "VND": "베트남 동", "PHP": "필리핀 페소", "TWD": "대만 달러", "MXN": "멕시코 페소"
+    }
+  },
+  "cash_spread": {
+    "_note": "현찰 스프레드(%) 일반 참고값. buy=고객이 외화를 살 때, sell=팔 때. 값이 없는 통화·방향은 현찰 계산을 제한(임의 대입 금지). 통화를 추가하려면 이 표에 값만 넣으면 됩니다. 은행·시점마다 달라 방향별로 값이 다르면 buy/sell을 따로 입력하세요.",
+    "_source": "일반적인 시중은행 현찰 스프레드 참고값(2026년 8월 확인, 2차 자료 기준). 공식 고시값이 아님.",
+    "USD": { "buy": "1.75", "sell": "1.75" },
+    "JPY": { "buy": "1.75", "sell": "1.75" },
+    "EUR": { "buy": "1.99", "sell": "1.99" },
+    "CNH": { "buy": "5.00", "sell": "5.00" },
+    "GBP": { "buy": "1.97", "sell": "1.97" },
+    "AUD": { "buy": "1.97", "sell": "1.97" },
+    "CAD": { "buy": "1.97", "sell": "1.97" }
+  },
+  "assumptions": [
+    { "id": "spread_model", "label": "수출입은행 고시 환율 기준 추정" },
+    { "id": "pref_on_spread", "label": "우대율은 스프레드에 적용" },
+    { "id": "no_extra_fee", "label": "별도 수수료 미반영" },
+    { "id": "daily_rate", "label": "일 단위 고시 환율" }
+  ],
+  "sources": []
+}
