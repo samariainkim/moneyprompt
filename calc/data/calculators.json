@@ -40,7 +40,7 @@
       "desc": "환율 우대율에 따른 실제 환전 비용",
       "category": "fx",
       "icon": "fx",
-      "status": "coming_soon",
+      "status": "open",
       "ai": true,
       "badge": null,
       "order": 3
