@@ -1,0 +1,9 @@
+node_modules/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+# 빌드 때 저장소 루트의 정적 페이지를 복사해 만드는 폴더 (scripts/sync-static.mjs)
+/public/
