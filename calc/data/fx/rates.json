@@ -2,7 +2,7 @@
   "schema": 1,
   "source": "한국수출입은행",
   "base_date": "2026-11-03",
-  "checked_at": "2026-11-03T21:42:24+09:00",
+  "checked_at": "2026-11-04T06:20:31+09:00",
   "note": "한국수출입은행 환율 API 자동 수집(GitHub Actions).",
   "currencies": {
     "AED": {
