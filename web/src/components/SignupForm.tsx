@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import type { ConsentDoc } from '@/lib/consents';
 import OAuthButtons from './OAuthButtons';
+import ResendVerification from './ResendVerification';
 
 export default function SignupForm({ docs }: { docs: ConsentDoc[] }) {
   const [agree, setAgree] = useState<Record<string, boolean>>({});
@@ -43,7 +44,14 @@ export default function SignupForm({ docs }: { docs: ConsentDoc[] }) {
     return (
       <div role="status">
         <h2>인증 메일을 보냈어요</h2>
-        <p className="lead">{sent} 으로 보낸 메일의 링크를 누르면 가입이 완료돼요. 메일이 보이지 않으면 스팸함도 확인해 주세요.</p>
+        <p className="lead">{sent} 으로 보낸 메일의 링크를 누르면 가입이 완료돼요.</p>
+        <p className="small">메일이 오지 않나요?</p>
+        <ul className="small" style={{ margin: '4px 0 0', paddingLeft: 18 }}>
+          <li>스팸함을 확인해 주세요.</li>
+          <li>이미 가입한 이메일이라면 새 메일이 가지 않아요. <Link href="/login/">로그인</Link>하거나 <Link href="/forgot-password/">비밀번호 찾기</Link>를 이용해 주세요.</li>
+          <li>아직 가입 전이라면 아래 버튼으로 다시 받을 수 있어요.</li>
+        </ul>
+        <ResendVerification email={sent} />
       </div>
     );
   }

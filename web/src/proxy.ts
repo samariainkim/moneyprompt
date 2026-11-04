@@ -45,5 +45,6 @@ export const config = {
     '/login', '/login/', '/signup', '/signup/', '/pricing', '/pricing/',
     '/account', '/account/:path*', '/onboarding', '/onboarding/:path*',
     '/auth/:path*', '/terms', '/terms/', '/privacy', '/privacy/',
+    '/forgot-password', '/forgot-password/', '/reset-password', '/reset-password/',
   ],
 };

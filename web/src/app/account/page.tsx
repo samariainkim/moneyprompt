@@ -28,6 +28,8 @@ export default async function AccountPage() {
     if (t && !latest.has(t)) latest.set(t, r);
   }
   const marketing = latest.get('marketing');
+  const ORDER = ['terms', 'privacy', 'marketing', 'third_party'];
+  const rows = [...latest.entries()].sort((a, b) => ORDER.indexOf(a[0]) - ORDER.indexOf(b[0])).map(([, r]) => r);
   const fmt = (s: string) => new Date(s).toLocaleDateString('ko-KR');
 
   return (
@@ -42,7 +44,7 @@ export default async function AccountPage() {
 
       <div className="card narrow" style={{ margin: '0 0 20px' }}>
         <h2>약관 동의 내역</h2>
-        {[...latest.values()].map((r) => (
+        {rows.map((r) => (
           <div className="row" key={r.consent_documents?.type}>
             <span>{r.consent_documents?.title} <span className="small">({r.consent_documents?.version})</span></span>
             <span className="small">{r.agreed ? `동의 · ${fmt(r.created_at)}` : `미동의 · ${fmt(r.created_at)}`}</span>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import OAuthButtons from './OAuthButtons';
+import ResendVerification from './ResendVerification';
 
 function friendly(message: string): string {
   if (/invalid login credentials/i.test(message)) return '이메일 또는 비밀번호가 맞지 않아요.';
@@ -15,19 +16,25 @@ function friendly(message: string): string {
 export default function LoginForm({ next }: { next: string }) {
   const router = useRouter();
   const [error, setError] = useState('');
+  const [unconfirmed, setUnconfirmed] = useState('');
   const [busy, setBusy] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError(''); setBusy(true);
+    setError(''); setUnconfirmed(''); setBusy(true);
     const f = new FormData(e.currentTarget);
+    const email = String(f.get('email')).trim();
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword({
-      email: String(f.get('email')).trim(),
+      email,
       password: String(f.get('password')),
     });
     setBusy(false);
-    if (error) { setError(friendly(error.message)); return; }
+    if (error) {
+      setError(friendly(error.message));
+      if (/email not confirmed/i.test(error.message)) setUnconfirmed(email);
+      return;
+    }
     router.push(next);
     router.refresh();
   }
@@ -41,6 +48,8 @@ export default function LoginForm({ next }: { next: string }) {
         <input id="password" name="password" type="password" autoComplete="current-password" required />
         <button className="btn block" type="submit" disabled={busy}>{busy ? '확인 중…' : '로그인'}</button>
         {error && <p className="msg err" role="alert">{error}</p>}
+        {unconfirmed && <ResendVerification email={unconfirmed} />}
+        <p className="small" style={{ marginTop: 14 }}><Link href="/forgot-password/">비밀번호를 잊으셨나요?</Link></p>
       </form>
       <OAuthButtons next={next} />
       <p className="small" style={{ textAlign: 'center', marginTop: 20 }}>
