@@ -46,6 +46,13 @@ npm run dev                  # http://localhost:3000
 - **소셜 가입:** 로그인 후 `/onboarding` 에서 필수 약관 동의를 받음 (`needs_consent()` 가 true 면 `/account` 등에서 자동 이동)
 - 동의 철회·재동의는 기존 행을 고치지 않고 새 행을 추가
 
+## 인증 보조 흐름
+
+- **인증 메일 다시 보내기:** 가입 완료 화면과, 로그인 시 "이메일 미인증" 오류 화면에 재전송 버튼(60초 대기)
+- **이미 가입한 이메일:** 보안상 가입 여부를 알려주지 않으므로, 가입 완료 화면에서 로그인·비밀번호 찾기를 안내
+- **비밀번호 찾기:** `/forgot-password/` → 메일 링크 → `/auth/callback/?next=/reset-password/` → `/reset-password/` 에서 새 비밀번호 설정 (링크는 요청한 같은 브라우저에서 열어야 함)
+- **이메일 템플릿:** 한국어 문안은 `docs/email-templates.md` 를 Supabase → Authentication → Emails → Templates 에 붙여넣어 사용
+
 ## 배포 전환 (아직 하지 않음)
 
 현재 도메인은 GitHub Pages 가 서빙합니다. 이 앱을 쓰려면 Vercel 에서 Root Directory 를 `web` 으로 하고
