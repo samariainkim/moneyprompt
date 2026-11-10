@@ -28,10 +28,13 @@ for (const item of ITEMS) {
 }
 console.log(`[sync-static] ${n}개 항목을 web/public 으로 복사했습니다.`);
 
-// 로그인 메뉴 스크립트(web/static/auth-nav.js)를 public 에 두고, 복사된 모든 HTML 에 <script> 를 끼워 넣는다.
+// 로그인 메뉴 스크립트(web/static/auth-nav.js)를 복사된 모든 HTML 의 <head> 에 직접(inline) 끼워 넣는다.
+// 별도 파일로 내려받으면 헤더가 먼저 그려지고 버튼이 늦게 나타나므로, 내려받는 시간이 없도록 페이지 안에 넣는다.
 // 저장소 루트의 원본 페이지는 수정하지 않는다.
-cpSync(join(here, '..', 'static', 'auth-nav.js'), join(out, 'auth-nav.js'));
-const TAG = '<script src="/auth-nav.js" defer></script>';
+const AUTH_NAV_JS = readFileSync(join(here, '..', 'static', 'auth-nav.js'), 'utf8');
+if (AUTH_NAV_JS.toLowerCase().includes('</script')) throw new Error('auth-nav.js 에 </script 가 있으면 inline 삽입이 깨집니다.');
+const MARK = 'data-dbx-auth-nav';
+const TAG = `<script ${MARK}>${AUTH_NAV_JS}</script>`;
 let injected = 0;
 let relinked = 0;
 const walk = (dir) => {
@@ -48,8 +51,11 @@ const walk = (dir) => {
     }
     if (ext !== '.html') continue;
     let html = readFileSync(full, 'utf8');
-    if (html.includes('/auth-nav.js')) continue;
-    const i = html.toLowerCase().lastIndexOf('</body>');
+    if (html.includes(MARK)) continue;
+    // <head> 끝에 넣어, 헤더가 생기는 즉시 버튼을 붙인다. (head 가 없으면 body 끝)
+    const lower = html.toLowerCase();
+    const h = lower.indexOf('</head>');
+    const i = h >= 0 ? h : lower.lastIndexOf('</body>');
     html = i >= 0 ? html.slice(0, i) + TAG + '\n' + html.slice(i) : html + '\n' + TAG + '\n';
     writeFileSync(full, html);
     injected++;
