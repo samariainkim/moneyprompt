@@ -33,11 +33,20 @@ console.log(`[sync-static] ${n}개 항목을 web/public 으로 복사했습니�
 cpSync(join(here, '..', 'static', 'auth-nav.js'), join(out, 'auth-nav.js'));
 const TAG = '<script src="/auth-nav.js" defer></script>';
 let injected = 0;
+let relinked = 0;
 const walk = (dir) => {
   for (const name of readdirSync(dir)) {
     const full = join(dir, name);
     if (statSync(full).isDirectory()) { walk(full); continue; }
-    if (extname(name).toLowerCase() !== '.html') continue;
+    const ext = extname(name).toLowerCase();
+    // 로고·푸터의 href="https://donbuff.com" 은 시험 환경에서 본 사이트로 빠지므로 같은 도메인 기준 "/" 로 바꾼다.
+    // (og:image, canonical, 공유용 주소 등 href 가 아닌 절대주소는 그대로 둔다. 도메인 전환 후에도 동작은 같다.)
+    if (ext === '.html' || ext === '.js') {
+      const src = readFileSync(full, 'utf8');
+      const out2 = src.replace(/href="https:\/\/donbuff\.com\/?"/g, 'href="/"');
+      if (out2 !== src) { writeFileSync(full, out2); relinked++; }
+    }
+    if (ext !== '.html') continue;
     let html = readFileSync(full, 'utf8');
     if (html.includes('/auth-nav.js')) continue;
     const i = html.toLowerCase().lastIndexOf('</body>');
@@ -48,3 +57,4 @@ const walk = (dir) => {
 };
 walk(out);
 console.log(`[sync-static] 로그인 메뉴 스크립트를 HTML ${injected}개에 삽입했습니다.`);
+console.log(`[sync-static] donbuff.com 절대 링크를 상대 링크로 바꾼 파일 ${relinked}개.`);
