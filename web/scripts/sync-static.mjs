@@ -1,7 +1,7 @@
 // 저장소 루트의 기존 정적 페이지를 web/public 으로 복사한다. (루트 파일은 그대로 둔다)
 // 개발·테스트 문서(tests, *.md)는 복사하지 않는다.
-import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs';
-import { dirname, join, basename } from 'node:path';
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { dirname, join, basename, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -27,3 +27,24 @@ for (const item of ITEMS) {
   n++;
 }
 console.log(`[sync-static] ${n}개 항목을 web/public 으로 복사했습니다.`);
+
+// 로그인 메뉴 스크립트(web/static/auth-nav.js)를 public 에 두고, 복사된 모든 HTML 에 <script> 를 끼워 넣는다.
+// 저장소 루트의 원본 페이지는 수정하지 않는다.
+cpSync(join(here, '..', 'static', 'auth-nav.js'), join(out, 'auth-nav.js'));
+const TAG = '<script src="/auth-nav.js" defer></script>';
+let injected = 0;
+const walk = (dir) => {
+  for (const name of readdirSync(dir)) {
+    const full = join(dir, name);
+    if (statSync(full).isDirectory()) { walk(full); continue; }
+    if (extname(name).toLowerCase() !== '.html') continue;
+    let html = readFileSync(full, 'utf8');
+    if (html.includes('/auth-nav.js')) continue;
+    const i = html.toLowerCase().lastIndexOf('</body>');
+    html = i >= 0 ? html.slice(0, i) + TAG + '\n' + html.slice(i) : html + '\n' + TAG + '\n';
+    writeFileSync(full, html);
+    injected++;
+  }
+};
+walk(out);
+console.log(`[sync-static] 로그인 메뉴 스크립트를 HTML ${injected}개에 삽입했습니다.`);
