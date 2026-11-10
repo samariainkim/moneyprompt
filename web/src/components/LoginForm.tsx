@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { continueUrl } from '@/lib/gate';
 import OAuthButtons from './OAuthButtons';
 import ResendVerification from './ResendVerification';
 
@@ -13,8 +13,7 @@ function friendly(message: string): string {
   return '로그인하지 못했어요. 잠시 후 다시 시도해 주세요.';
 }
 
-export default function LoginForm({ next }: { next: string }) {
-  const router = useRouter();
+export default function LoginForm({ next, src }: { next: string; src?: string | null }) {
   const [error, setError] = useState('');
   const [unconfirmed, setUnconfirmed] = useState('');
   const [busy, setBusy] = useState(false);
@@ -35,8 +34,8 @@ export default function LoginForm({ next }: { next: string }) {
       if (/email not confirmed/i.test(error.message)) setUnconfirmed(email);
       return;
     }
-    router.push(next);
-    router.refresh();
+    // 동의·선택정보 확인을 거치는 로그인 후 라우팅으로 보낸다. (서버 경로라서 전체 이동)
+    window.location.assign(continueUrl(next, src ?? null));
   }
 
   return (
@@ -51,9 +50,9 @@ export default function LoginForm({ next }: { next: string }) {
         {unconfirmed && <ResendVerification email={unconfirmed} />}
         <p className="small" style={{ marginTop: 14 }}><Link href="/forgot-password/">비밀번호를 잊으셨나요?</Link></p>
       </form>
-      <OAuthButtons next={next} />
+      <OAuthButtons next={next} src={src} />
       <p className="small" style={{ textAlign: 'center', marginTop: 20 }}>
-        아직 회원이 아니신가요? <Link href="/signup/">회원가입</Link>
+        아직 회원이 아니신가요? <Link href={`/signup/?next=${encodeURIComponent(next)}${src ? `&src=${encodeURIComponent(src)}` : ''}`}>회원가입</Link>
       </p>
     </>
   );

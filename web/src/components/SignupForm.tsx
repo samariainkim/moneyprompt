@@ -7,7 +7,7 @@ import type { ConsentDoc } from '@/lib/consents';
 import OAuthButtons from './OAuthButtons';
 import ResendVerification from './ResendVerification';
 
-export default function SignupForm({ docs }: { docs: ConsentDoc[] }) {
+export default function SignupForm({ docs, next = '/account/', src = null }: { docs: ConsentDoc[]; next?: string; src?: string | null }) {
   const [agree, setAgree] = useState<Record<string, boolean>>({});
   const [error, setError] = useState('');
   const [sent, setSent] = useState('');
@@ -30,7 +30,10 @@ export default function SignupForm({ docs }: { docs: ConsentDoc[] }) {
     const supabase = createClient();
     const { error } = await supabase.auth.signUp({
       email, password,
-      options: { emailRedirectTo: `${location.origin}/auth/callback/`, data: { consents } },
+      options: {
+        emailRedirectTo: `${location.origin}/auth/callback/?next=${encodeURIComponent(next)}${src ? `&src=${encodeURIComponent(src)}` : ''}`,
+        data: { consents, ...(src ? { signup_source: src } : {}) },
+      },
     });
     setBusy(false);
     if (error) {
@@ -83,9 +86,9 @@ export default function SignupForm({ docs }: { docs: ConsentDoc[] }) {
         {error && <p className="msg err" role="alert">{error}</p>}
       </form>
       <p className="small" style={{ marginTop: 16 }}>소셜 계정으로 시작하면 로그인 직후 약관 동의 화면이 이어져요.</p>
-      <OAuthButtons next="/account/" />
+      <OAuthButtons next={next} src={src} />
       <p className="small" style={{ textAlign: 'center', marginTop: 20 }}>
-        이미 회원이신가요? <Link href="/login/">로그인</Link>
+        이미 회원이신가요? <Link href={`/login/?next=${encodeURIComponent(next)}${src ? `&src=${encodeURIComponent(src)}` : ''}`}>로그인</Link>
       </p>
     </>
   );

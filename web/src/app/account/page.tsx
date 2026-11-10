@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import ProfileForm from '@/components/ProfileForm';
 import WithdrawForm from '@/components/WithdrawForm';
+import PreferencesForm from '@/components/PreferencesForm';
+import { progressOf, type Preferences } from '@/lib/preferences';
 import { requireMember } from '@/lib/auth';
 import { setMarketing } from './actions';
 
@@ -28,6 +30,8 @@ export default async function AccountPage() {
     if (t && !latest.has(t)) latest.set(t, r);
   }
   const marketing = latest.get('marketing');
+  const { data: prefRow } = await supabase.from('member_preferences').select('interests, occupation, experience, completed_at, skipped_at').maybeSingle<Preferences>();
+  const pct = progressOf(prefRow);
   const ORDER = ['terms', 'privacy', 'marketing', 'third_party'];
   const rows = [...latest.entries()].sort((a, b) => ORDER.indexOf(a[0]) - ORDER.indexOf(b[0])).map(([, r]) => r);
   const fmt = (s: string) => new Date(s).toLocaleDateString('ko-KR');
@@ -40,6 +44,15 @@ export default async function AccountPage() {
       <div className="card narrow" style={{ margin: '0 0 20px' }}>
         <h2>프로필</h2>
         <ProfileForm nickname={profile?.nickname ?? ''} displayName={profile?.display_name ?? ''} />
+      </div>
+
+      <div className="card narrow" style={{ margin: '0 0 20px' }}>
+        <h2>프로필 완성 {pct}%</h2>
+        <p className="lead">관심 분야·직업군·경험 수준을 알려주시면 맞는 프롬프트를 먼저 보여드려요. 모두 선택 항목이에요.</p>
+        <PreferencesForm
+          mode="account"
+          defaults={{ interests: prefRow?.interests ?? [], occupation: prefRow?.occupation ?? '', experience: prefRow?.experience ?? '' }}
+        />
       </div>
 
       <div className="card narrow" style={{ margin: '0 0 20px' }}>

@@ -35,7 +35,7 @@ npm run dev                  # http://localhost:3000
 
 ## Supabase 설정 순서
 
-1. SQL Editor 에서 `supabase/migrations/` 의 파일을 **번호 순서대로** 실행
+1. SQL Editor(Database 모드)에서 `supabase/migrations/` 의 파일을 **번호 순서대로** 실행 (`20261103000000` → `20261103000100` → `20261110000000`)
 2. Authentication → URL Configuration: Site URL 과 Redirect URLs(`https://donbuff.com/**`, `http://localhost:3000/**`)
 3. Authentication → Providers: Google(클라이언트 ID·시크릿), 필요 시 Kakao
 4. Authentication → Sign In / Providers → Email: **Confirm email 켜기**(이메일 인증 필수)
@@ -52,6 +52,16 @@ npm run dev                  # http://localhost:3000
 - **이미 가입한 이메일:** 보안상 가입 여부를 알려주지 않으므로, 가입 완료 화면에서 로그인·비밀번호 찾기를 안내
 - **비밀번호 찾기:** `/forgot-password/` → 메일 링크 → `/auth/callback/?next=/reset-password/` → `/reset-password/` 에서 새 비밀번호 설정 (링크는 요청한 같은 브라우저에서 열어야 함)
 - **이메일 템플릿:** 한국어 문안은 `docs/email-templates.md` 를 Supabase → Authentication → Emails → Templates 에 붙여넣어 사용
+
+## 로그인 게이트와 회원 기능 (1단계)
+
+- `static/auth-nav.js`: 헤더의 로그인/내 계정 버튼 (모든 정적 페이지)
+- `static/auth-gates.js`: AI 프롬프트 생성(계산기·수수료·투자 성향)과 즐겨찾기를 로그인 전용으로 만드는 **화면 단 게이트** (해당 6개 페이지에만 삽입). 로그인하고 돌아오면 입력값을 복원하고 하려던 동작을 이어서 실행
+- 두 스크립트는 빌드 때(`scripts/sync-static.mjs`) 복사본 HTML 의 `<head>` 에 **inline** 으로 삽입되며 저장소 루트의 원본 페이지는 바뀌지 않음
+- `GET/POST/PUT /api/favorites/`: 즐겨찾기 서버 저장 (로그인 필요, 같은 사이트 요청만 허용)
+- `/auth/continue/`: 로그인 직후 라우팅 (약관 동의 → 가입 완료 기록 → 선택정보 `/welcome/` → 원래 목적지)
+- `/welcome/`, `/account/`: 선택정보(관심 분야·직업군·경험 수준) 입력과 "프로필 완성" 카드
+- 측정: `gate_view`, `gate_click`, `signup_start`, `signup_complete`(GA4). 가입 경로는 `profiles.signup_source` 에도 저장
 
 ## 배포 전환 (아직 하지 않음)
 

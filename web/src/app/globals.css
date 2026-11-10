@@ -43,3 +43,15 @@ input:focus { outline: 2px solid var(--brand); outline-offset: 0; border-color: 
 .legal h2 { margin-top: 22px; } .legal p, .legal li { font-size: 14px; }
 .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
 .row:last-child { border-bottom: 0; }
+
+.progress { height: 8px; background: #f3f4f6; border-radius: 999px; overflow: hidden; }
+.progress span { display: block; height: 100%; background: var(--brand); border-radius: 999px; transition: width .25s; }
+fieldset.pref { border: 0; padding: 0; margin: 18px 0 0; }
+fieldset.pref legend { font-size: 14px; font-weight: 800; padding: 0; margin-bottom: 4px; }
+.nudge { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+.nudge b { color: var(--brand-dark); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: inline-flex; align-items: center; margin: 0; padding: 8px 14px; border: 1px solid var(--border); border-radius: 999px; font-size: 13.5px; font-weight: 600; background: #fff; cursor: pointer; user-select: none; }
+.chip input { position: absolute; opacity: 0; width: 0; height: 0; }
+.chip.on { border-color: var(--brand); background: var(--brand-soft); color: var(--brand-dark); }
+.chip:focus-within { outline: 2px solid var(--brand); outline-offset: 1px; }
