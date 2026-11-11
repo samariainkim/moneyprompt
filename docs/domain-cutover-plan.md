@@ -106,3 +106,17 @@
 ## 11. 역할
 - **사용자:** 후이즈 DNS, Vercel·Supabase·구글·Search Console 대시보드 작업, 인증 메일 실수신 확인, 최종 판단
 - **Claude:** 사전 준비 PR(sitemap, robots, 404, 검증 스크립트), 값·순서 안내(화면 캡처 확인), 스모크 테스트 지원, 문서 갱신
+
+## 12. 현재 DNS 기록 (후이즈 네임서버 고급설정, 2026-11-12 캡처)
+| 구분 | 호스트 | 값 | 전환 때 |
+|---|---|---|---|
+| A | (도메인 자체) | 185.199.108.153 / 109.153 / 110.153 / 111.153 (GitHub Pages) | **Vercel 값으로 교체** — 4개 모두 정리, GitHub IP 와 섞지 않는다 |
+| CNAME | www | samariainkim.github.io | **Vercel 값으로 교체** |
+| CNAME | send | send.forge.rmta.net (Resend) | 유지 |
+| CNAME | rsend | rsend-apne1.forge.rmta.net (Resend) | 유지 |
+| TXT | resend._domainkey | p=MIGf… (Resend 메일 인증) | 유지 |
+| MX · PTR · SRV | — | 없음 | — |
+
+- 웹 주소 레코드(A, www)와 메일 레코드(send, rsend, resend._domainkey)는 이름이 달라 서로 영향이 없다.
+- **후이즈 이 화면에는 TTL 설정이 없다.** 4.2절의 "TTL 300초" 단계는 해당 없음. 롤백(8절) 때 DNS 반영에 시간이 걸릴 수 있다고 가정한다.
+- 전환 순서: ① Vercel Domains 에 `donbuff.com`·`www.donbuff.com` 추가(`www` 는 donbuff.com 으로 리디렉션) → 안내 값 확인 ② 구글 클라우드 승인된 JavaScript 원본·Supabase Redirect URLs 에 `https://donbuff.com` 미리 추가(Site URL 은 당일 변경) ③ 후이즈에서 A·`www` 만 한 번에 교체.
