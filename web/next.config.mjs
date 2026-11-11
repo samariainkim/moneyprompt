@@ -23,6 +23,10 @@ function staticDirRewrites() {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   trailingSlash: true, // 기존 사이트 URL(/calc/ 등)과 동일하게 유지
+  // 정식 도메인이 아닌 주소(테스트 주소 등)는 검색엔진이 색인하지 않도록 한다.
+  async headers() {
+    return [{ source: '/:path*', missing: [{ type: 'host', value: 'donbuff.com' }], headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] }];
+  },
   async rewrites() {
     return { beforeFiles: staticDirRewrites(), afterFiles: [], fallback: [] };
   },
