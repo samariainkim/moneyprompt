@@ -3,6 +3,7 @@
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, basename, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { minify } from 'terser';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..', '..');
@@ -31,10 +32,25 @@ console.log(`[sync-static] ${n}개 항목을 web/public 으로 복사했습니�
 // 로그인 메뉴 스크립트(web/static/auth-nav.js)를 복사된 모든 HTML 의 <head> 에 직접(inline) 끼워 넣는다.
 // 별도 파일로 내려받으면 헤더가 먼저 그려지고 버튼이 늦게 나타나므로, 내려받는 시간이 없도록 페이지 안에 넣는다.
 // 저장소 루트의 원본 페이지는 수정하지 않는다.
-const AUTH_NAV_JS = readFileSync(join(here, '..', 'static', 'auth-nav.js'), 'utf8');
+// 페이지 안에 직접 넣는 스크립트는 작게 만든다. (실패하면 원본을 그대로 쓴다)
+async function small(file) {
+  const src = readFileSync(join(here, '..', 'static', file), 'utf8');
+  try { const r = await minify(src, { compress: true, mangle: true, format: { comments: false } }); return r.code || src; }
+  catch (e) { console.warn(`[sync-static] ${file} 최소화 실패, 원본 사용: ${e.message}`); return src; }
+}
+const AUTH_NAV_JS = await small('auth-nav.js');
 if (AUTH_NAV_JS.toLowerCase().includes('</script')) throw new Error('auth-nav.js 에 </script 가 있으면 inline 삽입이 깨집니다.');
+const AUTH_GATES_JS = await small('auth-gates.js');
+if (AUTH_GATES_JS.toLowerCase().includes('</script')) throw new Error('auth-gates.js 에 </script 가 있으면 inline 삽입이 깨집니다.');
 const MARK = 'data-dbx-auth-nav';
 const TAG = `<script ${MARK}>${AUTH_NAV_JS}</script>`;
+// 로그인 게이트는 필요한 페이지에만 넣는다. (경로는 public 기준)
+const GATE_PAGES = new Set([
+  'calc/brokerage/index.html', 'calc/fx/index.html', 'calc/loan-prepay/index.html',
+  'fee/brokerage-fee/index.html', 'invest-mbti/index.html', 'prompt/index.html',
+]);
+const GATE_TAG = `<script data-dbx-gates>${AUTH_GATES_JS}</script>`;
+let gated = 0;
 let injected = 0;
 let relinked = 0;
 const walk = (dir) => {
@@ -56,7 +72,10 @@ const walk = (dir) => {
     const lower = html.toLowerCase();
     const h = lower.indexOf('</head>');
     const i = h >= 0 ? h : lower.lastIndexOf('</body>');
-    html = i >= 0 ? html.slice(0, i) + TAG + '\n' + html.slice(i) : html + '\n' + TAG + '\n';
+    const rel = full.slice(out.length + 1).split('\\').join('/');
+    const tags = TAG + (GATE_PAGES.has(rel) ? '\n' + GATE_TAG : '');
+    if (GATE_PAGES.has(rel)) gated++;
+    html = i >= 0 ? html.slice(0, i) + tags + '\n' + html.slice(i) : html + '\n' + tags + '\n';
     writeFileSync(full, html);
     injected++;
   }
@@ -64,3 +83,5 @@ const walk = (dir) => {
 walk(out);
 console.log(`[sync-static] 로그인 메뉴 스크립트를 HTML ${injected}개에 삽입했습니다.`);
 console.log(`[sync-static] donbuff.com 절대 링크를 상대 링크로 바꾼 파일 ${relinked}개.`);
+console.log(`[sync-static] 로그인 게이트를 ${gated}개 페이지에 삽입했습니다.`);
+if (gated !== GATE_PAGES.size) throw new Error(`게이트 대상 ${GATE_PAGES.size}개 중 ${gated}개만 삽입되었습니다. 경로를 확인하세요.`);

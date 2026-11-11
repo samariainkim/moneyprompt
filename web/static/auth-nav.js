@@ -27,6 +27,12 @@
   var BRAND_ONLY = '.dbx-h-in'; // 메뉴가 없는 헤더(수수료 계산기)
 
   var signedIn = cookieHint();   // 지금 화면에 보여주는 상태
+  var listeners = [];
+  // 같은 페이지의 다른 스크립트(auth-gates.js)가 로그인 상태를 읽고 변경을 구독할 수 있게 공개한다.
+  window.__dbxAuth = {
+    signedIn: function () { return signedIn; },
+    onChange: function (fn) { listeners.push(fn); }
+  };
   var els = [];                  // 만들어 둔 버튼들
   var placed = false, observer = null, fallbackTimer = null;
 
@@ -108,13 +114,33 @@
           if (s === signedIn) return;
           signedIn = s;
           for (var i = 0; i < els.length; i++) apply(els[i]);
+          for (var k = 0; k < listeners.length; k++) { try { listeners[k](signedIn); } catch (e) {} }
         })
         .catch(function () {});
     } catch (e) {}
   }
 
+  // /auth/continue/ 가 가입 직후 첫 방문에 붙여 주는 ?dbx_evt=signup_complete&dbx_src=…&dbx_m=… 를 한 번만 전송한다.
+  function sendUrlEvent() {
+    try {
+      var q = new URLSearchParams(location.search);
+      var evt = q.get('dbx_evt');
+      if (!evt) return;
+      var params = { source: q.get('dbx_src') || 'direct', method: q.get('dbx_m') || 'email' };
+      ['dbx_evt', 'dbx_src', 'dbx_m'].forEach(function (k) { q.delete(k); });
+      var rest = q.toString();
+      history.replaceState(null, '', location.pathname + (rest ? '?' + rest : '') + location.hash);
+      var tries = 0;
+      (function send() {
+        if (typeof window.gtag === 'function') { window.gtag('event', evt, params); return; }
+        if (++tries < 20) setTimeout(send, 200);
+      })();
+    } catch (e) {}
+  }
+
   function start() {
     addCss();
+    sendUrlEvent();
     tryPlace();
     if (!placed) {
       if (window.MutationObserver) {
