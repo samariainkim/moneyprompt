@@ -2,6 +2,8 @@
  * 빌드 때 scripts/sync-static.mjs 가 해당 페이지(<head>)에만 끼워 넣는다. (저장소 루트의 원본 페이지는 수정하지 않음)
  *
  *  - 계산기 4종(#make-prompt) / 투자 성향(#aiCta, #copyBtn): 비로그인이 누르면 기능은 실행하지 않고 로그인 안내 페이지(/join/)로 보낸다.
+ *  - 내 결과 저장: 계산 결과·투자 성향 결과 아래에 "내 결과에 저장" 버튼. 비로그인은 /join/ 으로 보내고, 로그인하면 계정에 저장(/api/saved/)한다.
+ *    저장한 결과는 /account/saved/ 에서 다시 열 수 있다(?dbx_resume=restore&dbx_saved=<id>).
  *  - 프롬프트 즐겨찾기(★): 비로그인은 /join/ 으로 보내고, 로그인하면 계정에 저장(/api/favorites/)한다.
  *  - 로그인하고 돌아오면(?dbx_resume=…) 입력값을 복원하고 하려던 동작을 자동으로 이어서 실행한다.
  *
@@ -13,11 +15,11 @@
 
   /* ───────── 페이지별 설정 ───────── */
   var CFG = {
-    '/calc/brokerage/': { kind: 'form', id: 'calc_brokerage', trigger: '#make-prompt' },
-    '/calc/fx/': { kind: 'form', id: 'calc_fx', trigger: '#make-prompt' },
-    '/calc/loan-prepay/': { kind: 'form', id: 'calc_loan', trigger: '#make-prompt' },
-    '/fee/brokerage-fee/': { kind: 'form', id: 'fee_brokerage', trigger: '#make-prompt' },
-    '/invest-mbti/': { kind: 'mbti', id: 'mbti_prompt', triggers: ['#aiCta', '#copyBtn'] },
+    '/calc/brokerage/': { kind: 'form', id: 'calc_brokerage', saveTool: 'calc_brokerage', trigger: '#make-prompt' },
+    '/calc/fx/': { kind: 'form', id: 'calc_fx', saveTool: 'calc_fx', trigger: '#make-prompt' },
+    '/calc/loan-prepay/': { kind: 'form', id: 'calc_loan', saveTool: 'calc_loan', trigger: '#make-prompt' },
+    '/fee/brokerage-fee/': { kind: 'form', id: 'fee_brokerage', saveTool: 'fee_brokerage', trigger: '#make-prompt' },
+    '/invest-mbti/': { kind: 'mbti', id: 'mbti_prompt', saveTool: 'mbti', triggers: ['#aiCta', '#copyBtn'] },
     '/prompt/': { kind: 'fav', id: 'fav' }
   };
 
@@ -28,7 +30,8 @@
 
   var STATE_KEY = 'dbx:gate:' + path;
   var STATE_TTL = 24 * 3600 * 1000;
-  var RESUME_PARAMS = ['dbx_resume', 'dbx_idx'];
+  var RESUME_PARAMS = ['dbx_resume', 'dbx_idx', 'dbx_saved'];
+  var MBTI_KEY = 'invest_mbti_session';
   var FAV_LOCAL_KEY = 'moneyprompt_favorites';
 
   /* ───────── 공통 도우미 ───────── */
@@ -81,6 +84,11 @@
     '.dbx-gate-actions{display:flex;gap:8px;margin-top:4px}' +
     '.dbx-gate-actions button{flex:1;padding:12px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;font:inherit;font-weight:700;font-size:14px;cursor:pointer;color:#374151}' +
     '.dbx-gate-actions button.pri{background:#d97706;border-color:#d97706;color:#fff}' +
+    '.dbx-save-wrap{margin:14px 0 4px;display:flex;flex-direction:column;gap:6px;align-items:stretch}' +
+    '.dbx-save-wrap[hidden]{display:none}' +
+    '.dbx-save{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:13px 16px;border-radius:12px;border:1.5px solid #d97706;background:#fff7ed;color:#b45309;font:700 15px/1.3 "Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;cursor:pointer}' +
+    '.dbx-save:hover{background:#ffedd5}.dbx-save:disabled{opacity:.65;cursor:default}' +
+    '.dbx-save-note{font:13px/1.5 "Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#6b7280;text-align:center}.dbx-save-note a{color:#b45309;font-weight:700}' +
     '.dbx-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;z-index:2147483200;background:#111827;color:#fff;padding:10px 16px;border-radius:999px;font:600 13px/1.4 "Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;transition:opacity .2s,transform .2s;max-width:90vw}' +
     '.dbx-toast.on{opacity:1;transform:translateX(-50%) translateY(0)}';
   function addCss() { var s = document.createElement('style'); s.setAttribute('data-dbx-gates', '1'); s.textContent = CSS; (document.head || document.documentElement).appendChild(s); }
@@ -120,8 +128,9 @@
   // 로그인 안내 페이지(/join/)로 보낸다. 로그인 후 돌아올 주소(next)에는 하려던 동작(dbx_resume)을 실어 둔다.
   function goJoin(opts) {
     var next = resumeUrl(opts.resume, opts.extra);
-    ga('gate_trigger', { gate_id: cfg.id, transport_type: 'beacon' });
-    location.assign('/join/?next=' + encodeURIComponent(next) + '&src=' + encodeURIComponent(cfg.id));
+    var gid = opts.gateId || cfg.id;
+    ga('gate_trigger', { gate_id: gid, transport_type: 'beacon' });
+    location.assign('/join/?next=' + encodeURIComponent(next) + '&src=' + encodeURIComponent(gid));
   }
 
   /* ───────── 입력값 스냅샷 저장·복원 (계산기) ───────── */
@@ -132,15 +141,16 @@
     Array.prototype.forEach.call(el.attributes, function (a) { if (a.name.indexOf('data-') === 0) attrs += '[' + a.name + '="' + String(a.value).replace(/"/g, '\\"') + '"]'; });
     return attrs ? el.tagName.toLowerCase() + attrs : null;
   }
-  function saveFormState() {
+  function collectState() {
     var s = { t: Date.now(), f: {}, c: {}, ai: [], p: [] };
     qsa('input[id],select[id],textarea[id]').forEach(function (el) {
       if (el.type === 'checkbox' || el.type === 'radio') s.c[el.id] = el.checked; else s.f[el.id] = el.value;
     });
     qsa('.ai-it').forEach(function (el, i) { s.ai[i] = el.checked; });
     qsa('[aria-pressed="true"]').forEach(function (el) { var sg = sigOf(el); if (sg) s.p.push(sg); });
-    lsSet(STATE_KEY, JSON.stringify(s));
+    return s;
   }
+  function saveFormState() { lsSet(STATE_KEY, JSON.stringify(collectState())); }
   function loadSnapshot() {
     var raw = lsGet(STATE_KEY); if (!raw) return null;
     var s; try { s = JSON.parse(raw); } catch (e) { return null; }
@@ -166,7 +176,63 @@
   }
   function visible(el) { return !!el && !el.hidden && (el.offsetWidth || el.offsetHeight || el.getClientRects().length); }
 
+  /* ───────── 내 결과 저장 ───────── */
+  var saving = false;
+  function saveFail(status) {
+    if (status === 409) toast('저장 공간이 가득 찼어요. 내 결과에서 오래된 결과를 지워 주세요.');
+    else if (status === 401) toast('로그인이 필요해요.');
+    else toast('저장하지 못했어요. 잠시 후 다시 시도해 주세요.');
+  }
+  // item: { title, summary, payload }
+  function doSave(item, btn, note) {
+    if (saving) return; saving = true;
+    var label = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = '저장하는 중…'; }
+    fetch('/api/saved/', { method: 'POST', credentials: 'same-origin', cache: 'no-store', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tool: cfg.saveTool, title: item.title, summary: item.summary, payload: item.payload }) })
+      .then(function (r) { if (!r.ok) { var e = new Error('http ' + r.status); e.status = r.status; throw e; } return r.json(); })
+      .then(function () {
+        ga('save_result', { tool: cfg.saveTool });
+        toast('내 결과에 저장했어요 ✓');
+        if (note) note.innerHTML = '저장했어요. <a href="/account/saved/">내 결과에서 보기</a>';
+        if (btn) { btn.textContent = '저장했어요 ✓'; setTimeout(function () { btn.disabled = false; btn.textContent = label; }, 2500); }
+      })
+      .catch(function (err) { saveFail(err && err.status); if (btn) { btn.disabled = false; btn.textContent = label; } })
+      .then(function () { saving = false; });
+  }
+  // 저장 버튼을 만들고 클릭을 연결한다. getItem 은 클릭 시점의 화면에서 저장 내용을 만든다.
+  function makeSaveButton(getItem, resumeKey) {
+    var wrap = document.createElement('div'); wrap.className = 'dbx-save-wrap'; wrap.hidden = true;
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'dbx-save'; btn.textContent = '☆ 내 결과에 저장';
+    var note = document.createElement('div'); note.className = 'dbx-save-note';
+    note.textContent = signedIn() ? '' : '로그인하면 이 결과를 내 계정에 저장해 언제든 다시 볼 수 있어요.';
+    wrap.appendChild(btn); wrap.appendChild(note);
+    btn.addEventListener('click', function () {
+      var item = getItem(); if (!item) { toast('저장할 결과가 아직 없어요.'); return; }
+      if (!signedIn()) { if (resumeKey === 'save') saveFormState(); ga('save_click', { tool: cfg.saveTool, signed_in: false }); goJoin({ resume: 'save', gateId: 'save_' + cfg.id }); return; }
+      ga('save_click', { tool: cfg.saveTool, signed_in: true });
+      doSave(item, btn, note);
+    });
+    if (window.__dbxAuth) window.__dbxAuth.onChange(function (s) { if (s) note.textContent = ''; });
+    return { wrap: wrap, btn: btn, note: note };
+  }
+  function oneLine(t, n) { return String(t || '').replace(/\s+/g, ' ').trim().slice(0, n); }
+
   /* ───────── 계산기: 게이트 + 이어하기 ───────── */
+  function formItem() {
+    var title = oneLine((document.title || '').split('·')[0], 80) || cfg.saveTool;
+    var big = qs('#r-big'); var res = qs('#result');
+    var summary = oneLine(big && big.innerText ? big.innerText : (res ? res.innerText : ''), 100);
+    return { title: title, summary: summary, payload: collectState() };
+  }
+  function initSaveForm() {
+    var res = qs('#result'); if (!res) return;
+    var ui = makeSaveButton(formItem, 'save');
+    res.parentNode.insertBefore(ui.wrap, res.nextSibling);
+    function sync() { ui.wrap.hidden = !visible(res) || (res.textContent || '').trim().length < 20; }
+    sync();
+    if (window.MutationObserver) new MutationObserver(sync).observe(res, { attributes: true, attributeFilter: ['hidden', 'style', 'class'], childList: true, subtree: true });
+    return ui;
+  }
   function initForm() {
     document.addEventListener('click', function (e) {
       var t = e.target.closest && e.target.closest(cfg.trigger);
@@ -176,12 +242,29 @@
       goJoin({ resume: 'make-prompt' });
     }, true);
 
-    if (new URLSearchParams(location.search).get('dbx_resume') === 'make-prompt') resumeForm();
+    var ui = initSaveForm();
+    var mode = new URLSearchParams(location.search).get('dbx_resume');
+    if (mode === 'make-prompt') resumeForm(loadSnapshot, 'prompt');
+    else if (mode === 'save') resumeForm(loadSnapshot, 'save', ui);
+    else if (mode === 'restore') resumeForm(loadSaved, 'restore');
   }
-  function resumeForm() {
+  // 저장해 둔 결과(서버)를 불러온다. 성공하면 snap 을 콜백으로 돌려준다.
+  function loadSaved(cb) {
+    var id = new URLSearchParams(location.search).get('dbx_saved');
+    if (!id) return cb(null);
+    fetch('/api/saved/?id=' + encodeURIComponent(id), { credentials: 'same-origin', cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+      .then(function (j) { var p = j && j.item && j.item.payload; cb(p && p.f ? p : null); })
+      .catch(function () { cb(null); });
+  }
+  // getSnap: 동기(로그인 복귀: localStorage) 또는 비동기(저장 결과: 서버) 모두 지원. final: 'prompt' | 'save' | 'restore'
+  function resumeForm(getSnap, final, ui) {
     if (!signedIn()) { stripResumeFromUrl(); return; }
-    var snap = loadSnapshot();
-    if (!snap) { stripResumeFromUrl(); return; }
+    if (getSnap.length) { getSnap(function (snap) { runResume(snap, final, ui); }); return; }
+    runResume(getSnap(), final, ui);
+  }
+  function runResume(snap, final, ui) {
+    if (!snap) { stripResumeFromUrl(); if (final === 'restore') toast('저장한 결과를 불러오지 못했어요.'); return; }
     var tries = 0, fieldsApplied = false, goClicks = 0;
     (function step() {
       tries++;
@@ -193,9 +276,19 @@
         if (fieldsApplied) {
           var res = qs('#result');
           if (visible(res) && (res.textContent || '').trim().length > 20) {
-            stripResumeFromUrl(); lsDel(STATE_KEY);
-            trigger.click();
-            try { trigger.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {}
+            stripResumeFromUrl();
+            if (final === 'restore') {
+              toast('저장한 결과를 불러왔어요.');
+              try { res.scrollIntoView({ block: 'start', behavior: 'smooth' }); } catch (e) {}
+            } else if (final === 'save') {
+              lsDel(STATE_KEY);
+              doSave(formItem(), ui && ui.btn, ui && ui.note);
+              try { res.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {}
+            } else {
+              lsDel(STATE_KEY);
+              trigger.click();
+              try { trigger.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {}
+            }
             return;
           }
           var go = qs('#go');
@@ -217,8 +310,29 @@
     pt.setAttribute('data-dbx-teaser', lines.join('\n'));
     pt.textContent = lines.join('\n') + '\n…';
   }
+  function mbtiSession() {
+    try { var s = JSON.parse(lsGet(MBTI_KEY)); return s && s.result && s.result.type_code ? s : null; } catch (e) { return null; }
+  }
+  function mbtiItem() {
+    var s = mbtiSession(); if (!s) return null;
+    var r = s.result;
+    return { title: oneLine('투자 성향 · ' + r.type_code + (r.type_name ? ' ' + r.type_name : ''), 80), summary: oneLine(r.type_catchline, 120), payload: s };
+  }
+  function initMbtiSave() {
+    var app = document.getElementById('app'); if (!app) return null;
+    var ui = makeSaveButton(mbtiItem, 'save'); ui.wrap.hidden = false;
+    function ensure() {
+      var cta = qs('#aiCta', app); if (!cta || !cta.parentNode) return;
+      var anchor = cta.parentNode;
+      if (ui.wrap.parentNode !== anchor.parentNode || ui.wrap.nextSibling !== anchor) anchor.parentNode.insertBefore(ui.wrap, anchor);
+    }
+    ensure();
+    if (window.MutationObserver) new MutationObserver(ensure).observe(app, { childList: true, subtree: true });
+    return ui;
+  }
   function initMbti() {
     var sel = cfg.triggers.join(',');
+    var ui = initMbtiSave();
     document.addEventListener('click', function (e) {
       var t = e.target.closest && e.target.closest(sel);
       if (!t || signedIn()) return;
@@ -230,7 +344,28 @@
     var app = document.getElementById('app') || document.body;
     if (window.MutationObserver) new MutationObserver(function () { if (!signedIn()) mbtiTeaser(); }).observe(app, { childList: true, subtree: true });
 
-    if (new URLSearchParams(location.search).get('dbx_resume') === 'aiCta') {
+    var mode = new URLSearchParams(location.search).get('dbx_resume');
+    if (mode === 'save') {
+      stripResumeFromUrl();
+      if (signedIn() && mbtiSession()) doSave(mbtiItem(), ui && ui.btn, ui && ui.note);
+      return;
+    }
+    if (mode === 'restore') {
+      if (!signedIn()) { stripResumeFromUrl(); return; }
+      var sid = new URLSearchParams(location.search).get('dbx_saved');
+      stripResumeFromUrl();
+      if (!sid) return;
+      fetch('/api/saved/?id=' + encodeURIComponent(sid), { credentials: 'same-origin', cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+        .then(function (j) {
+          var p = j && j.item && j.item.payload;
+          if (!p || !p.result) throw new Error('empty');
+          lsSet(MBTI_KEY, JSON.stringify(p)); location.replace(location.pathname);
+        })
+        .catch(function () { toast('저장한 결과를 불러오지 못했어요.'); });
+      return;
+    }
+    if (mode === 'aiCta') {
       if (!signedIn()) { stripResumeFromUrl(); return; }
       var tries = 0;
       (function step() {

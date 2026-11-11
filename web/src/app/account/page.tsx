@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import ProfileForm from '@/components/ProfileForm';
 import WithdrawForm from '@/components/WithdrawForm';
 import PreferencesForm from '@/components/PreferencesForm';
@@ -40,6 +41,12 @@ export default async function AccountPage() {
     <>
       <h1>내 계정</h1>
       <p className="lead">{user.email} · {ROLE[profile?.role ?? 'member']}</p>
+
+      <div className="card narrow" style={{ margin: '0 0 20px' }}>
+        <h2>내 결과</h2>
+        <p className="lead">계산기와 투자 성향 검사에서 저장한 결과를 다시 열어 볼 수 있어요.</p>
+        <Link className="btn ghost" href="/account/saved/">저장한 결과 보기</Link>
+      </div>
 
       <div className="card narrow" style={{ margin: '0 0 20px' }}>
         <h2>프로필</h2>

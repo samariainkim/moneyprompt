@@ -28,7 +28,9 @@ export default async function JoinPage({ searchParams }: { searchParams: Promise
 
   const keepMessage = src === 'fav'
     ? '방금 누른 즐겨찾기는 로그인 후 자동으로 추가돼요'
-    : '방금 입력한 내용은 로그인 후에도 그대로 이어져요';
+    : src?.startsWith('save_')
+      ? '방금 본 결과는 로그인 후 내 결과에 자동으로 저장돼요'
+      : '방금 입력한 내용은 로그인 후에도 그대로 이어져요';
 
   return (
     <div className="join">

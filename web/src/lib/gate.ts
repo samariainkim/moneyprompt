@@ -19,7 +19,7 @@ export function continueUrl(next: string, src: string | null): string {
   return `/auth/continue/?${q.toString()}`;
 }
 
-const DBX_PARAMS = ['dbx_resume', 'dbx_idx', 'dbx_evt', 'dbx_src', 'dbx_m'];
+const DBX_PARAMS = ['dbx_resume', 'dbx_idx', 'dbx_evt', 'dbx_src', 'dbx_m', 'dbx_saved'];
 
 /** 이어하기·측정용 쿼리(dbx_*)를 뺀 경로. "지금은 둘러볼게요"로 원래 화면에 돌아갈 때 쓴다. */
 export function stripDbx(path: string): string {
