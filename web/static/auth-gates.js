@@ -1,8 +1,8 @@
 /* 돈버프 로그인 게이트 — 기존 정적 페이지의 "심화 기능"을 로그인한 회원만 쓰게 한다.
  * 빌드 때 scripts/sync-static.mjs 가 해당 페이지(<head>)에만 끼워 넣는다. (저장소 루트의 원본 페이지는 수정하지 않음)
  *
- *  - 계산기 4종(#make-prompt) / 투자 성향(#aiCta, #copyBtn): 비로그인이 누르면 가입 안내 시트를 보여주고 기능은 실행하지 않는다.
- *  - 프롬프트 즐겨찾기(★): 비로그인은 안내 시트, 로그인하면 계정에 저장(/api/favorites/)한다.
+ *  - 계산기 4종(#make-prompt) / 투자 성향(#aiCta, #copyBtn): 비로그인이 누르면 기능은 실행하지 않고 로그인 안내 페이지(/join/)로 보낸다.
+ *  - 프롬프트 즐겨찾기(★): 비로그인은 /join/ 으로 보내고, 로그인하면 계정에 저장(/api/favorites/)한다.
  *  - 로그인하고 돌아오면(?dbx_resume=…) 입력값을 복원하고 하려던 동작을 자동으로 이어서 실행한다.
  *
  * 이 게이트는 화면 단(소프트) 게이트다. 개발자 도구로 우회할 수 있으며, 가입 유도가 목적이다. */
@@ -13,28 +13,12 @@
 
   /* ───────── 페이지별 설정 ───────── */
   var CFG = {
-    '/calc/brokerage/': { kind: 'form', id: 'calc_brokerage', trigger: '#make-prompt', name: '부동산 중개보수',
-      lead: '방금 계산한 결과와 입력 조건이 담긴 AI 분석 프롬프트를 만들어 ChatGPT·Claude에 바로 붙여넣을 수 있어요.',
-      perks: ['내 계산 결과가 프롬프트에 자동으로 담겨요', '중개보수 검증·협의 시나리오 등 원하는 분석만 골라요', '로그인해도 입력한 내용은 그대로 이어져요'],
-      preview: '당신은 부동산 거래와 중개보수에 밝은 전문가입니다.\n아래는 제가 계산한 중개보수 결과와 거래 조건입니다.\n[거래 유형 · 거래 금액 · 적용 요율 · 상한액]\n다음 항목을 검증하고 협의 시나리오와 체크리스트를 정리해 주세요.' },
-    '/calc/fx/': { kind: 'form', id: 'calc_fx', trigger: '#make-prompt', name: '환전수수료',
-      lead: '방금 계산한 환전 결과가 담긴 AI 분석 프롬프트를 만들어 ChatGPT·Claude에 바로 붙여넣을 수 있어요.',
-      perks: ['통화·금액·우대율 등 내 조건이 프롬프트에 자동으로 담겨요', '더 유리하게 환전하는 방법을 AI에게 물어볼 수 있어요', '로그인해도 입력한 내용은 그대로 이어져요'],
-      preview: '당신은 환전과 외환 비용에 밝은 금융 전문가입니다.\n아래는 제가 계산한 환전 결과입니다.\n[통화 · 금액 · 우대율 · 적용 환율 · 기준 대비 차이]\n더 유리하게 환전할 방법과 확인할 점을 알려주세요.' },
-    '/calc/loan-prepay/': { kind: 'form', id: 'calc_loan', trigger: '#make-prompt', name: '중도상환수수료',
-      lead: '방금 계산한 중도상환수수료 결과가 담긴 분석 요청문을 만들어 ChatGPT·Claude에 바로 붙여넣을 수 있어요.',
-      perks: ['대출 조건과 계산 결과가 요청문에 자동으로 담겨요', '갚는 시점별 유불리를 AI에게 물어볼 수 있어요', '로그인해도 입력한 내용은 그대로 이어져요'],
-      preview: '당신은 대출과 중도상환수수료에 밝은 금융 전문가입니다.\n아래는 제가 계산한 중도상환수수료 결과입니다.\n[상환 금액 · 면제 기간 · 수수료율 · 예상 수수료]\n갚는 시점별 유불리와 확인할 점을 알려주세요.' },
-    '/fee/brokerage-fee/': { kind: 'form', id: 'fee_brokerage', trigger: '#make-prompt', name: '중개보수',
-      lead: '방금 계산한 결과와 입력 조건이 담긴 AI 분석 프롬프트를 만들어 ChatGPT·Claude에 바로 붙여넣을 수 있어요.',
-      perks: ['내 계산 결과가 프롬프트에 자동으로 담겨요', '원하는 분석 항목만 골라 요청문을 만들어요', '로그인해도 입력한 내용은 그대로 이어져요'],
-      preview: '당신은 부동산 거래와 중개보수에 밝은 전문가입니다.\n아래는 제가 계산한 중개보수 결과와 거래 조건입니다.\n[거래 유형 · 거래 금액 · 적용 요율 · 상한액]\n다음 항목을 검증하고 협의 시나리오와 체크리스트를 정리해 주세요.' },
-    '/invest-mbti/': { kind: 'mbti', id: 'mbti_prompt', triggers: ['#aiCta', '#copyBtn'], name: '투자 성향',
-      lead: '내가 고르고, 내려놓고, 끝까지 남긴 선택이 담긴 AI 분석 프롬프트를 만들어 드려요.',
-      perks: ['내 선택 기록이 그대로 담긴 나만의 프롬프트예요', 'ChatGPT·Claude·Gemini 어디에나 붙여넣어 쓸 수 있어요', '로그인해도 테스트 결과는 그대로 이어져요'] },
-    '/prompt/': { kind: 'fav', id: 'fav', name: '프롬프트',
-      lead: '즐겨찾기는 로그인한 회원에게 제공돼요.',
-      perks: ['어느 기기에서 열어도 즐겨찾기가 그대로 유지돼요', '자주 쓰는 프롬프트를 한곳에 모아 둘 수 있어요'] }
+    '/calc/brokerage/': { kind: 'form', id: 'calc_brokerage', trigger: '#make-prompt' },
+    '/calc/fx/': { kind: 'form', id: 'calc_fx', trigger: '#make-prompt' },
+    '/calc/loan-prepay/': { kind: 'form', id: 'calc_loan', trigger: '#make-prompt' },
+    '/fee/brokerage-fee/': { kind: 'form', id: 'fee_brokerage', trigger: '#make-prompt' },
+    '/invest-mbti/': { kind: 'mbti', id: 'mbti_prompt', triggers: ['#aiCta', '#copyBtn'] },
+    '/prompt/': { kind: 'fav', id: 'fav' }
   };
 
   var path = location.pathname;
@@ -94,17 +78,6 @@
     '.dbx-gate-x:hover{background:#f3f4f6}' +
     '.dbx-gate-card h2{margin:0 28px 8px 0;font-size:18px;line-height:1.4;letter-spacing:-.3px;font-weight:800}' +
     '.dbx-gate-lead{margin:0 0 12px;font-size:13.5px;line-height:1.65;color:#4b5563}' +
-    '.dbx-gate-ul{margin:0 0 14px;padding:0;list-style:none;font-size:13px;line-height:1.55;color:#374151}' +
-    '.dbx-gate-ul li{position:relative;padding-left:20px;margin:5px 0}.dbx-gate-ul li:before{content:"✓";position:absolute;left:0;color:#d97706;font-weight:800}' +
-    '.dbx-gate-prev{position:relative;margin:0 0 14px;border:1px solid #fde68a;background:#fffbeb;border-radius:12px;padding:10px 12px 6px;overflow:hidden}' +
-    '.dbx-gate-prev small{display:block;font-size:11px;font-weight:700;color:#b45309;margin-bottom:4px}' +
-    '.dbx-gate-prev pre{margin:0;max-height:96px;overflow:hidden;white-space:pre-wrap;word-break:break-word;font:12px/1.6 "Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#44403c}' +
-    '.dbx-gate-fade{position:absolute;left:0;right:0;bottom:0;height:64px;background:linear-gradient(to bottom,rgba(255,251,235,0),#fffbeb 85%);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}' +
-    '.dbx-gate-go{display:flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;padding:13px 16px;border-radius:12px;background:#d97706;color:#fff;font-weight:800;font-size:14.5px;text-decoration:none}' +
-    '.dbx-gate-go:hover{background:#b45309}' +
-    '.dbx-gate-sub{display:block;text-align:center;margin-top:10px;font-size:13px;color:#6b7280;text-decoration:none}' +
-    '.dbx-gate-sub b{color:#d97706;text-decoration:underline}' +
-    '.dbx-gate-later{display:block;width:100%;margin-top:6px;padding:8px;border:0;background:none;color:#9ca3af;font:inherit;font-size:12.5px;cursor:pointer}' +
     '.dbx-gate-actions{display:flex;gap:8px;margin-top:4px}' +
     '.dbx-gate-actions button{flex:1;padding:12px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;font:inherit;font-weight:700;font-size:14px;cursor:pointer;color:#374151}' +
     '.dbx-gate-actions button.pri{background:#d97706;border-color:#d97706;color:#fff}' +
@@ -143,32 +116,12 @@
     if (first) first.focus();
     if (onReady) onReady(sheet);
   }
-  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
-  // 가입 안내 시트
-  function showGate(opts) {
+  // 로그인 안내 페이지(/join/)로 보낸다. 로그인 후 돌아올 주소(next)에는 하려던 동작(dbx_resume)을 실어 둔다.
+  function goJoin(opts) {
     var next = resumeUrl(opts.resume, opts.extra);
-    var title = opts.title, lead = cfg.lead, perks = (opts.perks || cfg.perks).slice();
-    var html = '<button type="button" class="dbx-gate-x" aria-label="닫기">×</button>' +
-      '<h2 id="dbx-gate-t">' + esc(title) + '</h2>' +
-      '<p class="dbx-gate-lead">' + esc(opts.lead || lead) + '</p>' +
-      '<ul class="dbx-gate-ul">' + perks.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul>';
-    if (opts.preview) {
-      html += '<div class="dbx-gate-prev"><small>프롬프트 미리보기 (일부)</small><pre>' + esc(opts.preview) + '</pre><div class="dbx-gate-fade"></div></div>';
-    }
-    html += '<a class="dbx-gate-go" data-act="login" href="' + esc(authUrl('login', next)) + '">로그인하고 계속하기</a>' +
-      '<a class="dbx-gate-sub" data-act="signup" href="' + esc(authUrl('signup', next)) + '">아직 회원이 아니신가요? <b>회원가입</b></a>' +
-      '<button type="button" class="dbx-gate-later">나중에 할게요</button>';
-    openSheet(html, function (root) {
-      qsa('a[data-act]', root).forEach(function (a) {
-        a.addEventListener('click', function () {
-          // 곧바로 다른 페이지로 이동하므로, 이동 중에도 전송되도록 beacon 방식으로 보낸다.
-          ga('gate_click', { gate_id: cfg.id, action: a.getAttribute('data-act'), transport_type: 'beacon' });
-          if (a.getAttribute('data-act') === 'signup') ga('signup_start', { source: cfg.id, transport_type: 'beacon' });
-        });
-      });
-    });
-    ga('gate_view', { gate_id: cfg.id });
+    ga('gate_trigger', { gate_id: cfg.id, transport_type: 'beacon' });
+    location.assign('/join/?next=' + encodeURIComponent(next) + '&src=' + encodeURIComponent(cfg.id));
   }
 
   /* ───────── 입력값 스냅샷 저장·복원 (계산기) ───────── */
@@ -220,7 +173,7 @@
       if (!t || signedIn()) return;
       e.preventDefault(); e.stopImmediatePropagation();
       saveFormState();
-      showGate({ title: 'AI 분석 프롬프트는 로그인 후 만들 수 있어요', resume: 'make-prompt', preview: cfg.preview });
+      goJoin({ resume: 'make-prompt' });
     }, true);
 
     if (new URLSearchParams(location.search).get('dbx_resume') === 'make-prompt') resumeForm();
@@ -271,9 +224,7 @@
       if (!t || signedIn()) return;
       e.preventDefault(); e.stopImmediatePropagation();
       mbtiTeaser();
-      var pt = qs('#promptText');
-      var preview = (pt && pt.getAttribute('data-dbx-teaser')) || '';
-      showGate({ title: 'AI 분석 프롬프트는 로그인 후 볼 수 있어요', resume: 'aiCta', preview: preview });
+      goJoin({ resume: 'aiCta' });
     }, true);
     // 결과 화면이 그려질 때마다, 비로그인이면 프롬프트 전문이 화면(DOM)에 남지 않게 일부만 남긴다.
     var app = document.getElementById('app') || document.body;
@@ -307,10 +258,7 @@
       if (!star) return;
       if (!signedIn()) {
         e.preventDefault(); e.stopImmediatePropagation();
-        var n = localFavs().length;
-        var perks = cfg.perks.slice();
-        if (n > 0) perks.push('이 기기에 저장된 즐겨찾기 ' + n + '개도 계정으로 옮겨 드려요');
-        showGate({ title: '즐겨찾기는 로그인하면 쓸 수 있어요', resume: 'fav', extra: { dbx_idx: star.getAttribute('data-idx') || '' }, perks: perks });
+        goJoin({ resume: 'fav', extra: { dbx_idx: star.getAttribute('data-idx') || '' } });
         return;
       }
       if (favs === null) { e.preventDefault(); e.stopImmediatePropagation(); toast(favsError ? '지금은 즐겨찾기를 사용할 수 없어요. 잠시 후 다시 시도해 주세요.' : '즐겨찾기를 불러오는 중이에요. 잠시 후 다시 눌러 주세요.'); }

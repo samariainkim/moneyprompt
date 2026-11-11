@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 
 const LABELS: Record<string, string> = { google: 'Google로 계속하기', kakao: '카카오로 계속하기' };
 
-export default function OAuthButtons({ next, src }: { next: string; src?: string | null }) {
+export default function OAuthButtons({ next, src, compact = false, onStart }: { next: string; src?: string | null; compact?: boolean; onStart?: (provider: string) => void }) {
   const providers = (process.env.NEXT_PUBLIC_OAUTH_PROVIDERS ?? 'google')
     .split(',').map((s) => s.trim()).filter((p) => p in LABELS);
   const [error, setError] = useState('');
@@ -13,6 +13,7 @@ export default function OAuthButtons({ next, src }: { next: string; src?: string
 
   async function go(provider: string) {
     setError('');
+    onStart?.(provider);
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: provider as 'google' | 'kakao',
@@ -23,9 +24,9 @@ export default function OAuthButtons({ next, src }: { next: string; src?: string
 
   return (
     <>
-      <div className="divider">또는</div>
+      {!compact && <div className="divider">또는</div>}
       {providers.map((p) => (
-        <button key={p} type="button" className="btn ghost block" style={{ marginTop: 8 }} onClick={() => go(p)}>
+        <button key={p} type="button" className={compact ? 'btn ghost google' : 'btn ghost block'} style={compact ? undefined : { marginTop: 8 }} onClick={() => go(p)}>
           {LABELS[p]}
         </button>
       ))}

@@ -9,7 +9,7 @@
 
 | 경로 | 내용 |
 |---|---|
-| `src/app/` | 페이지: `login` `signup` `onboarding` `account` `pricing` `terms` `privacy`, `auth/callback` |
+| `src/app/` | 페이지: `join` `login` `signup` `onboarding` `account` `pricing` `terms` `privacy`, `auth/callback` |
 | `src/proxy.ts` | 세션 갱신 + `/account`·`/onboarding` 로그인 보호 (Next.js 16 의 옛 middleware) |
 | `src/lib/supabase/` | 브라우저·서버·관리자 클라이언트 |
 | `scripts/sync-static.mjs` | 루트 정적 페이지를 `public/` 으로 복사 (테스트·`*.md` 제외) |
@@ -35,7 +35,7 @@ npm run dev                  # http://localhost:3000
 
 ## Supabase 설정 순서
 
-1. SQL Editor(Database 모드)에서 `supabase/migrations/` 의 파일을 **번호 순서대로** 실행 (`20261103000000` → `20261103000100` → `20261110000000`)
+1. SQL Editor(Database 모드)에서 `supabase/migrations/` 의 파일을 **번호 순서대로** 실행 (`20261103000000` → `20261103000100` → `20261110000000` → `20261111000000`)
 2. Authentication → URL Configuration: Site URL 과 Redirect URLs(`https://donbuff.com/**`, `http://localhost:3000/**`)
 3. Authentication → Providers: Google(클라이언트 ID·시크릿), 필요 시 Kakao
 4. Authentication → Sign In / Providers → Email: **Confirm email 켜기**(이메일 인증 필수)
@@ -56,7 +56,7 @@ npm run dev                  # http://localhost:3000
 ## 로그인 게이트와 회원 기능 (1단계)
 
 - `static/auth-nav.js`: 헤더의 로그인/내 계정 버튼 (모든 정적 페이지)
-- `static/auth-gates.js`: AI 프롬프트 생성(계산기·수수료·투자 성향)과 즐겨찾기를 로그인 전용으로 만드는 **화면 단 게이트** (해당 6개 페이지에만 삽입). 로그인하고 돌아오면 입력값을 복원하고 하려던 동작을 이어서 실행
+- `static/auth-gates.js`: AI 프롬프트 생성(계산기·수수료·투자 성향)과 즐겨찾기를 로그인 전용으로 만드는 **화면 단 게이트** (해당 6개 페이지에만 삽입). 기능을 누르면 로그인 안내 페이지 `/join/` 으로 이동하고, 로그인하고 돌아오면 입력값을 복원하고 하려던 동작을 이어서 실행
 - 두 스크립트는 빌드 때(`scripts/sync-static.mjs`) 복사본 HTML 의 `<head>` 에 **inline** 으로 삽입되며 저장소 루트의 원본 페이지는 바뀌지 않음
 - `GET/POST/PUT /api/favorites/`: 즐겨찾기 서버 저장 (로그인 필요, 같은 사이트 요청만 허용)
 - `/auth/continue/`: 로그인 직후 라우팅 (약관 동의 → 가입 완료 기록 → 선택정보 `/welcome/` → 원래 목적지)

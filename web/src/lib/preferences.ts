@@ -8,10 +8,11 @@ export const INTERESTS = [
 ] as const;
 
 export const OCCUPATIONS = [
-  { id: 'general', label: '일반' },
-  { id: 'fc', label: '보험설계사·FC' },
+  { id: 'fc', label: 'FC/보험설계사' },
   { id: 'realtor', label: '공인중개사' },
-  { id: 'selfemployed', label: '자영업' },
+  { id: 'selfemployed', label: '자영업자' },
+  { id: 'employee', label: '회사원' },
+  { id: 'homemaker', label: '주부' },
   { id: 'other', label: '기타' },
 ] as const;
 
