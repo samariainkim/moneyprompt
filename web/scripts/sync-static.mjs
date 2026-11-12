@@ -42,6 +42,11 @@ const AUTH_NAV_JS = await small('auth-nav.js');
 if (AUTH_NAV_JS.toLowerCase().includes('</script')) throw new Error('auth-nav.js 에 </script 가 있으면 inline 삽입이 깨집니다.');
 const AUTH_GATES_JS = await small('auth-gates.js');
 if (AUTH_GATES_JS.toLowerCase().includes('</script')) throw new Error('auth-gates.js 에 </script 가 있으면 inline 삽입이 깨집니다.');
+const GA_EXTRA_JS = await small('ga-extra.js');
+if (GA_EXTRA_JS.toLowerCase().includes('</script')) throw new Error('ga-extra.js 에 </script 가 있으면 inline 삽입이 깨집니다.');
+// GA4 코드가 빠진 페이지에 기본 코드를 넣는다. (측정 ID 는 다른 페이지·Next 앱과 같다)
+const GA_ID = 'G-GW588P483F';
+const GA_BASE = `<script async src="https://www.googletagmanager.com/gtag/js?id=${GA_ID}"></script>\n<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${GA_ID}');</script>`;
 const MARK = 'data-dbx-auth-nav';
 const TAG = `<script ${MARK}>${AUTH_NAV_JS}</script>`;
 // 로그인 게이트는 필요한 페이지에만 넣는다. (경로는 public 기준)
@@ -52,6 +57,7 @@ const GATE_PAGES = new Set([
 const GATE_TAG = `<script data-dbx-gates>${AUTH_GATES_JS}</script>`;
 let gated = 0;
 let injected = 0;
+let gaAdded = 0;
 let relinked = 0;
 const walk = (dir) => {
   for (const name of readdirSync(dir)) {
@@ -73,7 +79,10 @@ const walk = (dir) => {
     const h = lower.indexOf('</head>');
     const i = h >= 0 ? h : lower.lastIndexOf('</body>');
     const rel = full.slice(out.length + 1).split('\\').join('/');
-    const tags = TAG + (GATE_PAGES.has(rel) ? '\n' + GATE_TAG : '');
+    const needsGa = !/gtag\(\s*['"]config['"]/.test(html);
+    if (needsGa) gaAdded++;
+    // 순서: (GA 기본 코드) → 로그인 메뉴 → 보완 측정 → (로그인 게이트)
+    const tags = (needsGa ? GA_BASE + '\n' : '') + TAG + `\n<script data-dbx-ga>${GA_EXTRA_JS}</script>` + (GATE_PAGES.has(rel) ? '\n' + GATE_TAG : '');
     if (GATE_PAGES.has(rel)) gated++;
     html = i >= 0 ? html.slice(0, i) + tags + '\n' + html.slice(i) : html + '\n' + tags + '\n';
     writeFileSync(full, html);
@@ -83,5 +92,6 @@ const walk = (dir) => {
 walk(out);
 console.log(`[sync-static] 로그인 메뉴 스크립트를 HTML ${injected}개에 삽입했습니다.`);
 console.log(`[sync-static] donbuff.com 절대 링크를 상대 링크로 바꾼 파일 ${relinked}개.`);
+console.log(`[sync-static] GA4 기본 코드를 새로 넣은 페이지 ${gaAdded}개.`);
 console.log(`[sync-static] 로그인 게이트를 ${gated}개 페이지에 삽입했습니다.`);
 if (gated !== GATE_PAGES.size) throw new Error(`게이트 대상 ${GATE_PAGES.size}개 중 ${gated}개만 삽입되었습니다. 경로를 확인하세요.`);

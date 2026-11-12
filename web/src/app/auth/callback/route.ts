@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get('code');
   const next = safeNext(searchParams.get('next'));
   const src = cleanSource(searchParams.get('src'));
+  const evt = searchParams.get('evt') === 'login' ? 'login' : null;
   const flow = next.startsWith('/reset-password') ? 'recovery' : 'signup';
 
   let reason = 'auth';
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     // 비밀번호 재설정은 바로 새 비밀번호 화면으로, 그 외에는 로그인 후 라우팅(/auth/continue/)을 거친다.
-    if (!error) return NextResponse.redirect(`${origin}${flow === 'recovery' ? next : continueUrl(next, src)}`);
+    if (!error) return NextResponse.redirect(`${origin}${flow === 'recovery' ? next : continueUrl(next, src, evt)}`);
     reason = classifyAuthError(error.message);
   } else {
     // 링크가 이미 만료/사용된 경우 Supabase 가 error_code 를 붙여 돌려보낸다.
