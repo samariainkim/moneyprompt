@@ -413,6 +413,7 @@
       window.toggleFavorite = function (idx) {
         var on = favs.indexOf(idx) < 0;
         favs = on ? favs.concat([idx]) : favs.filter(function (k) { return k !== idx; });
+        ga('favorite_toggle', { action: on ? 'add' : 'remove', prompt_idx: idx });
         if (typeof window.updateFavCount === 'function') window.updateFavCount();
         api('POST', { key: idx, on: on }).catch(function () {
           favs = on ? favs.filter(function (k) { return k !== idx; }) : favs.concat([idx]);

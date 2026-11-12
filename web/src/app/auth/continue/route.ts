@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
   const next = safeNext(searchParams.get('next'));
   const src = cleanSource(searchParams.get('src'));
+  const evt = searchParams.get('evt') === 'login' ? 'login' : null; // 직접 로그인한 경우에만 login 이벤트
   const go = (path: string) => NextResponse.redirect(`${origin}${path}`);
 
   const supabase = await createClient();
@@ -19,13 +20,17 @@ export async function GET(request: NextRequest) {
   if (!user) return go(`/login/?next=${encodeURIComponent(next)}`);
 
   const { data: needs } = await supabase.rpc('needs_consent');
-  if (needs === true) return go(`/onboarding/?next=${encodeURIComponent(continueUrl(next, src))}`);
+  if (needs === true) return go(`/onboarding/?next=${encodeURIComponent(continueUrl(next, src, evt))}`);
 
   let target = next;
   const { data: firstSource } = await supabase.rpc('complete_signup', { p_source: src });
   if (typeof firstSource === 'string') {
     const provider = String(user.app_metadata?.provider ?? 'email');
     target = addParams(next, { dbx_evt: 'signup_complete', dbx_src: firstSource, dbx_m: provider });
+  } else if (evt === 'login') {
+    // 이미 가입한 회원이 로그인한 경우: GA4 권장 이벤트 login (method = google | email)
+    const provider = String(user.app_metadata?.provider ?? 'email');
+    target = addParams(next, { dbx_evt: 'login', dbx_m: provider });
   }
 
   if (!next.includes('dbx_resume=')) {

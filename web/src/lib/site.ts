@@ -3,7 +3,7 @@ export const SITE_URL = 'https://donbuff.com';
 export const SITE_HOST = 'donbuff.com';
 
 export const INDEXABLE_PATHS = [
-  '/', '/prompt/', '/invest-mbti/', '/new/', '/privacy.html', '/terms/', '/privacy/',
+  '/', '/prompt/', '/invest-mbti/', '/privacy.html', '/terms/', '/privacy/',
 ];
 
 // 검색에 나오지 않아야 하는 회원·시스템 화면

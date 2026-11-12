@@ -13,9 +13,10 @@ export function addParams(path: string, params: Record<string, string>): string 
 }
 
 /** 로그인 직후 거치는 라우팅 주소: 동의 → 가입 완료 기록 → 선택정보 → 원래 가려던 곳 */
-export function continueUrl(next: string, src: string | null): string {
+export function continueUrl(next: string, src: string | null, evt: 'login' | null = null): string {
   const q = new URLSearchParams({ next });
   if (src) q.set('src', src);
+  if (evt === 'login') q.set('evt', 'login'); // 직접 로그인한 경우에만 GA4 login 이벤트를 보낸다(이미 로그인한 회원의 단순 이동은 제외)
   return `/auth/continue/?${q.toString()}`;
 }
 

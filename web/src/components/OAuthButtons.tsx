@@ -17,7 +17,7 @@ export default function OAuthButtons({ next, src, compact = false, onStart }: { 
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: provider as 'google' | 'kakao',
-      options: { redirectTo: `${location.origin}/auth/callback/?next=${encodeURIComponent(next)}${src ? `&src=${encodeURIComponent(src)}` : ''}` },
+      options: { redirectTo: `${location.origin}/auth/callback/?next=${encodeURIComponent(next)}${src ? `&src=${encodeURIComponent(src)}` : ''}&evt=login` },
     });
     if (error) setError('소셜 로그인을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.');
   }

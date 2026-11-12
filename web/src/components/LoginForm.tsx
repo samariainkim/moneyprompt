@@ -35,7 +35,7 @@ export default function LoginForm({ next, src }: { next: string; src?: string | 
       return;
     }
     // 동의·선택정보 확인을 거치는 로그인 후 라우팅으로 보낸다. (서버 경로라서 전체 이동)
-    window.location.assign(continueUrl(next, src ?? null));
+    window.location.assign(continueUrl(next, src ?? null, 'login'));
   }
 
   return (
