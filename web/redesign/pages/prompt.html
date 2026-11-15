@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>돈버프 — 돈 버는 프롬프트 | AI로 부자되기</title>
+<meta name="description" content="『AI로 부자되기』에 실린 {{TOTAL}}개 프롬프트를 골라 복사하고 바로 실행하세요. 주식투자·부동산·절세·재테크 루틴까지 내 돈을 불려주는 똑똑한 질문 모음.">
+<meta name="theme-color" content="#FFF2E5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/redesign/frame.css">
+<link rel="stylesheet" href="/redesign/prompt.css">
+</head>
+<body data-redesign="prompt">
+<div class="site">
+<!--@header variant=book-->
+<main id="main">
+
+<section class="ph" aria-labelledby="ph-t"><div class="wrap">
+ <div class="ph-text"><div class="eyebrow">『AI로 부자되기』 프롬프트 라이브러리</div>
+  <h1 id="ph-t">돈 버는<br><b>프롬프트</b></h1>
+  <div class="sub">내 돈을 불려주는 똑똑한 질문.<br>필요한 프롬프트를 골라 복사하고 바로 실행하세요.</div>
+  <div class="stats"><div class="stat"><b>{{TOTAL}}</b><span>총 프롬프트</span></div><div class="stat"><b>{{CATEGORIES}}</b><span>카테고리</span></div><div class="stat"><b>{{AIS}}</b><span>AI 툴</span></div></div></div>
+ <div class="art"><img src="/redesign/img/prompt-hero.webp" width="640" height="482" alt="AI와 함께 똑똑하게 재테크하는 모습" fetchpriority="high"></div>
+</div></section>
+
+<section><div class="wrap flow-wrap"><div class="flowc"><div><div class="k">BOOK → AI</div><h2>책에서 읽고,<br>돈버프에서 바로 실행하세요</h2><p>『AI로 부자되기』에 나온 프롬프트를 복사해서 ChatGPT·Claude·Gemini에 붙여넣으면 끝.</p></div><img src="/redesign/img/flow.jpg" width="900" height="378" alt="책에서 프롬프트로, AI 도구로 이어지는 흐름" loading="lazy"></div></div></section>
+
+<section class="blk"><div class="wrap"><div class="today" id="todayCard" role="button" tabindex="0" aria-label="오늘의 돈버프 프롬프트 바로 실행하기">
+ <div class="badge"><i aria-hidden="true">⚡</i>오늘의<br>돈버프</div>
+ <div class="bd"><div class="dt" id="todayDateText"></div><h3 id="todayTitle"></h3><p id="todayDesc"></p><div class="meta"><span id="todayCat"></span><span id="todayAi"></span></div></div>
+ <div class="go">바로 실행하기 →</div></div></div></section>
+
+<section class="blk"><div class="wrap"><div class="hd"><h2><span aria-hidden="true">✨</span> NEW BUFF <small>새로 추가된 돈 버는 프롬프트</small></h2></div>
+ <div class="newb" id="newPromptList"></div></div></section>
+
+<section class="blk"><div class="wrap"><div class="hd"><h2><span aria-hidden="true">💬</span> 독자님들이 남겨주신 소중한 후기 <small>오늘의 리뷰</small></h2></div>
+ <div class="rev-vp"><div class="rev-track" id="reviewTrack"></div></div>
+ <div class="rdots" id="reviewDots"></div></div></section>
+
+<section class="lib" id="library"><div class="wrap">
+ <div class="searchbar"><span aria-hidden="true">🔍</span><input type="search" id="searchInput" placeholder="프롬프트 검색 (예: 연말정산, ETF, 청약, 재무제표)" aria-label="프롬프트 검색" autocomplete="off"></div>
+ <div class="tools">
+  <div class="filter-tabs-sub" id="filterTabsSub">
+   <button type="button" class="pillbtn ftab-sub" data-special="favorites" aria-pressed="false">⭐ 즐겨찾기 <b id="favCount">(0)</b></button>
+   <button type="button" class="pillbtn ftab-sub" data-special="recent" aria-pressed="false">🕐 최근 본 <b id="recentCount">(0)</b></button>
+  </div>
+  <div class="view" id="viewToggle" role="group" aria-label="보기 방식"><button type="button" data-view="list" class="on" aria-pressed="true">☰ 목록</button><button type="button" data-view="grid" aria-pressed="false">▦ 카드</button></div>
+ </div>
+ <div class="tabs filter-tabs" id="filterTabs" role="group" aria-label="카테고리"></div>
+ <div id="mainList" class="plist"></div>
+ <div class="empty" id="emptyMsg" role="status" style="display:none"></div>
+
+ <div class="cta3"><div><h3>책으로 더 깊이 배우고 싶다면</h3><p>『AI로 부자되기』에서 {{TOTAL}}개 프롬프트의 원리와 활용법을 만나보세요.</p></div>
+  <div class="bt"><a class="btn or" href="https://www.yes24.com/Product/Goods/194600081" target="_blank" rel="noopener">📖 책 구매하기 →</a><a class="btn line" href="https://open.kakao.com/o/g2JnL4Ai" target="_blank" rel="noopener">💬 독자 오픈채팅방</a></div></div>
+</div></section>
+</main>
+
+<a class="kakao-float" href="https://open.kakao.com/o/g2JnL4Ai" target="_blank" rel="noopener" aria-label="독자 오픈채팅방 바로가기"><span aria-hidden="true">💬</span><em>독자 오픈채팅방 입장</em></a>
+<!--@footer extra=copyright-->
+</div>
+
+<div class="pm" id="pm" role="dialog" aria-modal="true" aria-labelledby="pmTitle" hidden>
+ <div class="pm-card"><div class="pm-h"><div><div class="pm-tags" id="pmTags"></div><h3 id="pmTitle"></h3></div><button type="button" class="pm-x" id="pmClose" aria-label="닫기">✕</button></div><div id="pmBody"></div></div>
+</div>
+
+<!--@promptdata-->
+<script src="/redesign/frame.js" defer></script>
+<script src="/redesign/prompt.js"></script>
+</body>
+</html>

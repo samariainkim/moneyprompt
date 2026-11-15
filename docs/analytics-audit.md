@@ -60,6 +60,7 @@
 | `today_pick_click` | 오늘의 돈버프 카드 | prompt_idx |
 | `new_prompt_click` | 새 프롬프트(블로그) 링크 | destination |
 | `favorite_toggle` | 즐겨찾기 추가/삭제(로그인) | action, prompt_idx |
+| `prompt_view` | 프롬프트 페이지 목록/카드 보기 전환(리뉴얼 후) | view (list, grid) |
 | `home_service_click` | 홈 서비스 카드 | target (prompt, invest) |
 | `contact_click` | 카카오·유튜브·이메일 링크 | channel |
 | `login` | 직접 로그인 직후 | method (google, email) |

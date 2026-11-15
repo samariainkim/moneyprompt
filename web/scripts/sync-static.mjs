@@ -4,6 +4,7 @@ import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statS
 import { dirname, join, basename, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { minify } from 'terser';
+import vm from 'node:vm';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..', '..');
@@ -39,24 +40,70 @@ const rdOn = (rdCfg[rdEnv] || []).filter((u) => rdCfg.pages[u]);
 const targetOf = (u) => (u === '/' ? 'index.html' : join(u.replace(/^\/|\/$/g, ''), 'index.html'));
 
 // 프롬프트 개수는 데이터에서 자동으로 센다. (프롬프트가 늘면 화면의 숫자도 따라간다)
-function promptStats() {
+// 기존 prompt/index.html 의 데이터 상수(const NAME = …;)를 문장 끝까지 정확히 잘라 낸다. (문자열·템플릿 리터럴·주석 안의 괄호·세미콜론은 무시)
+function extractConst(src, name) {
+  const m = new RegExp(`(^|\\n)const ${name}\\s*=`).exec(src);
+  if (!m) throw new Error(`[sync-static] prompt/index.html 에서 const ${name} 를 찾지 못했습니다.`);
+  const start = m.index + (m[1] ? 1 : 0);
+  let i = src.indexOf('=', start) + 1, depth = 0;
+  const tpl = []; // 템플릿 리터럴 안의 ${ } 깊이 기록
+  while (i < src.length) {
+    const c = src[i], n = src[i + 1];
+    if (c === '/' && n === '/') { while (i < src.length && src[i] !== '\n') i++; continue; }
+    if (c === '/' && n === '*') { i = src.indexOf('*/', i + 2) + 2; continue; }
+    if (c === '"' || c === "'") { const q = c; i++; while (src[i] !== q) { if (src[i] === '\\') i++; i++; } i++; continue; }
+    if (c === '`') {
+      i++;
+      for (;;) {
+        if (src[i] === '\\') { i += 2; continue; }
+        if (src[i] === '`') { i++; break; }
+        if (src[i] === '$' && src[i + 1] === '{') { tpl.push(depth); depth = 0; i += 2; break; }
+        i++;
+      }
+      continue;
+    }
+    if (c === '{' || c === '[' || c === '(') depth++;
+    else if (c === '}' || c === ']' || c === ')') {
+      if (c === '}' && depth === 0 && tpl.length) { depth = tpl.pop(); i++; // ${ } 끝 → 템플릿 문자열 이어서 읽기
+        for (;;) { if (src[i] === '\\') { i += 2; continue; } if (src[i] === '`') { i++; break; } if (src[i] === '$' && src[i + 1] === '{') { tpl.push(depth); depth = 0; i += 2; break; } i++; }
+        continue; }
+      depth--;
+    } else if (c === ';' && depth === 0 && !tpl.length) return src.slice(start, i + 1);
+    i++;
+  }
+  throw new Error(`[sync-static] const ${name} 의 끝을 찾지 못했습니다.`);
+}
+const PROMPT_DATA = ['AI_LINKS', 'PROMPTS', 'REVIEWS', 'CHALLENGE_REVIEWS', 'NEW_PROMPTS', 'catSections', 'catLabels'];
+function promptData() {
   const src = readFileSync(join(root, 'prompt', 'index.html'), 'utf8').replace(/data:image\/[a-z]+;base64,[A-Za-z0-9+/=]+/g, '');
-  const start = src.indexOf('const PROMPTS');
-  const seg = src.slice(start, src.indexOf('];', start));
-  const cats = [...seg.matchAll(/\bcat:\s*"([^"]+)"/g)].map((m) => m[1]);
-  const ais = new Set([...seg.matchAll(/\bai:\s*"([^"]+)"/g)].map((m) => m[1]));
-  const byCat = {}; for (const c of cats) byCat[c] = (byCat[c] || 0) + 1;
-  return { total: cats.length, categories: Object.keys(byCat).length, ais: ais.size, byCat };
+  const code = PROMPT_DATA.map((n) => extractConst(src, n)).join('\n');
+  // 잘라 낸 코드가 올바른지 실제로 실행해서 검증한다. (이상하면 빌드를 멈춘다)
+  const r = vm.runInNewContext(`${code}\n;({ prompts: PROMPTS, links: AI_LINKS, sections: catSections, labels: catLabels, reviews: REVIEWS.length + CHALLENGE_REVIEWS.length, news: NEW_PROMPTS.length })`, {});
+  if (!Array.isArray(r.prompts) || r.prompts.length < 100) throw new Error(`[sync-static] 프롬프트 데이터가 이상합니다(${r.prompts && r.prompts.length}개).`);
+  for (const p of r.prompts) if (!p.idx || !p.cat || !p.title || !p.prompt || !p.ai || !p.level) throw new Error(`[sync-static] 프롬프트 항목에 빠진 값이 있습니다: ${p.idx}`);
+  if (new Set(r.prompts.map((p) => p.idx)).size !== r.prompts.length) throw new Error('[sync-static] 프롬프트 번호(idx)가 중복됩니다.');
+  for (const p of r.prompts) if (!r.sections.includes(p.cat)) throw new Error(`[sync-static] catSections 에 없는 카테고리: ${p.cat}`);
+  return { code, prompts: r.prompts };
+}
+// 프롬프트 개수는 데이터에서 자동으로 센다. (프롬프트가 늘면 화면의 숫자도 따라간다)
+function promptStats() {
+  const { prompts } = promptData();
+  const byCat = {}; for (const p of prompts) byCat[p.cat] = (byCat[p.cat] || 0) + 1;
+  return { total: prompts.length, categories: Object.keys(byCat).length, ais: new Set(prompts.map((p) => p.ai)).size, byCat };
 }
 function renderRedesign(html, ctx) {
   html = html.replace(/<!--@header([^>]*)-->/g, (_, a) => {
     const attrs = Object.fromEntries([...a.matchAll(/(\w+)=(\w+)/g)].map((m) => [m[1], m[2]]));
-    let h = readFileSync(join(RD_DIR, 'partials', 'header.html'), 'utf8');
+    let h = readFileSync(join(RD_DIR, 'partials', attrs.variant === 'book' ? 'header-book.html' : 'header.html'), 'utf8');
     h = h.replace('{{over}}', attrs.over === '1' ? ' over' : '');
     for (const k of ['prompt', 'invest']) h = h.replace(`{{cur_${k}}}`, attrs.active === k ? ' aria-current="page" class="cur"' : '');
     return h;
   });
-  html = html.replace(/<!--@footer-->/g, readFileSync(join(RD_DIR, 'partials', 'footer.html'), 'utf8'));
+  html = html.replace(/<!--@footer([^>]*)-->/g, (_, a) => {
+    const extra = /extra=copyright/.test(a) ? '<p class="note" style="margin-top:4px">© 2026 김태형. 이 페이지의 프롬프트는 개인 학습 목적으로만 활용하세요.</p>' : '';
+    return readFileSync(join(RD_DIR, 'partials', 'footer.html'), 'utf8').replace('{{footer_extra}}', extra);
+  });
+  html = html.replace(/<!--@promptdata-->/g, () => `<script data-prompt-data>\n${promptData().code}\n</script>`);
   html = html.replace(/\{\{TOTAL\}\}/g, String(ctx.total)).replace(/\{\{CATEGORIES\}\}/g, String(ctx.categories)).replace(/\{\{AIS\}\}/g, String(ctx.ais));
   html = html.replace(/\{\{N:([^}]+)\}\}/g, (_, c) => { if (!(c in ctx.byCat)) throw new Error(`[sync-static] 프롬프트 카테고리 '${c}' 를 찾지 못했습니다.`); return String(ctx.byCat[c]); });
   if (/\{\{[^}]+\}\}/.test(html)) throw new Error('[sync-static] 리뉴얼 페이지에 채워지지 않은 {{…}} 가 남았습니다.');
@@ -72,7 +119,7 @@ if (rdOn.length) {
   cpSync(join(RD_DIR, 'img'), join(out, 'redesign', 'img'), { recursive: true });
   cpSync(join(RD_DIR, 'shared', 'frame.css'), join(out, 'redesign', 'frame.css'));
   cpSync(join(RD_DIR, 'shared', 'frame.js'), join(out, 'redesign', 'frame.js'));
-  for (const f of readdirSync(join(RD_DIR, 'pages'))) if (f.endsWith('.css')) cpSync(join(RD_DIR, 'pages', f), join(out, 'redesign', f));
+  for (const f of readdirSync(join(RD_DIR, 'pages'))) if (f.endsWith('.css') || f.endsWith('.js')) cpSync(join(RD_DIR, 'pages', f), join(out, 'redesign', f));
   console.log(`[sync-static] 리뉴얼 페이지(${rdEnv}) ${rdOn.length}개 적용: ${rdOn.join(', ')}  · 프롬프트 ${ctx.total}개`);
 } else {
   console.log(`[sync-static] 리뉴얼 페이지(${rdEnv}): 적용 없음 — 기존 페이지 그대로`);
