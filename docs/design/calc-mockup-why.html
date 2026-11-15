@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>금융계산기 시안</title>
+<link rel="stylesheet" href="../../web/redesign/shared/frame.css">
+<style>
+.hero2{background:var(--hero);padding:128px 0 56px}
+.hero2 h1{font-size:60px;line-height:1.12;letter-spacing:-2.2px;font-weight:300;color:var(--navy);margin:14px 0 16px}
+.hero2 h1 b{font-weight:900}.hero2 h1 em{font-style:normal;color:var(--orange);font-weight:900}
+.hero2 .lead{font-size:18px;color:var(--muted);max-width:560px}
+.flow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:28px}
+.flow span{padding:9px 18px;border-radius:999px;background:#fff;font-weight:800;font-size:14.5px;color:var(--navy);box-shadow:0 0 0 1px rgba(16,35,63,.08)}
+.flow span.hl{background:var(--navy);color:#fff}.flow i{color:var(--orange);font-style:normal;font-weight:900}
+.sec{padding:64px 0 0}.sec h2{font-size:34px;font-weight:900;letter-spacing:-1.1px;margin:8px 0 8px}.sec .ld{color:var(--muted);font-size:16px;margin-bottom:28px}
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.cc{background:#fff;border:1px solid var(--line);border-radius:28px;padding:32px;display:flex;flex-direction:column;gap:14px;transition:.2s}
+.cc:hover{border-color:var(--orange);box-shadow:0 14px 34px rgba(16,35,63,.10);transform:translateY(-3px)}
+.cc .ico{width:64px;height:64px;border-radius:20px;background:var(--cream);display:grid;place-items:center;font-size:32px}
+.cc h3{font-size:22px;font-weight:900;letter-spacing:-.6px}.cc p{color:var(--muted);font-size:15px}
+.cc .ft{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:10px;font-size:14px;font-weight:800}
+.cc .ft .go{color:var(--orange-text)}.cc .ai{font-size:12px;font-weight:900;background:var(--cream);color:var(--orange-text);padding:4px 11px;border-radius:999px;align-self:flex-start}
+.up{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.up div{border:1.5px dashed #D3CFC6;border-radius:20px;padding:20px;background:rgba(255,255,255,.6);display:flex;flex-direction:column;gap:10px}
+.up b{font-size:15px}.up small{color:var(--muted);font-size:12.5px}
+.up button{border:1.5px solid var(--navy);background:#fff;border-radius:999px;padding:9px;font-weight:800;font-size:13.5px;color:var(--navy);font-family:inherit}
+.why{margin:64px 0 0;border-radius:32px;background:linear-gradient(120deg,#1B3A66,#10233F 70%);color:#fff;padding:44px 48px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px}
+.why .t{grid-column:1/-1;font-size:13px;font-weight:900;letter-spacing:.12em;color:var(--orange)}
+.why h3{font-size:30px;font-weight:900;letter-spacing:-1px;grid-column:1/-1;margin-top:-14px}
+.why .s{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:22px}
+.why .s i{font-style:normal;font-size:12.5px;font-weight:900;color:var(--orange)}.why .s b{display:block;font-size:18px;margin:6px 0}.why .s span{font-size:14px;opacity:.75}
+.why-l{margin-left:10px;font-weight:900;font-size:14.5px;color:var(--orange-text);border-bottom:2px solid var(--orange);padding-bottom:2px}.why-l b{font-weight:900}
+.cc .q{color:var(--navy);font-size:16.5px;font-weight:700;line-height:1.45}.cc .go{background:var(--orange);color:var(--navy)!important;padding:10px 18px;border-radius:999px;font-weight:900}.cc .go i{font-style:normal}
+a.why{display:grid;color:#fff}.why .wl{grid-column:1/-1;justify-self:start;background:var(--orange);color:var(--navy);padding:13px 22px;border-radius:999px;font-weight:900;font-size:15px}
+.pop-bg{position:absolute;inset:0;background:rgba(16,35,63,.55);display:flex;align-items:flex-start;justify-content:center;padding:130px 24px;z-index:60}
+.pop{background:#fff;border-radius:32px;max-width:680px;width:100%;padding:38px 40px;box-shadow:0 30px 80px rgba(16,35,63,.35)}
+.pop .k{font-size:13px;font-weight:900;letter-spacing:.12em;color:var(--orange-text)}.pop h2{font-size:30px;font-weight:900;letter-spacing:-1px;margin:8px 0 12px;line-height:1.25}.pop .x2{float:right;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);background:#fff;font-size:18px}
+.pop>p{color:var(--muted);font-size:15.5px;line-height:1.7}
+.pop .s3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}.pop .s3 div{background:var(--off);border:1px solid var(--line);border-radius:18px;padding:16px}.pop .s3 i{font-style:normal;font-size:12px;font-weight:900;color:var(--orange-text)}.pop .s3 b{display:block;font-size:15.5px;margin:4px 0}.pop .s3 span{font-size:13px;color:var(--muted)}
+.pop .s3 div.hl{background:var(--navy);border-color:var(--navy);color:#fff}.pop .s3 div.hl i{color:var(--orange)}.pop .s3 div.hl span{color:#cbd5e6}
+.pop .ex{background:var(--cream);border-radius:18px;padding:18px 20px;font-size:14.5px;line-height:1.7}.pop .ex i{font-style:normal;font-size:12.5px;font-weight:900;color:var(--orange-text)}.pop .ex b{display:block;font-size:16px;margin:2px 0}
+.pop .btns{display:flex;gap:10px;margin-top:22px}.pop .btns a{flex:1;text-align:center;padding:15px;border-radius:999px;font-weight:900;font-size:15px}.pop .b1{background:var(--orange);color:var(--navy)}.pop .b2{border:1.5px solid var(--navy)}
+/* 차별점 페이지 */
+.why-hero{background:var(--hero);padding:128px 0 64px}@media(max-width:900px){.stp{grid-template-columns:1fr;gap:12px;padding:24px 22px}.stp .n{font-size:40px}.why-hero h1{font-size:36px!important}.trust{grid-template-columns:1fr}.pop{padding:26px 22px}.pop .s3{grid-template-columns:1fr}.pop .btns{flex-direction:column}.cmp th,.cmp td{padding:12px 12px;font-size:13.5px}.pop-bg{padding:90px 14px}}
+.why-hero h1{font-size:56px;line-height:1.14;letter-spacing:-2px;font-weight:300;margin:14px 0 16px}.why-hero h1 b{font-weight:900}.why-hero h1 em{font-style:normal;color:var(--orange);font-weight:900}.why-hero p{color:var(--muted);font-size:18px;max-width:620px}
+.steps{display:grid;gap:18px;margin-top:8px}.stp{display:grid;grid-template-columns:90px 1fr 1fr;gap:28px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:28px;padding:30px 34px}
+.stp .n{font-size:56px;font-weight:900;color:var(--orange);letter-spacing:-2px}.stp h3{font-size:24px;font-weight:900;letter-spacing:-.8px;margin-bottom:6px}.stp p{color:var(--muted);font-size:15px}
+.stp .vis{background:var(--off);border-radius:20px;padding:18px;font-size:14px;line-height:1.7}.stp .vis b{font-size:22px;display:block;color:var(--navy)}
+.stp.hl{background:var(--navy);color:#fff;border-color:var(--navy)}.stp.hl p{color:#cbd5e6}.stp.hl .vis{background:rgba(255,255,255,.08);color:#e6ecf5}.stp.hl .vis b{color:var(--orange);font-size:15px}
+.cmp{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden}.cmp th,.cmp td{padding:16px 22px;text-align:left;font-size:15px;border-bottom:1px solid var(--line)}.cmp th{background:var(--off);font-size:13px;font-weight:900;color:var(--muted)}.cmp th.o{background:var(--orange);color:var(--navy)}.cmp td.o{background:var(--cream);font-weight:800}.cmp tr:last-child td{border-bottom:0}
+.pv{background:var(--navy);color:#e6ecf5;border-radius:24px;padding:26px 28px;font-size:14px;line-height:1.75}.pv b{color:var(--orange);display:block;font-size:12.5px;letter-spacing:.1em;margin-bottom:8px}
+.trust{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.trust div{background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px}.trust b{display:block;font-size:17px;margin-bottom:6px}.trust span{color:var(--muted);font-size:14px}
+.cta-b{margin-top:64px;background:var(--cream);border-radius:32px;padding:44px;text-align:center}.cta-b h2{font-size:30px;font-weight:900;letter-spacing:-1px;margin-bottom:18px}
+/* 계산기 */
+.hero3{background:var(--hero);padding:112px 0 44px}
+.crumb{font-size:13.5px;font-weight:700;color:var(--muted)}.crumb a:hover{color:var(--navy)}
+.hero3 .col{max-width:760px;margin:0 auto}
+.scope{display:inline-block;margin-top:18px;padding:6px 14px;border-radius:999px;background:#fff;font-size:13px;font-weight:800;color:var(--orange-text)}
+.hero3 h1{font-size:46px;font-weight:900;letter-spacing:-1.6px;margin:12px 0 10px;line-height:1.15}
+.hero3 p{color:var(--muted);font-size:17px}
+.rd{max-width:760px;margin:-8px auto 0;padding:0 30px 20px;display:grid;gap:20px;position:relative}
+.rd .card{background:#fff;border:1px solid var(--line);border-radius:28px;padding:32px;box-shadow:0 10px 30px rgba(16,35,63,.06)}
+.rd label,.rd .req{display:block;font-size:14px;font-weight:800;margin:0 0 8px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;background:var(--off);padding:5px;border-radius:999px;border:1px solid var(--line)}
+.seg button{padding:12px;border:0;border-radius:999px;background:none;font:inherit;font-weight:800;font-size:15px;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--navy);color:#fff}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.in{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:16px;padding:0 16px;background:#fff;height:54px}
+.in.focus{border-color:var(--orange);box-shadow:0 0 0 4px rgba(255,121,0,.14)}
+.in input{border:0;outline:0;font:inherit;font-size:18px;font-weight:800;flex:1;min-width:0;color:var(--navy);background:none}.in .u{color:var(--muted);font-weight:800}
+.hint{font-size:12.5px;color:var(--muted);margin-top:8px}
+.go-btn{margin-top:24px;width:100%;padding:18px;border-radius:999px;border:0;background:var(--orange);color:var(--navy);font:inherit;font-weight:900;font-size:17px}
+.res .k{color:var(--orange-text)}.res .big{color:var(--navy)}.res .why2{color:var(--muted)}
+.res .k{font-size:13px;font-weight:900;letter-spacing:.1em}
+.res .big{font-size:52px;font-weight:900;letter-spacing:-2px;margin:8px 0 6px}.res .why2{font-size:15.5px}.res .why2 b{color:var(--navy)}
+.res dl{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
+.res dl div{background:var(--off);border-radius:16px;padding:14px 16px}.res dt{font-size:12.5px;color:var(--muted)}.res dd{font-weight:800;font-size:17px;margin-top:2px}
+.box2{margin-top:16px;border-radius:18px;padding:16px 18px;font-size:14px;line-height:1.65}
+.box2.na{background:var(--off)}.box2.ck{background:var(--cream)}.box2 b{display:block;margin-bottom:4px}
+.ai-c{background:linear-gradient(140deg,#1B3A66,#10233F 65%)!important;color:#fff;border:0!important;position:relative;overflow:hidden;padding:38px 36px!important}
+.ai-c::after{content:"";position:absolute;right:-70px;top:-70px;width:240px;height:240px;border-radius:50%;background:rgba(255,121,0,.16)}.ai-c>*{position:relative;z-index:1}
+.ai-c .k{font-size:13px;font-weight:900;letter-spacing:.1em;color:var(--orange)}
+.ai-c h2{font-size:30px;font-weight:900;letter-spacing:-1px;margin:8px 0 6px;line-height:1.25}.ai-c .sb{color:#cbd5e6;font-size:15.5px}.ai-c .nx{display:inline-block;margin-top:14px;font-size:12.5px;font-weight:900;background:rgba(255,121,0,.18);color:#FFB36B;padding:6px 14px;border-radius:999px}
+.opts{display:grid;gap:10px;margin:20px 0}
+.opt{display:flex;gap:14px;align-items:center;background:rgba(255,255,255,.08);color:#fff;border-radius:18px;padding:16px 18px;border:1.5px solid transparent}
+.opt.on{border-color:var(--orange)}.opt .ck{width:24px;height:24px;border-radius:8px;border:2px solid #C9C5BB;display:grid;place-items:center;font-size:14px;color:#fff;flex:none}
+.opt.on .ck{background:var(--orange);border-color:var(--orange)}.opt b{font-size:15.5px}.opt small{display:block;color:#a9b8d0;font-size:13px}
+.ai-b{width:100%;padding:18px;border-radius:999px;border:0;background:var(--orange);color:var(--navy);font:inherit;font-weight:900;font-size:16px}
+.lock{display:block;text-align:center;margin-top:10px;font-size:13px;font-weight:800;color:#FFB36B}.ft2{text-align:center;color:#a9b8d0;font-size:12.5px;margin-top:14px}
+.save{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:20px;border-radius:999px;border:0;background:var(--orange);color:var(--navy);font:inherit;font-weight:900;font-size:18px;box-shadow:0 12px 28px rgba(255,121,0,.32)}.save-n{text-align:center;color:var(--muted);font-size:13.5px;margin-top:10px}.save-n a{color:var(--orange-text);font-weight:800}
+.share{padding:15px;border-radius:999px;border:1.5px solid var(--navy);background:#fff;font:inherit;font-weight:800;font-size:15px;color:var(--navy)}
+.mode-hub .calc-only,.mode-calc .hub-only,.mode-why .hub-only,.mode-why .calc-only{display:none}.why-only{display:none}.mode-why .why-only{display:block}
+.mode-calc .site>.hdr-pad{display:none}
+@media(max-width:900px){.hero2{padding:104px 0 40px}.hero2 h1{font-size:40px;letter-spacing:-1.4px}.cg,.up{grid-template-columns:1fr}.up{grid-template-columns:1fr 1fr}.why{grid-template-columns:1fr;padding:30px 24px}.why h3{font-size:24px}.sec h2{font-size:27px}.hero3 h1{font-size:32px}.res .big{font-size:40px}.rd{padding:0 16px 20px}.f2,.res dl{grid-template-columns:1fr}.rd .card{padding:24px 20px;border-radius:24px}.hero3{padding:92px 0 40px}.hero3 .wrap{padding:0 20px}}
+</style></head>
+<body class="mode-why">
+<div class="site">
+<header class="hdr over"><div class="wrap">
+ <a class="logo" href="/"><img src="../../web/redesign/img/logo.png" alt="돈버프 DONBUFF"></a>
+ <nav class="dbx-nav pc" aria-label="주 메뉴">
+  <a href="/prompt/" data-nav="prompt">돈 버는 프롬프트</a>
+  <a href="/invest-mbti/" data-nav="invest">나의 투자성향 찾기</a>
+  <div class="dd" id="ddCalc"><button type="button" aria-expanded="false" aria-controls="ddCalcPanel" data-dd="ddCalc">금융계산기 <span style="font-size:11px" aria-hidden="true">▾</span></button>
+   <div class="panel" id="ddCalcPanel">
+    <a href="/calc/brokerage/"><span class="ic" aria-hidden="true">🏠</span><div><b>부동산 중개보수</b><small>거래 금액으로 상한 보수 계산</small></div></a>
+    <a href="/calc/loan-prepay/"><span class="ic" aria-hidden="true">🏦</span><div><b>대출 중도상환</b><small>중도상환수수료 추정</small></div></a>
+    <a href="/calc/fx/"><span class="ic" aria-hidden="true">💱</span><div><b>환전수수료</b><small>환율 우대율별 예상 차액</small></div></a>
+    <hr><a class="all" href="/calc/" data-ga="nav">금융계산기 전체 보기 <span aria-hidden="true">→</span></a>
+   </div></div>
+ </nav>
+ <button class="burger" type="button" id="menuBtn" aria-label="메뉴 열기" aria-expanded="false" aria-controls="menuPanel">☰</button>
+</div></header>
+
+<div class="hub-only">
+<section class="hero2"><div class="wrap">
+ <div class="eyebrow">CALC BUFF</div>
+ <h1>돈을 불려주는<br><b>스마트한 <em>‘돈버프 금융계산기’</em></b></h1>
+ <p class="lead">수수료가 얼마인지 계산해보고, 왜 그 금액인지 풀어서 설명해주고,<br>AI가 더 아는 대안과 방법까지 찾아드립니다.</p>
+ <div class="flow"><span>① 계산</span><i>→</i><span>② 결과 해설</span><i>→</i><span class="hl">★ AI 심층분석</span><a class="why-l" href="#" data-open-why>돈버프 계산기가 다른 이유 알아보기 <b>→</b></a></div>
+</div></section>
+<section class="sec"><div class="wrap">
+ <div class="eyebrow">OPEN · 지금 쓸 수 있는 계산기</div><h2>내게 필요한 계산기를 골라 보세요</h2><p class="ld">입력은 1분이면 끝나요. 돈 나가기 전에, 먼저 계산해보세요.</p>
+ <div class="cg">
+  <a class="cc" href="#"><span class="ico">🏠</span><h3>부동산 중개보수 계산기</h3><p class="q">집을 사고팔거나 계약할 때, 중개보수는 얼마일까요?</p><span class="ai">★ AI 심층분석</span><div class="ft"><span style="color:var(--muted);font-weight:600">기준일 · 2026년</span><span class="go">계산하기 <i>→</i></span></div></a>
+  <a class="cc" href="#"><span class="ico">🏦</span><h3>대출 중도상환수수료 계산기</h3><p class="q">대출을 미리 갚으면 수수료가 얼마나 나올까요?</p><span class="ai">★ AI 심층분석</span><div class="ft"><span></span><span class="go">계산하기 <i>→</i></span></div></a>
+  <a class="cc" href="#"><span class="ico">💱</span><h3>환전수수료 계산기</h3><p class="q">환율 우대 90%, 실제로 얼마나 아낄까요?</p><span class="ai">★ AI 심층분석</span><div class="ft"><span></span><span class="go">계산하기 <i>→</i></span></div></a>
+ </div></div></section>
+<section class="sec"><div class="wrap">
+ <div class="eyebrow">COMING NEXT</div><h2>다음엔 어떤 계산기가 필요하세요?</h2><p class="ld">필요한 계산기에 ‘필요해요’를 눌러주세요. 여러분의 선택을 다음 개발에 참고할게요.</p>
+ <div class="up"><div><b>해외송금 수수료</b><small>추가 검토 중</small><button>필요해요</button></div><div><b>주식 거래수수료</b><small>추가 검토 중</small><button>필요해요</button></div><div><b>카드 할부수수료</b><small>추가 검토 중</small><button>필요해요</button></div><div><b>의견을 전달했어요</b><small>추가 검토 중</small><button style="background:var(--navy);color:#fff">✓ 전달 완료</button></div></div>
+</div></section>
+<div class="wrap"><a class="why" href="#">
+ <div class="t">WHY CALC BUFF?</div><h3>돈버프 계산기는 숫자만 알려주지 않습니다.</h3>
+ <div class="s"><i>얼마일까?</i><b>① 정확하게 계산하고</b><span>거래 조건에 따른 예상 수수료를 확인해요.</span></div>
+ <div class="s"><i>왜 이 금액일까?</i><b>② 쉽게 이해하고</b><span>결과의 의미와 놓치기 쉬운 비용을 살펴봐요.</span></div>
+ <div class="s"><i>더 나은 방법은?</i><b>③ AI가 심층 분석</b><span>수수료 절감 시나리오와 대안까지 검토해요.</span></div>
+ <div class="wl">돈버프 계산기가 다른 이유 자세히 보기 →</div>
+</a></div>
+
+</div>
+
+<div class="calc-only">
+<section class="hero3"><div class="wrap"><div class="col">
+ <div class="crumb"><a href="#">금융계산기</a> › 환전수수료</div>
+ <span class="scope">현찰·송금 환율 기준</span>
+ <h1>환전수수료 계산기</h1>
+ <p>외화 금액과 우대율만 넣으면, 기준환율 대비 얼마나 더 내고 있는지 바로 알려드려요.</p>
+</div></div></section>
+<div class="rd">
+ <div class="card">
+  <div class="req">어떤 방식으로 거래하나요?</div>
+  <div class="seg"><button aria-pressed="true">현찰 환전</button><button aria-pressed="false">해외송금</button></div>
+  <div class="seg" style="margin-top:8px"><button aria-pressed="true">외화를 살 때</button><button aria-pressed="false">외화를 팔 때</button></div>
+  <div class="req" style="margin-top:20px">통화</div>
+  <div class="seg"><button aria-pressed="true">USD</button><button aria-pressed="false">JPY</button><button aria-pressed="false">EUR</button><button aria-pressed="false">CNY</button></div>
+  <div class="f2">
+   <div><label>살 외화 금액</label><div class="in focus"><input value="1,000"><span class="u">USD</span></div><div class="hint">1,000 USD 기준으로 계산해요</div></div>
+   <div><label>환율 우대율 (%)</label><div class="in"><input value="90"><span class="u">%</span></div><div class="hint">앱·영업점에서 안내받은 우대율을 넣어 주세요. 없으면 0.</div></div>
+  </div>
+  <button class="go-btn">예상 금액 계산하기</button>
+  <div class="hint" style="text-align:center">환율 기준 · 2026.11.15 하나은행 고시</div>
+ </div>
+ <section class="card res">
+  <div class="k">예상 결과</div>
+  <div class="big">약 1,452,300원</div>
+  <p class="why2">기준환율로 환전할 때보다 약 <b>13,700원</b> 더 내요. 우대 90%를 적용했어요.</p>
+  <dl><div><dt>적용 환율</dt><dd>1,452.30원</dd></div><div><dt>기준 환율</dt><dd>1,438.60원</dd></div><div><dt>기준환율 총액</dt><dd>1,438,600원</dd></div><div><dt>환율 기준일</dt><dd>2026.11.15</dd></div></dl>
+  <div class="box2 na"><b>이 계산에 포함되지 않은 것</b>ATM 수수료, 카드사 해외이용 수수료는 포함하지 않았어요.</div>
+  <div class="box2 ck"><b>확인해 보세요</b>우대율은 앱·영업점마다 달라요. 환전 전 최종 금액을 꼭 확인하세요.</div>
+  <button class="save" style="margin-top:20px">☆ 내 결과 저장하기</button>
+  <p class="save-n">로그인하면 이 결과를 내 계정에 저장해 언제든 다시 볼 수 있어요.</p>
+ </section>
+ <section class="card ai-c">
+  <div class="k">★ AI 심층분석 · NEXT STEP</div><h2>숫자 너머의 이야기,<br>AI가 한 단계 더 짚어드려요</h2><p class="sb">내 계산 결과를 바탕으로 필요한 분석을 고르면, AI에 바로 붙여넣을 맞춤 프롬프트를 만들어 드려요.</p><span class="nx">계산 → 결과 해설 → AI 심층분석</span>
+  <div class="opts"><div class="opt on"><span class="ck">✓</span><div><b>우대율 높은 방법 비교</b><small>앱·영업점·환전 서비스별 차이</small></div></div><div class="opt on"><span class="ck">✓</span><div><b>수수료 절감 시나리오</b><small>금액·시점에 따른 차이</small></div></div><div class="opt"><span class="ck"></span><div><b>해외송금과 환전 비교</b><small>목적별 더 유리한 방식</small></div></div></div>
+  <button class="ai-b">AI 심층분석 프롬프트 만들기</button>
+  <span class="lock">🔒 무료 로그인 후 이용할 수 있어요</span>
+  <p class="ft2">생성된 프롬프트를 복사해 원하는 AI 서비스에 붙여넣어 보세요.<br>AI 답변은 은행·앱의 실제 안내와 교차 확인해 주세요.</p>
+ </section>
+ <button class="share">공유용 문구 복사</button>
+</div>
+<div style="height:50px"></div>
+</div>
+<div class="why-only">
+<section class="why-hero"><div class="wrap"><div class="eyebrow">WHY CALC BUFF?</div>
+ <h1>계산기는 많아요.<br><b>그런데 <em>그 다음</em>은요?</b></h1>
+ <p>숫자 하나 알려주고 끝나는 계산기와 달리, 돈버프는 결과를 이해하고 더 나은 선택으로 이어지도록 돕습니다.</p></div></section>
+<section class="sec"><div class="wrap"><div class="eyebrow">3 STEPS</div><h2>계산에서 선택까지, 세 걸음</h2><p class="ld">입력은 1분. 그 뒤는 돈버프가 이어서 도와요.</p>
+ <div class="steps">
+  <div class="stp"><div class="n">1</div><div><h3>정확하게 계산해요</h3><p>거래 조건을 입력하면 기준 규정에 따라 예상 금액을 바로 보여드려요. 로그인 없이 누구나 쓸 수 있어요.</p></div><div class="vis">예상 중개보수 상한<b>약 1,350,000원</b>기준일 2026년 · 참고용</div></div>
+  <div class="stp"><div class="n">2</div><div><h3>쉽게 이해해요</h3><p>왜 이 금액인지, 놓치기 쉬운 비용은 없는지 쉬운 말로 풀어서 설명해요.</p></div><div class="vis">“이 금액은 반드시 내야 하는 금액이 아니에요. 상한 범위 안에서 협의할 수 있어요.”</div></div>
+  <div class="stp hl"><div class="n">3</div><div><h3>AI가 한 단계 더 분석해요</h3><p>내 계산 결과를 담은 맞춤 프롬프트를 만들어요. 원하는 AI에 붙여넣으면 절감 시나리오와 대안까지 이어서 물어볼 수 있어요.</p></div><div class="vis"><b>★ 맞춤 프롬프트 미리보기</b>“거래금액 5억원, 매매 기준으로 중개보수 상한 약 135만원이 나왔어요. 협의 가능한 범위와 절감 방법을 알려주세요…”</div></div>
+ </div></div></section>
+<section class="sec"><div class="wrap"><div class="eyebrow">COMPARE</div><h2>일반 계산기와 이렇게 달라요</h2><p class="ld">같은 계산이라도, 그 다음 단계가 다릅니다.</p>
+ <table class="cmp"><tr><th></th><th>일반 계산기</th><th class="o">돈버프 계산기</th></tr>
+ <tr><td>결과</td><td>숫자만 표시</td><td class="o">숫자 + 쉬운 해설</td></tr>
+ <tr><td>놓치기 쉬운 비용</td><td>직접 찾아야 함</td><td class="o">계산에 포함/미포함 항목 안내</td></tr>
+ <tr><td>다음 행동</td><td>알아서 판단</td><td class="o">AI 심층분석 프롬프트 제공</td></tr>
+ <tr><td>다시 보기</td><td>새로 입력</td><td class="o">내 결과 저장 (로그인)</td></tr></table></div></section>
+<section class="sec"><div class="wrap"><div class="eyebrow">SAFE &amp; SIMPLE</div><h2>안심하고 쓰세요</h2><p class="ld">&nbsp;</p>
+ <div class="trust"><div><b>로그인 없이 계산해요</b><span>저장은 내가 ‘저장하기’를 누를 때만 이루어져요.</span></div><div><b>참고용 결과예요</b><span>실제 금액은 기관·거래 조건에 따라 다를 수 있어요.</span></div><div><b>AI 답변은 교차 확인</b><span>공식 자료와 함께 확인하도록 안내해요.</span></div></div>
+ <div class="cta-b"><h2>지금 바로 내게 필요한 계산기를 골라 보세요</h2><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a class="btn or" href="#">금융계산기 보러가기 →</a><a class="btn line" href="#">나의 투자성향 찾기</a></div></div></div></section>
+</div>
+<div class="closing"><img src="../../web/redesign/img/logo.png" alt="DONBUFF 오늘보다 돈을 잘 다루는 나로 +1"></div>
+<footer><div class="fb"><img src="../../web/redesign/img/symbol.png" alt="">돈버프 (DONBUFF)</div>
+ <p>『AI로 부자되기』 | 저자 김태형(사마리아인)<br><a href="https://donbuff.com" target="_blank" rel="noopener">donbuff.com</a> &nbsp;·&nbsp; <a href="https://www.youtube.com/@samariaintv" target="_blank" rel="noopener">사마리아인TV</a> &nbsp;·&nbsp; <a href="/calc/">돈버프 금융계산기</a> &nbsp;·&nbsp; <a href="https://open.kakao.com/o/g2JnL4Ai" target="_blank" rel="noopener">독자 오픈채팅방</a> &nbsp;·&nbsp; <a href="mailto:samariain.kim@gmail.com">✉️ 협업·강연 문의</a></p>
+ <p class="note">금융계산기 결과는 참고용이며, 최종 의사결정은 이용자 본인에게 있습니다.</p></footer>
+
+</div></body></html>
