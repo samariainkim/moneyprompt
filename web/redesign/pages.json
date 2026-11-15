@@ -2,11 +2,21 @@
   "_설명": "리뉴얼 페이지 스위치. pages: 주소 → 파일. preview: 테스트·미리보기 배포에서 새 디자인으로 보여줄 주소. production: 운영(donbuff.com)에서 새 디자인으로 보여줄 주소. 운영에서 한 페이지씩 열 때는 production 목록에 추가한다.",
   "pages": {
     "/": "home.html",
-    "/prompt/": "prompt.html"
+    "/prompt/": "prompt.html",
+    "/calc/": "calc-hub.html",
+    "/calc/why/": "calc-why.html",
+    "/calc/brokerage/": "calc-brokerage.html",
+    "/calc/loan-prepay/": "calc-loan-prepay.html",
+    "/calc/fx/": "calc-fx.html"
   },
   "preview": [
     "/",
-    "/prompt/"
+    "/prompt/",
+    "/calc/",
+    "/calc/why/",
+    "/calc/brokerage/",
+    "/calc/loan-prepay/",
+    "/calc/fx/"
   ],
   "production": []
 }

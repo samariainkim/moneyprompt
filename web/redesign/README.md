@@ -37,3 +37,13 @@
 - **로그인 게이트·측정과 맞물리는 이름은 바꾸지 말 것**: 전역 함수 `getFavorites` `saveFavorites` `toggleFavorite` `updateFavCount` `render` `copyPrompt` `jumpToPrompt`(반드시 `function` 선언), 요소 `.star-btn[data-idx]` `.prompt-row#row-…` `[data-toggle]` `[data-open]` `[data-view]` `.copy-btn` `.go-btn` `.ftab[data-cat]` `#searchInput` `#todayCard` `#newPromptList` `#mainList`.
 - 측정: 기존 `prompt_open/copy/ai_open/filter/search`, `today_pick_click`, `new_prompt_click` 에 더해 `prompt_view`(목록/카드 전환). 카드 보기에서도 `prompt_open` 이 나간다.
 - 즐겨찾기는 로그인 회원 전용(비로그인 ★ → `/join/`)이다. 기존 설계 그대로.
+
+## 금융계산기 (`pages/calc-*.html`, `calc.css`, `calc-hub.css`)
+- 대상 주소: `/calc/`(허브) · `/calc/why/`(차별점 소개, **리뉴얼에서 새로 생기는 페이지**) · `/calc/brokerage/` · `/calc/loan-prepay/` · `/calc/fx/`.
+- 계산기 3종은 **기존 마크업(id·class)과 계산 스크립트를 그대로 복사**하고 겉모습만 새로 입혔다(`calc.css` 가 `.rd` 안의 기존 class 를 스타일링). 기존 계산기를 고치면 이 파일들도 같이 고쳐야 한다 → `test-calc` 가 기존 페이지의 id 와 스크립트가 모두 있는지 확인한다.
+- `내 결과 저장` 버튼은 로그인 모듈(`auth-gates.js`)이 `#result` 바로 뒤에 넣는다 → 계산기 안에서 `#result` 의 다음 형제 자리를 유지할 것. 문구는 `calc.js` 가 `☆ 내 결과 저장하기` 로 맞춘다.
+- AI 심층분석 카드의 `🔒 로그인 후 이용할 수 있어요` 는 로그인 상태면 `calc.js` 가 숨긴다.
+- 허브는 `calc/data/calculators.json`(레지스트리)에서 카드를 그린다. 카드 설명은 질문형 문구를 `calc-hub.js` 의 `QUESTION` 에 둔다.
+- 기존 "WHY CALC BUFF" 팝업은 없앴다. 모든 진입점(허브 히어로 링크·하단 배너)이 `/calc/why/` 로 간다.
+- 측정: `calc_hub_view` `calc_interest`(기존), `calc_why_view` `calc_why_click` `calc_why_cta`(신규).
+- 차별점 페이지의 수치(서울 주택 매매 5억 → 상한 0.4%·200만 원 / 대출 3,000만 원·1.2%·3년 → 245,364원)는 **계산 엔진으로 직접 계산한 값**이다. 요율·엔진이 바뀌면 이 숫자도 확인할 것.
