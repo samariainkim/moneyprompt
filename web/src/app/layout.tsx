@@ -13,6 +13,11 @@ const GA_ID = 'G-GW588P483F';
 export const metadata: Metadata = {
   title: { default: '돈버프', template: '%s | 돈버프' },
   description: '돈에 AI를 더하다. 돈버프 회원 서비스.',
+  // 파비콘: 탭은 심볼만, iOS 홈 화면은 크림 타일 (정적 페이지와 같은 파일 사용)
+  icons: {
+    icon: [{ url: '/favicon.ico', sizes: '48x48' }, { url: '/assets/brand/icon-32.png', sizes: '32x32', type: 'image/png' }],
+    apple: [{ url: '/assets/brand/apple-touch-icon.png', sizes: '180x180' }],
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
