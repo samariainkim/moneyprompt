@@ -1,0 +1,23 @@
+<div class="why-only">
+<section class="why-hero"><div class="wrap"><div class="eyebrow">WHY CALC BUFF?</div>
+ <h1>수수료 계산기는 많아요.<br>그런데 <b><em>그 다음</em>은요?</b><br><b>돈버프 계산기는 달라요.</b></h1>
+ <p>숫자 하나 알려주고 끝나는 계산기와 달리, 돈버프는 결과를 이해하고 더 나은 선택으로 이어지도록 돕습니다.</p></div></section>
+<section class="sec"><div class="wrap"><div class="eyebrow">3 STEPS</div><h2>계산에서 선택까지, 세 걸음</h2><p class="ld">입력은 1분. 그 뒤는 돈버프가 이어서 도와요.</p>
+ <div class="steps">
+  <div class="stp"><div class="n">1</div><div><h3>정확하게 계산해요</h3><p>거래 조건을 입력하면 기준 규정에 따라 예상 금액을 바로 보여드려요. 로그인 없이 누구나 쓸 수 있어요.</p></div><div class="vis">서울 주택 매매 5억원 · 상한 요율 0.4%<b>중개보수 최대 2,000,000원</b></div></div>
+  <div class="stp"><div class="n">2</div><div><h3>쉽게 이해해요</h3><p>왜 이 금액인지, 놓치기 쉬운 비용은 없는지 쉬운 말로 풀어서 설명해요.</p></div><div class="vis">“이 금액은 반드시 내야 하는 금액이 아니에요. 상한 범위 안에서 협의할 수 있어요.”</div></div>
+  <div class="stp hl"><div class="n">3</div><div><h3>AI 심층분석으로 한 단계 더</h3><p>내 계산 결과를 담은 맞춤 AI 질문(프롬프트)을 만들어 드려요. 복사해서 원하는 AI에 붙여넣으면 절감 시나리오와 대안까지 이어서 물어볼 수 있어요.</p></div><div class="vis"><b>★ 내 계산결과를 반영한 AI 맞춤 프롬프트 제공</b>“서울 주택 매매 5억원, 중개보수 상한 요율 0.4%로 최대 200만원이 나왔어요. 실제로 협의할 수 있는 범위와 절감 방법을 알려주세요…”</div></div>
+ </div></div></section>
+<section class="sec"><div class="wrap"><div class="eyebrow">REAL EXAMPLE</div><h2>실제로는 이렇게 이어져요</h2><p class="ld">대출 중도상환수수료 계산기를 쓰는 가상 사례예요. (대출 약정 조건을 가정한 예시이며, 실제 수수료는 대출 약정서를 따릅니다.)</p>
+ <div class="case"><div class="cs"><i>가상 사례</i><b>대출금 3,000만원을<br>미리 갚으려는 직장인</b><span>약정 수수료율 1.2% · 만기 3년<br>2025.12.01 실행 · 2026.11.15 상환 가정</span></div>
+ <div class="cf"><div class="ck1"><i>STEP 1 · 계산</i><b>예상 수수료 245,364원</b></div><div class="ck1"><i>STEP 2 · 이해</i><b>왜 이 금액일까?</b><span>상환금액, 약정 수수료율, 남은 기간(만기까지 747일 / 전체 1,096일)이 결과에 어떻게 영향을 주는지 풀어서 설명해요.</span></div><div class="ck1 hl"><i>STEP 3 · AI 심층분석</i><b>“지금 갚는 게 유리할까?”</b><span>예상 수수료와 대출금리를 바탕으로, 지금 갚을 때와 나중에 갚을 때의 비용을 비교하도록 AI에게 질문해요.</span></div></div></div></div></section>
+<section class="sec"><div class="wrap"><div class="eyebrow">COMPARE</div><h2>계산결과만 보여주고 끝?<br>돈버프 계산기는 그 다음이 달라요</h2><p class="ld">같은 계산이라도, 결과를 이해하고 활용하는 단계까지 이어져요.</p>
+ <table class="cmp"><tr><th></th><th>계산결과만 보여주는 계산기</th><th class="o">돈버프 계산기</th></tr>
+ <tr><td>계산 결과</td><td data-l="계산결과만 보여주는 계산기">금액 중심 표시</td><td class="o" data-l="돈버프 계산기">예상 금액은 물론 주요 조건과 변수 체크</td></tr>
+ <tr><td>결과 이해</td><td data-l="계산결과만 보여주는 계산기">추가 설명을 직접 찾아야 할 수 있음</td><td class="o" data-l="돈버프 계산기">결과의 의미와 유의사항, 미포함 비용까지 상세히 안내</td></tr>
+ <tr><td>다음 행동</td><td data-l="계산결과만 보여주는 계산기">추가 정보를 직접 탐색</td><td class="o" data-l="돈버프 계산기">계산 결과를 반영한 나만의 AI 프롬프트 맞춤 제공</td></tr>
+ <tr><td>다시 보기</td><td data-l="계산결과만 보여주는 계산기">처음부터 다시 입력</td><td class="o" data-l="돈버프 계산기">내 계산 결과값 저장 후 다시 확인하기 제공 (마이페이지)</td></tr></table></div></section>
+<section class="sec"><div class="wrap"><div class="eyebrow">OUR PRINCIPLES</div><h2>돈버프가 금융정보를 다루는 원칙</h2><p class="ld">판매가 아니라, 내가 판단할 수 있도록 돕는 것이 목표예요.</p>
+ <div class="trust"><div><b>로그인 없이 바로 계산</b><span>기본 계산은 회원가입 없이 이용할 수 있어요. 저장은 내가 ‘저장하기’를 누를 때만 이루어져요.</span></div><div><b>계산 조건과 기준을 투명하게</b><span>적용한 조건, 계산에 포함되지 않은 항목을 결과에서 안내해요.</span></div><div><b>최종 판단은 공식 정보로</b><span>계산 결과와 AI 답변은 참고용이에요. 실제 거래 전 금융기관·공식 자료를 확인하세요.</span></div></div>
+ <div class="cta-b"><h2>지금 바로 내게 필요한 계산기를 골라 보세요</h2><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a class="btn or" href="#">금융계산기 보러가기 →</a><a class="btn line" href="#">나의 투자성향 찾기</a></div></div></div></section>
+</div>
