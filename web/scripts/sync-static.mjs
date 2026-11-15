@@ -49,6 +49,8 @@ const GA_ID = 'G-GW588P483F';
 const GA_BASE = `<script async src="https://www.googletagmanager.com/gtag/js?id=${GA_ID}"></script>\n<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${GA_ID}');</script>`;
 // 파비콘·홈 화면 아이콘: 아이콘 링크가 없는 페이지에 넣는다. (탭=심볼만 favicon.ico·32px, iOS·앱=크림 타일)
 const ICON_TAGS = `<link rel="icon" href="/favicon.ico" sizes="48x48">\n<link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/icon-32.png">\n<link rel="apple-touch-icon" sizes="180x180" href="/assets/brand/apple-touch-icon.png">`;
+// 테스트 주소(*.vercel.app, 미리보기 등)에서는 GA4 를 보내지 않는다. donbuff.com 에서만 측정. (공식 옵트아웃 스위치)
+const GA_OPTOUT = `<script data-dbx-ga-optout>if(!/(^|\\.)donbuff\\.com$/.test(location.hostname)){window['ga-disable-${GA_ID}']=true}</script>`;
 const MARK = 'data-dbx-auth-nav';
 const TAG = `<script ${MARK}>${AUTH_NAV_JS}</script>`;
 // 로그인 게이트는 필요한 페이지에만 넣는다. (경로는 public 기준)
@@ -78,6 +80,8 @@ const walk = (dir) => {
     let html = readFileSync(full, 'utf8');
     if (html.includes(MARK)) continue;
     // <head> 끝에 넣어, 헤더가 생기는 즉시 버튼을 붙인다. (head 가 없으면 body 끝)
+    const headOpen = /<head[^>]*>/i.exec(html);
+    if (headOpen) html = html.slice(0, headOpen.index + headOpen[0].length) + '\n' + GA_OPTOUT + html.slice(headOpen.index + headOpen[0].length);
     const lower = html.toLowerCase();
     const h = lower.indexOf('</head>');
     const i = h >= 0 ? h : lower.lastIndexOf('</body>');

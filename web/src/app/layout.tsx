@@ -34,7 +34,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
             <Script id="ga-init" strategy="afterInteractive">
-              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');gtag('set','user_properties',{member_status:'${signedIn ? 'member' : 'guest'}'});`}
+              {`if(!/(^|\\.)donbuff\\.com$/.test(location.hostname)){window['ga-disable-${GA_ID}']=true}window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');gtag('set','user_properties',{member_status:'${signedIn ? 'member' : 'guest'}'});`}
             </Script>
           </>
         )}
