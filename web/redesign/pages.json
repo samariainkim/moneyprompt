@@ -7,7 +7,8 @@
     "/calc/why/": "calc-why.html",
     "/calc/brokerage/": "calc-brokerage.html",
     "/calc/loan-prepay/": "calc-loan-prepay.html",
-    "/calc/fx/": "calc-fx.html"
+    "/calc/fx/": "calc-fx.html",
+    "/invest-mbti/": "invest-mbti.html"
   },
   "preview": [
     "/",
@@ -16,7 +17,8 @@
     "/calc/why/",
     "/calc/brokerage/",
     "/calc/loan-prepay/",
-    "/calc/fx/"
+    "/calc/fx/",
+    "/invest-mbti/"
   ],
   "production": []
 }
