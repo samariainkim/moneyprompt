@@ -1,0 +1,80 @@
+/* 돈버프 리뉴얼 공통 틀 — docs/design-system.md 기준. 모든 리뉴얼 페이지가 공유한다. */
+:root{
+  
+  --orange:#FF7900;   
+  --orange-600:#E56A00; --orange-text:#C25A00;
+  --navy:#10233F;     
+  --navy-2:#1B3A66; --navy-3:#2A4B7C;
+  --cream:#FFF3E6;    
+  --cream-2:#FFE6CC;
+  --off:#FAFAF8;      
+  --ink:#10233F; --muted:#5E6B80; --line:#E8E6E0;
+  --hero:#FFF2E5;
+  --font:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+body{word-break:keep-all;font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit;text-decoration:none}
+img{display:block}
+:root{--site-width:1200px;--read-width:760px;--outside:#ECEAE5}
+body{background:var(--outside)}
+.site{max-width:var(--site-width);margin:0 auto;background:var(--off);position:relative;overflow-x:clip;box-shadow:0 0 0 1px rgba(16,35,63,.05),0 24px 70px rgba(16,35,63,.10)}
+.wrap{max-width:none;margin:0;padding:0 30px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:15px 26px;border-radius:999px;font-weight:800;font-size:15px;border:1.5px solid var(--navy);background:var(--navy);color:#fff;cursor:pointer}
+.btn.line{background:transparent;color:var(--navy)}
+.btn.or{background:var(--orange);border-color:var(--orange);color:var(--navy)}
+.eyebrow{font-size:13px;font-weight:900;letter-spacing:.14em;color:var(--orange-text)}
+.hdr{position:relative;z-index:20}
+.hdr.over{position:absolute;left:0;right:0;top:0}
+.hdr .wrap{display:flex;align-items:center;justify-content:space-between;height:76px}
+.logo{display:block;height:44px}
+.logo img{height:44px;width:auto}
+nav.pc{display:flex;gap:6px;align-items:center;font-size:15px;font-weight:700}
+nav.pc>a,nav.pc .dd>button{padding:10px 16px;border-radius:999px;color:var(--muted);background:none;border:0;font:inherit;cursor:pointer;display:flex;gap:6px;align-items:center}
+nav.pc>a:hover,nav.pc .dd>button:hover,nav.pc .dd.open>button{background:rgba(16,35,63,.06);color:var(--navy)}
+.dd{position:relative}
+.panel{display:none;position:absolute;top:52px;min-width:300px;background:#fff;border-radius:20px;padding:10px;box-shadow:0 20px 50px rgba(16,35,63,.16);border:1px solid var(--line)}
+#ddCalc .panel{left:50%;transform:translateX(-50%)}
+.dd.open .panel{display:block}
+.dd.right .panel{right:0}
+.panel a{display:flex;gap:14px;align-items:center;padding:12px 14px;border-radius:14px}
+.panel a:hover{background:var(--off)}
+.panel .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;background:var(--cream)}
+.panel b{display:block;font-size:15px}
+.panel small{color:var(--muted);font-size:12.5px;font-weight:500}
+.panel hr{border:0;border-top:1px solid var(--line);margin:8px 6px}
+.panel .all{justify-content:space-between;font-weight:800;font-size:14px;color:var(--orange-text)}
+.login{margin-left:8px;background:var(--navy)!important;color:#fff!important;padding:10px 20px!important}
+.burger{display:none;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:#fff;color:var(--navy);font-size:20px;cursor:pointer}
+.mm{display:none;position:fixed;inset:0;z-index:50;background:#fff;padding:20px 22px 30px;overflow:auto}
+.mm.open{display:block}
+.mm .top{display:flex;justify-content:space-between;align-items:center;height:56px}
+.mm .x{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:#fff;font-size:22px}
+.mm .big{display:flex;justify-content:space-between;align-items:center;padding:22px 4px;border-bottom:1px solid var(--line);font-size:25px;font-weight:900;letter-spacing:-.8px}
+.mm .big span{color:var(--orange);font-size:20px}
+.mm .sub{display:grid;gap:4px;padding:8px 0 14px 6px;border-bottom:1px solid var(--line)}
+.mm .sub a{padding:11px 4px;color:var(--muted);font-weight:700;font-size:17px}
+.mm .acc{margin-top:26px;background:var(--cream);border-radius:20px;padding:18px}
+.mm .acc small{color:var(--muted);font-weight:700}
+.mm .acc .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.mm .acc .row a{background:#fff;border-radius:14px;padding:14px;font-weight:800;font-size:15px}
+.mm .btn{width:100%;justify-content:center;margin-top:20px}
+.closing{text-align:center;padding:64px 24px 56px;background:#fff}
+.closing img{height:84px;margin:0 auto}
+footer{background:var(--navy);color:rgba(255,255,255,.55);text-align:center;padding:36px 24px 44px;font-size:13px;line-height:1.9}
+footer .fb{color:rgba(255,255,255,.9);font-weight:800;font-size:15px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:8px}
+footer .fb img{height:18px}
+footer a{color:rgba(255,255,255,.75)}
+footer a:hover{color:#fff}
+footer p a{white-space:nowrap}
+footer .note{margin-top:8px;font-size:12px;color:rgba(255,255,255,.42)}
+@media(max-width:640px){.wrap{padding:0 20px}}
+@media(max-width:900px){nav.pc{display:none}.burger{display:block}.logo,.logo img{height:38px}.closing img{height:64px}}
+/* 로그인 메뉴 스크립트(auth-nav.js)가 넣는 버튼을 새 디자인으로 */
+.hdr nav .dbx-auth.dbx-auth{background:var(--navy);color:#fff;border:0;min-width:0;margin-left:8px;padding:10px 20px;font:800 14px/1 var(--font);border-radius:999px}
+.hdr nav .dbx-auth.dbx-auth:hover{background:#1B3A66}
+.mm .dbx-auth.dbx-auth{display:flex;align-items:center;justify-content:center;width:100%;margin:22px 0 0;padding:17px;background:var(--orange);color:var(--navy);border:0;border-radius:999px;font:900 16px/1 var(--font)}
+.mm .dbx-auth.dbx-auth i{display:none}
+.hdr .dbx-auth.dbx-auth-float{position:fixed}
+.hdr a:focus-visible,.hdr button:focus-visible,.mm a:focus-visible,.mm button:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+

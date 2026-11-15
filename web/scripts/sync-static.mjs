@@ -29,6 +29,55 @@ for (const item of ITEMS) {
 }
 console.log(`[sync-static] ${n}개 항목을 web/public 으로 복사했습니다.`);
 
+// ───────── 리뉴얼 페이지 (web/redesign) ─────────
+// pages.json 의 스위치에 따라, 켜진 주소의 파일을 새 디자인 페이지로 바꿔 넣는다. 저장소 루트의 원본은 그대로 둔다.
+//  - 운영(VERCEL_ENV=production)은 production 목록, 그 외(미리보기·로컬)는 preview 목록을 쓴다.
+const RD_DIR = join(here, '..', 'redesign');
+const rdCfg = JSON.parse(readFileSync(join(RD_DIR, 'pages.json'), 'utf8'));
+const rdEnv = process.env.VERCEL_ENV === 'production' ? 'production' : 'preview';
+const rdOn = (rdCfg[rdEnv] || []).filter((u) => rdCfg.pages[u]);
+const targetOf = (u) => (u === '/' ? 'index.html' : join(u.replace(/^\/|\/$/g, ''), 'index.html'));
+
+// 프롬프트 개수는 데이터에서 자동으로 센다. (프롬프트가 늘면 화면의 숫자도 따라간다)
+function promptStats() {
+  const src = readFileSync(join(root, 'prompt', 'index.html'), 'utf8').replace(/data:image\/[a-z]+;base64,[A-Za-z0-9+/=]+/g, '');
+  const start = src.indexOf('const PROMPTS');
+  const seg = src.slice(start, src.indexOf('];', start));
+  const cats = [...seg.matchAll(/\bcat:\s*"([^"]+)"/g)].map((m) => m[1]);
+  const ais = new Set([...seg.matchAll(/\bai:\s*"([^"]+)"/g)].map((m) => m[1]));
+  const byCat = {}; for (const c of cats) byCat[c] = (byCat[c] || 0) + 1;
+  return { total: cats.length, categories: Object.keys(byCat).length, ais: ais.size, byCat };
+}
+function renderRedesign(html, ctx) {
+  html = html.replace(/<!--@header([^>]*)-->/g, (_, a) => {
+    const attrs = Object.fromEntries([...a.matchAll(/(\w+)=(\w+)/g)].map((m) => [m[1], m[2]]));
+    let h = readFileSync(join(RD_DIR, 'partials', 'header.html'), 'utf8');
+    h = h.replace('{{over}}', attrs.over === '1' ? ' over' : '');
+    for (const k of ['prompt', 'invest']) h = h.replace(`{{cur_${k}}}`, attrs.active === k ? ' aria-current="page" class="cur"' : '');
+    return h;
+  });
+  html = html.replace(/<!--@footer-->/g, readFileSync(join(RD_DIR, 'partials', 'footer.html'), 'utf8'));
+  html = html.replace(/\{\{TOTAL\}\}/g, String(ctx.total)).replace(/\{\{CATEGORIES\}\}/g, String(ctx.categories)).replace(/\{\{AIS\}\}/g, String(ctx.ais));
+  html = html.replace(/\{\{N:([^}]+)\}\}/g, (_, c) => { if (!(c in ctx.byCat)) throw new Error(`[sync-static] 프롬프트 카테고리 '${c}' 를 찾지 못했습니다.`); return String(ctx.byCat[c]); });
+  if (/\{\{[^}]+\}\}/.test(html)) throw new Error('[sync-static] 리뉴얼 페이지에 채워지지 않은 {{…}} 가 남았습니다.');
+  return html;
+}
+if (rdOn.length) {
+  const ctx = promptStats();
+  for (const u of rdOn) {
+    const out2 = join(out, targetOf(u));
+    mkdirSync(dirname(out2), { recursive: true });
+    writeFileSync(out2, renderRedesign(readFileSync(join(RD_DIR, 'pages', rdCfg.pages[u]), 'utf8'), ctx));
+  }
+  cpSync(join(RD_DIR, 'img'), join(out, 'redesign', 'img'), { recursive: true });
+  cpSync(join(RD_DIR, 'shared', 'frame.css'), join(out, 'redesign', 'frame.css'));
+  cpSync(join(RD_DIR, 'shared', 'frame.js'), join(out, 'redesign', 'frame.js'));
+  for (const f of readdirSync(join(RD_DIR, 'pages'))) if (f.endsWith('.css')) cpSync(join(RD_DIR, 'pages', f), join(out, 'redesign', f));
+  console.log(`[sync-static] 리뉴얼 페이지(${rdEnv}) ${rdOn.length}개 적용: ${rdOn.join(', ')}  · 프롬프트 ${ctx.total}개`);
+} else {
+  console.log(`[sync-static] 리뉴얼 페이지(${rdEnv}): 적용 없음 — 기존 페이지 그대로`);
+}
+
 // 로그인 메뉴 스크립트(web/static/auth-nav.js)를 복사된 모든 HTML 의 <head> 에 직접(inline) 끼워 넣는다.
 // 별도 파일로 내려받으면 헤더가 먼저 그려지고 버튼이 늦게 나타나므로, 내려받는 시간이 없도록 페이지 안에 넣는다.
 // 저장소 루트의 원본 페이지는 수정하지 않는다.
