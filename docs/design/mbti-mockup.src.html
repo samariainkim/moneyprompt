@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>투자 성향 검사 시안</title>
+<link rel="stylesheet" href="../../web/redesign/shared/frame.css">
+<style>
+.s-intro,.s-step1,.s-step4,.s-result{display:none}
+.m-intro .s-intro,.m-step1 .s-step1,.m-step4 .s-step4,.m-result .s-result{display:block}
+.m-step1 .hdr-main,.m-step4 .hdr-main{display:none}.m-intro .hdr-focus,.m-result .hdr-focus,.m-intro .closing,.m-step1 .closing,.m-step4 .closing{display:none}
+.hdr-focus{display:none}.m-step1 .hdr-focus,.m-step4 .hdr-focus{display:block}
+/* 인트로 */
+.ih{background:var(--hero);padding:128px 0 72px;overflow:hidden}
+.ih .wrap{display:grid;grid-template-columns:1fr 470px;gap:30px;align-items:center}
+.ih h1{font-size:76px;line-height:1.08;letter-spacing:-3px;font-weight:300;margin:14px 0 20px;color:var(--navy)}.ih h1 b{font-weight:900}.ih h1 em{font-style:normal;color:var(--orange);font-weight:900}
+.ih p.d{font-size:17.5px;color:var(--muted);line-height:1.85;max-width:470px}.ih p.d b{color:var(--orange-text)}
+.ih .note{font-size:15px;color:var(--muted);margin-top:12px}
+.chips{display:flex;gap:10px;margin:26px 0 30px}.chips div{background:#fff;border-radius:20px;padding:14px 24px;box-shadow:0 8px 20px rgba(16,35,63,.07);text-align:center}.chips b{display:block;font-size:30px;font-weight:900;color:var(--orange-text);letter-spacing:-1px;line-height:1.1}.chips span{font-size:12.5px;font-weight:700;color:var(--muted)}
+.cta-o{display:inline-flex;gap:8px;padding:19px 34px;border-radius:999px;background:var(--orange);color:var(--navy);font:900 17px var(--font);box-shadow:0 14px 30px rgba(255,121,0,.3)}
+.col4{position:relative;height:440px}.col4 img{position:absolute;width:210px;height:270px;object-fit:cover;border-radius:28px;border:5px solid #fff;box-shadow:0 18px 40px rgba(16,35,63,.2)}
+.col4 .c1{left:0;top:30px;transform:rotate(-6deg)}.col4 .c2{right:10px;top:0;transform:rotate(5deg)}.col4 .c3{left:60px;bottom:0;transform:rotate(3deg);z-index:2}.col4 .c4{right:0;bottom:20px;transform:rotate(-4deg)}
+.col4 .tag{position:absolute;z-index:3;background:var(--navy);color:#fff;padding:7px 14px;border-radius:999px;font-weight:900;font-size:13px;letter-spacing:.1em}
+.sec{padding:72px 0 0}.sec h2{font-size:34px;font-weight:900;letter-spacing:-1.1px;margin:8px 0 10px}.sec .ld{color:var(--muted);font-size:16px;margin-bottom:28px}
+.flow3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.fl{background:#fff;border:1px solid var(--line);border-radius:28px;padding:30px}.fl i{font-style:normal;font-size:13px;font-weight:900;color:var(--orange-text);letter-spacing:.1em}.fl b{display:block;font-size:22px;font-weight:900;margin:6px 0;letter-spacing:-.6px}.fl span{color:var(--muted);font-size:15px;line-height:1.7}
+.fl.k{background:var(--navy);color:#fff;border-color:var(--navy)}.fl.k i{color:var(--orange)}.fl.k span{color:#cbd5e6}
+/* 집중 모드 헤더 + 단계 */
+.hdr-focus{background:#fff;border-bottom:1px solid var(--line)}
+.hdr-focus .wrap{display:flex;align-items:center;gap:18px;height:68px}
+.hdr-focus .bk{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:18px;color:var(--muted)}
+.prog{flex:1;max-width:480px;margin:0 auto}.prog small{display:flex;justify-content:space-between;font-size:12.5px;font-weight:800;color:var(--muted);margin-bottom:6px}.prog small b{color:var(--orange-text)}
+.bar{height:8px;border-radius:99px;background:#EDE9E1}.bar i{display:block;height:100%;border-radius:99px;background:var(--orange)}
+.hdr-focus .out{font-size:13.5px;font-weight:800;color:var(--muted);padding:9px 14px}
+.stage{background:var(--off);padding:44px 0 80px}
+.q{max-width:480px;margin:0 auto;padding:0 20px}
+.q .ey{font-size:13px;font-weight:900;color:var(--orange-text);letter-spacing:.08em}
+.q h2{font-size:30px;line-height:1.35;font-weight:900;letter-spacing:-1px;margin:10px 0 10px}.q h2 em{font-style:normal;color:var(--orange)}
+.q p.s{color:var(--muted);font-size:15px;line-height:1.7}
+.cnt{display:flex;justify-content:space-between;align-items:baseline;margin:22px 0 8px;font-size:13.5px;font-weight:800;color:var(--muted)}.cnt b{color:var(--orange-text);font-size:22px}
+.wb{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.w{padding:12px 18px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font:700 15.5px var(--font);color:var(--navy)}
+.w.on{background:var(--navy);border-color:var(--navy);color:#fff;box-shadow:0 6px 14px rgba(16,35,63,.2)}
+.nx{margin-top:28px;width:100%;padding:18px;border-radius:999px;border:0;background:var(--orange);color:var(--navy);font:900 17px var(--font)}.nx.off{background:#E4DFD6;color:#9A968C}
+.sit{background:var(--cream);border-radius:24px;padding:24px 26px;font-size:20px;font-weight:800;line-height:1.6;margin:22px 0 16px;letter-spacing:-.4px}
+.ch{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:24px;padding:22px 24px;margin-bottom:12px;font:700 16.5px/1.55 var(--font);color:var(--navy)}
+.ch i{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--off);font-style:normal;font-weight:900;font-size:14px;margin-right:12px;color:var(--muted)}
+.ch.on{border-color:var(--orange);background:#FFF9F2;box-shadow:0 0 0 4px rgba(255,121,0,.13)}.ch.on i{background:var(--orange);color:var(--navy)}
+/* 결과 */
+.rh{background:var(--hero);padding:120px 0 64px}.rh .wrap{display:grid;grid-template-columns:1fr 520px;gap:40px;align-items:center}
+.rh .ey{font-size:13px;font-weight:900;letter-spacing:.14em;color:var(--orange-text)}.rh .code{font-size:20px;font-weight:900;letter-spacing:.3em;color:var(--muted);margin-top:8px}
+.rh h1{font-size:72px;line-height:1.08;letter-spacing:-3px;font-weight:900;margin:6px 0 16px;color:var(--navy)}.rh h1 em{font-style:normal;color:var(--orange)}
+.rh p.tl{font-size:21px;font-weight:700;color:var(--orange-text);line-height:1.6;margin-bottom:14px}.rh p.ds{font-size:16.5px;color:var(--muted);line-height:1.85;max-width:470px}
+.rh .pic{border-radius:36px;overflow:hidden;border:6px solid #fff;box-shadow:0 24px 56px rgba(16,35,63,.2)}.rh .pic img{width:100%;display:block}
+.rd{max-width:760px;margin:0 auto;padding:56px 30px 70px;display:grid;gap:22px}
+.rd .card{background:#fff;border:1px solid var(--line);border-radius:28px;padding:30px 32px}
+.rd h3{font-size:19px;font-weight:900;letter-spacing:-.5px;margin-bottom:16px;display:flex;align-items:center;gap:8px}.rd h3 small{font-size:12.5px;color:var(--muted);font-weight:700}
+.tr{display:grid;grid-template-columns:1fr 1fr;gap:12px}.tr div{background:var(--off);border-radius:20px;padding:16px 18px}.tr b{display:flex;align-items:center;gap:10px;font-size:16px}.tr b i{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-style:normal;font-size:13px}.tr span{display:block;color:var(--muted);font-size:13.5px;margin-top:6px;line-height:1.55}.tr em{font-style:normal;color:var(--orange-text);font-size:12px;font-weight:800;display:block;margin-top:4px}
+.kw{display:flex;flex-wrap:wrap;gap:9px}.kw span{background:var(--cream);color:var(--orange-text);padding:11px 20px;border-radius:999px;font-weight:800;font-size:15.5px}
+.tm{display:flex;gap:18px;align-items:center}.tm .t{font-size:44px}.tm b{font-size:24px;color:var(--orange-text);display:block}.tm span{color:var(--muted);font-size:14.5px;line-height:1.6}
+.svx{width:100%;display:flex;justify-content:center;gap:10px;padding:21px;border-radius:999px;border:0;background:var(--orange);color:var(--navy);font:900 18px var(--font);box-shadow:0 12px 28px rgba(255,121,0,.32)}
+.sn{text-align:center;color:var(--muted);font-size:13.5px;margin-top:-10px}
+.ai{background:linear-gradient(140deg,#1B3A66,#10233F 65%);color:#fff;border-radius:28px;padding:38px 36px;position:relative;overflow:hidden}.ai::after{content:"";position:absolute;right:-70px;top:-70px;width:240px;height:240px;border-radius:50%;background:rgba(255,121,0,.16)}.ai>*{position:relative;z-index:1}
+.ai .k{font-size:13px;font-weight:900;letter-spacing:.1em;color:var(--orange)}.ai h2{font-size:30px;font-weight:900;letter-spacing:-1px;margin:8px 0 8px;line-height:1.3}.ai p{color:#cbd5e6;font-size:15.5px;line-height:1.75}
+.ai .b{display:block;width:100%;margin-top:20px;padding:18px;border-radius:999px;border:0;background:var(--orange);color:var(--navy);font:900 16.5px var(--font);text-align:center}.ai .lock{display:block;text-align:center;margin-top:10px;font-size:13px;font-weight:800;color:#FFB36B}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.two button{padding:16px;border-radius:999px;font:800 15px var(--font)}.two .a{background:var(--navy);color:#fff;border:0}.two .b2{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}
+.disc{text-align:center;color:var(--muted);font-size:12.5px;line-height:1.7}
+.cta-b{margin:56px 0 0;background:var(--cream);border-radius:32px;padding:44px;text-align:center}.cta-b h2{font-size:30px;font-weight:900;letter-spacing:-1px;margin-bottom:18px}
+@media(max-width:900px){
+ .ih{padding:104px 0 44px}.ih .wrap{grid-template-columns:1fr;gap:26px}.ih h1{font-size:44px;letter-spacing:-1.6px}.col4{height:300px}.col4 img{width:150px;height:190px}.col4 .c3{left:30px}.flow3{grid-template-columns:1fr}.sec h2{font-size:27px}
+ .hdr-focus .out{display:none}.q h2{font-size:25px}.stage{padding:28px 0 60px}
+ .rh{padding:92px 0 40px}.rh .wrap{grid-template-columns:1fr;gap:26px}.rh h1{font-size:46px;letter-spacing:-1.8px}.rh p.tl{font-size:18px}
+ .rd{padding:36px 16px 50px}.rd .card{padding:24px 20px}.tr{grid-template-columns:1fr}.ai{padding:28px 22px}.ai h2{font-size:24px}.two{grid-template-columns:1fr}.cta-b{margin:40px 0 0;padding:32px 20px}.cta-b h2{font-size:23px}
+}
+</style></head>
+<body class="MODE"><div class="site">
+<div class="hdr-main"><!--HEADER--></div>
+<div class="hdr-focus"><div class="wrap"><a class="bk" href="#">←</a><div class="prog"><small><span>STEP</span><b>PROGRESS</b></small><div class="bar"><i style="width:PCT"></i></div></div><a class="out" href="#">나가기</a></div></div>
+
+<div class="s-intro">
+<section class="ih"><div class="wrap">
+ <div><div class="eyebrow">INVEST TYPE · 나의 투자 성향 찾기</div>
+  <h1>나는 어떤<br><b><em>투자자</em>일까?</b></h1>
+  <p class="d">마음이 가는 것에는 이유가 있고, 끝까지 남는 것에는 더 깊은 이유가 있습니다.<br>고르고, 내려놓고, 다시 선택하는 동안 미처 몰랐던 <b>투자하는 나</b>를 만나보세요.</p>
+  <p class="note">정답은 없어요. 평소의 나와 가까운 쪽을 따라가 보세요.</p>
+  <div class="chips"><div><b>5</b><span>단계</span></div><div><b>5</b><span>분 소요</span></div><div><b>16</b><span>투자 유형</span></div></div>
+  <a class="cta-o" href="#">테스트 시작 →</a></div>
+ <div class="col4"><img class="c1" src="../../assets/invest-type/invest-type-CNTQ.jpg" alt=""><img class="c2" src="../../assets/invest-type/invest-type-ONTL.jpg" alt=""><img class="c3" src="../../assets/invest-type/invest-type-CSFL.jpg" alt=""><img class="c4" src="../../assets/invest-type/invest-type-OSTQ.jpg" alt=""><span class="tag" style="left:-6px;top:6px">CNTQ</span><span class="tag" style="right:30px;top:-12px">ONTL</span><span class="tag" style="left:70px;bottom:-12px;z-index:4">CSFL</span><span class="tag" style="right:-4px;bottom:6px;z-index:4">OSTQ</span></div>
+</div></section>
+<section class="sec"><div class="wrap"><div class="eyebrow">HOW IT WORKS</div><h2>이렇게 진행돼요</h2><p class="ld">단어를 고르고 내려놓으며, 나도 몰랐던 기준을 만나요.</p>
+ <div class="flow3"><div class="fl"><i>STEP 1~3</i><b>단어로 고르고, 내려놓고</b><span>끌리는 단어 16개를 고른 뒤, 하나씩 내려놓으며 끝까지 남는 4개를 찾아요.</span></div><div class="fl"><i>STEP 4~5</i><b>갈림길에서 선택하고</b><span>실제 투자 순간을 떠올리며 평소의 나와 가까운 쪽을 골라요.</span></div><div class="fl k"><i>RESULT</i><b>16가지 중 나의 유형</b><span>나의 투자 성향과 끝까지 남긴 단어, 그리고 AI와 나누는 더 깊은 이야기까지.</span></div></div>
+ <div class="cta-b"><h2>5분이면 충분해요. 지금 시작해 볼까요?</h2><a class="cta-o" href="#">테스트 시작 →</a></div></div></section>
+<div style="height:70px"></div>
+</div>
+
+<div class="s-step1"><div class="stage"><div class="q">
+ <div class="ey">1단계 · 끌리는 단어</div><h2>투자할 때 나와 가까운<br><em>단어 16개</em>를 골라주세요</h2>
+ <p class="s">좋은 투자법이라고 생각하는 단어가 아니라,<br>평소 투자하는 나와 가까운 단어예요.</p>
+ <div class="cnt"><span>선택한 단어</span><span>선택 <b>9</b> / 16</span></div><div class="bar"><i style="width:56%"></i></div>
+ <div class="wb"><span class="w on">리포트</span><span class="w">전문가 의견</span><span class="w on">정기 점검</span><span class="w">가치 공감</span><span class="w on">손절선</span><span class="w on">원칙</span><span class="w">멘토</span><span class="w">민첩함</span><span class="w on">새로운 시장</span><span class="w">발 빠른 대처</span><span class="w">긴 호흡</span><span class="w on">복리</span><span class="w">기업 신뢰</span><span class="w">수시 점검</span><span class="w">루틴</span><span class="w on">팩트</span><span class="w">매수 조건</span><span class="w">꾸준한 적립</span><span class="w on">산업 트렌드</span><span class="w">미래 성장</span><span class="w">재무제표</span><span class="w on">유연함</span><span class="w">마음의 끌림</span></div>
+ <button class="nx off">7개 더 선택해주세요</button>
+</div></div></div>
+
+<div class="s-step4"><div class="stage"><div class="q">
+ <div class="ey">4단계 · 투자의 갈림길 · 1 / 4</div><h2>이럴 때, 나는<br><em>어느 쪽</em>에 가까울까요?</h2>
+ <div class="sit">충분히 공부한 종목인데,<br>전문가들의 의견은<br>내 생각과 다릅니다.</div>
+ <button class="ch"><i>A</i>여러 전문가의 의견과 자료를 더 비교해본다</button>
+ <button class="ch on"><i>B</i>내가 직접 판단한 방향을 따라간다</button>
+ <button class="nx" style="margin-top:18px">다음 →</button>
+</div></div></div>
+
+<div class="s-result">
+<section class="rh"><div class="wrap">
+ <div><div class="ey">나의 투자 성향</div><div class="code">C N T Q</div><h1>이슈 <em>사냥꾼</em></h1>
+  <p class="tl">뉴스 속에서,<br>기준에 맞는 기회를 잡아내는 투자자</p>
+  <p class="ds">여러 뉴스와 전망을 빠르게 살피는 데 능숙합니다. 그 정보가 자신의 기준에 맞다고 판단되면, 곧바로 움직입니다.</p></div>
+ <div class="pic"><img src="../../assets/invest-type/invest-type-CNTQ.jpg" alt="이슈 사냥꾼"></div>
+</div></section>
+<div class="rd">
+ <div class="card"><h3>나를 만든 4가지 성향 <small>ⓘ 용어 보기</small></h3><div class="tr">
+  <div><b><i>C</i>참고형</b><span>여러 의견과 정보를 폭넓게 모아서</span></div>
+  <div><b><i>N</i>직관형</b><span>앞으로의 흐름과 가능성을 먼저</span><em>이 성향은 아직 뚜렷하지 않아요</em></div>
+  <div><b><i>T</i>분석형</b><span>원칙과 기준을 세워 판단</span></div>
+  <div><b><i>Q</i>단기대응형</b><span>상황 변화에 맞춰 기민하게</span></div></div></div>
+ <div class="card"><h3>내가 끝까지 남긴 4개의 단어</h3><div class="kw"><span>원칙</span><span>멘토</span><span>민첩함</span><span>새로운 시장</span></div></div>
+ <div class="card"><div class="tm"><div class="t">🌡️</div><div><small style="color:var(--muted);font-weight:800">나의 투자 온도</small><b>균형</b><span>기회와 위험 사이에서 자신이 받아들일 수 있는 균형점을 찾으려는 편이에요.</span></div></div></div>
+ <button class="svx">☆ 내 결과 저장하기</button><p class="sn">로그인하면 이 결과를 내 계정에 저장해 언제든 다시 볼 수 있어요.</p>
+ <div class="ai"><div class="k">★ AI 심층분석 · NEXT STEP</div><h2>그런데, 같은 CNTQ도<br>모두 다릅니다.</h2><p>당신이 고르고, 내려놓고, 끝까지 남긴 선택을 AI에게 보여주면 조금 더 깊은 이야기를 들을 수 있어요.</p><a class="b" href="#">좀 더 깊은 내면의 나를 알아보세요 →</a><span class="lock">🔒 로그인 후 이용할 수 있어요</span></div>
+ <div class="two"><button class="a">내 결과 공유하기</button><button class="b2">다시 해보기</button></div>
+ <p class="disc">이 결과는 자기 이해를 돕기 위한 참고용이며,<br>투자 조언이나 투자자 적합성 진단이 아닙니다.</p>
+</div></div>
+<!--FOOTER-->
+</div></body></html>
