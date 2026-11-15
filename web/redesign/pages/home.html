@@ -16,14 +16,6 @@
 <div class="site">
 <!--@header active=none over=1-->
 <main id="main">
-<!-- SVG 오브젝트 정의 -->
-<svg width="0" height="0" style="position:absolute"><defs>
- <linearGradient id="gTop" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFC27A"/><stop offset=".55" stop-color="#FF7900"/><stop offset="1" stop-color="#E56000"/></linearGradient>
- <linearGradient id="gBag" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD6A3"/><stop offset=".6" stop-color="#FF9A33"/><stop offset="1" stop-color="#F07000"/></linearGradient>
- <linearGradient id="gCalc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2F5A99"/><stop offset="1" stop-color="#10233F"/></linearGradient>
- <g id="coin"><ellipse cx="60" cy="66" rx="52" ry="32" fill="#B24A00" stroke="#7E3300" stroke-width="1.4"/><rect x="8" y="46" width="104" height="20" fill="#B24A00"/><ellipse cx="60" cy="46" rx="52" ry="32" fill="url(#gTop)" stroke="#FFC890" stroke-width="1.6"/><ellipse cx="60" cy="46" rx="39" ry="23" fill="none" stroke="#FFD9A8" stroke-width="3" opacity=".85"/><g transform="translate(60 46) scale(1 .74)"><text x="0" y="12" text-anchor="middle" font-family="Noto Sans KR,sans-serif" font-size="36" font-weight="900" fill="#FFF3E6">₩</text></g></g>
-</defs></svg>
-
 <section class="hero" aria-labelledby="hero-t"><div class="wrap">
  <div><div class="eyebrow">DONBUFF · AI FINANCE</div>
   <h1 id="hero-t">돈에 AI를<br><b>더하다</b><em>.</em></h1>
@@ -31,20 +23,12 @@
   <p class="d">복잡한 금융 고민, 직접 계산하고 AI에게 질문하며 더 똑똑하게 관리하세요.</p>
   <div class="cta"><a class="btn or" href="/calc/" data-hero="calc">금융계산기 시작하기 →</a><a class="btn line" href="/prompt/" data-hero="prompt">AI 프롬프트 둘러보기</a></div></div>
  <div class="hvw" id="hvw"><div class="hv" id="hv">
-  <!-- 오브젝트 -->
-  <div class="o" style="left:18px;top:178px;transform:rotate(-14deg)"><svg width="108" height="92" viewBox="0 0 120 100"><use href="#coin"/></svg></div>
-  <div class="o" style="left:478px;top:128px;transform:rotate(12deg)"><svg width="74" height="62" viewBox="0 0 120 100"><use href="#coin"/></svg></div>
-  <div class="o" style="left:30px;top:372px"><svg width="118" height="128" viewBox="0 0 120 130"><path d="M32 54C10 76 6 106 26 120C46 132 74 132 94 120C114 106 110 76 88 54Z" fill="url(#gBag)"/><path d="M42 36L35 20L55 30Z M78 36L85 20L65 30Z" fill="#FF9A33"/><path d="M40 54C44 34 76 34 80 54Z" fill="#E56A00"/><rect x="38" y="49" width="44" height="9" rx="4.5" fill="#10233F"/><text x="60" y="108" text-anchor="middle" font-family="Noto Sans KR,sans-serif" font-size="38" font-weight="900" fill="#FFF3E6">₩</text></svg></div>
-  <div class="o" style="left:402px;top:372px"><svg width="150" height="150" viewBox="0 0 120 130"><use href="#coin" y="38"/><use href="#coin" y="24"/><use href="#coin" y="10"/></svg></div>
-  <div class="o" style="left:322px;top:384px;transform:rotate(-10deg)"><svg width="92" height="120" viewBox="0 0 100 130"><rect x="8" y="14" width="88" height="116" rx="17" fill="#0A1830"/><rect x="6" y="6" width="88" height="116" rx="17" fill="url(#gCalc)"/><rect x="16" y="17" width="68" height="26" rx="7" fill="#FFF3E6"/><text x="78" y="36" text-anchor="end" font-family="Noto Sans KR,sans-serif" font-size="16" font-weight="900" fill="#FF7900">1,000</text><g fill="#fff" opacity=".28"><circle cx="30" cy="62" r="8"/><circle cx="50" cy="62" r="8"/><circle cx="70" cy="62" r="8"/><circle cx="30" cy="84" r="8"/><circle cx="50" cy="84" r="8"/><circle cx="30" cy="106" r="8"/><circle cx="50" cy="106" r="8"/></g><circle cx="70" cy="84" r="8" fill="#FF7900"/><rect x="62" y="98" width="16" height="16" rx="8" fill="#FF7900"/></svg></div>
-  <!-- 중앙: 돈버프 -->
-  <div class="ctile"><img src="/redesign/img/symbol.png" alt=""><div class="wm">DON<i>BUFF</i></div><div class="tg">오늘보다 돈을 잘 다루는 나로 +1</div></div>
-  <!-- 질문 말풍선 5개 -->
-  <div class="bub" style="left:-40px;top:42px;transform:rotate(-2.5deg)">환전 수수료<br>얼마나 나가는 거지?</div>
-  <div class="bub k r" style="left:352px;top:26px;transform:rotate(2deg)">어떤 프롬프트를<br>써야 하지?</div>
-  <div class="bub" style="left:-30px;top:304px;transform:rotate(2deg)">중개보수 수수료<br>맞게 낸 걸까?</div>
-  <div class="bub r" style="left:366px;top:252px;transform:rotate(-2deg)">지금 대출을 유지하는 게<br>나을까?</div>
-  <div class="bub" style="left:96px;top:506px;transform:rotate(-1.5deg)">연말정산 환급을 더 받으려면<br>어떻게 해야 하지?</div>
+  <img class="h3d" src="/redesign/img/hero-3d.webp" width="1000" height="962" alt="돈버프 서비스 카드(성장 그래프, 계산기)와 동전·돈주머니를 담은 3D 일러스트" fetchpriority="high">
+  <div class="bub" style="left:-34px;top:36px;transform:rotate(-2.5deg)">환전 수수료<br>얼마나 나가는 거지?</div>
+  <div class="bub k r" style="left:236px;top:-6px;transform:rotate(2deg)">어떤 프롬프트를<br>써야 하지?</div>
+  <div class="bub" style="left:-44px;top:262px;transform:rotate(2deg)">중개보수 수수료<br>맞게 낸 걸까?</div>
+  <div class="bub r" style="left:392px;top:236px;transform:rotate(-2deg)">지금 대출을 유지하는 게<br>나을까?</div>
+  <div class="bub" style="left:116px;top:508px;transform:rotate(-1.5deg)">연말정산 환급을 더 받으려면<br>어떻게 해야 하지?</div>
  </div></div>
 </div></section>
 
