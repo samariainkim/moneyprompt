@@ -32,7 +32,7 @@
 
 ## 프롬프트 페이지 (`pages/prompt.*`)
 - **데이터는 기존 `prompt/index.html` 에서 빌드할 때 자동으로 가져온다**(`<!--@promptdata-->`): `PROMPTS`, `AI_LINKS`, `REVIEWS`, `CHALLENGE_REVIEWS`, `NEW_PROMPTS`, `catSections`, `catLabels`. 저자는 기존 파일에 한 줄 추가하는 방식 그대로 쓰면 새 페이지에도 반영된다. 빌드가 데이터를 실제로 실행해 검증하고(번호 중복, 빠진 값, 없는 카테고리) 이상하면 **빌드를 멈춘다**.
-- 헤더는 `variant=book`: 메인 메뉴 없이 [돈버프 메인으로] + 자료실 · 독자 오픈채팅방 · 책 구매하기(+로그인). 책을 홍보하는 페이지이므로 이 버튼들을 유지한다.
+- 헤더는 `variant=book`: 메인 메뉴 없이 로고(=돈버프 메인으로 이동) + 자료실 · 독자 오픈채팅방 · 책 구매하기(+로그인). 책을 홍보하는 페이지이므로 이 버튼들을 유지한다.
 - 목록(기본)·카드 보기 전환(선택은 `dbx:prompt:view` 에 기억, `?view=grid` 로 시작 가능). 프롬프트 본문은 행을 펼칠 때(또는 카드 팝업을 열 때) 처음 만든다.
 - **로그인 게이트·측정과 맞물리는 이름은 바꾸지 말 것**: 전역 함수 `getFavorites` `saveFavorites` `toggleFavorite` `updateFavCount` `render` `copyPrompt` `jumpToPrompt`(반드시 `function` 선언), 요소 `.star-btn[data-idx]` `.prompt-row#row-…` `[data-toggle]` `[data-open]` `[data-view]` `.copy-btn` `.go-btn` `.ftab[data-cat]` `#searchInput` `#todayCard` `#newPromptList` `#mainList`.
 - 측정: 기존 `prompt_open/copy/ai_open/filter/search`, `today_pick_click`, `new_prompt_click` 에 더해 `prompt_view`(목록/카드 전환). 카드 보기에서도 `prompt_open` 이 나간다.
