@@ -39,11 +39,43 @@ const rdEnv = process.env.VERCEL_ENV === 'production' ? 'production' : 'preview'
 const rdOn = (rdCfg[rdEnv] || []).filter((u) => rdCfg.pages[u]);
 const targetOf = (u) => (u === '/' ? 'index.html' : join(u.replace(/^\/|\/$/g, ''), 'index.html'));
 
+// ───────── 투자 성향 '8가지 성향' 소개 페이지: 검사 원본(invest-mbti/index.html)의 데이터에서 만든다 ─────────
+const MBTI_AXES_COPY = { // 갈림길 제목(소개 페이지 문구)
+  decision: ['01', '결정 방식', '결론은 어디서 얻나요?'],
+  information: ['02', '정보를 보는 방식', '무엇을 먼저 보나요?'],
+  judgment: ['03', '판단 기준', '무엇으로 판단하나요?'],
+  operation: ['04', '운영 방식', '어떻게 지켜보나요?']
+};
+const escHtml = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function mbtiPathsHtml() {
+  const src = readFileSync(join(root, 'invest-mbti', 'index.html'), 'utf8');
+  const code = ['AXES', 'AXIS_POLES', 'AXIS_LABELS', 'KEYWORDS_RAW', 'SCENARIOS'].map((n) => extractConst(src, n)).join('\n');
+  const reflect = extractConst(readFileSync(join(RD_DIR, 'pages', 'mbti-reflect.js'), 'utf8'), 'POLE_REFLECT');
+  const d = vm.runInNewContext(`${code}\n${reflect}\n;({ AXES, AXIS_POLES, AXIS_LABELS, KEYWORDS_RAW, SCENARIOS, POLE_REFLECT })`);
+  if (d.AXES.length !== 4 || d.SCENARIOS.length !== 4) throw new Error('[sync-static] 투자 성향 데이터(축·갈림길)가 4개가 아닙니다.');
+  const card = (pole, side, scn) => {
+    const l = d.AXIS_LABELS[pole], kw = d.KEYWORDS_RAW[pole], r = d.POLE_REFLECT[pole];
+    if (!l || !l.name || !l.descLong || !Array.isArray(kw) || kw.length < 3 || !r || !r.s || !r.c) throw new Error(`[sync-static] 성향 '${pole}' 의 설명 데이터가 부족합니다.`);
+    return `<div class="pcard ${side}"><div class="ph"><i>${pole}</i><div><b class="serif">${escHtml(l.name)}</b><small>${escHtml(l.en)}</small></div></div>
+<p class="pd">${escHtml(l.descLong)}</p>
+<div class="blk"><span class="bl">이런 단어에 끌려요</span><div class="kw">${kw.map((k) => `<span>${escHtml(k)}</span>`).join('')}</div></div>
+<div class="blk"><span class="bl">갈림길에서는</span><p class="q">“${escHtml(scn)}”</p></div>
+<div class="two"><div class="st"><span class="bl">강점</span><p>${escHtml(r.s)}</p></div><div class="ca"><span class="bl">주의할 점</span><p>${escHtml(r.c)}</p></div></div></div>`;
+  };
+  return d.AXES.map((axis, i) => {
+    const [a, b] = d.AXIS_POLES[axis], sc = d.SCENARIOS.find((x) => x.axis === axis), copy = MBTI_AXES_COPY[axis];
+    if (!sc || !copy) throw new Error(`[sync-static] 갈림길 데이터가 없습니다: ${axis}`);
+    const text = (pole) => (sc.A.pole === pole ? sc.A.text : sc.B.pole === pole ? sc.B.text : null);
+    if (!text(a) || !text(b)) throw new Error(`[sync-static] 갈림길 선택지와 성향이 맞지 않습니다: ${axis}`);
+    return `<section class="ax" id="path-${axis}"><div class="ax-h"><span class="no serif">${copy[0]}</span><div><small>${copy[1]}</small><h2 class="serif">${copy[2]}</h2><p class="sit">상황: ${escHtml(sc.situation.replace(/\n/g, ' '))}</p></div></div>
+<div class="vs">${card(a, 'l', text(a))}<div class="vsm"><span>VS</span></div>${card(b, 'r', text(b))}</div></section>`;
+  }).join('\n');
+}
 // 프롬프트 개수는 데이터에서 자동으로 센다. (프롬프트가 늘면 화면의 숫자도 따라간다)
 // 기존 prompt/index.html 의 데이터 상수(const NAME = …;)를 문장 끝까지 정확히 잘라 낸다. (문자열·템플릿 리터럴·주석 안의 괄호·세미콜론은 무시)
 function extractConst(src, name) {
   const m = new RegExp(`(^|\\n)const ${name}\\s*=`).exec(src);
-  if (!m) throw new Error(`[sync-static] prompt/index.html 에서 const ${name} 를 찾지 못했습니다.`);
+  if (!m) throw new Error(`[sync-static] 원본 페이지에서 const ${name} 를 찾지 못했습니다.`);
   const start = m.index + (m[1] ? 1 : 0);
   let i = src.indexOf('=', start) + 1, depth = 0;
   const tpl = []; // 템플릿 리터럴 안의 ${ } 깊이 기록
@@ -103,6 +135,7 @@ function renderRedesign(html, ctx) {
     const extra = /extra=copyright/.test(a) ? '<p class="note" style="margin-top:4px">© 2026 김태형. 이 페이지의 프롬프트는 개인 학습 목적으로만 활용하세요.</p>' : '';
     return readFileSync(join(RD_DIR, 'partials', 'footer.html'), 'utf8').replace('{{footer_extra}}', extra);
   });
+  html = html.replace(/<!--@mbtipaths-->/g, () => mbtiPathsHtml());
   html = html.replace(/<!--@promptdata-->/g, () => `<script data-prompt-data>\n${promptData().code}\n</script>`);
   html = html.replace(/\{\{TOTAL\}\}/g, String(ctx.total)).replace(/\{\{CATEGORIES\}\}/g, String(ctx.categories)).replace(/\{\{AIS\}\}/g, String(ctx.ais));
   html = html.replace(/\{\{N:([^}]+)\}\}/g, (_, c) => { if (!(c in ctx.byCat)) throw new Error(`[sync-static] 프롬프트 카테고리 '${c}' 를 찾지 못했습니다.`); return String(ctx.byCat[c]); });

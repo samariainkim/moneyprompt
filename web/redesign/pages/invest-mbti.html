@@ -37,6 +37,9 @@
 </div>
 
 
+<script>
+document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("[data-paths]");if(a&&typeof gtag==="function")gtag("event","mbti_paths_click",{source:a.getAttribute("data-paths")});});
+</script>
 <script src="/redesign/frame.js" defer></script>
 <script src="/redesign/mbti-reflect.js"></script>
 <script src="/redesign/mbti.js"></script>

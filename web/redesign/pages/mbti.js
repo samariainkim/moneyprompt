@@ -391,6 +391,7 @@ function renderIntro(){
         <div class="fl"><i>STEP 4~5</i><b class="serif">갈림길에서 선택하고</b><span>실제 투자 순간을 떠올리며 평소의 나와 가까운 쪽을 골라요.</span></div>
         <div class="fl k"><i>RESULT</i><b class="serif">16가지 중 나의 유형</b><span>나의 투자 성향과 끝까지 남긴 단어, 그리고 AI와 나누는 더 깊은 이야기까지.</span></div>
       </div>
+      <p class="paths-l"><a href="/invest-mbti/paths/" data-paths="intro">나의 투자 성향은 어떻게 나뉘나요? 8가지 성향 미리 보기 →</a></p>
       <div class="cta-b"><h2 class="serif">5분이면 충분해요. 지금 시작해 볼까요?</h2><button class="cta-o" id="startBtn2" data-start>진단 시작하기 &nbsp;→</button></div>
     </div></section>`;
   document.querySelectorAll("[data-start]").forEach(btn=>{
@@ -1072,6 +1073,7 @@ function renderResult(){
               </div>`;
             }).join("")}
           </div>
+          <a href="/invest-mbti/paths/" data-paths="result" style="display:block;margin-top:18px;text-align:center;font-size:13.5px;font-weight:800;color:var(--orange-text);text-decoration:underline;">8가지 성향 자세히 보기 →</a>
           <button id="glossaryClose" style="margin-top:20px;width:100%;padding:12px;border-radius:999px;border:1.5px solid #D9CDBB;
             background:var(--card);color:#5A4433;font-family:inherit;font-size:13.5px;cursor:pointer;">닫기</button>
         </div>

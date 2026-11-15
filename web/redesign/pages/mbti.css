@@ -312,3 +312,5 @@ body[data-screen=step] .mini{display:block}
  .rh{padding:92px 0 40px}.rh-in{grid-template-columns:1fr;gap:26px;padding:0 20px}.rh h1{font-size:44px;letter-spacing:-1.6px}.rh p.tl{font-size:18px}
  .rd{padding:36px 16px 56px}.rd .card{padding:24px 20px}.tr{grid-template-columns:1fr}.rf2{grid-template-columns:1fr}.ai{padding:28px 22px}.ai h2{font-size:24px}.two{grid-template-columns:1fr}
 }
+
+.paths-l{margin-top:30px}.paths-l a{font-weight:800;font-size:15px;color:var(--orange-text);text-decoration:underline}

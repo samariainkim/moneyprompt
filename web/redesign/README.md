@@ -57,3 +57,9 @@
 - 결과의 `나의 투자 행동 돌아보기` 문구는 `mbti-reflect.js`(8개 성향별 강점·주의할 점) — **초안이며 작성자 검수 후 확정**한다. 문구만 고치면 반영된다.
 - '이 성향은 아직 뚜렷하지 않아요' 는 `이런 경향이 있지만, 이번 선택에서는 아직 뚜렷하게 드러나지 않았어요` 로 바꿨다. 강도 라벨 중 `경계` 만 쓴다(`뚜렷함/보통` 의 기준값은 원본에 '베타 후 확정 예정(임시값)' 이라 노출하지 않음).
 - 투자 온도는 5단계의 2개 질문(가격 등락 선호·불편한 손실 폭)으로만 계산되며 유형과 별개다. 위험등급·적합성 진단이 아니라는 문구를 함께 보여준다.
+
+## 8가지 성향 소개 페이지 (`pages/invest-mbti-paths.html`, `mbti-paths.css`) — `/invest-mbti/paths/`
+- 리뉴얼에서 **새로 생기는 페이지**. 새 메뉴는 두지 않고, 검사 인트로와 결과 화면의 용어 팝업(`i`)에서만 연결한다.
+- 성향 설명·끌리는 단어·갈림길 선택 문장은 **빌드 때 검사 원본(`invest-mbti/index.html`)의 `AXIS_LABELS` `KEYWORDS_RAW` `SCENARIOS` 에서 만든다**(`<!--@mbtipaths-->`, `sync-static.mjs`의 `mbtiPathsHtml`). 검사 데이터가 바뀌면 이 페이지도 자동으로 따라가고, 8개 성향 데이터가 비면 빌드가 멈춘다. 강점·주의 문구는 `mbti-reflect.js`(초안, 작성자 검수 필요)에서 가져온다.
+- 갈림길 제목 4개("결론은 어디서 얻나요?" 등)는 `sync-static.mjs` 의 `MBTI_AXES_COPY` 에 있다.
+- 측정: `mbti_paths_view` `mbti_paths_click`(source) `mbti_paths_cta`(target).
