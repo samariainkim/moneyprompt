@@ -37,6 +37,8 @@ const RD_DIR = join(here, '..', 'redesign');
 const rdCfg = JSON.parse(readFileSync(join(RD_DIR, 'pages.json'), 'utf8'));
 const rdEnv = process.env.VERCEL_ENV === 'production' ? 'production' : 'preview';
 const rdOn = (rdCfg[rdEnv] || []).filter((u) => rdCfg.pages[u]);
+// Next.js 앱(회원 화면)이 그리는 주소: 정적 파일은 만들지 않지만, 공통 틀(frame.css·member.css 등)은 같이 내보낸다.
+const rdNextOn = (rdCfg[rdEnv] || []).filter((u) => (rdCfg.nextPages || []).includes(u));
 const targetOf = (u) => (u === '/' ? 'index.html' : join(u.replace(/^\/|\/$/g, ''), 'index.html'));
 
 // ───────── 투자 성향 '8가지 성향' 소개 페이지: 검사 원본(invest-mbti/index.html)의 데이터에서 만든다 ─────────
@@ -142,7 +144,7 @@ function renderRedesign(html, ctx) {
   if (/\{\{[^}]+\}\}/.test(html)) throw new Error('[sync-static] 리뉴얼 페이지에 채워지지 않은 {{…}} 가 남았습니다.');
   return html;
 }
-if (rdOn.length) {
+if (rdOn.length || rdNextOn.length) {
   const ctx = promptStats();
   for (const u of rdOn) {
     const out2 = join(out, targetOf(u));
@@ -154,6 +156,7 @@ if (rdOn.length) {
   cpSync(join(RD_DIR, 'shared', 'frame.js'), join(out, 'redesign', 'frame.js'));
   for (const f of readdirSync(join(RD_DIR, 'pages'))) if (f.endsWith('.css') || f.endsWith('.js')) cpSync(join(RD_DIR, 'pages', f), join(out, 'redesign', f));
   console.log(`[sync-static] 리뉴얼 페이지(${rdEnv}) ${rdOn.length}개 적용: ${rdOn.join(', ')}  · 프롬프트 ${ctx.total}개`);
+  if (rdNextOn.length) console.log(`[sync-static] 리뉴얼 회원 화면(${rdEnv}) ${rdNextOn.length}개: ${rdNextOn.join(', ')}`);
 } else {
   console.log(`[sync-static] 리뉴얼 페이지(${rdEnv}): 적용 없음 — 기존 페이지 그대로`);
 }

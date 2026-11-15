@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
+import { rdEnabled } from '@/lib/redesign';
 
 export const metadata: Metadata = { title: '이용약관' };
 
 export default function TermsPage() {
-  return (
-    <div className="card legal">
-      <h1>이용약관</h1>
+  const body = (
+    <>
       <div className="draft"><b>초안 (v1)</b> · 법률 검토 전 문서입니다. 대괄호([ ]) 항목은 운영자가 입력해야 하며, 시행 전 전문가 검토를 받으세요.</div>
       <h2>제1조 (목적)</h2>
       <p>이 약관은 [상호·운영자명](이하 &quot;운영자&quot;)이 제공하는 돈버프(donbuff.com) 서비스의 이용 조건과 절차, 운영자와 회원의 권리·의무를 정함을 목적으로 합니다.</p>
@@ -30,6 +30,20 @@ export default function TermsPage() {
       <h2>제9조 (분쟁 해결)</h2>
       <p>이 약관은 대한민국 법령에 따르며, 분쟁은 관련 법령이 정한 관할 법원에서 해결합니다.</p>
       <p className="small">시행일: [시행일 입력]</p>
+    </>
+  );
+  if (rdEnabled('/terms/')) {
+    return (
+      <>
+        <div className="rdh"><div className="rdp"><div className="kicker">LEGAL</div><h1>이용약관</h1></div></div>
+        <div className="rdp legal">{body}</div>
+      </>
+    );
+  }
+  return (
+    <div className="card legal">
+      <h1>이용약관</h1>
+      {body}
     </div>
   );
 }

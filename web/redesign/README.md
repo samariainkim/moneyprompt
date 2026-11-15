@@ -63,3 +63,12 @@
 - 성향 설명·끌리는 단어·갈림길 선택 문장은 **빌드 때 검사 원본(`invest-mbti/index.html`)의 `AXIS_LABELS` `KEYWORDS_RAW` `SCENARIOS` 에서 만든다**(`<!--@mbtipaths-->`, `sync-static.mjs`의 `mbtiPathsHtml`). 검사 데이터가 바뀌면 이 페이지도 자동으로 따라가고, 8개 성향 데이터가 비면 빌드가 멈춘다. 강점·주의 문구는 `mbti-reflect.js`(초안, 작성자 검수 필요)에서 가져온다.
 - 갈림길 제목 4개("결론은 어디서 얻나요?" 등)는 `sync-static.mjs` 의 `MBTI_AXES_COPY` 에 있다.
 - 측정: `mbti_paths_view` `mbti_paths_click`(source) `mbti_paths_cta`(target).
+
+## 회원 화면 (Next.js 가 그리는 로그인·가입·마이페이지 등) — `member.css`, `src/components/rd/`, `src/lib/redesign.ts`
+- 대상: `pages.json` 의 `nextPages` 에 적힌 주소 — `/join/ /login/ /signup/ /forgot-password/ /reset-password/ /welcome/ /onboarding/ /account/ /account/saved/ /pricing/ /terms/ /privacy/`.
+- **켜고 끄기**: 정적 페이지와 같은 `preview` / `production` 목록을 쓴다(운영은 `VERCEL_ENV=production` 일 때 `production` 목록). 목록에 없으면 기존 화면 그대로. 운영에 열 때는 `production` 에 주소를 추가한다.
+- 동작 방식: `proxy.ts` 가 요청 머리글 `x-dbx-path` 에 주소를 담고, `layout.tsx` 가 `rdEnabled(path)` 로 새 틀(`RdHeader`/`RdFooter`, `frame.css`·`member.css`·`frame.js`)과 기존 틀 중 하나를 고른다. 각 페이지는 자기 주소로 `rdEnabled` 를 확인해 새 화면(JSX)을 낸다. 폼 컴포넌트(로그인·가입·프로필 등)와 서버 동작은 그대로다.
+- 404 페이지는 주소를 알 수 없어서 기존 모양 그대로다(나중에 필요하면 별도 처리).
+- 마이페이지 요약 타일(내 결과·즐겨찾기 개수, 내 투자 성향)은 새 화면에서만 조회한다. 조회가 실패해도 화면은 열린다.
+- 헤더의 `내 계정 ▾` 메뉴(내 결과·즐겨찾기 `/prompt/?fav=1`·프로필·마이페이지·로그아웃)는 `RdHeader`(Next.js)에서 그리고, 정적 페이지는 기존 `auth-nav.js` 가 맡는다. `frame.js` 의 드롭다운은 `.dd` 안의 `[data-dd]` 버튼이면 어디서나 동작한다.
+- `/prompt/?fav=1` 로 오면 프롬프트 페이지가 즐겨찾기 보기로 열린다.

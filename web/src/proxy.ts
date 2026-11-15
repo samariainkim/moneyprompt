@@ -19,6 +19,8 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // 레이아웃이 현재 주소를 알 수 있게 요청 머리글에 담는다(새 디자인 적용 여부 판단용).
+  request.headers.set('x-dbx-path', path);
   let response = NextResponse.next({ request });
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -58,7 +60,7 @@ export const config = {
   matcher: [
     '/',
     '/login', '/login/', '/signup', '/signup/', '/pricing', '/pricing/',
-    '/account', '/account/:path*', '/onboarding', '/onboarding/:path*', '/welcome', '/welcome/:path*',
+    '/join', '/join/', '/account', '/account/:path*', '/onboarding', '/onboarding/:path*', '/welcome', '/welcome/:path*',
     '/auth/:path*', '/terms', '/terms/', '/privacy', '/privacy/',
     '/forgot-password', '/forgot-password/', '/reset-password', '/reset-password/',
   ],

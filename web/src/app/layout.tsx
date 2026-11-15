@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Script from 'next/script';
+import { headers } from 'next/headers';
 import './globals.css';
 import { createClient } from '@/lib/supabase/server';
 import { supabaseConfigured } from '@/lib/supabase/env';
 import { signOut } from './actions';
 import EventFromUrl from '@/components/EventFromUrl';
+import { rdEnabled } from '@/lib/redesign';
+import { RdHeader, RdFooter } from '@/components/rd/RdChrome';
 
 // 기존 정적 페이지와 같은 GA4 측정 ID. 로컬 개발에서는 보내지 않는다.
 const GA_ID = 'G-GW588P483F';
@@ -22,22 +25,59 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   let signedIn = false;
+  let email: string | undefined;
+  let nickname: string | undefined;
+  // 새 디자인 적용 여부(주소별). 테스트·미리보기에서만 켜지고, 운영은 pages.json 의 production 목록을 따른다.
+  const path = (await headers()).get('x-dbx-path');
+  const rd = path ? rdEnabled(path) : false;
   if (supabaseConfigured()) {
     const supabase = await createClient();
     const { data } = await supabase.auth.getUser();
     signedIn = Boolean(data.user);
+    email = data.user?.email ?? undefined;
+    if (rd && data.user) {
+      const { data: prof } = await supabase.from('profiles').select('nickname').eq('id', data.user.id).maybeSingle<{ nickname: string }>();
+      nickname = prof?.nickname || undefined;
+    }
   }
+
+  const ga = process.env.NODE_ENV === 'production' && (
+    <>
+      <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+      <Script id="ga-init" strategy="afterInteractive">
+        {`if(!/(^|\\.)donbuff\\.com$/.test(location.hostname)){window['ga-disable-${GA_ID}']=true}window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');gtag('set','user_properties',{member_status:'${signedIn ? 'member' : 'guest'}'});`}
+      </Script>
+    </>
+  );
+
+  if (rd) {
+    return (
+      <html lang="ko">
+        <head>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+          <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+          <link rel="stylesheet" href="/redesign/frame.css" />
+          <link rel="stylesheet" href="/redesign/member.css" />
+        </head>
+        <body className="rd">
+          {ga}
+          <EventFromUrl />
+          <div className="site">
+            <RdHeader signedIn={signedIn} nickname={nickname} email={email} />
+            <main id="main" className="rdm">{children}</main>
+            <RdFooter />
+          </div>
+          <script src="/redesign/frame.js" defer />
+        </body>
+      </html>
+    );
+  }
+
   return (
     <html lang="ko">
       <body>
-        {process.env.NODE_ENV === 'production' && (
-          <>
-            <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
-            <Script id="ga-init" strategy="afterInteractive">
-              {`if(!/(^|\\.)donbuff\\.com$/.test(location.hostname)){window['ga-disable-${GA_ID}']=true}window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');gtag('set','user_properties',{member_status:'${signedIn ? 'member' : 'guest'}'});`}
-            </Script>
-          </>
-        )}
+        {ga}
         <EventFromUrl />
         <header className="site-header">
           <div className="inner">

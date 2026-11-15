@@ -308,4 +308,6 @@ function setView(v, persist) {
   currentView = (url === 'grid' || url === 'list') ? url : (saved === 'grid' ? 'grid' : 'list');
   Array.prototype.forEach.call(document.querySelectorAll('#viewToggle [data-view]'), function (b) { var on = b.dataset.view === currentView; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
   buildTabs(); updateFavCount(); updateRecentCount(); renderTodayPick(); renderNewPrompts(); renderReviews(); render();
+  // 마이페이지 등에서 ?fav=1 로 오면 즐겨찾기 보기로 연다.
+  if (new URLSearchParams(location.search).get('fav') === '1') { var fb = document.querySelector('[data-special="favorites"]'); if (fb) fb.click(); }
 })();

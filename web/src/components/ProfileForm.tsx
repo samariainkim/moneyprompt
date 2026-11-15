@@ -6,7 +6,7 @@ import { updateProfile, type FormState } from '@/app/account/actions';
 export default function ProfileForm({ nickname, displayName }: { nickname: string; displayName: string }) {
   const [state, action, pending] = useActionState<FormState, FormData>(updateProfile, {});
   return (
-    <form action={action}>
+    <form action={action} className="pform">
       <label htmlFor="nickname">닉네임</label>
       <input id="nickname" name="nickname" type="text" defaultValue={nickname} required minLength={2} maxLength={20} />
       <label htmlFor="display_name">이름 (선택)</label>

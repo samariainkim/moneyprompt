@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { createClient } from '@/lib/supabase/server';
 import { supabaseConfigured } from '@/lib/supabase/env';
+import { rdEnabled } from '@/lib/redesign';
 
 export const metadata: Metadata = { title: '요금제' };
 
@@ -14,9 +15,10 @@ export default async function PricingPage() {
     plans = (data as Plan[] | null) ?? [];
   }
 
-  return (
+  const rd = rdEnabled('/pricing/');
+  const content = (
     <>
-      <h1>요금제</h1>
+      {!rd && <h1>요금제</h1>}
       <p className="lead">돈버프의 유료 서비스는 준비 중이에요. 결제 기능이 열리면 이곳에서 안내해 드릴게요.</p>
       {plans.length === 0 ? (
         <div className="grid">
@@ -36,4 +38,13 @@ export default async function PricingPage() {
       )}
     </>
   );
+  if (rd) {
+    return (
+      <>
+        <div className="rdh"><div className="rdp"><div className="kicker">PRICING</div><h1>요금제</h1></div></div>
+        <div className="rdp">{content}</div>
+      </>
+    );
+  }
+  return content;
 }

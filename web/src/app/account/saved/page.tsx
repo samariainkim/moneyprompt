@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { requireMember } from '@/lib/auth';
-import { SAVED_MAX, SAVED_TOOLS, isSavedTool, restoreUrl } from '@/lib/saved';
+import { SAVED_ICON, SAVED_MAX, SAVED_TOOLS, isSavedTool, restoreUrl } from '@/lib/saved';
+import { rdEnabled } from '@/lib/redesign';
 import { deleteSaved } from './actions';
 
 export const metadata: Metadata = { title: '내 결과', robots: { index: false } };
@@ -19,6 +20,56 @@ export default async function SavedPage() {
     .limit(SAVED_MAX)
     .returns<Row[]>();
   const rows = data ?? [];
+
+  if (rdEnabled('/account/saved/')) {
+    return (
+      <>
+        <section className="svh">
+          <div className="sv">
+            <div className="kicker">MY RESULTS</div>
+            <h1>내 결과</h1>
+            <p>계산기와 투자 성향 검사에서 저장한 결과예요. 누르면 입력했던 값 그대로 다시 열어 볼 수 있어요.</p>
+            <span className="cnt">{rows.length} / {SAVED_MAX}</span>
+          </div>
+        </section>
+        <div className="sv" style={{ paddingTop: 30, paddingBottom: 80 }}>
+          {error && <p className="msg err" role="alert">목록을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</p>}
+          {!error && rows.length === 0 && (
+            <div className="sec">
+              <h2>아직 저장한 결과가 없어요</h2>
+              <p className="lead">계산기에서 결과를 확인한 뒤 <b>내 결과 저장하기</b>를 눌러 보세요.</p>
+              <p style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <Link className="btn ghost" href="/calc/">금융계산기 가기</Link>
+                <Link className="btn ghost" href="/invest-mbti/">투자 성향 검사 가기</Link>
+              </p>
+            </div>
+          )}
+          {rows.map((r) => {
+            const tool = isSavedTool(r.tool) ? r.tool : null;
+            return (
+              <div className="crd" key={r.id}>
+                <span className="ico" aria-hidden="true">{tool ? SAVED_ICON[tool] : '📄'}</span>
+                <div>
+                  <span className="tt">{tool ? SAVED_TOOLS[tool].label : r.tool}</span>
+                  <b>{r.title}</b>
+                  {r.summary && <span className="sm2">{r.summary}</span>}
+                  <small>{fmt(r.created_at)}</small>
+                </div>
+                <div className="ac">
+                  {tool && <a className="btn" href={restoreUrl(tool, r.id)}>다시 열기</a>}
+                  <form action={deleteSaved}>
+                    <input type="hidden" name="id" value={r.id} />
+                    <button className="btn ghost" type="submit" aria-label={`${r.title} 삭제`}>삭제</button>
+                  </form>
+                </div>
+              </div>
+            );
+          })}
+          <Link className="back2" href="/account/">← 마이페이지</Link>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

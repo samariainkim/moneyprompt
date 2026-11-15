@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
+import { rdEnabled } from '@/lib/redesign';
 
 export const metadata: Metadata = { title: '개인정보처리방침' };
 
 export default function PrivacyPage() {
-  return (
-    <div className="card legal">
-      <h1>개인정보처리방침</h1>
+  const body = (
+    <>
       <div className="draft"><b>초안 (v1)</b> · 법률 검토 전 문서입니다. 대괄호([ ]) 항목은 운영자가 입력해야 하며, 시행 전 전문가 검토를 받으세요. 기존 정적 페이지의 방침은 <a href="/privacy.html">/privacy.html</a>에 있습니다.</div>
       <h2>1. 수집하는 개인정보와 목적</h2>
       <ul>
@@ -31,6 +31,20 @@ export default function PrivacyPage() {
       <h2>7. 개인정보 보호책임자</h2>
       <p>[성명] · [연락처/이메일]</p>
       <p className="small">시행일: [시행일 입력]</p>
+    </>
+  );
+  if (rdEnabled('/privacy/')) {
+    return (
+      <>
+        <div className="rdh"><div className="rdp"><div className="kicker">LEGAL</div><h1>개인정보처리방침</h1></div></div>
+        <div className="rdp legal">{body}</div>
+      </>
+    );
+  }
+  return (
+    <div className="card legal">
+      <h1>개인정보처리방침</h1>
+      {body}
     </div>
   );
 }

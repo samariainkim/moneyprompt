@@ -67,7 +67,7 @@ export default function SignupForm({ docs, next = '/account/', src = null }: { d
         <label htmlFor="password">비밀번호 (8자 이상)</label>
         <input id="password" name="password" type="password" autoComplete="new-password" minLength={8} required />
 
-        <div style={{ marginTop: 20 }}>
+        <div className="consents" style={{ marginTop: 20 }}>
           <label className="check" style={{ fontWeight: 700 }}>
             <input type="checkbox" checked={allChecked} onChange={(e) => toggleAll(e.target.checked)} /> 전체 동의
           </label>

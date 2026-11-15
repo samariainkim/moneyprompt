@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import PreferencesForm from '@/components/PreferencesForm';
 import { requireMember, safeNext } from '@/lib/auth';
+import { rdEnabled } from '@/lib/redesign';
+import { RdAuthCard } from '@/components/rd/RdChrome';
+
 
 export const metadata: Metadata = { title: '프로필 만들기' };
 
@@ -14,6 +17,13 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
   const { data: pref, error } = await supabase.from('member_preferences').select('user_id').maybeSingle();
   if (pref || error) redirect(next); // 이미 응답했거나, 조회에 실패하면(마이그레이션 전 등) 묻지 않고 넘어간다
 
+  if (rdEnabled('/welcome/')) {
+    return (
+      <RdAuthCard kicker="WELCOME" title="환영해요! 🎉" lead="관심사를 알려주시면 돈버프가 더 알맞게 도와드려요. 1분이면 돼요." wide>
+        <PreferencesForm mode="welcome" next={next} />
+      </RdAuthCard>
+    );
+  }
   return (
     <div className="card narrow">
       <h1>환영해요! 🎉</h1>

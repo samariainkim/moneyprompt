@@ -1,5 +1,5 @@
 {
-  "_설명": "리뉴얼 페이지 스위치. pages: 주소 → 파일. preview: 테스트·미리보기 배포에서 새 디자인으로 보여줄 주소. production: 운영(donbuff.com)에서 새 디자인으로 보여줄 주소. 운영에서 한 페이지씩 열 때는 production 목록에 추가한다.",
+  "_설명": "리뉴얼 페이지 스위치. pages: 주소 → 파일. preview: 테스트·미리보기 배포에서 새 디자인으로 보여줄 주소. production: 운영(donbuff.com)에서 새 디자인으로 보여줄 주소. 운영에서 한 페이지씩 열 때는 production 목록에 추가한다. nextPages: 정적 페이지가 아니라 Next.js 앱(회원 화면)이 그리는 주소. preview/production 목록에 넣으면 그 환경에서 새 디자인으로 보인다(pages 에 없어도 됨).",
   "pages": {
     "/": "home.html",
     "/prompt/": "prompt.html",
@@ -20,7 +20,33 @@
     "/calc/loan-prepay/",
     "/calc/fx/",
     "/invest-mbti/",
-    "/invest-mbti/paths/"
+    "/invest-mbti/paths/",
+    "/join/",
+    "/login/",
+    "/signup/",
+    "/forgot-password/",
+    "/reset-password/",
+    "/welcome/",
+    "/onboarding/",
+    "/account/",
+    "/account/saved/",
+    "/pricing/",
+    "/terms/",
+    "/privacy/"
   ],
-  "production": []
+  "production": [],
+  "nextPages": [
+    "/join/",
+    "/login/",
+    "/signup/",
+    "/forgot-password/",
+    "/reset-password/",
+    "/welcome/",
+    "/onboarding/",
+    "/account/",
+    "/account/saved/",
+    "/pricing/",
+    "/terms/",
+    "/privacy/"
+  ]
 }

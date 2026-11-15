@@ -4,11 +4,14 @@
   function ev(name, params) { try { if (typeof window.gtag === 'function') window.gtag('event', name, params || {}); } catch (e) {} }
   var $ = function (s, r) { return (r || document).querySelector(s); };
 
-  // 금융계산기 드롭다운
-  var dd = $('#ddCalc'), ddBtn = dd && $('[data-dd]', dd);
-  function setDd(open) { if (!dd) return; dd.classList.toggle('open', open); ddBtn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
-  if (ddBtn) ddBtn.addEventListener('click', function (e) { e.stopPropagation(); setDd(!dd.classList.contains('open')); });
-  document.addEventListener('click', function (e) { if (dd && !dd.contains(e.target)) setDd(false); });
+  // 드롭다운(금융계산기·내 계정): .dd 안의 [data-dd] 버튼으로 열고 닫는다.
+  var dds = Array.prototype.slice.call(document.querySelectorAll('.dd'));
+  function setDd(d, open) { d.classList.toggle('open', open); var b = $('[data-dd]', d); if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+  dds.forEach(function (d) {
+    var b = $('[data-dd]', d); if (!b) return;
+    b.addEventListener('click', function (e) { e.stopPropagation(); var open = !d.classList.contains('open'); dds.forEach(function (x) { setDd(x, false); }); setDd(d, open); });
+  });
+  document.addEventListener('click', function (e) { dds.forEach(function (d) { if (!d.contains(e.target)) setDd(d, false); }); });
 
   // 모바일 전체 메뉴
   var btn = $('#menuBtn'), panel = $('#menuPanel'), closeBtn = $('#menuClose');
@@ -21,7 +24,7 @@
   }
   if (btn) btn.addEventListener('click', function () { setMenu(panel.hidden); });
   if (closeBtn) closeBtn.addEventListener('click', function () { setMenu(false); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { setDd(false); if (panel && !panel.hidden) setMenu(false); } });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { dds.forEach(function (d) { setDd(d, false); }); if (panel && !panel.hidden) setMenu(false); } });
   window.addEventListener('resize', function () { if (window.innerWidth > 900 && panel && !panel.hidden) setMenu(false); });
 
   // 측정: 기존 홈과 같은 이벤트 이름을 유지한다.
