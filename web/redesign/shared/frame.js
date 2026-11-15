@@ -39,4 +39,35 @@
     var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) { ev('calc_home_banner_view'); io.disconnect(); } }); }, { threshold: 0.5 });
     io.observe(banner);
   }
+
+  // ── 이동·처리 중 표시 ──
+  // 링크를 누르거나 화면이 넘어가기 시작하면 맨 위에 진행 막대를 바로 보여 주고, 누른 링크는 다시 눌리지 않게 흐리게 한다.
+  // 서버가 응답하는 동안 '눌렸는지 모르겠다'며 여러 번 누르게 되는 것을 막기 위함.
+  var prog = document.createElement('div'); prog.id = 'dbxProg'; prog.setAttribute('aria-hidden', 'true'); prog.innerHTML = '<i></i>'; document.body.appendChild(prog);
+  var progOff = null;
+  function progStart() {
+    if (prog.classList.contains('on')) return;
+    var bar = prog.firstChild; prog.classList.add('on'); document.documentElement.classList.add('dbx-wait');
+    bar.style.transition = 'none'; bar.style.width = '0'; void bar.offsetWidth;
+    bar.style.transition = 'width 9s cubic-bezier(.1,.6,.2,1)'; bar.style.width = '85%';
+    clearTimeout(progOff); progOff = setTimeout(progEnd, 20000); // 이동이 일어나지 않았을 때를 대비한 안전장치
+  }
+  function progEnd() {
+    clearTimeout(progOff); prog.classList.remove('on'); document.documentElement.classList.remove('dbx-wait');
+    Array.prototype.forEach.call(document.querySelectorAll('a.is-nav'), function (a) { a.classList.remove('is-nav'); });
+  }
+  window.addEventListener('beforeunload', progStart);   // 링크·폼·주소 이동 등 모든 화면 전환의 시작
+  window.addEventListener('pageshow', progEnd);         // 뒤로 가기로 돌아왔을 때
+  window.addEventListener('popstate', progEnd);
+  ['pushState', 'replaceState'].forEach(function (m) { var o = history[m]; history[m] = function () { var r = o.apply(this, arguments); setTimeout(progEnd, 60); return r; }; });
+  document.addEventListener('click', function (e) {
+    if (e.defaultPrevented && !(e.target.closest && e.target.closest('a[href]'))) return;
+    if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return;
+    var u; try { u = new URL(a.href, location.href); } catch (x) { return; }
+    if (u.origin !== location.origin || /^(mailto|tel):/i.test(a.getAttribute('href'))) return;
+    if (u.href === location.href || (u.pathname === location.pathname && u.search === location.search && u.hash)) return; // 같은 화면의 앵커
+    a.classList.add('is-nav'); progStart();
+  }, true);
 })();

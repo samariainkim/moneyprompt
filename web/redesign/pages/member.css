@@ -148,3 +148,15 @@ body.rd .rdm{max-width:none;margin:0;padding:0}
 }
 .rd .sec form.pform,.rd .pform{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}.rd .pform .btn,.rd .pform .msg{grid-column:1/-1;justify-self:start}
 @media(max-width:900px){.rd .pform{grid-template-columns:1fr}}
+
+/* 처리 중·불러오는 중 표시 */
+.rd .btn[aria-busy=true]{opacity:1;cursor:progress}
+.rd .btn[aria-busy=true]::before{content:"";width:16px;height:16px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:dbxSpin .7s linear infinite;flex:none}
+.rd .btn:disabled[aria-busy=true]{opacity:.9}
+.rd .ld{display:flex;align-items:center;justify-content:center;gap:12px;min-height:50vh;color:var(--muted);font-weight:700;font-size:15px}
+.rd .ld-spin{width:26px;height:26px;border:3px solid var(--cream-2);border-top-color:var(--orange);border-radius:50%;animation:dbxSpin .8s linear infinite}
+.rd .ld-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.rd .sk{display:block;background:linear-gradient(90deg,#EFEBE3 25%,#F8F5EE 50%,#EFEBE3 75%);background-size:200% 100%;animation:dbxShimmer 1.4s linear infinite;border-radius:12px}
+.rd .sk-l{height:16px;border-radius:8px}.rd .sk-row{height:72px;border-radius:20px}
+.rd .av.sk{box-shadow:none}.rd .tl.sk-box{pointer-events:none}
+@keyframes dbxShimmer{to{background-position:-200% 0}}

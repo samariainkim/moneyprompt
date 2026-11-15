@@ -82,7 +82,7 @@ export default function SignupForm({ docs, next = '/account/', src = null }: { d
           ))}
         </div>
 
-        <button className="btn block" type="submit" disabled={busy || !requiredOk}>{busy ? '처리 중…' : '가입하기'}</button>
+        <button className="btn block" type="submit" disabled={busy || !requiredOk} aria-busy={busy}>{busy ? '가입 처리 중…' : '가입하기'}</button>
         {error && <p className="msg err" role="alert">{error}</p>}
       </form>
       <p className="small" style={{ marginTop: 16 }}>소셜 계정으로 시작하면 로그인 직후 약관 동의 화면이 이어져요.</p>

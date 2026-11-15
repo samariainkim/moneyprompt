@@ -22,7 +22,7 @@ export default function OnboardingForm({ docs, next }: { docs: ConsentDoc[]; nex
           </span>
         </label>
       ))}
-      <button className="btn block" type="submit" disabled={pending || !requiredOk}>{pending ? '저장 중…' : '동의하고 시작하기'}</button>
+      <button className="btn block" type="submit" disabled={pending || !requiredOk} aria-busy={pending}>{pending ? '저장 중…' : '동의하고 시작하기'}</button>
       {state.error && <p className="msg err" role="alert">{state.error}</p>}
     </form>
   );

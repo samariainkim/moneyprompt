@@ -69,7 +69,7 @@ export default function PreferencesForm({ mode, next = '/account/', defaults }: 
         </div>
       </fieldset>
 
-      <button className="btn block" type="submit" disabled={pending}>
+      <button className="btn block" type="submit" disabled={pending} aria-busy={pending}>
         {pending ? '저장 중…' : mode === 'welcome' ? '저장하고 시작하기' : '저장'}
       </button>
       {mode === 'welcome' && (

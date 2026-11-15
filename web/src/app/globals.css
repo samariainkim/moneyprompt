@@ -95,3 +95,11 @@ fieldset.pref legend { font-size: 14px; font-weight: 800; padding: 0; margin-bot
   .saved-actions .btn { flex: 1; }
   .saved-actions form { flex: 1; display: flex; }
 }
+
+/* 불러오는 중 / 처리 중 표시 */
+.ld { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 40vh; color: var(--muted); font-size: 14px; }
+.ld-spin { width: 22px; height: 22px; border: 3px solid #fed7aa; border-top-color: var(--brand); border-radius: 50%; animation: dbxspin .8s linear infinite; }
+.ld-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+@keyframes dbxspin { to { transform: rotate(360deg); } }
+.btn[aria-busy='true'] { opacity: .85; }
+.btn[aria-busy='true']::before { content: ''; width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: dbxspin .7s linear infinite; }

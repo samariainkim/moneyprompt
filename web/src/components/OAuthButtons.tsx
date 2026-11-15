@@ -13,25 +13,27 @@ export default function OAuthButtons({ next, src, compact = false, onStart }: { 
   const providers = (process.env.NEXT_PUBLIC_OAUTH_PROVIDERS ?? 'google')
     .split(',').map((s) => s.trim()).filter((p) => p in LABELS);
   const [error, setError] = useState('');
+  const [busy, setBusy] = useState('');
   if (providers.length === 0) return null;
 
   async function go(provider: string) {
-    setError('');
+    if (busy) return;
+    setError(''); setBusy(provider);
     onStart?.(provider);
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: provider as 'google' | 'kakao',
       options: { redirectTo: `${location.origin}/auth/callback/?next=${encodeURIComponent(next)}${src ? `&src=${encodeURIComponent(src)}` : ''}&evt=login` },
     });
-    if (error) setError('소셜 로그인을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.');
+    if (error) { setBusy(''); setError('소셜 로그인을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.'); }
   }
 
   return (
     <>
       {!compact && <div className="divider">또는</div>}
       {providers.map((p) => (
-        <button key={p} type="button" className={compact ? 'btn ghost google' : 'btn ghost block'} style={compact ? undefined : { marginTop: 8 }} onClick={() => go(p)}>
-          {p === 'google' && <GoogleIcon />}{LABELS[p]}
+        <button key={p} type="button" className={compact ? 'btn ghost google' : 'btn ghost block'} style={compact ? undefined : { marginTop: 8 }} onClick={() => go(p)} disabled={Boolean(busy)} aria-busy={busy === p}>
+          {p === 'google' && busy !== p && <GoogleIcon />}{busy === p ? '연결 중…' : LABELS[p]}
         </button>
       ))}
       {error && <p className="msg err">{error}</p>}
