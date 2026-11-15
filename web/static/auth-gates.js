@@ -430,7 +430,7 @@
     var q = new URLSearchParams(location.search);
     if (q.get('dbx_resume') !== 'fav') return;
     var idx = q.get('dbx_idx'); stripResumeFromUrl();
-    if (idx && /^\d{2}\/\d{2}$/.test(idx) && favs.indexOf(idx) < 0) { window.toggleFavorite(idx); rerender(); toast('즐겨찾기에 추가했어요 ★'); }
+    if (idx && /^\d{2}\/\d{2}(-\d{1,2})?$/.test(idx) && favs.indexOf(idx) < 0) { window.toggleFavorite(idx); rerender(); toast('즐겨찾기에 추가했어요 ★'); }
   }
 
   function offerMigration() {

@@ -3,8 +3,8 @@ import { createClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
 
-// 프롬프트 즐겨찾기 (로그인한 회원 본인 것만). 키는 프롬프트 idx 형식(예: 01/05).
-const KEY = /^\d{2}\/\d{2}$/;
+// 프롬프트 즐겨찾기 (로그인한 회원 본인 것만). 키는 프롬프트 idx 형식(예: 01/05 또는 05/04-3).
+const KEY = /^\d{2}\/\d{2}(-\d{1,2})?$/;
 const MAX_KEYS = 300;
 const NO_STORE = { 'Cache-Control': 'no-store' };
 
