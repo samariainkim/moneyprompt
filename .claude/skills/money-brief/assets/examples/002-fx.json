@@ -1,0 +1,281 @@
+{
+ "_설명": "MONEY BRIEF No.2 완성 예시(환전). 숫자는 모두 calc(엔진) 값이다.",
+ "no": 2,
+ "id": "002",
+ "category": "정보 · 환전",
+ "topic": "환전",
+ "slug": "fx",
+ "title": "달러로 바꿀 때, 환율 우대율에 따라 얼마가 달라질까?",
+ "short": "달러로 바꿀 때, 우대율에 따라 얼마가 달라질까?",
+ "base_date": "2026.11.16",
+ "source_default": "출처 · 한국수출입은행 고시 환율({{usd.base_date|date}} 기준) · 돈버프 환전수수료 계산기(규칙 v{{_meta.fx_rules}}) · 기준일 2026.11.16",
+ "calc": {
+  "usd": {
+   "engine": "fx_rate",
+   "currency": "USD"
+  },
+  "fx_out0": {
+   "engine": "fx",
+   "input": {
+    "mode": "wire",
+    "direction": "out",
+    "currency": "USD",
+    "amount": "10000",
+    "prefPercent": "0"
+   }
+  },
+  "fx_in0": {
+   "engine": "fx",
+   "input": {
+    "mode": "wire",
+    "direction": "in",
+    "currency": "USD",
+    "amount": "10000",
+    "prefPercent": "0"
+   }
+  },
+  "fx_out50": {
+   "engine": "fx",
+   "input": {
+    "mode": "wire",
+    "direction": "out",
+    "currency": "USD",
+    "amount": "10000",
+    "prefPercent": "50"
+   }
+  },
+  "fx_in50": {
+   "engine": "fx",
+   "input": {
+    "mode": "wire",
+    "direction": "in",
+    "currency": "USD",
+    "amount": "10000",
+    "prefPercent": "50"
+   }
+  },
+  "fx_out90": {
+   "engine": "fx",
+   "input": {
+    "mode": "wire",
+    "direction": "out",
+    "currency": "USD",
+    "amount": "10000",
+    "prefPercent": "90"
+   }
+  },
+  "fx_in90": {
+   "engine": "fx",
+   "input": {
+    "mode": "wire",
+    "direction": "in",
+    "currency": "USD",
+    "amount": "10000",
+    "prefPercent": "90"
+   }
+  }
+ },
+ "cards": [
+  {
+   "type": "cover",
+   "title_lines": [
+    "달러로 바꿀 때,",
+    "환율 우대율에 따라",
+    "*얼마가 달라질까?*"
+   ],
+   "sub": "해외주식 투자금 1만 달러를 바꾼다고 가정하고, 우대율별 차이를 계산해 봤어요.",
+   "pills": [
+    {
+     "label": "우대 0%로 1만 달러를 사면",
+     "value": "{{fx_out0.total_krw|won}}"
+    },
+    {
+     "label": "우대 90%로 1만 달러를 사면",
+     "value": "{{fx_out90.total_krw|won}}",
+     "accent": true
+    }
+   ]
+  },
+  {
+   "type": "rates",
+   "label": "환율의 구조",
+   "tag": "3가지 환율",
+   "heading": "같은 날, 달러 환율은\n하나가 아니에요",
+   "rows": [
+    {
+     "label": "살 때 (TTS)",
+     "sub": "원화를 내고 달러를 받을 때",
+     "value": "{{usd.tts}}원"
+    },
+    {
+     "label": "매매기준율",
+     "sub": "기준이 되는 환율",
+     "value": "{{usd.base}}원",
+     "dark": true
+    },
+    {
+     "label": "팔 때 (TTB)",
+     "sub": "달러를 주고 원화를 받을 때",
+     "value": "{{usd.ttb}}원"
+    }
+   ],
+   "mini": "기준율과 살 때·팔 때 환율의 차이가 **환전 비용(스프레드)**이에요. 살 때 **{{usd.spread_out}}원**, 팔 때 **{{usd.spread_in}}원**이 1달러당 비용이에요."
+  },
+  {
+   "type": "boxes",
+   "bg": "warm",
+   "label": "우대율이란",
+   "tag": "스프레드 할인",
+   "heading": "우대율은\n이 스프레드를 깎아주는 비율",
+   "boxes": [
+    {
+     "dark": true,
+     "tag": "우대율 90%라면",
+     "title": "스프레드의 90%를 깎아줘요",
+     "text": "1달러당 {{usd.spread_out}}원 중 **10%만** 내는 셈이에요."
+    },
+    {
+     "tag": "계산 방식 (돈버프 계산기 기준)",
+     "title": "기준율 + 스프레드 × (1 − 우대율)",
+     "text": "은행·증권사마다 우대를 적용하는 방식이 다를 수 있어요. 이 카드는 같은 방식으로 비교했어요."
+    }
+   ]
+  },
+  {
+   "type": "table",
+   "label": "계산해 보면",
+   "tag": "달러 살 때",
+   "heading": "1만 달러를 사려면,\n우대율에 따라 이만큼 달라요",
+   "fs": 60,
+   "columns": [
+    "우대율",
+    "적용 환율",
+    "내는 돈",
+    "추가 비용"
+   ],
+   "rows": [
+    {
+     "cells": [
+      "0%",
+      "{{fx_out0.applied_rate|d2}}",
+      "{{fx_out0.total_krw|n}}",
+      "**{{fx_out0.diff_krw|n}}**"
+     ]
+    },
+    {
+     "hl": true,
+     "cells": [
+      "50%",
+      "{{fx_out50.applied_rate|d2}}",
+      "{{fx_out50.total_krw|n}}",
+      "**{{fx_out50.diff_krw|n}}**"
+     ]
+    },
+    {
+     "cells": [
+      "90%",
+      "{{fx_out90.applied_rate|d3}}",
+      "{{fx_out90.total_krw|n}}",
+      "**{{fx_out90.diff_krw|n}}**"
+     ]
+    }
+   ],
+   "small": "금액 단위는 원. 추가 비용은 매매기준율로 환산한 금액({{fx_out0.base_total_krw|n}}원)과의 차이예요.",
+   "callout": {
+    "label": "우대 0% → 90% 절감",
+    "value": "{{fx_out0.total_krw - fx_out90.total_krw|won}}"
+   }
+  },
+  {
+   "type": "table",
+   "bg": "warm",
+   "label": "팔 때도 비용",
+   "tag": "왕복 계산",
+   "heading": "다시 원화로 바꿀 때도\n비슷한 비용이 들어요",
+   "fs": 60,
+   "columns": [
+    "우대율",
+    "살 때",
+    "팔 때",
+    "왕복 합계"
+   ],
+   "rows": [
+    {
+     "cells": [
+      "0%",
+      "{{fx_out0.diff_krw|n}}",
+      "{{fx_in0.diff_krw|n}}",
+      "**{{fx_out0.diff_krw + fx_in0.diff_krw|n}}**"
+     ]
+    },
+    {
+     "hl": true,
+     "cells": [
+      "50%",
+      "{{fx_out50.diff_krw|n}}",
+      "{{fx_in50.diff_krw|n}}",
+      "**{{fx_out50.diff_krw + fx_in50.diff_krw|n}}**"
+     ]
+    },
+    {
+     "cells": [
+      "90%",
+      "{{fx_out90.diff_krw|n}}",
+      "{{fx_in90.diff_krw|n}}",
+      "**{{fx_out90.diff_krw + fx_in90.diff_krw|n}}**"
+     ]
+    }
+   ],
+   "small": "금액 단위는 원. 환율이 변하지 않았다고 가정한 환전 비용이에요(주가·환율 변동 손익은 제외).",
+   "note": "1만 달러를 사고팔면 우대 0%는 {{fx_out0.diff_krw + fx_in0.diff_krw|n}}원, 우대 90%는 {{fx_out90.diff_krw + fx_in90.diff_krw|n}}원이 환전 비용이에요."
+  },
+  {
+   "type": "checklist",
+   "label": "저장해 두세요",
+   "tag": "체크리스트",
+   "heading": "환전하기 전, 이것만 확인",
+   "fs": 60,
+   "items": [
+    {
+     "t": "우대율이 무엇을 기준으로 적용되나요?",
+     "sub": "기준율 대비인지, 스프레드 대비인지 확인해요"
+    },
+    {
+     "t": "우대 조건과 기간이 있나요?",
+     "sub": "신청 방법, 적용 기간, 한도를 확인해요"
+    },
+    {
+     "t": "살 때와 팔 때 모두 우대가 적용되나요?",
+     "sub": "왕복 비용으로 비교해야 정확해요"
+    },
+    {
+     "t": "환전 시점의 환율은 언제 정해지나요?",
+     "sub": "주문 시점, 환전 시점이 다를 수 있어요"
+    },
+    {
+     "t": "거래 수수료는 따로 얼마인가요?",
+     "sub": "환전 비용과 별개로 확인해요"
+    }
+   ],
+   "source": "출처 · 일반적인 점검 항목이며 증권사·은행별 조건은 각 금융사 공시와 안내로 확인하세요 · 기준일 2026.11.16"
+  },
+  {
+   "type": "cta",
+   "title_lines": [
+    "내 금액으로",
+    "*환전 비용을 계산해 보세요*"
+   ],
+   "fs": 76,
+   "title_top": 230,
+   "body": "통화, 금액, 우대율을 넣으면 우대율별 예상 차액을 바로 확인할 수 있어요. 결과는 저장할 수 있고, 로그인하면 AI 심층분석까지 이어서 볼 수 있어요.",
+   "button": "환전수수료 계산기 →",
+   "url": "donbuff.com/calc/fx/",
+   "sub": "계산 결과는 참고용이에요. 실제 환율과 우대 방식은 금융사별로 달라요.",
+   "link": {
+    "href": "/calc/fx/",
+    "label": "환전수수료 계산기로 이동",
+    "target": "fx"
+   }
+  }
+ ]
+}
