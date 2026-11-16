@@ -1046,7 +1046,7 @@ function renderResult(){
     <div class="rd">
       <div class="card">
         <h3 class="serif">나를 만든 4가지 성향
-          <button id="glossaryBtn" class="gl-btn" aria-label="용어 설명 보기">i</button></h3>
+          <a class="gl-link" href="/invest-mbti/paths/" data-paths="result">8가지 성향 자세히 보기 →</a></h3>
         <div class="tr">
           ${axisOrder.map(axis=>{
             const pole = ar[axis];
@@ -1055,27 +1055,6 @@ function renderResult(){
             const note = strength==="경계" ? `<em>이런 경향이 있지만, 이번 선택에서는 아직 뚜렷하게 드러나지 않았어요</em>` : ``;
             return `<div><b><i>${pole}</i>${lab.name}</b><span>${lab.desc}</span>${note}</div>`;
           }).join("")}
-        </div>
-      </div>
-
-      <div id="glossaryOverlay" style="display:none;position:fixed;inset:0;background:rgba(39,54,77,0.5);
-        align-items:center;justify-content:center;z-index:300;padding:24px;">
-        <div style="max-width:420px;width:100%;max-height:80vh;overflow-y:auto;background:var(--bg2);border-radius:22px;padding:26px 22px;">
-          <div class="serif" style="font-size:17px;color:var(--ink);">내 안의 여덟 갈래 길</div>
-          <div style="margin-top:6px;font-size:12px;color:var(--muted);line-height:1.6;">누구나 두 갈래 길 앞에서 조금씩 다른 쪽으로 마음이 기울어요.<br>지금의 나는, 그중 네 갈래를 따라 여기까지 왔어요.</div>
-          <div style="margin-top:18px;display:flex;flex-direction:column;gap:10px;">
-            ${Object.keys(AXIS_LABELS).map(p=>{
-              const l = AXIS_LABELS[p];
-              return `<div style="display:flex;gap:10px;align-items:flex-start;">
-                <span class="axis-badge" style="flex-shrink:0;">${p}</span>
-                <div><b style="font-size:13px;color:var(--ink);">${l.name} <span style="font-weight:400;color:var(--muted2);">(${l.en})</span></b>
-                <div style="margin-top:2px;font-size:12px;color:var(--muted);line-height:1.5;">${l.descLong}</div></div>
-              </div>`;
-            }).join("")}
-          </div>
-          <a href="/invest-mbti/paths/" data-paths="result" style="display:block;margin-top:18px;text-align:center;font-size:13.5px;font-weight:800;color:var(--orange-text);text-decoration:underline;">8가지 성향 자세히 보기 →</a>
-          <button id="glossaryClose" style="margin-top:20px;width:100%;padding:12px;border-radius:999px;border:1.5px solid #D9CDBB;
-            background:var(--card);color:#5A4433;font-family:inherit;font-size:13.5px;cursor:pointer;">닫기</button>
         </div>
       </div>
 
@@ -1142,16 +1121,6 @@ function renderResult(){
       else{ btn.textContent="복사에 실패했어요, 직접 선택해 복사해주세요"; }
       setTimeout(()=>{ btn.textContent="프롬프트 복사하기"; btn.classList.remove("done"); }, 1800);
     });
-  });
-
-  document.getElementById("glossaryBtn").addEventListener("click", ()=>{
-    document.getElementById("glossaryOverlay").style.display = "flex";
-  });
-  document.getElementById("glossaryClose").addEventListener("click", ()=>{
-    document.getElementById("glossaryOverlay").style.display = "none";
-  });
-  document.getElementById("glossaryOverlay").addEventListener("click", (e)=>{
-    if(e.target.id === "glossaryOverlay") e.target.style.display = "none";
   });
 
   document.getElementById("shareBtn").addEventListener("click", ()=>openShareSheet(r));
