@@ -57,7 +57,8 @@
     "/calc/loan-prepay/",
     "/calc/fx/",
     "/invest-mbti/",
-    "/invest-mbti/paths/"
+    "/invest-mbti/paths/",
+    "/brief/"
   ],
   "nextPages": [
     "/join/",
