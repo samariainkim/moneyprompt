@@ -21,6 +21,8 @@ const walk = (dir, rel) => {
 };
 for (const top of ['calc', 'fee', 'prompt', 'invest-mbti', 'new']) if (existsSync(join(root, top))) walk(join(root, top), `/${top}`);
 paths.unshift('/');
+// 리뉴얼로 새로 생긴 정적 페이지(예: /calc/why/, /invest-mbti/paths/)도 함께 확인한다.
+{ const rdp = JSON.parse(readFileSync(join(root, 'web', 'redesign', 'pages.json'), 'utf8')); for (const u of (rdp.production || [])) if (rdp.pages && rdp.pages[u]) paths.push(u); }
 
 // 리뉴얼로 운영에 연 정적 페이지는 새 디자인 파일(web/redesign/pages)의 제목·noindex 를 기대값으로 쓴다.
 const rd = JSON.parse(readFileSync(join(root, 'web', 'redesign', 'pages.json'), 'utf8'));
