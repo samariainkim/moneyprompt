@@ -5,6 +5,7 @@ import { safeNext } from '@/lib/auth';
 import { cleanSource, continueUrl, stripDbx } from '@/lib/gate';
 import { createClient } from '@/lib/supabase/server';
 import { supabaseConfigured } from '@/lib/supabase/env';
+import { rdEnabled } from '@/lib/redesign';
 
 export const metadata: Metadata = { title: '로그인하고 더 많은 기능을 이용하세요', robots: { index: false } };
 
@@ -32,10 +33,12 @@ export default async function JoinPage({ searchParams }: { searchParams: Promise
       ? '방금 본 결과는 로그인 후 내 결과에 자동으로 저장돼요'
       : '방금 입력한 내용은 로그인 후에도 그대로 이어져요';
 
-  return (
+  const rd = rdEnabled('/join/');
+  const content = (
     <div className="join">
       <section className="join-info">
-        <h1>로그인을 하시면<br /><b>더 많은 기능</b>을<br />이용하실 수 있습니다</h1>
+        {rd && <div className="kicker">MEMBER</div>}
+        <h1>로그인을 하시면<br /><b><span className="em">더 많은 기능</span>을</b><br />이용하실 수 있습니다</h1>
         <p className="join-lead">회원가입을 하시면 돈버프만의 다양한 서비스와 최신 업데이트 소식을 가장 빠르게 받아보실 수 있어요.</p>
         <ul className="join-list">
           {BENEFITS.map((b) => (
@@ -49,4 +52,6 @@ export default async function JoinPage({ searchParams }: { searchParams: Promise
       <JoinCta next={next} src={src} back={stripDbx(next)} keepMessage={keepMessage} />
     </div>
   );
+  if (rd) return <section className="hero-s" style={{ paddingBottom: 80 }}><div className="wrap">{content}</div></section>;
+  return content;
 }

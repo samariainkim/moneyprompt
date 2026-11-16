@@ -12,7 +12,7 @@ export default function WithdrawForm() {
       </p>
       <label htmlFor="confirm">계속하려면 <b>탈퇴</b>를 입력하세요</label>
       <input id="confirm" name="confirm" type="text" autoComplete="off" required />
-      <button className="btn danger block" type="submit" disabled={pending}>{pending ? '처리 중…' : '회원 탈퇴'}</button>
+      <button className="btn danger block" type="submit" disabled={pending} aria-busy={pending}>{pending ? '처리 중…' : '회원 탈퇴'}</button>
       {state.error && <p className="msg err" role="alert">{state.error}</p>}
     </form>
   );

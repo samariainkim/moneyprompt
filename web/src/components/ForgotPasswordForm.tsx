@@ -46,7 +46,7 @@ export default function ForgotPasswordForm() {
     <form onSubmit={onSubmit}>
       <label htmlFor="email">가입한 이메일</label>
       <input id="email" name="email" type="email" autoComplete="email" required />
-      <button className="btn block" type="submit" disabled={busy}>{busy ? '보내는 중…' : '재설정 메일 보내기'}</button>
+      <button className="btn block" type="submit" disabled={busy} aria-busy={busy}>{busy ? '보내는 중…' : '재설정 메일 보내기'}</button>
       {error && <p className="msg err" role="alert">{error}</p>}
       <p className="small" style={{ textAlign: 'center', marginTop: 20 }}><Link href="/login/">로그인으로 돌아가기</Link></p>
     </form>

@@ -21,7 +21,10 @@ export async function currentConsentDocs(supabase: SupabaseClient): Promise<Cons
   for (const d of data ?? []) {
     if (seen.has(d.type)) continue;
     seen.add(d.type);
-    out.push(d as ConsentDoc);
+    const doc = d as ConsentDoc;
+    // 마케팅 수신 동의 문구는 개인정보처리방침의 해당 조항으로 바로 연결한다(DB 값은 /privacy/ 로 되어 있음).
+    if (doc.type === 'marketing' && (!doc.content_url || doc.content_url === '/privacy/')) doc.content_url = '/privacy/#marketing';
+    out.push(doc);
   }
   return out;
 }

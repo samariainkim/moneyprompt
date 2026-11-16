@@ -5,6 +5,9 @@ import { safeNext } from '@/lib/auth';
 import { parseFlow, parseReason } from '@/lib/authErrors';
 import { cleanSource } from '@/lib/gate';
 import { supabaseConfigured } from '@/lib/supabase/env';
+import { rdEnabled } from '@/lib/redesign';
+import { RdAuthCard } from '@/components/rd/RdChrome';
+
 
 export const metadata: Metadata = { title: '로그인' };
 
@@ -13,12 +16,21 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const next = safeNext(sp.next);
   // 예전 링크(?error=auth)도 같은 안내로 처리한다.
   const reason = sp.error ? (parseReason(sp.error) ?? 'auth') : null;
+  const form = supabaseConfigured() ? <LoginForm next={next} src={cleanSource(sp.src)} /> : <p className="msg err">서비스 설정이 아직 완료되지 않았어요.</p>;
+  if (rdEnabled('/login/')) {
+    return (
+      <RdAuthCard kicker="LOGIN" title="로그인" lead="돈버프 계정으로 로그인하세요.">
+        {reason && <AuthErrorNotice reason={reason} flow={parseFlow(sp.flow)} />}
+        {form}
+      </RdAuthCard>
+    );
+  }
   return (
     <div className="card narrow">
       <h1>로그인</h1>
       <p className="lead">돈버프 계정으로 로그인하세요.</p>
       {reason && <AuthErrorNotice reason={reason} flow={parseFlow(sp.flow)} />}
-      {supabaseConfigured() ? <LoginForm next={next} src={cleanSource(sp.src)} /> : <p className="msg err">서비스 설정이 아직 완료되지 않았어요.</p>}
+      {form}
     </div>
   );
 }

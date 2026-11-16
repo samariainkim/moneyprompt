@@ -1,0 +1,24 @@
+/* 투자 성향 '8가지 성향' 소개 페이지 — mbti.css 와 같은 차분한 톤(변수는 아래 :root) */
+:root{--orange:#BC6727;--orange-600:#A9591D;--orange-text:#94582A;--navy:#27364D;--cream:#F3E9DB;--hero:#F5EDE2;--off:#FAF7F2;--line:#E7DFD2;--muted:#7B7468;--outside:#EBE7DF}
+.serif{font-family:'Noto Serif KR','Nanum Myeongjo','Batang',serif}
+.h8{background:var(--hero);padding:128px 0 64px}.h8 h1{font-size:68px;line-height:1.1;letter-spacing:-2px;font-weight:500;margin:14px 0 18px;color:var(--navy)}.h8 h1 em{font-style:normal;color:var(--orange);font-weight:700}
+.h8 p.d{font-size:18px;color:var(--muted);line-height:1.85;max-width:560px}
+.fx{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}.fx span{background:#fff;border-radius:999px;padding:10px 20px;font-weight:800;font-size:14px;color:var(--navy);box-shadow:0 6px 16px rgba(39,54,77,.07)}.fx b{color:var(--orange-text)}
+.how{padding:56px 0 0}.how .box{background:#fff;border:1px solid var(--line);border-radius:32px;padding:34px 38px;display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center}
+.how h2{font-size:26px;font-weight:700;letter-spacing:-.8px;margin-bottom:8px}.how p{color:var(--muted);font-size:15.5px;line-height:1.8}
+.code{display:flex;gap:8px;align-items:center}.code i{width:58px;height:58px;border-radius:18px;background:var(--navy);color:#fff;display:grid;place-items:center;font:700 26px 'Noto Serif KR',serif;font-style:normal}.code .eq{font-weight:900;color:var(--muted)}.code .res{background:var(--cream);color:var(--orange-text);padding:0 18px;width:auto;font-size:15px;font-family:var(--font);font-weight:900}
+.ax{padding:64px 0 0}.ax-h{display:flex;gap:22px;align-items:flex-start;margin-bottom:24px}.ax-h .no{font-size:64px;line-height:1;font-weight:500;color:#D9C9B0}.ax-h small{font-size:13px;font-weight:900;letter-spacing:.1em;color:var(--orange-text)}.ax-h h2{font-size:32px;font-weight:700;letter-spacing:-1px;margin:4px 0 6px}.sit{color:var(--muted);font-size:14.5px}
+.vs{display:grid;grid-template-columns:1fr 44px 1fr;gap:0;align-items:stretch}.vsm{display:grid;place-items:center;position:relative}.vsm span{width:44px;height:44px;border-radius:50%;background:#fff;border:1.5px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:900;color:var(--muted);z-index:1}.vsm::before{content:"";position:absolute;top:8%;bottom:8%;width:1px;background:var(--line)}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:30px;padding:30px}
+.ph{display:flex;gap:14px;align-items:center}.ph i{width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:20px}.ph b{font-size:24px;font-weight:700;display:block;letter-spacing:-.6px}.ph small{color:var(--muted);font-weight:700;font-size:12.5px}
+.pd{margin:16px 0 4px;font-size:15.5px;line-height:1.75;color:var(--navy)}
+.blk{margin-top:20px}.bl{display:block;font-size:12px;font-weight:900;letter-spacing:.08em;color:var(--orange-text);margin-bottom:8px}
+.kw{display:flex;flex-wrap:wrap;gap:7px}.kw span{background:var(--cream);color:var(--orange-text);padding:8px 14px;border-radius:999px;font-weight:800;font-size:13.5px}
+.q{font-size:14.5px;line-height:1.65;color:var(--muted)}
+.two{display:grid;gap:10px;margin-top:20px}.two>div{border-radius:18px;padding:14px 16px}.two .st{background:var(--cream)}.two .ca{background:var(--off);border:1px solid var(--line)}.two p{font-size:14px;line-height:1.6;color:var(--navy)}.two .bl{margin-bottom:4px}
+.tmp{margin-top:64px;background:#fff;border:1px dashed #D3CAB9;border-radius:28px;padding:26px 32px;color:var(--muted);font-size:14.5px;line-height:1.8}.tmp b{color:var(--navy)}
+.cta{margin:56px 0 0;background:var(--cream);border-radius:32px;padding:46px;text-align:center}.cta h2{font-size:30px;font-weight:700;letter-spacing:-1px;margin-bottom:8px}.cta p{color:var(--muted);margin-bottom:22px}
+.btn2{display:inline-flex;padding:18px 34px;border-radius:999px;background:var(--orange);color:#fff;font:900 17px var(--font);box-shadow:0 10px 22px rgba(148,88,42,.22)}.btn2.l{background:#fff;color:var(--navy);box-shadow:none;border:1.5px solid var(--navy);margin-left:8px}
+.fine{text-align:center;color:var(--muted);font-size:12.5px;margin-top:22px}
+@media(max-width:900px){.h8{padding:104px 0 40px}.h8 h1{font-size:42px}.how .box{grid-template-columns:1fr;padding:26px 22px}.code i{width:44px;height:44px;font-size:20px}
+.ax-h{gap:14px}.ax-h .no{font-size:44px}.ax-h h2{font-size:25px}.vs{grid-template-columns:1fr;gap:12px}.vsm{height:34px}.vsm::before{top:50%;bottom:auto;left:8%;right:8%;width:auto;height:1px}.pcard{padding:24px 20px}.cta{padding:32px 20px}.cta h2{font-size:23px}.btn2.l{margin:10px 0 0}.tmp{padding:20px}}

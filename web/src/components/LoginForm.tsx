@@ -28,13 +28,14 @@ export default function LoginForm({ next, src }: { next: string; src?: string | 
       email,
       password: String(f.get('password')),
     });
-    setBusy(false);
     if (error) {
+      setBusy(false);
       setError(friendly(error.message));
       if (/email not confirmed/i.test(error.message)) setUnconfirmed(email);
       return;
     }
     // 동의·선택정보 확인을 거치는 로그인 후 라우팅으로 보낸다. (서버 경로라서 전체 이동)
+    // 이동이 끝날 때까지 버튼은 '로그인 중…' 상태를 유지한다(원래 모양으로 돌아가면 다시 누르게 된다).
     window.location.assign(continueUrl(next, src ?? null, 'login'));
   }
 
@@ -45,7 +46,7 @@ export default function LoginForm({ next, src }: { next: string; src?: string | 
         <input id="email" name="email" type="email" autoComplete="email" required />
         <label htmlFor="password">비밀번호</label>
         <input id="password" name="password" type="password" autoComplete="current-password" required />
-        <button className="btn block" type="submit" disabled={busy}>{busy ? '확인 중…' : '로그인'}</button>
+        <button className="btn block" type="submit" disabled={busy} aria-busy={busy}>{busy ? '로그인 중…' : '로그인'}</button>
         {error && <p className="msg err" role="alert">{error}</p>}
         {unconfirmed && <ResendVerification email={unconfirmed} />}
         <p className="small" style={{ marginTop: 14 }}><Link href="/forgot-password/">비밀번호를 잊으셨나요?</Link></p>

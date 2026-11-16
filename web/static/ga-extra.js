@@ -62,6 +62,8 @@
   function initPrompt() {
     document.addEventListener('click', function (e) {
       var t = e.target; if (!t || !t.closest) return;
+      if (t.closest('.star-btn')) return;
+      var vw = t.closest('[data-view]'); if (vw) { ev('prompt_view', { view: vw.getAttribute('data-view') }); return; }
       var copy = t.closest('.copy-btn');
       if (copy) {
         var m = /copyPrompt\('([^']+)'\)/.exec(copy.getAttribute('onclick') || '');
@@ -71,8 +73,10 @@
       var go = t.closest('.go-btn');
       if (go) {
         var row = go.closest('.prompt-row'); var p = pinfo(row && findPrompt(row.id));
-        p.ai_service = txt(go.textContent, 30); ev('prompt_ai_open', p, true); return;
+        p.ai_service = txt(go.getAttribute('data-ai') || go.textContent, 30); ev('prompt_ai_open', p, true); return;
       }
+      var op = t.closest('[data-open], .gc');
+      if (op) { var oi = op.getAttribute('data-open') || op.getAttribute('data-idx'); var pp = null; try { for (var k = 0; k < PROMPTS.length; k++) if (PROMPTS[k].idx === oi) { pp = PROMPTS[k]; break; } } catch (er) {} ev('prompt_open', pinfo(pp)); return; }
       var tg = t.closest('[data-toggle]');
       if (tg) {
         var r = document.getElementById(tg.getAttribute('data-toggle'));
@@ -93,7 +97,7 @@
       timer = setTimeout(function () {
         var q = txt(si.value, 40);
         if (q.length < 2) return;
-        setTimeout(function () { ev('prompt_search', { search_term: q, result_count: document.querySelectorAll('#mainList .prompt-row').length }); }, 300);
+        setTimeout(function () { ev('prompt_search', { search_term: q, result_count: document.querySelectorAll('#mainList .prompt-row, #mainList .gc').length }); }, 300);
       }, 1000);
     });
   }

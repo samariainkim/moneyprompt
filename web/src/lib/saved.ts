@@ -16,3 +16,6 @@ export const SAVED_PAYLOAD_MAX = 30000; // 직렬화한 글자 수 상한 (DB �
 
 // 저장한 결과를 다시 여는 주소
 export const restoreUrl = (tool: SavedTool, id: string) => `${SAVED_TOOLS[tool].path}?dbx_resume=restore&dbx_saved=${encodeURIComponent(id)}`;
+
+// 새 디자인의 '내 결과' 카드 아이콘
+export const SAVED_ICON: Record<SavedTool, string> = { calc_fx: '💱', calc_brokerage: '🏠', calc_loan: '🏦', fee_brokerage: '🏠', mbti: '🧭' };

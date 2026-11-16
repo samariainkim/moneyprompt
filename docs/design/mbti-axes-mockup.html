@@ -1,0 +1,101 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>8가지 성향 시안</title>
+<link rel="stylesheet" href="../../web/redesign/shared/frame.css">
+<style>
+:root{--orange:#BC6727;--orange-600:#A9591D;--orange-text:#94582A;--navy:#27364D;--cream:#F3E9DB;--hero:#F5EDE2;--off:#FAF7F2;--line:#E7DFD2;--muted:#7B7468;--outside:#EBE7DF}
+.serif{font-family:'Noto Serif KR','Nanum Myeongjo','Batang',serif}
+.h8{background:var(--hero);padding:128px 0 64px}.h8 h1{font-size:68px;line-height:1.1;letter-spacing:-2px;font-weight:500;margin:14px 0 18px;color:var(--navy)}.h8 h1 em{font-style:normal;color:var(--orange);font-weight:700}
+.h8 p.d{font-size:18px;color:var(--muted);line-height:1.85;max-width:560px}
+.fx{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}.fx span{background:#fff;border-radius:999px;padding:10px 20px;font-weight:800;font-size:14px;color:var(--navy);box-shadow:0 6px 16px rgba(39,54,77,.07)}.fx b{color:var(--orange-text)}
+.how{padding:56px 0 0}.how .box{background:#fff;border:1px solid var(--line);border-radius:32px;padding:34px 38px;display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center}
+.how h2{font-size:26px;font-weight:700;letter-spacing:-.8px;margin-bottom:8px}.how p{color:var(--muted);font-size:15.5px;line-height:1.8}
+.code{display:flex;gap:8px;align-items:center}.code i{width:58px;height:58px;border-radius:18px;background:var(--navy);color:#fff;display:grid;place-items:center;font:700 26px 'Noto Serif KR',serif;font-style:normal}.code .eq{font-weight:900;color:var(--muted)}.code .res{background:var(--cream);color:var(--orange-text);padding:0 18px;width:auto;font-size:15px;font-family:var(--font);font-weight:900}
+.ax{padding:64px 0 0}.ax-h{display:flex;gap:22px;align-items:flex-start;margin-bottom:24px}.ax-h .no{font-size:64px;line-height:1;font-weight:500;color:#D9C9B0}.ax-h small{font-size:13px;font-weight:900;letter-spacing:.1em;color:var(--orange-text)}.ax-h h2{font-size:32px;font-weight:700;letter-spacing:-1px;margin:4px 0 6px}.sit{color:var(--muted);font-size:14.5px}
+.vs{display:grid;grid-template-columns:1fr 44px 1fr;gap:0;align-items:stretch}.vsm{display:grid;place-items:center;position:relative}.vsm span{width:44px;height:44px;border-radius:50%;background:#fff;border:1.5px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:900;color:var(--muted);z-index:1}.vsm::before{content:"";position:absolute;top:8%;bottom:8%;width:1px;background:var(--line)}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:30px;padding:30px}
+.ph{display:flex;gap:14px;align-items:center}.ph i{width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:20px}.ph b{font-size:24px;font-weight:700;display:block;letter-spacing:-.6px}.ph small{color:var(--muted);font-weight:700;font-size:12.5px}
+.pd{margin:16px 0 4px;font-size:15.5px;line-height:1.75;color:var(--navy)}
+.blk{margin-top:20px}.bl{display:block;font-size:12px;font-weight:900;letter-spacing:.08em;color:var(--orange-text);margin-bottom:8px}
+.kw{display:flex;flex-wrap:wrap;gap:7px}.kw span{background:var(--cream);color:var(--orange-text);padding:8px 14px;border-radius:999px;font-weight:800;font-size:13.5px}
+.q{font-size:14.5px;line-height:1.65;color:var(--muted)}
+.two{display:grid;gap:10px;margin-top:20px}.two>div{border-radius:18px;padding:14px 16px}.two .st{background:var(--cream)}.two .ca{background:var(--off);border:1px solid var(--line)}.two p{font-size:14px;line-height:1.6;color:var(--navy)}.two .bl{margin-bottom:4px}
+.tmp{margin-top:64px;background:#fff;border:1px dashed #D3CAB9;border-radius:28px;padding:26px 32px;color:var(--muted);font-size:14.5px;line-height:1.8}.tmp b{color:var(--navy)}
+.cta{margin:56px 0 0;background:var(--cream);border-radius:32px;padding:46px;text-align:center}.cta h2{font-size:30px;font-weight:700;letter-spacing:-1px;margin-bottom:8px}.cta p{color:var(--muted);margin-bottom:22px}
+.btn2{display:inline-flex;padding:18px 34px;border-radius:999px;background:var(--orange);color:#fff;font:900 17px var(--font);box-shadow:0 10px 22px rgba(148,88,42,.22)}.btn2.l{background:#fff;color:var(--navy);box-shadow:none;border:1.5px solid var(--navy);margin-left:8px}
+.fine{text-align:center;color:var(--muted);font-size:12.5px;margin-top:22px}
+@media(max-width:900px){.h8{padding:104px 0 40px}.h8 h1{font-size:42px}.how .box{grid-template-columns:1fr;padding:26px 22px}.code i{width:44px;height:44px;font-size:20px}
+.ax-h{gap:14px}.ax-h .no{font-size:44px}.ax-h h2{font-size:25px}.vs{grid-template-columns:1fr;gap:12px}.vsm{height:34px}.vsm::before{top:50%;bottom:auto;left:8%;right:8%;width:auto;height:1px}.pcard{padding:24px 20px}.cta{padding:32px 20px}.cta h2{font-size:23px}.btn2.l{margin:10px 0 0}.tmp{padding:20px}}
+</style></head><body><div class="site">
+<header class="hdr over"><div class="wrap">
+ <a class="logo" href="/"><img src="../../web/redesign/img/logo.png" alt="돈버프 DONBUFF"></a>
+ <nav class="dbx-nav pc" aria-label="주 메뉴">
+  <a href="/prompt/" data-nav="prompt">돈 버는 프롬프트</a>
+  <a href="/invest-mbti/" data-nav="invest" aria-current="page" class="cur">나의 투자성향 찾기</a>
+  <div class="dd" id="ddCalc"><button type="button" aria-expanded="false" aria-controls="ddCalcPanel" data-dd="ddCalc">금융계산기 <span style="font-size:11px" aria-hidden="true">▾</span></button>
+   <div class="panel" id="ddCalcPanel">
+    <a href="/calc/brokerage/"><span class="ic" aria-hidden="true">🏠</span><div><b>부동산 중개보수</b><small>거래 금액으로 상한 보수 계산</small></div></a>
+    <a href="/calc/loan-prepay/"><span class="ic" aria-hidden="true">🏦</span><div><b>대출 중도상환</b><small>중도상환수수료 추정</small></div></a>
+    <a href="/calc/fx/"><span class="ic" aria-hidden="true">💱</span><div><b>환전수수료</b><small>환율 우대율별 예상 차액</small></div></a>
+    <hr><a class="all" href="/calc/" data-ga="nav">금융계산기 전체 보기 <span aria-hidden="true">→</span></a>
+   </div></div>
+ </nav>
+ <button class="burger" type="button" id="menuBtn" aria-label="메뉴 열기" aria-expanded="false" aria-controls="menuPanel">☰</button>
+</div></header>
+
+<section class="h8"><div class="wrap"><div class="eyebrow">INVEST TYPE · 8 PATHS</div>
+<h1 class="serif">내 안의 <em>여덟 갈래</em> 길</h1>
+<p class="d">누구나 두 갈래 길 앞에서 조금씩 다른 쪽으로 마음이 기울어요.<br>지금의 나는, 그중 네 갈래를 따라 여기까지 왔어요.</p>
+<div class="fx"><span><b>4</b>개의 갈림길</span><span><b>8</b>개의 성향</span><span><b>16</b>가지 투자 유형</span><span>좋고 나쁨이 아니라 <b>기울기</b>의 차이예요</span></div></div></section>
+<div class="wrap">
+<div class="how"><div class="box"><div><h2 class="serif">네 글자가 모여 나의 유형이 돼요</h2><p>네 갈림길에서 마음이 기운 쪽을 한 글자씩 모으면, 나만의 4글자 투자 유형이 만들어져요. 예를 들어 <b>참고형 · 직관형 · 분석형 · 단기대응형</b>이면 CNTQ, ‘이슈 사냥꾼’이에요.</p></div>
+<div class="code"><i>C</i><i>N</i><i>T</i><i>Q</i><span class="eq">=</span><i class="res">CNTQ</i></div></div></div>
+<section class="ax"><div class="ax-h"><span class="no serif">01</span><div><small>결정 방식</small><h2 class="serif">결론은 어디서 얻나요?</h2><p class="sit">상황: 충분히 공부한 종목인데, 전문가들의 의견은 내 생각과 다릅니다.</p></div></div>
+<div class="vs"><div class="pcard l"><div class="ph"><i>C</i><div><b class="serif">참고형</b><small>Consult</small></div></div>
+<p class="pd">여러 의견과 정보를 폭넓게 모아서, 남의 경험과 시선을 참고해 판단해요</p>
+<div class="blk"><span class="bl">이런 단어에 끌려요</span><div class="kw"><span>전문가 의견</span><span>다양한 관점</span><span>집단지성</span><span>멘토</span><span>리포트</span></div></div>
+<div class="blk"><span class="bl">갈림길에서는</span><p class="q">“여러 전문가의 의견과 자료를 더 비교해본다”</p></div>
+<div class="two"><div class="st"><span class="bl">강점</span><p>여러 의견과 자료를 폭넓게 살펴 판단의 시야를 넓혀요.</p></div><div class="ca"><span class="bl">주의할 점</span><p>다양한 의견에 휩쓸리면 내 기준이 흐려질 수 있어요.</p></div></div></div><div class="vsm"><span>VS</span></div><div class="pcard r"><div class="ph"><i>O</i><div><b class="serif">독립형</b><small>Own</small></div></div>
+<p class="pd">정보는 참고하되, 최종 결론은 직접 확인하고 내 판단으로 내려요</p>
+<div class="blk"><span class="bl">이런 단어에 끌려요</span><div class="kw"><span>소신</span><span>직접 공부</span><span>내 판단</span><span>나만의 시각</span><span>자기 주도</span></div></div>
+<div class="blk"><span class="bl">갈림길에서는</span><p class="q">“내가 직접 판단한 방향을 따라간다”</p></div>
+<div class="two"><div class="st"><span class="bl">강점</span><p>스스로 확인하고 결론을 내려 판단에 책임감이 있어요.</p></div><div class="ca"><span class="bl">주의할 점</span><p>내 판단을 과신하면 반대 근거를 놓칠 수 있어요.</p></div></div></div></div></section>
+<section class="ax"><div class="ax-h"><span class="no serif">02</span><div><small>정보를 보는 방식</small><h2 class="serif">무엇을 먼저 보나요?</h2><p class="sit">상황: 처음 알게 된 기업을 투자 후보로 살펴보려고 합니다.</p></div></div>
+<div class="vs"><div class="pcard l"><div class="ph"><i>S</i><div><b class="serif">감각형</b><small>Sensing</small></div></div>
+<p class="pd">실적, 재무제표처럼 지금 확인되는 사실과 숫자를 먼저 살펴봐요</p>
+<div class="blk"><span class="bl">이런 단어에 끌려요</span><div class="kw"><span>현재 실적</span><span>재무제표</span><span>현금흐름</span><span>실제 수치</span><span>팩트</span></div></div>
+<div class="blk"><span class="bl">갈림길에서는</span><p class="q">“현재 실적과 확인할 수 있는 숫자부터 살펴본다”</p></div>
+<div class="two"><div class="st"><span class="bl">강점</span><p>실적·숫자처럼 확인할 수 있는 사실에 근거해 판단해요.</p></div><div class="ca"><span class="bl">주의할 점</span><p>숫자에 집중하다 앞으로의 변화를 늦게 알아챌 수 있어요.</p></div></div></div><div class="vsm"><span>VS</span></div><div class="pcard r"><div class="ph"><i>N</i><div><b class="serif">직관형</b><small>iNtuition</small></div></div>
+<p class="pd">산업의 흐름과 트렌드, 앞으로 펼쳐질 가능성을 먼저 그려봐요</p>
+<div class="blk"><span class="bl">이런 단어에 끌려요</span><div class="kw"><span>미래 성장</span><span>산업 트렌드</span><span>혁신</span><span>새로운 시장</span><span>가능성</span></div></div>
+<div class="blk"><span class="bl">갈림길에서는</span><p class="q">“앞으로의 성장과 산업의 흐름부터 살펴본다”</p></div>
+<div class="two"><div class="st"><span class="bl">강점</span><p>산업의 흐름과 가능성을 일찍 그려보는 편이에요.</p></div><div class="ca"><span class="bl">주의할 점</span><p>기대가 앞서면 현재 수치로 확인할 부분을 건너뛸 수 있어요.</p></div></div></div></div></section>
+<section class="ax"><div class="ax-h"><span class="no serif">03</span><div><small>판단 기준</small><h2 class="serif">무엇으로 판단하나요?</h2><p class="sit">상황: 두 기업을 충분히 살펴봤지만 마지막 하나를 골라야 합니다.</p></div></div>
+<div class="vs"><div class="pcard l"><div class="ph"><i>T</i><div><b class="serif">분석형</b><small>Thinking</small></div></div>
+<p class="pd">미리 정해둔 원칙과 기준에 맞는지 따져보고 판단해요</p>
+<div class="blk"><span class="bl">이런 단어에 끌려요</span><div class="kw"><span>원칙</span><span>정해둔 기준</span><span>체크리스트</span><span>매수 조건</span><span>손절선</span></div></div>
+<div class="blk"><span class="bl">갈림길에서는</span><p class="q">“미리 정해둔 기준과 수치에 맞는 쪽을 고른다”</p></div>
+<div class="two"><div class="st"><span class="bl">강점</span><p>미리 정한 원칙과 기준으로 감정의 흔들림을 줄여요.</p></div><div class="ca"><span class="bl">주의할 점</span><p>기준에 맞지 않는 새로운 상황에는 대응이 늦어질 수 있어요.</p></div></div></div><div class="vsm"><span>VS</span></div><div class="pcard r"><div class="ph"><i>F</i><div><b class="serif">감성형</b><small>Feeling</small></div></div>
+<p class="pd">숫자보다 마음이 가는 신뢰와 애정, 끌림을 기준으로 판단해요</p>
+<div class="blk"><span class="bl">이런 단어에 끌려요</span><div class="kw"><span>기업 신뢰</span><span>가치 공감</span><span>브랜드 호감</span><span>마음의 끌림</span><span>애정</span></div></div>
+<div class="blk"><span class="bl">갈림길에서는</span><p class="q">“직접 느껴온 신뢰와 호감이 더 큰 쪽을 고른다”</p></div>
+<div class="two"><div class="st"><span class="bl">강점</span><p>믿고 공감하는 대상을 오래 지켜볼 힘이 있어요.</p></div><div class="ca"><span class="bl">주의할 점</span><p>애정 때문에 불리한 신호를 늦게 받아들일 수 있어요.</p></div></div></div></div></section>
+<section class="ax"><div class="ax-h"><span class="no serif">04</span><div><small>운영 방식</small><h2 class="serif">어떻게 지켜보나요?</h2><p class="sit">상황: 투자한 뒤 시장 상황이 예상보다 빠르게 변하고 있습니다.</p></div></div>
+<div class="vs"><div class="pcard l"><div class="ph"><i>L</i><div><b class="serif">장기계획형</b><small>Long-term</small></div></div>
+<p class="pd">한번 세운 계획과 루틴을 지키며, 시간을 두고 오래 지켜봐요</p>
+<div class="blk"><span class="bl">이런 단어에 끌려요</span><div class="kw"><span>복리</span><span>꾸준한 적립</span><span>긴 호흡</span><span>정기 점검</span><span>루틴</span></div></div>
+<div class="blk"><span class="bl">갈림길에서는</span><p class="q">“세운 계획과 투자 원칙을 조금 더 유지한다”</p></div>
+<div class="two"><div class="st"><span class="bl">강점</span><p>계획과 루틴을 지켜 꾸준히 쌓아가는 힘이 있어요.</p></div><div class="ca"><span class="bl">주의할 점</span><p>상황이 크게 바뀌어도 기존 계획을 바꾸지 못할 수 있어요.</p></div></div></div><div class="vsm"><span>VS</span></div><div class="pcard r"><div class="ph"><i>Q</i><div><b class="serif">단기대응형</b><small>Quick response</small></div></div>
+<p class="pd">상황이 달라지면 망설이지 않고 빠르게 판단을 바꿔요</p>
+<div class="blk"><span class="bl">이런 단어에 끌려요</span><div class="kw"><span>타이밍</span><span>발 빠른 대처</span><span>유연함</span><span>민첩함</span><span>수시 점검</span></div></div>
+<div class="blk"><span class="bl">갈림길에서는</span><p class="q">“달라진 상황에 맞춰 전략을 빠르게 조정한다”</p></div>
+<div class="two"><div class="st"><span class="bl">강점</span><p>변화에 빠르게 반응하고 기회를 놓치지 않아요.</p></div><div class="ca"><span class="bl">주의할 점</span><p>잦은 판단 변경으로 처음 세운 원칙이 흔들릴 수 있어요.</p></div></div></div></div></section>
+
+<div class="tmp"><b>투자 온도는 따로 봐요.</b> 신중·균형·과감으로 나타나는 투자 온도는 4개의 갈림길과 별개로, 가격 등락을 얼마나 받아들일 수 있는지 마지막 2개 질문으로 알아봐요. 금융상품의 위험등급이나 투자 적합성을 진단하는 것은 아니에요.</div>
+<div class="cta"><h2 class="serif">나는 어느 쪽으로 기울어 있을까요?</h2><p>고르고, 내려놓고, 다시 선택하는 5분이면 충분해요.</p><a class="btn2" href="#">진단 시작하기 →</a><a class="btn2 l" href="#">내 결과 다시 보기</a></div>
+<p class="fine">성향별 설명은 일반적인 경향이며, 투자 조언이 아니에요.</p>
+<div style="height:70px"></div></div>
+<div class="closing"><img src="../../web/redesign/img/logo.png" alt="DONBUFF 오늘보다 돈을 잘 다루는 나로 +1"></div>
+<footer><div class="fb"><img src="../../web/redesign/img/symbol.png" alt="">돈버프 (DONBUFF)</div>
+ <p>『AI로 부자되기』 | 저자 김태형(사마리아인)<br><a href="https://donbuff.com" target="_blank" rel="noopener">donbuff.com</a> &nbsp;·&nbsp; <a href="https://www.youtube.com/@samariaintv" target="_blank" rel="noopener">사마리아인TV</a> &nbsp;·&nbsp; <a href="/calc/">돈버프 금융계산기</a> &nbsp;·&nbsp; <a href="https://open.kakao.com/o/g2JnL4Ai" target="_blank" rel="noopener">독자 오픈채팅방</a> &nbsp;·&nbsp; <a href="mailto:samariain.kim@gmail.com">✉️ 협업·강연 문의</a></p>
+ <p class="note">금융계산기 결과는 참고용이며, 최종 의사결정은 이용자 본인에게 있습니다.</p></footer>
+
+</div></body></html>

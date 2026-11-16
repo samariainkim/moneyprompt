@@ -39,7 +39,7 @@ export default function ResetPasswordForm() {
       <input id="password" name="password" type="password" autoComplete="new-password" minLength={8} required />
       <label htmlFor="confirm">새 비밀번호 확인</label>
       <input id="confirm" name="confirm" type="password" autoComplete="new-password" minLength={8} required />
-      <button className="btn block" type="submit" disabled={busy}>{busy ? '변경 중…' : '비밀번호 변경'}</button>
+      <button className="btn block" type="submit" disabled={busy} aria-busy={busy}>{busy ? '변경 중…' : '비밀번호 변경'}</button>
       {error && <p className="msg err" role="alert">{error}</p>}
     </form>
   );

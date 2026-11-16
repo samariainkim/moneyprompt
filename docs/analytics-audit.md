@@ -60,6 +60,13 @@
 | `today_pick_click` | 오늘의 돈버프 카드 | prompt_idx |
 | `new_prompt_click` | 새 프롬프트(블로그) 링크 | destination |
 | `favorite_toggle` | 즐겨찾기 추가/삭제(로그인) | action, prompt_idx |
+| `prompt_view` | 프롬프트 페이지 목록/카드 보기 전환(리뉴얼 후) | view (list, grid) |
+| `calc_why_view` | 계산기 차별점 페이지(`/calc/why/`, 리뉴얼 후) 진입 | — |
+| `calc_why_click` | 허브에서 차별점 페이지로 이동(히어로 링크/하단 배너) | source (hero, banner) |
+| `calc_why_cta` | 차별점 페이지 하단 버튼 클릭 | target (calc, invest) |
+| `mbti_paths_view` | 8가지 성향 소개 페이지(`/invest-mbti/paths/`, 리뉴얼 후) 진입 | — |
+| `mbti_paths_click` | 검사 인트로/결과 용어 팝업에서 8가지 성향 페이지로 이동 | source (intro, result) |
+| `mbti_paths_cta` | 8가지 성향 페이지 하단 버튼 클릭 | target (start, result) |
 | `home_service_click` | 홈 서비스 카드 | target (prompt, invest) |
 | `contact_click` | 카카오·유튜브·이메일 링크 | channel |
 | `login` | 직접 로그인 직후 | method (google, email) |

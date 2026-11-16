@@ -3,10 +3,10 @@ export const SITE_URL = 'https://donbuff.com';
 export const SITE_HOST = 'donbuff.com';
 
 export const INDEXABLE_PATHS = [
-  '/', '/prompt/', '/invest-mbti/', '/privacy.html', '/terms/', '/privacy/',
+  '/', '/prompt/', '/invest-mbti/', '/terms/', '/privacy/',
 ];
 
 // 검색에 나오지 않아야 하는 회원·시스템 화면
 export const PRIVATE_PATHS = [
-  '/account/', '/api/', '/auth/', '/onboarding/', '/welcome/', '/join/', '/login/', '/signup/', '/forgot-password/', '/reset-password/',
+  '/account/', '/api/', '/auth/', '/archive/', '/onboarding/', '/welcome/', '/join/', '/login/', '/signup/', '/forgot-password/', '/reset-password/',
 ];

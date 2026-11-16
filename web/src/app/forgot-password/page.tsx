@@ -1,10 +1,20 @@
 import type { Metadata } from 'next';
 import ForgotPasswordForm from '@/components/ForgotPasswordForm';
 import { supabaseConfigured } from '@/lib/supabase/env';
+import { rdEnabled } from '@/lib/redesign';
+import { RdAuthCard } from '@/components/rd/RdChrome';
+
 
 export const metadata: Metadata = { title: '비밀번호 찾기' };
 
 export default function ForgotPasswordPage() {
+  if (rdEnabled('/forgot-password/')) {
+    return (
+      <RdAuthCard kicker="PASSWORD" title="비밀번호 찾기" lead="가입한 이메일로 비밀번호 재설정 링크를 보내드려요.">
+        {supabaseConfigured() ? <ForgotPasswordForm /> : <p className="msg err">서비스 설정이 아직 완료되지 않았어요.</p>}
+      </RdAuthCard>
+    );
+  }
   return (
     <div className="card narrow">
       <h1>비밀번호 찾기</h1>
