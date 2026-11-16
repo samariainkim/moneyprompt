@@ -1,0 +1,237 @@
+{
+ "_설명": "MONEY BRIEF No.1 완성 예시. 이 파일을 복사해 edition.json 으로 쓰고 내용만 바꾸면 새 호가 된다. 형식은 references/edition.md.",
+ "no": 1,
+ "id": "001",
+ "category": "뉴스 · 정책변화",
+ "topic": "중도상환수수료",
+ "slug": "loan-prepay",
+ "title": "중도상환수수료, 절반 수준으로 내렸다는데 내 대출은 얼마나?",
+ "short": "중도상환수수료, 절반 수준으로 내렸다는데 내 대출은 얼마나?",
+ "base_date": "2026.11.16",
+ "calc": {
+  "loan_old": {
+   "engine": "loan",
+   "input": {
+    "amountKrw": "300000000",
+    "executionDate": "2026-03-01",
+    "repaymentDate": "2027-03-01",
+    "periodMonths": 36,
+    "ratePercent": "1.40"
+   }
+  },
+  "loan_new": {
+   "engine": "loan",
+   "input": {
+    "amountKrw": "300000000",
+    "executionDate": "2026-03-01",
+    "repaymentDate": "2027-03-01",
+    "periodMonths": 36,
+    "ratePercent": "0.65"
+   }
+  },
+  "loan_new_30": {
+   "engine": "loan_compare",
+   "of": "loan_new",
+   "offset_days": 30
+  },
+  "loan_new_90": {
+   "engine": "loan_compare",
+   "of": "loan_new",
+   "offset_days": 90
+  },
+  "loan_new_end": {
+   "engine": "loan_compare",
+   "of": "loan_new"
+  }
+ },
+ "cards": [
+  {
+   "type": "cover",
+   "title_lines": [
+    "중도상환수수료,",
+    "절반 수준으로 내렸다는데",
+    "*내 대출은 얼마나?*"
+   ],
+   "sub": "같은 3억 원이라도 요율이 달라지면 수수료가 달라집니다. 직접 계산해 봤어요.",
+   "pills": [
+    {
+     "label": "인하 전 평균 1.40%",
+     "value": "{{loan_old.fee_krw|won}}"
+    },
+    {
+     "label": "인하 후 평균 0.65%",
+     "value": "{{loan_new.fee_krw|won}}",
+     "accent": true
+    }
+   ]
+  },
+  {
+   "type": "points",
+   "label": "무엇이 달라졌나",
+   "tag": "핵심 3가지",
+   "heading": "이번 개편, 이것만 기억하세요",
+   "fs": 64,
+   "items": [
+    "**실제 든 비용 범위에서만** 수수료를 받도록 기준이 바뀌었어요.",
+    "5대 시중은행 평균 고정금리 주택담보대출 수수료율이 **1.4%에서 0.65%로** 낮아졌어요. 은행권은 2025년 1월 13일 시행.",
+    "농협·수협·산림조합은 **2026년 1월 1일부터** 같은 개편을 적용한다고 발표됐어요."
+   ],
+   "source": "출처 · 금융위원회 보도(2025.1.9, 2025.10.22, 정책브리핑) · 기준일 2026.11.16 · 수수료율은 금융사별로 달라요"
+  },
+  {
+   "type": "boxes",
+   "layout": "two",
+   "bg": "warm",
+   "label": "누구에게 해당?",
+   "tag": "확인 포인트",
+   "heading": "내 대출이 *언제 받은 것*인지가 핵심",
+   "fs": 64,
+   "boxes": [
+    {
+     "tag": "새 기준 적용",
+     "title": "개편 이후 받은 신규 대출",
+     "text": "은행권은 2025.1.13 이후 체결하는 신규 계약분부터 적용돼요.",
+     "dark": true
+    },
+    {
+     "tag": "약정서 확인",
+     "title": "그 전에 받은 기존 대출",
+     "text": "공시된 요율은 신규 계약분부터 적용돼요. 내 약정서의 요율을 확인하세요."
+    }
+   ],
+   "note": "대출 종류·금융권별로 다를 수 있어요. 정확한 요율은 약정서·금융사 공시로 확인하세요.",
+   "source": "출처 · 금융위원회 보도(2025.1.9, 정책브리핑) · 기준일 2026.11.16"
+  },
+  {
+   "type": "compare",
+   "label": "계산해 보면",
+   "tag": "예시 조건",
+   "heading": "요율이 바뀌면, 내는 돈은 이만큼 달라져요",
+   "fs": 60,
+   "cond": "**대출금** 3억 원 · **부과기간** 3년(36개월)\n**실행일** 2026.3.1 · **상환일** 2027.3.1(1년 뒤 전액 상환)",
+   "boxes": [
+    {
+     "label": "인하 전 평균 1.40%",
+     "value": "{{loan_old.fee_krw|won}}",
+     "sub": "약 {{loan_old.fee_krw|man}}만 원"
+    },
+    {
+     "label": "인하 후 평균 0.65%",
+     "value": "{{loan_new.fee_krw|won}}",
+     "sub": "약 {{loan_new.fee_krw|man}}만 원",
+     "dark": true
+    }
+   ],
+   "diff": {
+    "label": "수수료 차이",
+    "value": "{{loan_old.fee_krw - loan_new.fee_krw|won}}"
+   },
+   "source": "계산 · 돈버프 대출 중도상환 계산기(규칙 v{{_meta.loan_rules}}, 잔여일수 비례 방식) · 요율은 5대 시중은행 평균 고정금리 주담대 기준(금융위, 2025.1.9)이며 실제 요율·면제 조건은 금융사별로 달라요"
+  },
+  {
+   "type": "table",
+   "bg": "warm",
+   "label": "타이밍도 돈",
+   "tag": "상환 시점 비교",
+   "heading": "갚는 날을 조금만 미루면, 수수료는 줄어요",
+   "fs": 60,
+   "columns": [
+    "상환 시점(같은 조건, 0.65%)",
+    "수수료",
+    "절감액"
+   ],
+   "rows": [
+    {
+     "hl": true,
+     "cells": [
+      {
+       "t": "{{loan_new.repayment_date|date}} (기준)",
+       "sub": "잔여 {{loan_new.remaining_days}}일"
+      },
+      "{{loan_new.fee_krw|won}}",
+      "–"
+     ]
+    },
+    {
+     "cells": [
+      {
+       "t": "30일 뒤 ({{loan_new_30.date|date}})",
+       "sub": "잔여 {{loan_new_30.remaining_days}}일"
+      },
+      "{{loan_new_30.fee_krw|won}}",
+      "**{{loan_new_30.diff_krw|won}}**"
+     ]
+    },
+    {
+     "cells": [
+      {
+       "t": "90일 뒤 ({{loan_new_90.date|date}})",
+       "sub": "잔여 {{loan_new_90.remaining_days}}일"
+      },
+      "{{loan_new_90.fee_krw|won}}",
+      "**{{loan_new_90.diff_krw|won}}**"
+     ]
+    },
+    {
+     "cells": [
+      {
+       "t": "종료일 ({{loan_new_end.date|date}})",
+       "sub": "잔여 {{loan_new_end.remaining_days}}일"
+      },
+      "0원",
+      "**{{loan_new.fee_krw|won}}**"
+     ]
+    }
+   ],
+   "note": "대출이자·갈아타기 비용은 포함하지 않았어요. 이자 부담과 함께 비교해 보세요.",
+   "source": "계산 · 돈버프 대출 중도상환 계산기 · 수수료만 비교(대출이자 미포함) · 예시 조건 3억 원, 36개월, 요율 0.65%"
+  },
+  {
+   "type": "checklist",
+   "label": "저장해 두세요",
+   "tag": "체크리스트",
+   "heading": "상환·갈아타기 전, 이 4가지",
+   "items": [
+    {
+     "t": "대출 실행일이 언제인가요?",
+     "sub": "개편 전·후에 따라 적용 기준이 달라질 수 있어요"
+    },
+    {
+     "t": "약정서의 수수료율과 부과기간은?",
+     "sub": "금융사·상품마다 달라요"
+    },
+    {
+     "t": "면제 조건에 해당하나요?",
+     "sub": "금융사가 안내하는 면제 사유를 확인하세요"
+    },
+    {
+     "t": "수수료와 이자 절감을 함께 비교했나요?",
+     "sub": "수수료보다 이자가 더 큰 경우가 많아요"
+    }
+   ],
+   "source": "확인 항목은 일반적인 점검 기준이며 개인별 금융상품 추천이 아니에요"
+  },
+  {
+   "type": "cta",
+   "title_lines": [
+    "내 대출로 직접",
+    "*계산해 보세요*"
+   ],
+   "body": "대출금, 실행일, 상환일, 수수료율만 넣으면 내가 낼 중도상환수수료를 바로 확인할 수 있어요. 결과는 저장할 수 있고, 로그인하면 AI 심층분석까지 이어서 볼 수 있어요.",
+   "button": "대출 중도상환 계산기 →",
+   "url": "donbuff.com/calc/loan-prepay/",
+   "sub": "계산 결과는 참고용이에요. 실제 수수료는 금융사 확인이 필요해요.",
+   "layout": {
+    "body_top": 620,
+    "btn_top": 860,
+    "url_top": 1010,
+    "sub_top": 1080
+   },
+   "link": {
+    "href": "/calc/loan-prepay/",
+    "label": "대출 중도상환 계산기로 이동",
+    "target": "loan_prepay"
+   }
+  }
+ ]
+}
