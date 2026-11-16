@@ -67,6 +67,13 @@
 | `mbti_paths_view` | 8가지 성향 소개 페이지(`/invest-mbti/paths/`, 리뉴얼 후) 진입 | — |
 | `mbti_paths_click` | 검사 인트로/결과 용어 팝업에서 8가지 성향 페이지로 이동 | source (intro, result) |
 | `mbti_paths_cta` | 8가지 성향 페이지 하단 버튼 클릭 | target (start, result) |
+| `brief_view` | MONEY BRIEF 홈(`/brief/`) 진입 | issue(호 번호) |
+| `brief_card_open` | 카드를 눌러 확대 화면을 연 때 | issue, card, source (strip, link) |
+| `brief_card_nav` | 확대 화면에서 다른 카드로 이동 | issue, card, how (button, key, swipe) |
+| `brief_lightbox_close` | 확대 화면을 닫은 때(어디까지 봤는지) | issue, last_card, max_card |
+| `brief_cta_click` | 카드 속 연동 링크(계산기·프롬프트 등) 클릭 | issue, card, target |
+| `brief_issue_select` | 지난 호 목록에서 호 전환 | issue |
+| `brief_report_click` | "오류 알려주기" 링크 클릭 | issue, card |
 | `home_service_click` | 홈 서비스 카드 | target (prompt, invest) |
 | `contact_click` | 카카오·유튜브·이메일 링크 | channel |
 | `login` | 직접 로그인 직후 | method (google, email) |

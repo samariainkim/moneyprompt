@@ -75,6 +75,47 @@ function mbtiPathsHtml() {
 }
 // 프롬프트 개수는 데이터에서 자동으로 센다. (프롬프트가 늘면 화면의 숫자도 따라간다)
 // 기존 prompt/index.html 의 데이터 상수(const NAME = …;)를 문장 끝까지 정확히 잘라 낸다. (문자열·템플릿 리터럴·주석 안의 괄호·세미콜론은 무시)
+// ───────── MONEY BRIEF(카드뉴스) 홈: web/redesign/data/brief.json 에서 만든다 ─────────
+// 호가 늘면 brief.json 에 항목을 추가하고 카드 이미지(img/brief/<id>/01~07.jpg)만 넣으면 된다.
+function briefParts() {
+  const data = JSON.parse(readFileSync(join(RD_DIR, 'data', 'brief.json'), 'utf8'));
+  const issues = [...data.issues].sort((a, b) => b.no - a.no);
+  if (!issues.length) throw new Error('[sync-static] brief.json 에 발행된 호가 없습니다.');
+  const nos = new Set();
+  const imgPath = (id, n) => join(RD_DIR, 'img', 'brief', id, `${String(n).padStart(2, '0')}.jpg`);
+  const src = (id, n) => `/redesign/img/brief/${id}/${String(n).padStart(2, '0')}.jpg`;
+  for (const it of issues) {
+    if (nos.has(it.no)) throw new Error(`[sync-static] brief.json 호 번호 중복: ${it.no}`);
+    nos.add(it.no);
+    if (!/^\d{3}$/.test(it.id) || !it.title || !it.short || !it.category || !it.base_date) throw new Error(`[sync-static] brief.json ${it.no}호 필수 항목(id·title·short·category·base_date)이 비었습니다.`);
+    if (!Array.isArray(it.cards) || it.cards.length !== 7) throw new Error(`[sync-static] brief.json ${it.no}호 카드가 7장이 아닙니다.`);
+    it.cards.forEach((c, i) => {
+      if (c.n !== i + 1) throw new Error(`[sync-static] brief.json ${it.no}호 카드 번호가 순서와 다릅니다.`);
+      if (!c.alt || c.alt.length < 20) throw new Error(`[sync-static] brief.json ${it.no}호 ${c.n}번 카드의 대체 텍스트(alt)가 너무 짧습니다.`);
+      if (!existsSync(imgPath(it.id, c.n))) throw new Error(`[sync-static] 카드 이미지가 없습니다: img/brief/${it.id}/${String(c.n).padStart(2, '0')}.jpg`);
+      if (c.link) {
+        const l = c.link;
+        if (!/^(\/[^/]|https:\/\/)/.test(l.href || '') || !l.label) throw new Error(`[sync-static] brief.json ${it.no}호 ${c.n}번 카드 링크가 올바르지 않습니다.`);
+        for (const k of ['x', 'y', 'w', 'h']) if (typeof l[k] !== 'number' || l[k] < 0 || l[k] > 100) throw new Error(`[sync-static] brief.json ${it.no}호 ${c.n}번 카드 링크 영역(${k})이 0~100 이 아닙니다.`);
+      }
+    });
+  }
+  for (const h of data.hero || []) { const [id, n] = h.split('/'); if (!existsSync(imgPath(id, Number(n)))) throw new Error(`[sync-static] 히어로 이미지가 없습니다: ${h}`); }
+  const latest = issues[0];
+  const strip = (it) => it.cards.map((c) => `<button type="button" class="bc" data-n="${c.n}" aria-label="${it.no}호 ${c.n}번 카드 크게 보기"><img src="${src(it.id, c.n)}" alt="${escHtml(c.alt)}" width="1080" height="1350" loading="${c.n <= 3 ? 'eager' : 'lazy'}" decoding="async"></button>`).join('');
+  const latestHtml = `<section class="sec" id="latest"><div class="wrap">
+ <div class="eyebrow" id="bfEyebrow">LATEST · 최신 호</div><h2 id="bfH2">지금 가장 먼저 볼 카드뉴스</h2><p class="ld" id="bfLd">기준일과 출처를 확인한 최신 호예요.</p>
+ <div class="lh"><span class="tag"><span id="bfNo">No.${latest.no}</span> <em id="bfCat">${escHtml(latest.category)}</em></span><span class="dt" id="bfDate">기준일 ${escHtml(latest.base_date)}</span><h3 id="bfTitle">${escHtml(latest.title)}</h3></div>
+ <div class="strip"><div class="rail" id="bfRail" role="group" aria-label="카드뉴스 카드 목록">${strip(latest)}</div>
+  <button type="button" class="go prev" id="bfPrev" aria-label="이전 카드" hidden>‹</button><button type="button" class="go next" id="bfNext" aria-label="다음 카드">›</button></div>
+ <div class="hintc">🔍 카드를 누르면 크게 볼 수 있어요</div>
+</div></section>`;
+  const archiveHtml = issues.length < 2 ? '' : `<section class="sec" id="archive"><div class="wrap"><div class="eyebrow">ARCHIVE</div><h2 class="h2s">지난 MONEY BRIEF</h2><p class="ld">놓친 호도 카드로 다시 볼 수 있어요.</p>
+<div class="pp">${issues.map((it) => `<a href="?n=${it.no}" data-n="${it.no}"${it === latest ? ' aria-current="true"' : ''}><div class="cv${it === latest ? ' cur' : ''}"><img src="${src(it.id, 1)}" alt="" width="1080" height="1350" loading="lazy" decoding="async"></div><h4>No.${it.no}</h4><p>${escHtml(it.short)}</p></a>`).join('')}</div></div></section>`;
+  const hero = (data.hero || []).map((h) => { const [id, n] = h.split('/'); return `<img src="${src(id, Number(n))}" alt="" width="1080" height="1350" loading="eager" decoding="async">`; }).join('');
+  const json = JSON.stringify({ issues: issues.map((it) => ({ no: it.no, id: it.id, category: it.category, title: it.title, base_date: it.base_date, cards: it.cards.map((c) => ({ n: c.n, alt: c.alt, ...(c.link ? { link: c.link } : {}) })) })) }).replace(/</g, '\\u003c');
+  return { latestHtml, archiveHtml, hero, json };
+}
 function extractConst(src, name) {
   const m = new RegExp(`(^|\\n)const ${name}\\s*=`).exec(src);
   if (!m) throw new Error(`[sync-static] 원본 페이지에서 const ${name} 를 찾지 못했습니다.`);
@@ -138,6 +179,11 @@ function renderRedesign(html, ctx) {
     return readFileSync(join(RD_DIR, 'partials', 'footer.html'), 'utf8').replace('{{footer_extra}}', extra);
   });
   html = html.replace(/<!--@mbtipaths-->/g, () => mbtiPathsHtml());
+  if (/<!--@brief(latest|archive|hero|data)-->/.test(html)) {
+    const b = briefParts();
+    html = html.replace(/<!--@brieflatest-->/g, () => b.latestHtml).replace(/<!--@briefarchive-->/g, () => b.archiveHtml)
+      .replace(/<!--@briefhero-->/g, () => b.hero).replace(/<!--@briefdata-->/g, () => `<script type="application/json" id="briefData">${b.json}</script>`);
+  }
   html = html.replace(/<!--@promptdata-->/g, () => `<script data-prompt-data>\n${promptData().code}\n</script>`);
   html = html.replace(/\{\{TOTAL\}\}/g, String(ctx.total)).replace(/\{\{CATEGORIES\}\}/g, String(ctx.categories)).replace(/\{\{AIS\}\}/g, String(ctx.ais));
   html = html.replace(/\{\{N:([^}]+)\}\}/g, (_, c) => { if (!(c in ctx.byCat)) throw new Error(`[sync-static] 프롬프트 카테고리 '${c}' 를 찾지 못했습니다.`); return String(ctx.byCat[c]); });
@@ -151,7 +197,8 @@ if (rdOn.length || rdNextOn.length) {
     mkdirSync(dirname(out2), { recursive: true });
     writeFileSync(out2, renderRedesign(readFileSync(join(RD_DIR, 'pages', rdCfg.pages[u]), 'utf8'), ctx));
   }
-  cpSync(join(RD_DIR, 'img'), join(out, 'redesign', 'img'), { recursive: true });
+  // 카드뉴스 이미지(img/brief)는 /brief/ 가 켜진 환경에서만 내보낸다.
+  cpSync(join(RD_DIR, 'img'), join(out, 'redesign', 'img'), { recursive: true, filter: (p) => rdOn.includes('/brief/') || !/[\\/]img[\\/]brief([\\/]|$)/.test(p) });
   cpSync(join(RD_DIR, 'shared', 'frame.css'), join(out, 'redesign', 'frame.css'));
   cpSync(join(RD_DIR, 'shared', 'frame.js'), join(out, 'redesign', 'frame.js'));
   for (const f of readdirSync(join(RD_DIR, 'pages'))) if (f.endsWith('.css') || f.endsWith('.js')) cpSync(join(RD_DIR, 'pages', f), join(out, 'redesign', f));
