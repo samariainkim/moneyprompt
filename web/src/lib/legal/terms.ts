@@ -3,7 +3,7 @@ import type { LegalDocData } from './types';
 /** 돈버프(DONBUFF) 서비스 이용약관 — 본문은 운영자가 정리한 문구 그대로다. 고치려면 이 파일만 수정한다. */
 export const TERMS: LegalDocData = {
   title: '돈버프(DONBUFF) 서비스 이용약관',
-  effective: '2026년 11월 16일',
+  effective: '2026년 11월 10일',
   sections: [
     { id: 's1', title: '제1조 (목적)', blocks: [
       { t: 'p', x: '이 약관은 상호 또는 운영자명이 운영하는 돈버프(DONBUFF, https://donbuff.com)에서 제공하는 서비스의 이용 조건과 절차, 운영자와 회원의 권리·의무 및 책임 사항을 규정함을 목적으로 합니다.' },
@@ -154,7 +154,7 @@ export const TERMS: LegalDocData = {
     ] },
     { id: 'addendum', title: '부칙', blocks: [
       { t: 'h3', x: '제1조 (시행일)' },
-      { t: 'p', x: '이 약관은 2026년 11월 16일부터 시행합니다.' },
+      { t: 'p', x: '이 약관은 2026년 11월 10일부터 시행합니다.' },
       { t: 'ul', items: ['운영자: 돈버프', '웹사이트: https://donbuff.com', '고객 문의: samariain.kim@gmail.com'] },
     ] },
   ],
