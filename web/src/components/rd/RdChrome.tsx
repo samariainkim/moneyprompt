@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import { signOut } from '@/app/actions';
+import { rdPageOn } from '@/lib/redesign';
 
 /** 새 디자인의 공통 헤더 — web/redesign/partials/header.html 과 같은 구조(frame.css·frame.js 가 동작을 맡는다). */
 export function RdHeader({ signedIn, nickname, email }: { signedIn: boolean; nickname?: string; email?: string }) {
   const who = nickname || (email ? email.split('@')[0] : '회원');
+  const brief = rdPageOn('/brief/'); // /brief/ 가 켜진 환경에서만 메뉴를 보여 준다
   return (
     <>
       <header className="hdr over">
@@ -21,6 +23,7 @@ export function RdHeader({ signedIn, nickname, email }: { signedIn: boolean; nic
                 <hr /><a className="all" href="/calc/" data-ga="nav">금융계산기 전체 보기 <span aria-hidden="true">→</span></a>
               </div>
             </div>
+            {brief && <a href="/brief/" data-nav="brief" data-ga="brief">MONEY BRIEF</a>}
             {signedIn ? (
               <div className="dd right" id="ddAcc">
                 <button type="button" className="acc-btn" aria-expanded="false" aria-controls="ddAccPanel" data-dd="ddAcc">내 계정 <span style={{ fontSize: 11 }} aria-hidden="true">▾</span></button>
@@ -48,6 +51,7 @@ export function RdHeader({ signedIn, nickname, email }: { signedIn: boolean; nic
         <a className="big" href="/invest-mbti/">나의 투자성향 찾기 <span aria-hidden="true">→</span></a>
         <a className="big" href="/calc/" data-ga="menu" style={{ borderBottom: 0 }}>금융계산기 <span aria-hidden="true">→</span></a>
         <div className="sub"><a href="/calc/brokerage/">🏠 부동산 중개보수</a><a href="/calc/loan-prepay/">🏦 대출 중도상환</a><a href="/calc/fx/">💱 환전수수료</a></div>
+        {brief && <a className="big" href="/brief/" data-ga="brief" style={{ borderBottom: 0 }}>MONEY BRIEF <span aria-hidden="true">→</span></a>}
         {signedIn ? (
           <div className="acc" style={{ marginTop: 22 }}>
             <small>{who} 님</small>

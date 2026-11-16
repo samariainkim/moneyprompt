@@ -30,7 +30,7 @@
   // 측정: 기존 홈과 같은 이벤트 이름을 유지한다.
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('[data-ga]');
-    if (a) { var t = a.getAttribute('data-ga'); ev(t === 'banner' ? 'calc_home_banner_click' : 'nav_menu_click', { target: t }); }
+    if (a) { var t = a.getAttribute('data-ga'); ev(t === 'banner' ? 'calc_home_banner_click' : (t === 'brief_banner' ? 'brief_home_banner_click' : 'nav_menu_click'), { target: t }); }
     var h = e.target.closest && e.target.closest('[data-hero]');
     if (h) ev('hero_tag_click', { target: h.getAttribute('data-hero') });
   });
@@ -38,6 +38,11 @@
   if (banner && 'IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) { ev('calc_home_banner_view'); io.disconnect(); } }); }, { threshold: 0.5 });
     io.observe(banner);
+  }
+  var bfBanner = $('#svc-brief'); // 메인의 MONEY BRIEF 배너: 절반 이상 보이면 한 번 측정
+  if (bfBanner && 'IntersectionObserver' in window) {
+    var io2 = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) { ev('brief_home_banner_view'); io2.disconnect(); } }); }, { threshold: 0.5 });
+    io2.observe(bfBanner);
   }
 
   // ── 이동·처리 중 표시 ──

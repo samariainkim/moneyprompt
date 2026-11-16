@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONEY BRIEF · 돈 되는 뉴스 | 돈버프</title>
+<meta name="description" content="돈 되는 최신 금융 정보를 한 눈에. 정책과 금리, 수수료가 바뀌면 내 돈은 얼마가 달라질까? 카드 7장으로 정리해 드려요.">
+<meta name="theme-color" content="#FFF2E5">
+<meta property="og:type" content="website"><meta property="og:title" content="MONEY BRIEF · 돈 되는 뉴스 | 돈버프">
+<meta property="og:description" content="돈 되는 최신 금융 정보를 한 눈에, 내게 맞는 솔루션까지!"><meta property="og:image" content="https://donbuff.com/redesign/img/brief/003/01.jpg">
+<meta property="og:url" content="https://donbuff.com/brief/">
+<link rel="canonical" href="https://donbuff.com/brief/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/redesign/frame.css">
+<link rel="stylesheet" href="/redesign/brief.css">
+</head>
+<body data-redesign="brief">
+<div class="site">
+<!--@header active=brief-->
+<main id="main">
+<section class="bh"><div class="wrap">
+ <div><div class="eyebrow">MONEY BRIEF · 돈 되는 뉴스</div>
+ <h1>돈 되는 최신 금융 정보를<br><b class="nb">한 눈에</b>, 내게 맞는 <em>솔루션까지!</em></h1>
+ <p class="lead">정책과 금리, 수수료가 바뀌면, 과연 내 돈은 얼마가 달라질까요? 어려운 금융 뉴스를 돈버프만의 시선으로 모아 한 눈에 정리해 보여주고, 솔루션까지 제공해드려요.</p></div>
+ <div class="fan" aria-hidden="true"><!--@briefhero--></div>
+</div></section>
+<!--@brieflatest-->
+<!--@briefarchive-->
+<div style="height:70px"></div>
+</main>
+<!--@footer-->
+</div>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="카드뉴스 크게 보기" hidden>
+ <div class="tp"><b id="lbTitle"></b><span id="lbCount" aria-live="polite"></span><button type="button" class="x" id="lbClose" aria-label="닫기">✕</button></div>
+ <div class="st" id="lbStage">
+  <button type="button" class="ar l" id="lbPrev" aria-label="이전 카드">‹</button>
+  <img id="lbImg" alt="" width="1080" height="1350" decoding="async">
+  <a class="hot" id="lbHot" href="#" hidden></a>
+  <button type="button" class="ar r" id="lbNext" aria-label="다음 카드">›</button>
+ </div>
+ <div class="pr">
+  <a class="cta2" id="lbCta" href="#" hidden></a>
+  <div class="bar" aria-hidden="true"><i id="lbBar"></i></div>
+  <a class="rp" id="lbReport" href="https://open.kakao.com/o/g2JnL4Ai" target="_blank" rel="noopener">정보가 틀렸나요? 오류 알려주기</a>
+ </div>
+</div>
+<!--@briefdata-->
+<script src="/redesign/frame.js" defer></script>
+<script src="/redesign/brief.js" defer></script>
+</body>
+</html>

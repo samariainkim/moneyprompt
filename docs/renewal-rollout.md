@@ -54,3 +54,4 @@
 | 2026-11-16 | 개방 3 | `/` 메인 |
 | 2026-11-16 | 개방 4 | 계산기(`/calc/` `/calc/why/` `/calc/brokerage/` `/calc/loan-prepay/` `/calc/fx/`) — noindex 유지 |
 | 2026-11-16 | 개방 5 | 투자 성향(`/invest-mbti/`, `/invest-mbti/paths/`) — 결과 화면의 강점·주의 문구는 초안(나중에 `mbti-reflect.js` 수정) |
+| 2026-11-16 | 별도 | MONEY BRIEF(카드뉴스 홈 `/brief/`) + 헤더 메뉴·메인 배너 테스트 환경 구현. 운영 개방은 승인 후 `production` 목록에 `/brief/` 한 줄 추가(메뉴·배너·사이트맵 동시 켜짐) |

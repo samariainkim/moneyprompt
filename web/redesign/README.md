@@ -64,6 +64,20 @@
 - 갈림길 제목 4개("결론은 어디서 얻나요?" 등)는 `sync-static.mjs` 의 `MBTI_AXES_COPY` 에 있다.
 - 측정: `mbti_paths_view` `mbti_paths_click`(source) `mbti_paths_cta`(target).
 
+## MONEY BRIEF(카드뉴스) 홈 (`/brief/`) — `pages/brief.html`·`brief.css`·`brief.js`, 데이터 `data/brief.json`, 이미지 `img/brief/`
+- **무엇**: 금융 카드뉴스(호마다 카드 7장, 1080×1350 JPG)를 보여 주는 페이지. 상세 페이지 없이 **카드를 누르면 화면 안에서 크게 열린다**(좌우 버튼·키보드 ←/→/Home/End/Esc·모바일 스와이프, 진행 막대, 포커스 이동·뒤 화면 잠금).
+- **새 호 추가 방법**: ① 카드 이미지 7장을 `img/brief/<세 자리 id>/01.jpg ~ 07.jpg` 로 넣고 ② `data/brief.json` 의 `issues` 에 항목을 추가한다(`no` 가 가장 큰 호가 최신). 나머지는 `sync-static.mjs` 의 `briefParts()` 가 만든다(첫 화면의 최신 호 띠, 지난 호 목록, 히어로, 스크립트용 데이터).
+- `brief.json` 항목: `no`(호 번호), `id`, `category`("뉴스 · 정책변화" 형식), `title`, `short`(지난 호 목록용 짧은 제목), `base_date`(기준일), `cards[]`(`n`, `alt`=카드 속 글자 전체(검색·접근성용), 선택 `link`). 빌드 때 카드 7장·이미지 존재·alt 길이·링크 형식을 검사하고 틀리면 빌드가 멈춘다.
+- **카드별 연동 링크**: `cards[].link` = `{ href, label, x, y, w, h, target }`. 확대 화면에서 카드 이미지 위 그 영역(이미지 기준 %)을 누르면 `href`(내부 주소 또는 `https://` 외부 링크)로 이동하고, 카드 아래에 같은 링크가 글자 버튼으로도 나온다. 링크 없는 정보성 카드는 `link` 를 생략한다.
+- **지난 호**: 목록의 번호를 누르면 같은 화면에서 그 호로 바뀌고 주소가 `?n=호번호` 가 된다(뒤로 가기 지원). 지난 호를 볼 때만 "발행 당시(기준일)의 정보예요" 안내를 보여 준다(최신호에는 안내 문구 없음). 호가 1개뿐이면 목록은 나오지 않는다.
+- 카드 한 장 바로가기: `/brief/#no3-7`(3호 7번 카드가 열린 채로 진입).
+- **진입 경로(메뉴·메인 배너)**: 헤더에 `MONEY BRIEF` 메뉴(PC·모바일 전체 메뉴)와, 메인 페이지 서비스 영역 맨 아래에 배너("뉴스 보러가기 →")가 있다. 둘 다 **`/brief/` 가 켜진 환경에서만 나타난다**(꺼진 환경 = 메뉴·배너 없음 → 죽은 링크 없음). 정적 페이지는 `partials/header.html` 의 `{{brief_nav}}`·`{{brief_menu}}` 와 `home.html` 의 `<!--@briefbanner-->` 를 `sync-static.mjs` 가 채우고, Next.js 회원 화면은 `RdHeader` 가 `rdPageOn('/brief/')`(`src/lib/redesign.ts`)로 같은 기준을 본다. 사이트맵(`sitemap.ts`)도 같은 기준으로 `/brief/` 를 넣는다. 책·독자 헤더(`/prompt/`)에는 메인 메뉴가 없어 해당 없음.
+- 메인 배너는 `brief.json` 의 최신 3개 호(표지·`topic`·최신호 제목)에서 자동으로 만든다. 호를 추가하면 배너도 따라간다.
+- 운영에 열려면 `pages.json` 의 `production` 에 `/brief/` 만 추가하면 된다(메뉴·배너·사이트맵이 함께 켜진다).
+- 테스트 환경(`preview`)에만 켜 두었다. 운영에 열 때는 `pages.json` 의 `production` 에 `/brief/` 를 넣고, `src/lib/site.ts` 의 `INDEXABLE_PATHS`(사이트맵)에도 추가한다. 운영 빌드에서는 `/brief/` 를 켜기 전까지 페이지와 카드 이미지(`/redesign/img/brief/`)가 빌드에 들어가지 않는다.
+- 카드 만드는 법·검증 원칙: 카드 속 숫자는 계산 엔진 값만 쓰고(손으로 옮겨 적지 않기), 정책 문장은 정책브리핑·금융위 등 1차 자료 원문으로 확인하며, 카드 하단에 출처와 기준일을 적는다. 오류 알려주기 링크는 독자 오픈채팅방(`brief.html` 의 `#lbReport`)이다.
+- 측정: `nav_menu_click`(target=brief, 헤더 메뉴) `brief_home_banner_view`·`brief_home_banner_click`(메인 배너) · `brief_view`(issue) `brief_card_open`(issue·card·source: strip/link) `brief_card_nav`(issue·card·how: button/key/swipe) `brief_lightbox_close`(issue·last_card·max_card) `brief_cta_click`(issue·card·target) `brief_issue_select`(issue) `brief_report_click`(issue·card). 금액·개인정보는 보내지 않는다.
+
 ## 회원 화면 (Next.js 가 그리는 로그인·가입·마이페이지 등) — `member.css`, `src/components/rd/`, `src/lib/redesign.ts`
 - 대상: `pages.json` 의 `nextPages` 에 적힌 주소 — `/join/ /login/ /signup/ /forgot-password/ /reset-password/ /welcome/ /onboarding/ /account/ /account/saved/ /pricing/ /terms/ /privacy/`.
 - **켜고 끄기**: 정적 페이지와 같은 `preview` / `production` 목록을 쓴다(운영은 `VERCEL_ENV=production` 일 때 `production` 목록). 목록에 없으면 기존 화면 그대로. 운영에 열 때는 `production` 에 주소를 추가한다.
@@ -71,7 +85,7 @@
 - 404 페이지는 주소를 알 수 없어서 기존 모양 그대로다(나중에 필요하면 별도 처리).
 - 마이페이지 요약 타일(내 결과·즐겨찾기 개수, 내 투자 성향)은 새 화면에서만 조회한다. 조회가 실패해도 화면은 열린다.
 - 헤더의 `내 계정 ▾` 메뉴(내 결과·즐겨찾기 `/prompt/?fav=1`·프로필·마이페이지·로그아웃)는 `RdHeader`(Next.js)에서 그리고, 정적 페이지는 기존 `auth-nav.js` 가 맡는다. `frame.js` 의 드롭다운은 `.dd` 안의 `[data-dd]` 버튼이면 어디서나 동작한다.
-- `/prompt/?fav=1` 로 오면 프롬프트 페이지가 즐겨찾기 보기로 열린다.
+- `/prompt/?fav=1` 로 오면 프롬프트 페이지가 즐겨찾기 보기로 열린다. `/prompt/?p=06%2F03` 처럼 프롬프트 번호(`idx`)로 오면 그 프롬프트를 바로 펼쳐 보여 준다(카드뉴스 연동 링크용).
 
 ## 이동·처리 중 표시 (클릭했는데 반응이 없어 보이는 문제)
 - `frame.js`: 링크를 누르거나 화면 전환(`beforeunload`)이 시작되면 **맨 위에 오렌지 진행 막대**를 바로 보여 주고, 누른 링크는 `is-nav`(흐리게·재클릭 불가)로 만든다. Next.js 의 화면 안 이동(`pushState`)이나 뒤로 가기에서는 자동으로 끝난다. 20초 안전장치가 있다. 모든 리뉴얼 페이지(정적·회원 화면)에서 동작한다.
