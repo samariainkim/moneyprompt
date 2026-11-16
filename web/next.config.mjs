@@ -27,6 +27,10 @@ const nextConfig = {
   async headers() {
     return [{ source: '/:path*', missing: [{ type: 'host', value: 'donbuff.com' }], headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] }];
   },
+  // 예전 개인정보처리방침 주소(/privacy.html)는 새 방침 페이지로 영구 이동한다. (이전 원문은 /archive/privacy-legacy-2026.html 에 보관)
+  async redirects() {
+    return [{ source: '/privacy.html', destination: '/privacy/', permanent: true }];
+  },
   async rewrites() {
     return { beforeFiles: staticDirRewrites(), afterFiles: [], fallback: [] };
   },

@@ -11,8 +11,8 @@ const root = join(here, '..', '..');
 const out = join(here, '..', 'public');
 
 const ITEMS = [
-  'index.html', 'privacy.html', 'manifest.json', 'icon-512.png', 'book-cover.png', 'favicon.ico',
-  'assets', 'calc', 'fee', 'prompt', 'invest-mbti', 'new',
+  'index.html', 'manifest.json', 'icon-512.png', 'book-cover.png', 'favicon.ico',
+  'assets', 'calc', 'fee', 'prompt', 'invest-mbti', 'new', 'archive',
 ];
 
 rmSync(out, { recursive: true, force: true });

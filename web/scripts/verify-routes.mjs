@@ -20,7 +20,7 @@ const walk = (dir, rel) => {
   }
 };
 for (const top of ['calc', 'fee', 'prompt', 'invest-mbti', 'new']) if (existsSync(join(root, top))) walk(join(root, top), `/${top}`);
-paths.unshift('/'); paths.push('/privacy.html');
+paths.unshift('/');
 
 const info = (html) => ({
   title: (html.match(/<title>([\s\S]*?)<\/title>/i) || [])[1]?.trim() ?? '',
@@ -37,6 +37,15 @@ for (const p of [...new Set(paths)]) {
   else if (got.title !== exp.title) { console.log(`  ✗ ${p}  제목 다름: "${got.title}" ≠ "${exp.title}"`); bad++; }
   else if (got.noindex !== exp.noindex) { console.log(`  ✗ ${p}  noindex 설정 다름(기대 ${exp.noindex}, 실제 ${got.noindex})`); bad++; }
   else console.log(`  ✓ ${p}  200 · ${exp.title}${exp.noindex ? ' · noindex' : ''}`);
+}
+// 예전 개인정보처리방침 주소는 새 방침 페이지로 영구 이동, 이전 원문은 보관 주소에서 검색 제외로 열린다.
+{
+  const r = await fetch(base + '/privacy.html', { redirect: 'manual' }).catch(() => null);
+  const loc = r && r.headers.get('location');
+  (r && [301, 308].includes(r.status) && loc && loc.replace(base, '').startsWith('/privacy/')) ? console.log(`  ✓ /privacy.html  ${r.status} → ${loc.replace(base, '')}`) : (console.log('  ✗ /privacy.html 이 /privacy/ 로 이동하지 않음: ' + (r && r.status)), bad++);
+  const a = await fetch(base + '/archive/privacy-legacy-2026.html').catch(() => null);
+  const at = a && a.status === 200 ? await a.text() : '';
+  (a && a.status === 200 && /noindex/i.test(at) && at.includes('개인정보를 수집하지 않습니다')) ? console.log('  ✓ /archive/privacy-legacy-2026.html  200 · noindex · 이전 원문 보관') : (console.log('  ✗ 보관 페이지 이상: ' + (a && a.status)), bad++);
 }
 // 이전 주소 규칙: 슬래시 없는 주소는 슬래시 주소로 이동(또는 같은 화면)
 for (const p of ['/calc/fx', '/prompt', '/invest-mbti']) {
