@@ -46,7 +46,8 @@
     "/account/saved/",
     "/pricing/",
     "/terms/",
-    "/privacy/"
+    "/privacy/",
+    "/prompt/"
   ],
   "nextPages": [
     "/join/",
