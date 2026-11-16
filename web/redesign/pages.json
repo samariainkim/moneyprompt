@@ -34,7 +34,20 @@
     "/terms/",
     "/privacy/"
   ],
-  "production": [],
+  "production": [
+    "/join/",
+    "/login/",
+    "/signup/",
+    "/forgot-password/",
+    "/reset-password/",
+    "/welcome/",
+    "/onboarding/",
+    "/account/",
+    "/account/saved/",
+    "/pricing/",
+    "/terms/",
+    "/privacy/"
+  ],
   "nextPages": [
     "/join/",
     "/login/",

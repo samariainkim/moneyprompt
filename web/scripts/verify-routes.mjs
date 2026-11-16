@@ -22,6 +22,10 @@ const walk = (dir, rel) => {
 for (const top of ['calc', 'fee', 'prompt', 'invest-mbti', 'new']) if (existsSync(join(root, top))) walk(join(root, top), `/${top}`);
 paths.unshift('/');
 
+// 리뉴얼로 운영에 연 정적 페이지는 새 디자인 파일(web/redesign/pages)의 제목·noindex 를 기대값으로 쓴다.
+const rd = JSON.parse(readFileSync(join(root, 'web', 'redesign', 'pages.json'), 'utf8'));
+const rdOpen = (rd.production || []).filter((u) => rd.pages && rd.pages[u]);
+const rdSrc = (p) => readFileSync(join(root, 'web', 'redesign', 'pages', rd.pages[p]), 'utf8');
 const info = (html) => ({
   title: (html.match(/<title>([\s\S]*?)<\/title>/i) || [])[1]?.trim() ?? '',
   noindex: /<meta[^>]+name=["']robots["'][^>]+noindex/i.test(html),
@@ -30,7 +34,7 @@ const local = (p) => readFileSync(join(root, p.endsWith('/') ? p.slice(1) + 'ind
 
 let bad = 0;
 for (const p of [...new Set(paths)]) {
-  const exp = info(p === '/' ? readFileSync(join(root, 'index.html'), 'utf8') : local(p));
+  const exp = info(rdOpen.includes(p) ? rdSrc(p) : (p === '/' ? readFileSync(join(root, 'index.html'), 'utf8') : local(p)));
   let res; try { res = await fetch(base + p, { redirect: 'manual' }); } catch (e) { console.log(`  ✗ ${p}  접속 실패: ${e.message}`); bad++; continue; }
   const got = res.status === 200 ? info(await res.text()) : null;
   if (res.status !== 200) { console.log(`  ✗ ${p}  상태 ${res.status}`); bad++; }
