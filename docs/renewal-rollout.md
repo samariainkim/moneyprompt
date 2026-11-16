@@ -53,4 +53,4 @@
 | 2026-11-16 | 개방 2 | `/prompt/` (돈 버는 프롬프트) |
 | 2026-11-16 | 개방 3 | `/` 메인 |
 | 2026-11-16 | 개방 4 | 계산기(`/calc/` `/calc/why/` `/calc/brokerage/` `/calc/loan-prepay/` `/calc/fx/`) — noindex 유지 |
-| 예정 | 개방 5 | 투자 성향(`/invest-mbti/`, `/invest-mbti/paths/`) |
+| 2026-11-16 | 개방 5 | 투자 성향(`/invest-mbti/`, `/invest-mbti/paths/`) — 결과 화면의 강점·주의 문구는 초안(나중에 `mbti-reflect.js` 수정) |
