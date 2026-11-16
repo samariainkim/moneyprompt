@@ -48,7 +48,12 @@
     "/pricing/",
     "/terms/",
     "/privacy/",
-    "/prompt/"
+    "/prompt/",
+    "/calc/",
+    "/calc/why/",
+    "/calc/brokerage/",
+    "/calc/loan-prepay/",
+    "/calc/fx/"
   ],
   "nextPages": [
     "/join/",

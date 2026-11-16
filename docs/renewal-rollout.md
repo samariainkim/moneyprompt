@@ -52,4 +52,5 @@
 | 2026-11-16 | 개방 1 | 회원 화면 12개(PR #18) |
 | 2026-11-16 | 개방 2 | `/prompt/` (돈 버는 프롬프트) |
 | 2026-11-16 | 개방 3 | `/` 메인 |
-| 예정 | 개방 4~ | 계산기(`/calc/` 5개) → 투자 성향(`/invest-mbti/`, `/invest-mbti/paths/`) |
+| 2026-11-16 | 개방 4 | 계산기(`/calc/` `/calc/why/` `/calc/brokerage/` `/calc/loan-prepay/` `/calc/fx/`) — noindex 유지 |
+| 예정 | 개방 5 | 투자 성향(`/invest-mbti/`, `/invest-mbti/paths/`) |
