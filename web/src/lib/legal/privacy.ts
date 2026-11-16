@@ -4,7 +4,7 @@ import type { LegalDocData } from './types';
  *  대괄호([ ])로 적힌 항목이 생기면(운영자가 확정할 자리) 화면에서 눈에 띄게 표시된다. */
 export const PRIVACY: LegalDocData = {
   title: '돈버프(DONBUFF) 개인정보처리방침',
-  effective: '2026년 11월 1일',
+  effective: '2026년 11월 16일',
   highlightBrackets: true,
   intro: [
     { t: 'p', x: '돈버프 임직원(이하 "운영자")은 돈버프(DONBUFF, https://donbuff.com)를 이용하는 정보주체의 개인정보를 중요하게 생각하며, 「개인정보 보호법」 등 관련 법령을 준수합니다.' },
@@ -164,7 +164,7 @@ export const PRIVACY: LegalDocData = {
       { t: 'p', x: '※ 본 동의는 돈버프가 직접 발송하는 광고성 이메일에 관한 것으로, 회원의 개인정보를 제휴 금융회사·보험설계사·공인중개사 등에게 제공하거나 해당 업체가 직접 영업 연락을 하는 것에 대한 동의를 포함하지 않습니다.' },
     ] },
     { id: 'addendum', title: '부칙', blocks: [
-      { t: 'p', x: '시행일 : 2026년 11월 1일' },
+      { t: 'p', x: '시행일 : 2026년 11월 16일' },
       { t: 'ul', items: ['운영자 : 돈버프', '웹사이트 : https://donbuff.com'] },
     ] },
   ],
