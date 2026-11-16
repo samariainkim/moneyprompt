@@ -43,11 +43,10 @@
     var isLatest = it === latest;
     $('#bfNo').textContent = 'No.' + it.no;
     $('#bfCat').textContent = it.category;
-    $('#bfDate').textContent = '기준일 ' + it.base_date;
     $('#bfTitle').textContent = it.title;
-    $('#bfEyebrow').textContent = isLatest ? 'LATEST · 최신 호' : 'NO.' + it.no + ' · 지난 호';
+    $('#bfEyebrow').textContent = isLatest ? 'LATEST · 최신호' : 'No.' + it.no;
     $('#bfH2').textContent = isLatest ? '지금 가장 먼저 볼 카드뉴스' : '지난 카드뉴스 다시 보기';
-    $('#bfLd').textContent = isLatest ? '기준일과 출처를 확인한 최신 호예요.' : '발행 당시(기준일)의 정보예요. 제도·요율·환율은 바뀔 수 있어요.';
+    var ld = $('#bfLd'); ld.hidden = isLatest; ld.textContent = isLatest ? '' : '발행 당시(' + it.base_date + ' 기준)의 정보예요. 제도·요율·환율은 바뀔 수 있어요.';
     rail.innerHTML = railButtons(it); rail.scrollLeft = 0; updateArrows();
     var tiles = document.querySelectorAll('.pp a');
     for (var i = 0; i < tiles.length; i++) {

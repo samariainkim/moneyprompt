@@ -310,4 +310,6 @@ function setView(v, persist) {
   buildTabs(); updateFavCount(); updateRecentCount(); renderTodayPick(); renderNewPrompts(); renderReviews(); render();
   // 마이페이지 등에서 ?fav=1 로 오면 즐겨찾기 보기로 연다.
   if (new URLSearchParams(location.search).get('fav') === '1') { var fb = document.querySelector('[data-special="favorites"]'); if (fb) fb.click(); }
+  // 카드뉴스 등에서 ?p=06%2F03 처럼 프롬프트 번호로 오면 그 프롬프트를 바로 펼쳐 보여 준다.
+  var pq = new URLSearchParams(location.search).get('p'); if (pq) jumpToPrompt(pq);
 })();

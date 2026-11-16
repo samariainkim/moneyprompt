@@ -104,8 +104,8 @@ function briefParts() {
   const latest = issues[0];
   const strip = (it) => it.cards.map((c) => `<button type="button" class="bc" data-n="${c.n}" aria-label="${it.no}호 ${c.n}번 카드 크게 보기"><img src="${src(it.id, c.n)}" alt="${escHtml(c.alt)}" width="1080" height="1350" loading="${c.n <= 3 ? 'eager' : 'lazy'}" decoding="async"></button>`).join('');
   const latestHtml = `<section class="sec" id="latest"><div class="wrap">
- <div class="eyebrow" id="bfEyebrow">LATEST · 최신 호</div><h2 id="bfH2">지금 가장 먼저 볼 카드뉴스</h2><p class="ld" id="bfLd">기준일과 출처를 확인한 최신 호예요.</p>
- <div class="lh"><span class="tag"><span id="bfNo">No.${latest.no}</span> <em id="bfCat">${escHtml(latest.category)}</em></span><span class="dt" id="bfDate">기준일 ${escHtml(latest.base_date)}</span><h3 id="bfTitle">${escHtml(latest.title)}</h3></div>
+ <div class="eyebrow" id="bfEyebrow">LATEST · 최신호</div><h2 id="bfH2">지금 가장 먼저 볼 카드뉴스</h2><p class="ld" id="bfLd" hidden></p>
+ <div class="lh"><span class="tag"><span id="bfNo">No.${latest.no}</span> <em id="bfCat">${escHtml(latest.category)}</em></span><h3 id="bfTitle">${escHtml(latest.title)}</h3></div>
  <div class="strip"><div class="rail" id="bfRail" role="group" aria-label="카드뉴스 카드 목록">${strip(latest)}</div>
   <button type="button" class="go prev" id="bfPrev" aria-label="이전 카드" hidden>‹</button><button type="button" class="go next" id="bfNext" aria-label="다음 카드">›</button></div>
  <div class="hintc">🔍 카드를 누르면 크게 볼 수 있어요</div>
