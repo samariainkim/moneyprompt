@@ -71,9 +71,12 @@
 - **카드별 연동 링크**: `cards[].link` = `{ href, label, x, y, w, h, target }`. 확대 화면에서 카드 이미지 위 그 영역(이미지 기준 %)을 누르면 `href`(내부 주소 또는 `https://` 외부 링크)로 이동하고, 카드 아래에 같은 링크가 글자 버튼으로도 나온다. 링크 없는 정보성 카드는 `link` 를 생략한다.
 - **지난 호**: 목록의 번호를 누르면 같은 화면에서 그 호로 바뀌고 주소가 `?n=호번호` 가 된다(뒤로 가기 지원). 지난 호를 볼 때만 "발행 당시(기준일)의 정보예요" 안내를 보여 준다(최신호에는 안내 문구 없음). 호가 1개뿐이면 목록은 나오지 않는다.
 - 카드 한 장 바로가기: `/brief/#no3-7`(3호 7번 카드가 열린 채로 진입).
+- **진입 경로(메뉴·메인 배너)**: 헤더에 `MONEY BRIEF` 메뉴(PC·모바일 전체 메뉴)와, 메인 페이지 서비스 영역 맨 아래에 배너("뉴스 보러가기 →")가 있다. 둘 다 **`/brief/` 가 켜진 환경에서만 나타난다**(꺼진 환경 = 메뉴·배너 없음 → 죽은 링크 없음). 정적 페이지는 `partials/header.html` 의 `{{brief_nav}}`·`{{brief_menu}}` 와 `home.html` 의 `<!--@briefbanner-->` 를 `sync-static.mjs` 가 채우고, Next.js 회원 화면은 `RdHeader` 가 `rdPageOn('/brief/')`(`src/lib/redesign.ts`)로 같은 기준을 본다. 사이트맵(`sitemap.ts`)도 같은 기준으로 `/brief/` 를 넣는다. 책·독자 헤더(`/prompt/`)에는 메인 메뉴가 없어 해당 없음.
+- 메인 배너는 `brief.json` 의 최신 3개 호(표지·`topic`·최신호 제목)에서 자동으로 만든다. 호를 추가하면 배너도 따라간다.
+- 운영에 열려면 `pages.json` 의 `production` 에 `/brief/` 만 추가하면 된다(메뉴·배너·사이트맵이 함께 켜진다).
 - 테스트 환경(`preview`)에만 켜 두었다. 운영에 열 때는 `pages.json` 의 `production` 에 `/brief/` 를 넣고, `src/lib/site.ts` 의 `INDEXABLE_PATHS`(사이트맵)에도 추가한다. 운영 빌드에서는 `/brief/` 를 켜기 전까지 페이지와 카드 이미지(`/redesign/img/brief/`)가 빌드에 들어가지 않는다.
 - 카드 만드는 법·검증 원칙: 카드 속 숫자는 계산 엔진 값만 쓰고(손으로 옮겨 적지 않기), 정책 문장은 정책브리핑·금융위 등 1차 자료 원문으로 확인하며, 카드 하단에 출처와 기준일을 적는다. 오류 알려주기 링크는 독자 오픈채팅방(`brief.html` 의 `#lbReport`)이다.
-- 측정: `brief_view`(issue) `brief_card_open`(issue·card·source: strip/link) `brief_card_nav`(issue·card·how: button/key/swipe) `brief_lightbox_close`(issue·last_card·max_card) `brief_cta_click`(issue·card·target) `brief_issue_select`(issue) `brief_report_click`(issue·card). 금액·개인정보는 보내지 않는다.
+- 측정: `nav_menu_click`(target=brief, 헤더 메뉴) `brief_home_banner_view`·`brief_home_banner_click`(메인 배너) · `brief_view`(issue) `brief_card_open`(issue·card·source: strip/link) `brief_card_nav`(issue·card·how: button/key/swipe) `brief_lightbox_close`(issue·last_card·max_card) `brief_cta_click`(issue·card·target) `brief_issue_select`(issue) `brief_report_click`(issue·card). 금액·개인정보는 보내지 않는다.
 
 ## 회원 화면 (Next.js 가 그리는 로그인·가입·마이페이지 등) — `member.css`, `src/components/rd/`, `src/lib/redesign.ts`
 - 대상: `pages.json` 의 `nextPages` 에 적힌 주소 — `/join/ /login/ /signup/ /forgot-password/ /reset-password/ /welcome/ /onboarding/ /account/ /account/saved/ /pricing/ /terms/ /privacy/`.

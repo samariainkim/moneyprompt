@@ -67,6 +67,8 @@
 | `mbti_paths_view` | 8가지 성향 소개 페이지(`/invest-mbti/paths/`, 리뉴얼 후) 진입 | — |
 | `mbti_paths_click` | 검사 인트로/결과 용어 팝업에서 8가지 성향 페이지로 이동 | source (intro, result) |
 | `mbti_paths_cta` | 8가지 성향 페이지 하단 버튼 클릭 | target (start, result) |
+| `brief_home_banner_view` | 메인 페이지 MONEY BRIEF 배너가 절반 이상 보임(1회) | — |
+| `brief_home_banner_click` | 메인 페이지 MONEY BRIEF 배너 클릭 | target (brief_banner) |
 | `brief_view` | MONEY BRIEF 홈(`/brief/`) 진입 | issue(호 번호) |
 | `brief_card_open` | 카드를 눌러 확대 화면을 연 때 | issue, card, source (strip, link) |
 | `brief_card_nav` | 확대 화면에서 다른 카드로 이동 | issue, card, how (button, key, swipe) |

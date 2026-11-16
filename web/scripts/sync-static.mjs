@@ -87,7 +87,7 @@ function briefParts() {
   for (const it of issues) {
     if (nos.has(it.no)) throw new Error(`[sync-static] brief.json 호 번호 중복: ${it.no}`);
     nos.add(it.no);
-    if (!/^\d{3}$/.test(it.id) || !it.title || !it.short || !it.category || !it.base_date) throw new Error(`[sync-static] brief.json ${it.no}호 필수 항목(id·title·short·category·base_date)이 비었습니다.`);
+    if (!/^\d{3}$/.test(it.id) || !it.title || !it.short || !it.topic || !it.category || !it.base_date) throw new Error(`[sync-static] brief.json ${it.no}호 필수 항목(id·title·short·topic·category·base_date)이 비었습니다.`);
     if (!Array.isArray(it.cards) || it.cards.length !== 7) throw new Error(`[sync-static] brief.json ${it.no}호 카드가 7장이 아닙니다.`);
     it.cards.forEach((c, i) => {
       if (c.n !== i + 1) throw new Error(`[sync-static] brief.json ${it.no}호 카드 번호가 순서와 다릅니다.`);
@@ -112,9 +112,15 @@ function briefParts() {
 </div></section>`;
   const archiveHtml = issues.length < 2 ? '' : `<section class="sec" id="archive"><div class="wrap"><div class="eyebrow">ARCHIVE</div><h2 class="h2s">지난 MONEY BRIEF</h2><p class="ld">놓친 호도 카드로 다시 볼 수 있어요.</p>
 <div class="pp">${issues.map((it) => `<a href="?n=${it.no}" data-n="${it.no}"${it === latest ? ' aria-current="true"' : ''}><div class="cv${it === latest ? ' cur' : ''}"><img src="${src(it.id, 1)}" alt="" width="1080" height="1350" loading="lazy" decoding="async"></div><h4>No.${it.no}</h4><p>${escHtml(it.short)}</p></a>`).join('')}</div></div></section>`;
+  // 메인 페이지 배너: 최신 3개 호의 표지(번호순)와 최신호 제목
+  const bannerFigs = issues.slice(0, 3).reverse().map((it) => `<figure><img src="${src(it.id, 1)}" alt="" width="1080" height="1350" loading="lazy" decoding="async"><figcaption>No.${it.no} ${escHtml(it.topic)}</figcaption></figure>`).join('');
+  const bannerHtml = `<a class="bfx" id="svc-brief" href="/brief/" data-ga="brief_banner"><div><div class="ck">MONEY BRIEF · 돈 되는 뉴스</div><h3>돈 되는 최신 금융 정보를<br><em>한 눈에</em>, 내게 맞는 솔루션까지!</h3>
+<div class="l1">정책과 금리, 수수료가 바뀌면 내 돈은 얼마가 달라질까요? 쉽게 정리해 드려요.</div>
+<div class="new"><i>No.${latest.no}</i>${escHtml(latest.title)}</div><span class="go">뉴스 보러가기 →</span></div>
+<div class="cards">${bannerFigs}</div></a>`;
   const hero = (data.hero || []).map((h) => { const [id, n] = h.split('/'); return `<img src="${src(id, Number(n))}" alt="" width="1080" height="1350" loading="eager" decoding="async">`; }).join('');
   const json = JSON.stringify({ issues: issues.map((it) => ({ no: it.no, id: it.id, category: it.category, title: it.title, base_date: it.base_date, cards: it.cards.map((c) => ({ n: c.n, alt: c.alt, ...(c.link ? { link: c.link } : {}) })) })) }).replace(/</g, '\\u003c');
-  return { latestHtml, archiveHtml, hero, json };
+  return { latestHtml, archiveHtml, hero, json, bannerHtml };
 }
 function extractConst(src, name) {
   const m = new RegExp(`(^|\\n)const ${name}\\s*=`).exec(src);
@@ -171,7 +177,10 @@ function renderRedesign(html, ctx) {
     const attrs = Object.fromEntries([...a.matchAll(/(\w+)=(\w+)/g)].map((m) => [m[1], m[2]]));
     let h = readFileSync(join(RD_DIR, 'partials', attrs.variant === 'book' ? 'header-book.html' : 'header.html'), 'utf8');
     h = h.replace('{{over}}', attrs.over === '1' ? ' over' : '');
-    for (const k of ['prompt', 'invest']) h = h.replace(`{{cur_${k}}}`, attrs.active === k ? ' aria-current="page" class="cur"' : '');
+    // MONEY BRIEF 메뉴는 /brief/ 가 켜진 환경에서만 넣는다(꺼진 환경에서는 메뉴·배너 모두 없음 = 죽은 링크 없음).
+    h = h.replace('{{brief_nav}}', ctx.briefOn ? '<a href="/brief/" data-nav="brief" data-ga="brief"{{cur_brief}}>MONEY BRIEF</a>' : '')
+      .replace('{{brief_menu}}', ctx.briefOn ? '<a class="big" href="/brief/" data-ga="brief" style="border-bottom:0">MONEY BRIEF <span aria-hidden="true">→</span></a>' : '');
+    for (const k of ['prompt', 'invest', 'brief']) h = h.replace(`{{cur_${k}}}`, attrs.active === k ? ' aria-current="page" class="cur"' : '');
     return h;
   });
   html = html.replace(/<!--@footer([^>]*)-->/g, (_, a) => {
@@ -179,10 +188,10 @@ function renderRedesign(html, ctx) {
     return readFileSync(join(RD_DIR, 'partials', 'footer.html'), 'utf8').replace('{{footer_extra}}', extra);
   });
   html = html.replace(/<!--@mbtipaths-->/g, () => mbtiPathsHtml());
-  if (/<!--@brief(latest|archive|hero|data)-->/.test(html)) {
+  if (/<!--@brief(latest|archive|hero|data|banner)-->/.test(html)) {
     const b = briefParts();
     html = html.replace(/<!--@brieflatest-->/g, () => b.latestHtml).replace(/<!--@briefarchive-->/g, () => b.archiveHtml)
-      .replace(/<!--@briefhero-->/g, () => b.hero).replace(/<!--@briefdata-->/g, () => `<script type="application/json" id="briefData">${b.json}</script>`);
+      .replace(/<!--@briefbanner-->/g, () => (ctx.briefOn ? b.bannerHtml : '')).replace(/<!--@briefhero-->/g, () => b.hero).replace(/<!--@briefdata-->/g, () => `<script type="application/json" id="briefData">${b.json}</script>`);
   }
   html = html.replace(/<!--@promptdata-->/g, () => `<script data-prompt-data>\n${promptData().code}\n</script>`);
   html = html.replace(/\{\{TOTAL\}\}/g, String(ctx.total)).replace(/\{\{CATEGORIES\}\}/g, String(ctx.categories)).replace(/\{\{AIS\}\}/g, String(ctx.ais));
@@ -192,6 +201,7 @@ function renderRedesign(html, ctx) {
 }
 if (rdOn.length || rdNextOn.length) {
   const ctx = promptStats();
+  ctx.briefOn = rdOn.includes('/brief/');
   for (const u of rdOn) {
     const out2 = join(out, targetOf(u));
     mkdirSync(dirname(out2), { recursive: true });
