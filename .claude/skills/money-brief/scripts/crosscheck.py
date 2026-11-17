@@ -52,8 +52,18 @@ def check(root, calc, results):
             fee = int((D(i['amountKrw']) * D(i['ratePercent']) / 100 * D(rem) / D(tot)).to_integral_value(ROUND_FLOOR))
             if fee != r['fee_krw']:
                 errs.append(f"{cid}: 중도상환수수료 불일치 엔진 {r['fee_krw']} ≠ 독립 계산 {fee}")
-        elif eng in ('fx_rate', 'loan_compare'):
-            pass  # 환율 원본값, 위 loan 결과에서 파생된 값
+        elif eng == 'savings':
+            i = c['input']
+            # 엔진은 닫힌 식, 여기서는 납입 회차마다 이자를 더하는 방식으로 다시 계산한다
+            m, n, rate = D(str(i['monthlyKrw'])), int(i['months']), D(str(r['rate_percent'])) / 100
+            tax = D(str(i.get('taxPercent', 15.4))) / 100
+            pre = sum(m * rate * D(n - k + 1) / 12 for k in range(1, n + 1))
+            pre_i = int(pre.to_integral_value(ROUND_FLOOR))
+            tax_i = int((D(pre_i) * tax).to_integral_value(ROUND_FLOOR))
+            if (pre_i, pre_i - tax_i) != (r['interest_pre'], r['interest_post']):
+                errs.append(f"{cid}: 적금 이자 불일치 엔진 {r['interest_pre']}/{r['interest_post']} ≠ 독립 계산 {pre_i}/{pre_i - tax_i}")
+        elif eng in ('fx_rate', 'loan_compare', 'const'):
+            pass  # 환율 원본값, 위 loan 결과에서 파생된 값, 1차 자료 값
         else:
             warns.append(f"{cid}: '{eng}' 는 독립 검산을 지원하지 않습니다(수동 확인).")
     return errs, warns

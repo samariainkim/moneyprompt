@@ -148,7 +148,8 @@ def r_table(c, i, ed):
     th = ''.join(f'<th>{fmt(h)}</th>' for h in c['columns'])
     rows = ''.join(f'<tr{" class=hl" if r.get("hl") else ""}>' + ''.join(f'<td>{_cell(x)}</td>' for x in r['cells']) + '</tr>' for r in c['rows'])
     sub = any(isinstance(x, dict) for r in c['rows'] for x in r['cells'])  # 칸 아래에 작은 설명이 있으면 간격을 줄인다
-    out = f'<table class="tbl s{" sub" if sub else ""}"><tr>{th}</tr>{rows}</table>'
+    dense = len(c['rows']) > 5  # 행이 6개 이상이면 간격을 더 줄인다
+    out = f'<table class="tbl s{" sub" if sub else ""}{" dense" if dense else ""}"><tr>{th}</tr>{rows}</table>'
     if c.get('small'):
         out += f'<span class="sm">{fmt(c["small"])}</span>'
     if c.get('callout'):
