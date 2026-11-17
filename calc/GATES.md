@@ -68,6 +68,6 @@
 | DSR-5 | 총대출 1억 원 이하 DSR 규제 제외 여부 원문 확인(현재 계산에 미반영, 규칙 JSON `small_loan_exemption`) | 미완 |
 | DSR-6 | 2026.12월 말 스트레스 금리 신규 고시 반영: `dsr.rules` 에 기간 추가. 미등록 시 2027.1.1부터 계산이 자동으로 멈춘다(마지막 값 재사용 금지) | 운영 일정 |
 | DSR-7 | 신용대출: 기존 신용대출 합산·만기일시·마이너스통장은 미지원(결과 안내문으로 표시). 확장 시 별도 검증 | 범위 결정 |
-| DSR-8 | 결과 저장("내 결과에 저장")은 DB 허용 목록(`saved_results.tool`) 추가 마이그레이션 후 `auth-gates.js` 에 saveTool 지정 | 미반영 |
+| DSR-8 | 결과 저장("내 결과에 저장"): 코드 반영 완료. **Supabase 에 `20261117000000_saved_results_dsr.sql` 을 먼저 적용**해야 저장됨(미적용 시 저장 실패 안내) | 마이그레이션 적용 대기 |
 | DSR-9 | OG 이미지 `/calc/og/dsr.png`, 허브 `status` 를 open 으로, `pages.json` production 추가, `noindex` 제거, sitemap 반영 | 공개 시 |
 | DSR-10 | GA4: `calculator_id=dsr` 이벤트(calc_view/start/result/error/ai_generate/ai_copy/share), 입력·결과 값은 전송하지 않음. 맞춤 측정기준 `loan_type`, `repayment`, `stress_applied` 등록 | 대기 |
