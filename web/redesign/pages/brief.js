@@ -70,6 +70,8 @@
 
   /* ───── 확대 보기 ───── */
   var lb = $('#lb'), img = $('#lbImg'), cnt = $('#lbCount'), ttl = $('#lbTitle'), bar = $('#lbBar');
+  var loginSeen = false;   // 이 화면에서 로그인 안내를 이미 거쳤는지(안내에서 "둘러볼게요"로 돌아온 경우 포함)
+  if (/[?&]bfl=1(&|$)/.test(location.search)) { loginSeen = true; try { history.replaceState(history.state, '', location.pathname + location.search.replace(/([?&])bfl=1&?/, '$1').replace(/[?&]$/, '') + location.hash); } catch (e) {} }
   var lPrev = $('#lbPrev'), lNext = $('#lbNext'), lClose = $('#lbClose'), hot = $('#lbHot'), cta = $('#lbCta'), rep = $('#lbReport');
   var st = { it: null, n: 1, max: 1, opener: null };
 
@@ -82,7 +84,11 @@
     img.src = imgSrc(it, st.n); img.alt = c.alt;
     cnt.textContent = st.n + ' / ' + it.cards.length;
     ttl.textContent = 'No.' + it.no + ' · ' + it.category;
-    bar.style.width = (st.n / it.cards.length * 100) + '%';
+    if (bar.children.length !== it.cards.length) { // 진행 막대: 카드마다 누를 수 있는 칸
+      bar.innerHTML = '';
+      it.cards.forEach(function (_, i) { var b = document.createElement('button'); b.type = 'button'; b.setAttribute('data-k', i + 1); b.setAttribute('aria-label', (i + 1) + '번 카드로 이동'); bar.appendChild(b); });
+    }
+    Array.prototype.forEach.call(bar.children, function (b, i) { b.classList.toggle('on', i < st.n); if (i + 1 === st.n) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current'); });
     lPrev.disabled = st.n <= 1; lNext.disabled = st.n >= it.cards.length;
     if (st.n > st.max) st.max = st.n;
     if (c.link) {
@@ -97,6 +103,14 @@
     [st.n - 1, st.n + 1].forEach(function (k) { if (k >= 1 && k <= it.cards.length) { var p = new Image(); p.src = imgSrc(it, k); } });
     setHash();
     if (how) ev('brief_card_nav', { issue: it.no, card: st.n, how: how });
+  }
+  function signedIn() { try { return !!(window.__dbxAuth && window.__dbxAuth.signedIn()); } catch (e) { return false; } }
+  function toLogin() {   // 로그인 안내 화면(/join/)으로 보낸다. 돌아올 때(로그인 후·둘러보기) 같은 카드가 열린다
+    loginSeen = true;
+    var q = location.search + (location.search ? '&' : '?') + 'bfl=1';
+    var next = location.pathname + q + '#no' + st.it.no + '-' + st.n;
+    ev('brief_login_prompt_view', { issue: st.it.no, card: st.n });
+    location.assign('/join/?next=' + encodeURIComponent(next) + '&src=brief_zoom');
   }
   function openLb(it, n, source, opener) {
     st.it = it; st.n = n; st.max = n; st.opener = opener || document.activeElement;
@@ -114,11 +128,15 @@
 
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('#bfRail .bc');
-    if (b) openLb(cur, Number(b.getAttribute('data-n')), 'strip', b);
+    if (!b) return;
+    var n = Number(b.getAttribute('data-n'));
+    if (!loginSeen && !signedIn()) { st.it = cur; st.n = n; toLogin(); return; }   // 비로그인이 카드를 처음 확대하면 로그인 안내 화면으로
+    openLb(cur, n, 'strip', b);
   });
   lPrev.addEventListener('click', function () { go(-1, 'button'); });
   lNext.addEventListener('click', function () { go(1, 'button'); });
   lClose.addEventListener('click', function () { closeLb(); });
+  bar.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('button[data-k]'); if (b) { var k = Number(b.getAttribute('data-k')); if (k !== st.n) { st.n = k; render('bar'); } } });
   lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
   [hot, cta].forEach(function (a) { a.addEventListener('click', function () { ev('brief_cta_click', { issue: st.it.no, card: st.n, target: (st.it.cards[st.n - 1].link || {}).target || a.getAttribute('href') }); }); });
   rep.addEventListener('click', function () { ev('brief_report_click', { issue: st.it.no, card: st.n }); });
@@ -138,6 +156,15 @@
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     }
   });
+  // 마우스로 끌어서 넘기기(PC): 화면이 좁아 버튼이 작아도 카드를 넘길 수 있다
+  var mx = null, my = null;
+  lb.addEventListener('pointerdown', function (e) { if (e.pointerType === 'touch' || e.button > 0) return; mx = e.clientX; my = e.clientY; });
+  lb.addEventListener('pointerup', function (e) {
+    if (mx === null) return;
+    var dx = e.clientX - mx, dy = e.clientY - my; mx = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1, 'drag');
+  });
+  lb.addEventListener('dragstart', function (e) { e.preventDefault(); });
   // 스와이프(모바일): 좌우로 밀면 다음·이전 카드
   var tx = null, ty = null;
   lb.addEventListener('touchstart', function (e) { if (e.touches.length === 1) { tx = e.touches[0].clientX; ty = e.touches[0].clientY; } else tx = null; }, { passive: true });

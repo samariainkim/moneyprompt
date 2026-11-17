@@ -76,7 +76,7 @@
 - 운영에 열려면 `pages.json` 의 `production` 에 `/brief/` 만 추가하면 된다(메뉴·배너·사이트맵이 함께 켜진다).
 - 테스트 환경(`preview`)에만 켜 두었다. 운영에 열 때는 `pages.json` 의 `production` 에 `/brief/` 를 넣고, `src/lib/site.ts` 의 `INDEXABLE_PATHS`(사이트맵)에도 추가한다. 운영 빌드에서는 `/brief/` 를 켜기 전까지 페이지와 카드 이미지(`/redesign/img/brief/`)가 빌드에 들어가지 않는다.
 - 카드 만드는 법·검증 원칙: 카드 속 숫자는 계산 엔진 값만 쓰고(손으로 옮겨 적지 않기), 정책 문장은 정책브리핑·금융위 등 1차 자료 원문으로 확인하며, 카드 하단에 출처와 기준일을 적는다. 오류 알려주기 링크는 독자 오픈채팅방(`brief.html` 의 `#lbReport`)이다.
-- 측정: `nav_menu_click`(target=brief, 헤더 메뉴) `brief_home_banner_view`·`brief_home_banner_click`(메인 배너) · `brief_view`(issue) `brief_card_open`(issue·card·source: strip/link) `brief_card_nav`(issue·card·how: button/key/swipe) `brief_lightbox_close`(issue·last_card·max_card) `brief_cta_click`(issue·card·target) `brief_issue_select`(issue) `brief_report_click`(issue·card). 금액·개인정보는 보내지 않는다.
+- 측정: `nav_menu_click`(target=brief, 헤더 메뉴) `brief_home_banner_view`·`brief_home_banner_click`(메인 배너) · `brief_view`(issue) `brief_card_open`(issue·card·source: strip/link) `brief_card_nav`(issue·card·how: button/key/swipe/drag/bar) `brief_login_prompt_view`(issue·card, 비로그인 첫 확대 → /join/ 이동) `brief_lightbox_close`(issue·last_card·max_card) `brief_cta_click`(issue·card·target) `brief_issue_select`(issue) `brief_report_click`(issue·card). 금액·개인정보는 보내지 않는다.
 
 ## 회원 화면 (Next.js 가 그리는 로그인·가입·마이페이지 등) — `member.css`, `src/components/rd/`, `src/lib/redesign.ts`
 - 대상: `pages.json` 의 `nextPages` 에 적힌 주소 — `/join/ /login/ /signup/ /forgot-password/ /reset-password/ /welcome/ /onboarding/ /account/ /account/saved/ /pricing/ /terms/ /privacy/`.

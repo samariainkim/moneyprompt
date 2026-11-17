@@ -20,7 +20,7 @@ let fails = 0; const ok = (c, m) => { if (!c) { fails++; console.log('FAIL', m);
   }
   // PC
   let { c, p, errs } = await open(1280, 900);
-  await p.goto(BASE + '/brief/'); await p.waitForTimeout(800);
+  await p.goto(BASE + '/brief/?bfl=1'); await p.waitForTimeout(800);
   let r = await p.evaluate(() => ({ no: document.querySelector('#bfNo').textContent, bc: document.querySelectorAll('#bfRail .bc').length, tiles: [...document.querySelectorAll('.pp h4')].map((x) => x.textContent), alts: [...document.querySelectorAll('#bfRail img')].every((i) => i.alt.length > 20) }));
   ok(r.no === 'No.' + latest.no, `최신호가 No.${latest.no}`);
   ok(r.bc === 7 && r.alts, '카드 7장, 대체 텍스트 있음');
@@ -32,9 +32,10 @@ let fails = 0; const ok = (c, m) => { if (!c) { fails++; console.log('FAIL', m);
   if (lastCard.link) ok(r.hot && r.href === lastCard.link.href, `카드 7 연동 링크 → ${lastCard.link.href}`); else ok(!r.hot, '링크 없는 카드는 연동 영역 없음');
   await p.keyboard.press('Home'); ok((await p.textContent('#lbCount')) === '1 / 7', 'Home → 1 / 7');
   await p.keyboard.press('ArrowRight'); ok((await p.textContent('#lbCount')) === '2 / 7', '→ 키 2 / 7');
+  await p.click('#lbBar button[data-k="5"]'); ok((await p.textContent('#lbCount')) === '5 / 7', '진행 막대 눌러 5 / 7');
   await p.keyboard.press('Escape'); ok(await p.evaluate(() => document.querySelector('#lb').hidden), 'Esc 로 닫힘');
   for (const it of issues) { // 호마다 연동 링크가 정확한지
-    await p.goto(BASE + '/brief/?n=' + it.no); await p.waitForTimeout(300);
+    await p.goto(BASE + '/brief/?bfl=1&n=' + it.no); await p.waitForTimeout(300);
     const cl = it.cards.find((x) => x.link);
     ok((await p.textContent('#bfNo')) === 'No.' + it.no, `?n=${it.no} 로 열림`);
     if (cl) { await p.locator('#bfRail .bc').nth(cl.n - 1).click(); ok((await p.getAttribute('#lbHot', 'href')) === cl.link.href, `No.${it.no} 카드${cl.n} 링크 ${cl.link.href}`); await p.keyboard.press('Escape'); }
@@ -48,10 +49,17 @@ let fails = 0; const ok = (c, m) => { if (!c) { fails++; console.log('FAIL', m);
   r = await p.evaluate(() => ({ banner: !!document.querySelector('#svc-brief'), btn: (document.querySelector('#svc-brief .go') || {}).textContent, nav: !!document.querySelector('nav.pc a[data-nav="brief"]'), figs: [...document.querySelectorAll('#svc-brief figcaption')].length }));
   ok(r.banner && r.btn === '뉴스 보러가기 →' && r.nav, '메인 배너("뉴스 보러가기 →")와 헤더 메뉴');
   ok(r.figs === Math.min(3, issues.length), `배너 표지 ${Math.min(3, issues.length)}장`);
-  await c.close();
+  await c.close(); ({ c, p, errs } = await open(1280, 900));
+  // 비로그인이 카드를 처음 확대하면 로그인 안내 화면(/join/)으로 간다. 돌아오면(bfl=1) 같은 카드가 바로 열린다
+  await p.goto(BASE + '/brief/'); await p.waitForTimeout(500);
+  await p.locator('#bfRail .bc').nth(2).click(); await p.waitForURL(/\/join\//, { timeout: 5000 }).catch(() => {});
+  const jn = new URL(p.url()); const nx = jn.searchParams.get('next') || '';
+  ok(jn.pathname === '/join/' && /bfl=1/.test(nx) && /#no\d+-3$/.test(nx) && jn.searchParams.get('src') === 'brief_zoom', '비로그인 확대 → 로그인 안내 화면 ' + jn.pathname + ' next=' + nx);
+  await p.goto(BASE + nx); await p.waitForTimeout(500);
+  ok(await p.evaluate(() => !document.querySelector('#lb').hidden && !/bfl=1/.test(location.search)), '돌아오면 같은 카드가 열리고 주소의 bfl 은 지워짐'); await c.close();
   // 모바일
   ({ c, p, errs } = await open(390, 760, true));
-  await p.goto(BASE + '/brief/'); await p.waitForTimeout(800);
+  await p.goto(BASE + '/brief/?bfl=1'); await p.waitForTimeout(800);
   const mo = await p.evaluate(() => { const o = []; document.querySelectorAll('.site *').forEach((e) => { const r = e.getBoundingClientRect(); if (r.width > 0 && r.right > innerWidth + 1 && !e.closest('#bfRail') && !e.closest('.fan')) o.push(e.className || e.tagName); }); return o.slice(0, 3); });
   ok(mo.length === 0, '모바일 가로 넘침 없음 ' + JSON.stringify(mo));
   await p.locator('#bfRail .bc').first().tap();
