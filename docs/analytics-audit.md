@@ -72,7 +72,7 @@
 | `brief_view` | MONEY BRIEF 홈(`/brief/`) 진입 | issue(호 번호) |
 | `brief_card_open` | 카드를 눌러 확대 화면을 연 때 | issue, card, source (strip, link) |
 | `brief_card_nav` | 확대 화면에서 다른 카드로 이동 | issue, card, how (button, key, swipe) |
-| `brief_login_prompt_view` | 비로그인이 카드를 처음 확대해 로그인 안내 화면(/join/)으로 보낸 때(화면당 1회) | issue, card |
+| `brief_login_prompt_view` | 비로그인이 카드를 눌러 확대하려다 로그인 안내 화면(/join/)으로 보낸 때(크게 보기는 로그인 회원 전용) | issue, card |
 | `brief_lightbox_close` | 확대 화면을 닫은 때(어디까지 봤는지) | issue, last_card, max_card |
 | `brief_cta_click` | 카드 속 연동 링크(계산기·프롬프트 등) 클릭 | issue, card, target |
 | `brief_issue_select` | 지난 호 목록에서 호 전환 | issue |

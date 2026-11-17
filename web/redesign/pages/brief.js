@@ -70,9 +70,7 @@
 
   /* ───── 확대 보기 ───── */
   var lb = $('#lb'), img = $('#lbImg'), cnt = $('#lbCount'), ttl = $('#lbTitle'), bar = $('#lbBar');
-  var loginSeen = false;   // 이 화면에서 로그인 안내를 이미 거쳤는지(안내에서 "둘러볼게요"로 돌아온 경우 포함)
-  if (/[?&]bfl=1(&|$)/.test(location.search)) { loginSeen = true; try { history.replaceState(history.state, '', location.pathname + location.search.replace(/([?&])bfl=1&?/, '$1').replace(/[?&]$/, '') + location.hash); } catch (e) {} }
-  var lPrev = $('#lbPrev'), lNext = $('#lbNext'), lClose = $('#lbClose'), hot = $('#lbHot'), cta = $('#lbCta'), rep = $('#lbReport');
+    var lPrev = $('#lbPrev'), lNext = $('#lbNext'), lClose = $('#lbClose'), hot = $('#lbHot'), cta = $('#lbCta'), rep = $('#lbReport');
   var st = { it: null, n: 1, max: 1, opener: null };
 
   function setInert(on) { var site = $('.site'); if (site) { try { site.inert = on; } catch (e) {} } }  // 열려 있는 동안 뒤 화면은 키보드·스크린리더 접근을 막는다
@@ -106,9 +104,7 @@
   }
   function signedIn() { try { return !!(window.__dbxAuth && window.__dbxAuth.signedIn()); } catch (e) { return false; } }
   function toLogin() {   // 로그인 안내 화면(/join/)으로 보낸다. 돌아올 때(로그인 후·둘러보기) 같은 카드가 열린다
-    loginSeen = true;
-    var q = location.search + (location.search ? '&' : '?') + 'bfl=1';
-    var next = location.pathname + q + '#no' + st.it.no + '-' + st.n;
+    var next = location.pathname + location.search + '#no' + st.it.no + '-' + st.n;
     ev('brief_login_prompt_view', { issue: st.it.no, card: st.n });
     location.assign('/join/?next=' + encodeURIComponent(next) + '&src=brief_zoom');
   }
@@ -130,7 +126,7 @@
     var b = e.target.closest && e.target.closest('#bfRail .bc');
     if (!b) return;
     var n = Number(b.getAttribute('data-n'));
-    if (!loginSeen && !signedIn()) { st.it = cur; st.n = n; toLogin(); return; }   // 비로그인이 카드를 처음 확대하면 로그인 안내 화면으로
+    if (!signedIn()) { st.it = cur; st.n = n; toLogin(); return; }   // 크게 보기는 로그인한 회원만. 비로그인은 로그인 안내 화면으로(작은 카드는 그대로 볼 수 있다)
     openLb(cur, n, 'strip', b);
   });
   lPrev.addEventListener('click', function () { go(-1, 'button'); });
@@ -178,6 +174,7 @@
   var m = /[?&]n=(\d+)/.exec(location.search);
   if (m && byNo(Number(m[1])) && Number(m[1]) !== latest.no) selectIssue(Number(m[1]), {});
   var h = /^#no(\d+)-(\d)$/.exec(location.hash);
-  if (h) { var hi = byNo(Number(h[1])); if (hi && Number(h[2]) >= 1 && Number(h[2]) <= hi.cards.length) { if (hi !== cur) selectIssue(hi.no, {}); openLb(hi, Number(h[2]), 'link', null); } }
+  if (h && !signedIn()) clearHash();   // 비로그인은 주소로도 크게 보기를 열 수 없다(작은 카드는 그대로 보임)
+  else if (h) { var hi = byNo(Number(h[1])); if (hi && Number(h[2]) >= 1 && Number(h[2]) <= hi.cards.length) { if (hi !== cur) selectIssue(hi.no, {}); openLb(hi, Number(h[2]), 'link', null); } }
   ev('brief_view', { issue: cur.no });
 })();
