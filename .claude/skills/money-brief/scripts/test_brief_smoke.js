@@ -26,18 +26,23 @@ let fails = 0; const ok = (c, m) => { if (!c) { fails++; console.log('FAIL', m);
   ok(r.bc === 7 && r.alts, '카드 7장, 대체 텍스트 있음');
   if (issues.length > 1) ok(r.tiles.join() === issues.map((i) => 'No.' + i.no).join(), '지난 호 목록이 번호 내림차순');
   const lastCard = latest.cards[6];
+  const skipLogin = async () => { if (await p.isVisible('#lbLogin')) await p.click('#lbLoginSkip'); };  // 확대 첫 화면의 로그인 안내(비로그인)
   await p.locator('#bfRail .bc').nth(6).scrollIntoViewIfNeeded(); await p.locator('#bfRail .bc').nth(6).click();
+  ok(await p.isVisible('#lbLogin'), '확대 시 로그인 안내가 뜬다(비로그인)');
+  ok((await p.getAttribute('#lbLoginGo', 'href')).startsWith('/join/?next=') , '로그인 안내 링크(/join/?next=…)');
+  await skipLogin(); ok(!(await p.isVisible('#lbLogin')), '“로그인 없이 볼게요”로 닫힘');
   r = await p.evaluate(() => ({ open: !document.querySelector('#lb').hidden, cnt: document.querySelector('#lbCount').textContent, hot: !document.querySelector('#lbHot').hidden, href: document.querySelector('#lbHot').getAttribute('href') }));
   ok(r.open && r.cnt === '7 / 7', '카드 7 확대, 7 / 7');
   if (lastCard.link) ok(r.hot && r.href === lastCard.link.href, `카드 7 연동 링크 → ${lastCard.link.href}`); else ok(!r.hot, '링크 없는 카드는 연동 영역 없음');
   await p.keyboard.press('Home'); ok((await p.textContent('#lbCount')) === '1 / 7', 'Home → 1 / 7');
   await p.keyboard.press('ArrowRight'); ok((await p.textContent('#lbCount')) === '2 / 7', '→ 키 2 / 7');
+  await p.click('#lbBar button[data-k="5"]'); ok((await p.textContent('#lbCount')) === '5 / 7', '진행 막대 눌러 5 / 7');
   await p.keyboard.press('Escape'); ok(await p.evaluate(() => document.querySelector('#lb').hidden), 'Esc 로 닫힘');
   for (const it of issues) { // 호마다 연동 링크가 정확한지
     await p.goto(BASE + '/brief/?n=' + it.no); await p.waitForTimeout(300);
     const cl = it.cards.find((x) => x.link);
     ok((await p.textContent('#bfNo')) === 'No.' + it.no, `?n=${it.no} 로 열림`);
-    if (cl) { await p.locator('#bfRail .bc').nth(cl.n - 1).click(); ok((await p.getAttribute('#lbHot', 'href')) === cl.link.href, `No.${it.no} 카드${cl.n} 링크 ${cl.link.href}`); await p.keyboard.press('Escape'); }
+    if (cl) { await p.locator('#bfRail .bc').nth(cl.n - 1).click(); await skipLogin(); ok((await p.getAttribute('#lbHot', 'href')) === cl.link.href, `No.${it.no} 카드${cl.n} 링크 ${cl.link.href}`); await p.keyboard.press('Escape'); }
   }
   const ov = await p.evaluate(() => { const o = []; document.querySelectorAll('.site *').forEach((e) => { const r = e.getBoundingClientRect(); if (r.width > 0 && r.right > innerWidth + 1 && !e.closest('#bfRail') && !e.closest('.fan')) o.push(e.className); }); return o.slice(0, 3); });
   ok(ov.length === 0, 'PC 가로 넘침 없음 ' + JSON.stringify(ov));
@@ -54,7 +59,7 @@ let fails = 0; const ok = (c, m) => { if (!c) { fails++; console.log('FAIL', m);
   await p.goto(BASE + '/brief/'); await p.waitForTimeout(800);
   const mo = await p.evaluate(() => { const o = []; document.querySelectorAll('.site *').forEach((e) => { const r = e.getBoundingClientRect(); if (r.width > 0 && r.right > innerWidth + 1 && !e.closest('#bfRail') && !e.closest('.fan')) o.push(e.className || e.tagName); }); return o.slice(0, 3); });
   ok(mo.length === 0, '모바일 가로 넘침 없음 ' + JSON.stringify(mo));
-  await p.locator('#bfRail .bc').first().tap();
+  await p.locator('#bfRail .bc').first().tap(); await p.click('#lbLoginSkip');
   const mr = await p.evaluate(() => { const r = document.querySelector('#lbImg').getBoundingClientRect(); return [Math.round(r.bottom), innerHeight]; });
   ok(mr[0] <= mr[1], '모바일 확대 이미지가 화면 안 ' + mr);
   ok(errs.length === 0, '모바일 콘솔 오류 없음'); await c.close(); await b.close();
