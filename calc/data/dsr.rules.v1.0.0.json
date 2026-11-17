@@ -6,18 +6,50 @@
   "dsr_limit": {
     "bank_percent": 40,
     "verification": "금융위 보도자료 2023.12.27(스트레스 DSR 제도 시행) 별첨에서 확인. 은행업감독규정 별표6·세부기준 본문은 미확보",
-    "small_loan_exemption": { "status": "unverified", "applied": false, "note": "총대출 1억 원 이하 차주의 DSR 규제 제외 여부는 원문 확인 전이라 계산에 반영하지 않음" }
+    "small_loan_exemption": {
+      "status": "unverified",
+      "applied": false,
+      "note": "총대출 1억 원 이하 차주의 DSR 규제 제외 여부는 원문 확인 전이라 계산에 반영하지 않음"
+    }
   },
   "stress_periods": [
-    { "from": "2025-07-01", "to": "2025-10-15", "announced": "2025-06-30", "default_bp": 150, "metro_mortgage_bp": 150, "non_metro_mortgage_bp": 75 },
-    { "from": "2025-10-16", "to": "2025-12-31", "announced": "2025-10-15", "default_bp": 150, "metro_mortgage_bp": 300, "non_metro_mortgage_bp": 75 },
-    { "from": "2026-01-01", "to": "2026-06-30", "announced": "2025-12-31", "default_bp": 150, "metro_mortgage_bp": 300, "non_metro_mortgage_bp": 75 },
-    { "from": "2026-07-01", "to": "2026-12-31", "announced": "2026-06-30", "default_bp": 150, "metro_mortgage_bp": 300, "non_metro_mortgage_bp": 75 }
+    {
+      "from": "2025-07-01",
+      "to": "2025-10-15",
+      "announced": "2025-06-30",
+      "default_bp": 150,
+      "metro_mortgage_bp": 150,
+      "non_metro_mortgage_bp": 75
+    },
+    {
+      "from": "2025-10-16",
+      "to": "2025-12-31",
+      "announced": "2025-10-15",
+      "default_bp": 150,
+      "metro_mortgage_bp": 300,
+      "non_metro_mortgage_bp": 75
+    },
+    {
+      "from": "2026-01-01",
+      "to": "2026-06-30",
+      "announced": "2025-12-31",
+      "default_bp": 150,
+      "metro_mortgage_bp": 300,
+      "non_metro_mortgage_bp": 75
+    },
+    {
+      "from": "2026-07-01",
+      "to": "2026-12-31",
+      "announced": "2026-06-30",
+      "default_bp": 150,
+      "metro_mortgage_bp": 300,
+      "non_metro_mortgage_bp": 75
+    }
   ],
   "stress_apply": {
     "floating_ratio_percent": 100,
     "credit_balance_threshold_krw": 100000000,
-    "credit_note": "신용대출은 총 잔액(기존+신규)이 1억 원을 초과하는 경우에만 스트레스 금리 부과. 이 계산기는 기존 대출이 없다고 가정"
+    "credit_note": "신용대출은 총 잔액(기존+신규)이 1억 원을 초과하는 경우에만 스트레스 금리 부과. 이 계산기는 기존 대출이 없다고 가정하고, 5년 만기 분할상환의 최초 1년 납입액을 기준으로 계산(운영자 결정)"
   },
   "limits": {
     "income_min_krw": 10000000,
@@ -27,20 +59,53 @@
     "rate_decimals": 2,
     "years_min": 1,
     "years_max_mortgage": 40,
-    "years_max_credit": 10,
     "date_year_min": 2025,
-    "date_year_max": 2100
+    "date_year_max": 2100,
+    "credit_years_fixed": 5
   },
   "assumptions": [
-    { "id": "no_existing", "label": "기존 대출 없음 가정" },
-    { "id": "floating", "label": "변동금리 가정(스트레스 금리 100% 적용)" },
-    { "id": "bank_40", "label": "은행권 DSR 40%" },
-    { "id": "annuity_or_first_year", "label": "원리금균등은 원리금 기준, 원금균등은 첫해 12개월 상환액 기준" }
+    {
+      "id": "no_existing",
+      "label": "기존 대출 없음 가정"
+    },
+    {
+      "id": "floating",
+      "label": "변동금리 가정(스트레스 금리 100% 적용)"
+    },
+    {
+      "id": "bank_40",
+      "label": "은행권 DSR 40%"
+    },
+    {
+      "id": "annuity_or_first_year",
+      "label": "원리금균등은 원리금 기준, 원금균등은 첫해 12개월 상환액 기준"
+    },
+    {
+      "id": "credit_5y",
+      "label": "신용대출은 5년 만기 분할상환 기준(최초 1년 납입액)"
+    }
   ],
   "sources": [
-    { "id": "kfb_stress", "title": "은행연합회 소비자포털 스트레스금리 공시", "url": "https://portal.kfb.or.kr/compare/stress_loan.php", "announced": "2026-06-30" },
-    { "id": "fsc_admin_2026", "title": "금융위원회 행정지도 제2024-002호(3단계 스트레스 DSR 변경시행, 2026.7.1~12.31)", "url": "https://better.fsc.go.kr/fsc_new/status/adminMap/OpertnDetail.do?muNo=145&postNo=4215&stNo=11" },
-    { "id": "fsc_20231227", "title": "금융위원회 보도자료 2023.12.27 스트레스 DSR 제도 시행(별첨)", "url": "https://www.fsc.go.kr/no010101/81343" },
-    { "id": "fsc_20251015", "title": "금융위원회 보도자료 2025.10.15 주택시장 안정화 대책 관련 긴급 가계부채 점검회의", "url": "https://www.fsc.go.kr/no010101/85432" }
+    {
+      "id": "kfb_stress",
+      "title": "은행연합회 소비자포털 스트레스금리 공시",
+      "url": "https://portal.kfb.or.kr/compare/stress_loan.php",
+      "announced": "2026-06-30"
+    },
+    {
+      "id": "fsc_admin_2026",
+      "title": "금융위원회 행정지도 제2024-002호(3단계 스트레스 DSR 변경시행, 2026.7.1~12.31)",
+      "url": "https://better.fsc.go.kr/fsc_new/status/adminMap/OpertnDetail.do?muNo=145&postNo=4215&stNo=11"
+    },
+    {
+      "id": "fsc_20231227",
+      "title": "금융위원회 보도자료 2023.12.27 스트레스 DSR 제도 시행(별첨)",
+      "url": "https://www.fsc.go.kr/no010101/81343"
+    },
+    {
+      "id": "fsc_20251015",
+      "title": "금융위원회 보도자료 2025.10.15 주택시장 안정화 대책 관련 긴급 가계부채 점검회의",
+      "url": "https://www.fsc.go.kr/no010101/85432"
+    }
   ]
 }

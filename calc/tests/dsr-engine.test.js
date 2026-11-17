@@ -73,7 +73,8 @@ test('신용대출: 적용 한도 < 1억 < 미적용 한도 → 1억 원', () =>
   }
   assert.ok(found, '경계 구간을 찾지 못함'); assert.equal(found.limit_krw, 100000000); assert.ok(found.limit_with_stress_krw < 100000000 && found.limit_no_stress_krw > 100000000);
 });
-test('신용대출 기간은 10년 이하', () => err({ loanType: 'credit', years: 11 }, 'years_range'));
+test('신용대출은 5년 만기로 고정(입력 기간 무시)', () => { const a = ok(run({ loanType: 'credit', region: undefined, incomeKrw: 100000000, years: 30 })); const b = ok(run({ loanType: 'credit', region: undefined, incomeKrw: 100000000, years: '' })); assert.equal(a.years, 5); assert.equal(a.limit_krw, b.limit_krw); });
+test('신용대출 원금균등도 5년 첫해 기준', () => { const a = ok(run({ loanType: 'credit', region: undefined, incomeKrw: 100000000, repayment: 'principal_equal' })); const b = ok(run({ loanType: 'credit', region: undefined, incomeKrw: 100000000 })); assert.ok(a.limit_krw < b.limit_krw); });
 
 // ── 입력 오류·미지원 ──
 test('소득 미입력/형식/범위', () => { err({ incomeKrw: '' }, 'income_required'); err({ incomeKrw: '-1' }, 'income_format'); err({ incomeKrw: '0' }, 'income_range'); err({ incomeKrw: '5,000,000,000' }, 'income_range'); });

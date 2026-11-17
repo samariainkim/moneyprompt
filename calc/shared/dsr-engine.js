@@ -68,11 +68,15 @@
     if (r.empty) return bad('rate_required', 'rate');
     if (r.bad) return bad('rate_format', 'rate');
     if (r.bps < lim.rate_min_bps || r.bps > lim.rate_max_bps) return bad('rate_range', 'rate');
-    var yS = String(i.years === undefined || i.years === null ? '' : i.years).trim();
-    if (yS === '') return bad('years_required', 'years');
-    if (!/^\d+$/.test(yS)) return bad('years_range', 'years');
-    var years = Number(yS), ymax = type === 'mortgage' ? lim.years_max_mortgage : lim.years_max_credit;
-    if (years < lim.years_min || years > ymax) return bad('years_range', 'years');
+    var years;
+    if (type === 'credit') years = lim.credit_years_fixed;               // 신용대출은 5년 만기 분할상환 기준으로 고정(입력 기간은 사용하지 않음)
+    else {
+      var yS = String(i.years === undefined || i.years === null ? '' : i.years).trim();
+      if (yS === '') return bad('years_required', 'years');
+      if (!/^\d+$/.test(yS)) return bad('years_range', 'years');
+      years = Number(yS);
+      if (years < lim.years_min || years > lim.years_max_mortgage) return bad('years_range', 'years');
+    }
     var asOf = isoOk(i.asOf, lim);
     if (!asOf) return bad('date_invalid', 'asOf');
     var per = null;

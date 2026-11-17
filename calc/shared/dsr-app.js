@@ -50,7 +50,7 @@
   }
 
   function err(code) {
-    var lim = rules.limits, ymax = sel.type === 'credit' ? lim.years_max_credit : lim.years_max_mortgage;
+    var lim = rules.limits, ymax = lim.years_max_mortgage;
     var v = { min: won(lim.income_min_krw), max: won(lim.income_max_krw), rmin: pct(lim.rate_min_bps), rmax: pct(lim.rate_max_bps), ymax: ymax };
     $('err').textContent = tpl(copy.errors[code] || copy.errors.exception, v);
     invalidate();
@@ -59,7 +59,7 @@
   }
 
   function input(over) {
-    var o = { incomeKrw: $('inc').value.replace(/\D/g, ''), loanType: sel.type, region: sel.type === 'mortgage' ? sel.region : null, repayment: sel.rep, ratePercent: $('rate').value, years: $('yrs').value.replace(/\D/g, ''), asOf: todayIso() };
+    var o = { incomeKrw: $('inc').value.replace(/\D/g, ''), loanType: sel.type, region: sel.type === 'mortgage' ? sel.region : null, repayment: sel.rep, ratePercent: $('rate').value, years: sel.type === 'credit' ? String(rules.limits.credit_years_fixed) : $('yrs').value.replace(/\D/g, ''), asOf: todayIso() };
     for (var k in (over || {})) o[k] = over[k];
     return o;
   }
@@ -77,10 +77,8 @@
 
   // 조건별 한도(프롬프트 SIMULATE 표): 같은 엔진·규칙으로 기간·상환방식·금리만 바꿔 계산한다
   function makeScenarios(r) {
-    var rows = [{ label: '현재 입력(' + r.years + '년·' + REP[r.repayment] + '·금리 ' + pct(r.loan_rate_bps) + '%)', limit_krw: r.limit_krw, base: true }];
-    var ymax = r.loan_type === 'credit' ? rules.limits.years_max_credit : rules.limits.years_max_mortgage;
-    var yrs = r.loan_type === 'credit' ? [3, 5, 10] : [20, 30, 40];
-    yrs.forEach(function (y) { if (y !== r.years && y <= ymax) add('기간 ' + y + '년', { years: String(y) }); });
+    var rows = [{ label: '현재 입력(' + r.years + '년' + (r.loan_type === 'credit' ? ' 고정' : '') + '·' + REP[r.repayment] + '·금리 ' + pct(r.loan_rate_bps) + '%)', limit_krw: r.limit_krw, base: true }];
+    if (r.loan_type === 'mortgage') [20, 30, 40].forEach(function (y) { if (y !== r.years) add('기간 ' + y + '년', { years: String(y) }); });
     add(REP[r.repayment === 'annuity' ? 'principal_equal' : 'annuity'] + '로 변경', { repayment: r.repayment === 'annuity' ? 'principal_equal' : 'annuity' });
     [-100, 100].forEach(function (d) { var b = r.loan_rate_bps + d; if (b >= rules.limits.rate_min_bps && b <= rules.limits.rate_max_bps) add('대출 금리 ' + (d > 0 ? '+' : '−') + '1.00%p (' + pct(b) + '%)', { ratePercent: (b / 100).toFixed(2) }); });
     function add(label, over) {
@@ -97,7 +95,8 @@
     var onTxt = L(r.limit_krw), onNote = '';
     if (r.credit_boundary === 'below_threshold') onNote = c.compare_on_credit_free; else if (r.credit_boundary === 'at_threshold') onNote = c.compare_on_credit_edge;
     h += '<h3 class="sc-t">' + c.compare_title + '</h3><div class="cmp2"><div><small>' + c.compare_off + '</small><strong>' + L(r.limit_no_stress_krw) + '</strong></div><div class="hl"><small>' + c.compare_on + '</small><strong>' + onTxt + '</strong>' + (onNote ? '<small>' + onNote + '</small>' : '') + '</div></div>';
-    if (r.diff_krw > 0) h += '<div class="diff">' + tpl(c.diff, { diff: L(r.diff_krw).replace('약 ', '약 ') }) + '<small>' + c.diff_note + '</small></div>';
+    if (r.diff_krw > 0) h += '<div class="diff">' + tpl(c.diff, { diff: L(r.diff_krw) }) + '</div>';
+    h += '<p class="note" style="margin-top:10px">' + c.diff_note + '</p>';
     h += '<dl><div><dt>' + c.dt_capacity + '</dt><dd>' + won(r.annual_capacity_krw) + '</dd></div><div><dt>' + c.dt_rate + '</dt><dd>' + pct(r.loan_rate_bps) + '%' + (r.stress_applied ? ' + ' + (r.stress_bp / 100).toFixed(1) + '%p <span class="asm">' + c.rate_tag + '</span>' : '') + '</dd></div></dl>';
     // 기존 대출 영향(연 원리금 100만 원당 한도 변화): 한도는 연 상환 여력에 비례
     var base = r.stress_applied || r.loan_type === 'mortgage' ? r.limit_with_stress_krw : r.limit_no_stress_krw;
@@ -116,7 +115,7 @@
     var h = '';
     pdata.order.forEach(function (id) {
       var d = AI_DESC[id]; if (!d || !pdata.modules[id]) return;
-      h += '<label class="opt"><input class="ai-it" id="ai-' + id + '" type="checkbox" value="' + id + '"' + (pdata.defaults.indexOf(id) >= 0 ? ' checked' : '') + '><span><b>' + esc(d[0]) + ' <em class="asm tag">' + esc(d[1]) + '</em></b><small>' + esc(d[2]) + '</small></span></label>';
+      h += '<label class="opt"><input class="ai-it" id="ai-' + id + '" type="checkbox" value="' + id + '"' + (pdata.defaults.indexOf(id) >= 0 ? ' checked' : '') + '><span><b>' + esc(d[0]) + '</b><small>' + esc(d[2]) + '</small></span></label>';
     });
     $('ai-list').insertAdjacentHTML('beforeend', h);
     $('ai-list').addEventListener('change', function () { resetPrompt(); });
@@ -146,16 +145,18 @@
     });
   }
   function syncType() {
-    var mort = sel.type === 'mortgage';
+    var mort = sel.type === 'mortgage', cred = sel.type === 'credit', y = $('yrs');
     $('f-region').hidden = !mort;
-    $('yrs').placeholder = sel.type === 'credit' ? '예: 5' : '예: 30';
-    $('yrs-note').textContent = sel.type === 'credit' ? '신용대출은 최대 ' + rules.limits.years_max_credit + '년까지 입력할 수 있어요.' : '주택담보대출은 최대 ' + rules.limits.years_max_mortgage + '년까지 입력할 수 있어요.';
-    $('credit-note').hidden = sel.type !== 'credit';
+    $('credit-note').hidden = !cred;
+    if (cred) { y.value = String(rules.limits.credit_years_fixed); y.readOnly = true; y.setAttribute('aria-readonly', 'true'); }
+    else { if (y.readOnly) y.value = ''; y.readOnly = false; y.removeAttribute('aria-readonly'); }
+    y.placeholder = '예: 30';
+    $('yrs-note').textContent = cred ? '신용대출은 5년 만기 분할상환 기준으로 계산해요(기간 고정).' : '주택담보대출은 최대 ' + rules.limits.years_max_mortgage + '년까지 입력할 수 있어요.';
   }
 
   function init() {
     bindMoney($('inc'));
-    ['rate', 'yrs'].forEach(function (id) { $(id).addEventListener('input', function () { if (id === 'yrs') this.value = this.value.replace(/\D/g, '').slice(0, 2); start(); invalidate(); }); });
+    ['rate', 'yrs'].forEach(function (id) { $(id).addEventListener('input', function () { if (id === 'yrs') { if (this.readOnly) return; this.value = this.value.replace(/\D/g, '').slice(0, 2); } start(); invalidate(); }); });
     bindSeg('g-type', 'type', syncType); bindSeg('g-region', 'region'); bindSeg('g-rep', 'rep');
     $('go').addEventListener('click', calc);
     ['inc', 'rate', 'yrs'].forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') calc(); }); });

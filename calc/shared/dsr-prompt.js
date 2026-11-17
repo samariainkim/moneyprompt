@@ -8,7 +8,7 @@
   function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   function pct(bps) { return (Math.round(bps) / 100).toFixed(2) + '%'; }
   function pp(bps) { return (Math.round(bps * 10) / 1000).toFixed(bps % 10 ? 3 : 2).replace(/0+$/, '').replace(/\.$/, '.0') + '%p'; }
-  var TYPE = { mortgage: '주택담보대출', credit: '신용대출(분할상환 가정)' };
+  var TYPE = { mortgage: '주택담보대출', credit: '신용대출(5년 만기 분할상환, 최초 1년 납입액 기준)' };
   var REGION = { metro: '수도권·규제지역', non_metro: '그 외 지역(지방)' };
   var REP = { annuity: '원리금균등', principal_equal: '원금균등(첫해 12개월 상환액 기준)' };
   function moduleList(data, selected) {
