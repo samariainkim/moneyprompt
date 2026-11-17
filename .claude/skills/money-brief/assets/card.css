@@ -111,3 +111,5 @@ tr.hl td{background:var(--cream)}
 .ck{margin-top:22px;padding:24px 34px}
 .tbl.s.sub td{padding:26px 8px;font-size:36px}
 .tbl.s.sub td:first-child{font-size:32px}
+.tbl.s.sub.dense td{padding:18px 8px;font-size:34px}
+.tbl.s.sub.dense td:first-child{font-size:30px}
