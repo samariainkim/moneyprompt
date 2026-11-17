@@ -12,6 +12,8 @@ let fails = 0; const ok = (c, m) => { if (!c) { fails++; console.log('FAIL', m);
   const b = await chromium.launch({ proxy: BASE.startsWith('https://') && process.env.HTTPS_PROXY ? { server: process.env.HTTPS_PROXY } : undefined });
   async function open(w, h, touch, anon) {   // anon=true 면 비로그인, 아니면 로그인 쿠키(sb-…-auth-token)를 넣는다
     const c = await b.newContext({ viewport: { width: w, height: h }, hasTouch: !!touch, isMobile: !!touch, ignoreHTTPSErrors: true });
+    // 운영에서는 서버(/api/me/)가 로그인 여부를 다시 확인하므로, 시험에서는 그 응답도 맞춰 준다
+    await c.route('**/api/me/', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ signedIn: !anon }) }));
     if (!anon) await c.addCookies([{ name: 'sb-test-auth-token', value: 'x', url: BASE + '/' }]);
     await c.route(/fonts\.googleapis|fonts\.gstatic|googletagmanager|open\.kakao/, (r) => r.abort());
     const p = await c.newPage(); const errs = [];
