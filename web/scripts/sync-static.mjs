@@ -293,4 +293,7 @@ console.log(`[sync-static] donbuff.com 절대 링크를 상대 링크로 바꾼 
 console.log(`[sync-static] 파비콘 링크를 넣은 페이지 ${iconAdded}개.`);
 console.log(`[sync-static] GA4 기본 코드를 새로 넣은 페이지 ${gaAdded}개.`);
 console.log(`[sync-static] 로그인 게이트를 ${gated}개 페이지에 삽입했습니다.`);
-if (gated !== GATE_PAGES.size) throw new Error(`게이트 대상 ${GATE_PAGES.size}개 중 ${gated}개만 삽입되었습니다. 경로를 확인하세요.`);
+// 새 디자인 페이지만 있는 미공개 계산기(운영에서는 페이지가 생성되지 않음)는 이 환경에서 꺼져 있으면 기대 개수에서 뺀다.
+const GATE_OPTIONAL = { 'calc/dsr/index.html': '/calc/dsr/' };
+const gateExpected = [...GATE_PAGES].filter((rel) => !(rel in GATE_OPTIONAL) || rdOn.includes(GATE_OPTIONAL[rel])).length;
+if (gated !== gateExpected) throw new Error(`게이트 대상 ${gateExpected}개 중 ${gated}개만 삽입되었습니다. 경로를 확인하세요.`);
