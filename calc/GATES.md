@@ -53,3 +53,21 @@
 | FX-9 | 공개 시: `calculators.json`의 fx `status`를 `live`로, `calc/fx/index.html`의 `noindex` 제거, sitemap 반영 | 사용자 결정 |
 | FX-10 | 저장소 공개 시 PRD·GATES·tests는 업로드 제외 가능 | 선택 |
 | FX-11 | Actions는 저장소 60일 무활동 시 스케줄이 중지될 수 있음 — 주기 확인 | 참고 |
+
+---
+
+## DSR 한도 계산기 (dsr) — 공개 전 게이트
+상태: **미리보기 전용**(`pages.json` preview 에만 등록, 허브는 `coming_soon`). 운영 주소 `/calc/dsr/` 는 페이지가 생성되지 않는다(`sync-static` 확인). 규칙 검증 보고서: 별도 보관(`dsr-verification-report`).
+
+| # | 항목 | 상태 |
+|---|------|------|
+| DSR-1 | 은행연합회 스트레스금리 공시(공시일 2026.06.30) 원문·금융위 행정지도 제2024-002호(2026.7.1~12.31) 최종 시행문 증빙 보관 | 확보 |
+| DSR-2 | 공식 사례 수치 재현 8건은 기준금리 4.5% 역산 가정. 금리·기간이 모두 명시된 공식 사례로 추가 대조 | 미완 |
+| DSR-3 | 원금균등(첫해 12개월 상환액 기준)을 은행 안내문·금감원 가이드라인으로 대조 | 미완 |
+| DSR-4 | 은행업감독규정 별표6·감독원장 세부기준 본문 대조(40% 한도 문구는 금융위 보도자료로 확인) | 미완 |
+| DSR-5 | 총대출 1억 원 이하 DSR 규제 제외 여부 원문 확인(현재 계산에 미반영, 규칙 JSON `small_loan_exemption`) | 미완 |
+| DSR-6 | 2026.12월 말 스트레스 금리 신규 고시 반영: `dsr.rules` 에 기간 추가. 미등록 시 2027.1.1부터 계산이 자동으로 멈춘다(마지막 값 재사용 금지) | 운영 일정 |
+| DSR-7 | 신용대출: 기존 신용대출 합산·만기일시·마이너스통장은 미지원(결과 안내문으로 표시). 확장 시 별도 검증 | 범위 결정 |
+| DSR-8 | 결과 저장("내 결과에 저장")은 DB 허용 목록(`saved_results.tool`) 추가 마이그레이션 후 `auth-gates.js` 에 saveTool 지정 | 미반영 |
+| DSR-9 | OG 이미지 `/calc/og/dsr.png`, 허브 `status` 를 open 으로, `pages.json` production 추가, `noindex` 제거, sitemap 반영 | 공개 시 |
+| DSR-10 | GA4: `calculator_id=dsr` 이벤트(calc_view/start/result/error/ai_generate/ai_copy/share), 입력·결과 값은 전송하지 않음. 맞춤 측정기준 `loan_type`, `repayment`, `stress_applied` 등록 | 대기 |

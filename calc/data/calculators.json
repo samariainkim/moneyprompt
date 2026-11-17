@@ -44,6 +44,19 @@
       "ai": true,
       "badge": null,
       "order": 3
+    },
+    {
+      "id": "dsr",
+      "path": "/calc/dsr/",
+      "name": "DSR 한도 계산기",
+      "short_name": "DSR 한도",
+      "desc": "스트레스 DSR을 반영한 대출 한도를 추정해요",
+      "category": "loan",
+      "icon": "loan",
+      "status": "coming_soon",
+      "ai": true,
+      "badge": null,
+      "order": 4
     }
   ],
   "wishlist": [
