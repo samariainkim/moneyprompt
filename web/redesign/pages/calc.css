@@ -142,3 +142,13 @@
  .rd .big{font-size:40px;letter-spacing:-1.4px}
  .rd .ai-card{padding:28px 22px;border-radius:24px}.rd .ai-card h2{font-size:24px}
 }
+
+/* DSR 한도 계산기: 스트레스 금리 미적용 vs 적용 비교 */
+.rd .cmp2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.rd .cmp2>div{border-radius:18px;padding:16px 18px;background:var(--off);min-width:0}
+.rd .cmp2>div.hl{background:var(--navy);color:#fff}
+.rd .cmp2 small{display:block;font-size:12.5px;opacity:.8;margin-top:2px}
+.rd .cmp2 small:first-child{margin-top:0}
+.rd .cmp2 strong{display:block;font-size:26px;letter-spacing:-1px;margin-top:2px;line-height:1.25}
+@media(max-width:560px){.rd .cmp2{grid-template-columns:1fr}.rd .cmp2 strong{font-size:23px}}
+.rd #result.dsr-res h2{font-size:22px;font-weight:900;letter-spacing:-.6px;color:var(--navy);margin:2px 0 4px}

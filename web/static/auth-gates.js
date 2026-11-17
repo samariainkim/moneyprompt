@@ -18,6 +18,7 @@
     '/calc/brokerage/': { kind: 'form', id: 'calc_brokerage', saveTool: 'calc_brokerage', trigger: '#make-prompt' },
     '/calc/fx/': { kind: 'form', id: 'calc_fx', saveTool: 'calc_fx', trigger: '#make-prompt' },
     '/calc/loan-prepay/': { kind: 'form', id: 'calc_loan', saveTool: 'calc_loan', trigger: '#make-prompt' },
+    '/calc/dsr/': { kind: 'form', id: 'calc_dsr', saveTool: 'calc_dsr', trigger: '#make-prompt' },
     '/fee/brokerage-fee/': { kind: 'form', id: 'fee_brokerage', saveTool: 'fee_brokerage', trigger: '#make-prompt' },
     '/invest-mbti/': { kind: 'mbti', id: 'mbti_prompt', saveTool: 'mbti', triggers: ['#aiCta', '#copyBtn'] },
     '/prompt/': { kind: 'fav', id: 'fav' }
@@ -225,6 +226,7 @@
     return { title: title, summary: summary, payload: collectState() };
   }
   function initSaveForm() {
+    if (!cfg.saveTool) return; // 결과 저장을 지원하지 않는 계산기
     var res = qs('#result'); if (!res) return;
     var ui = makeSaveButton(formItem, 'save');
     res.parentNode.insertBefore(ui.wrap, res.nextSibling);

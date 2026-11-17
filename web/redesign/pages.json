@@ -8,6 +8,7 @@
     "/calc/brokerage/": "calc-brokerage.html",
     "/calc/loan-prepay/": "calc-loan-prepay.html",
     "/calc/fx/": "calc-fx.html",
+    "/calc/dsr/": "calc-dsr.html",
     "/invest-mbti/": "invest-mbti.html",
     "/invest-mbti/paths/": "invest-mbti-paths.html",
     "/brief/": "brief.html"
@@ -20,6 +21,7 @@
     "/calc/brokerage/",
     "/calc/loan-prepay/",
     "/calc/fx/",
+    "/calc/dsr/",
     "/invest-mbti/",
     "/invest-mbti/paths/",
     "/brief/",

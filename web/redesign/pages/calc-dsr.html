@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSR 한도 계산기 · 돈버프 금융계산기</title>
+<meta name="description" content="연소득과 대출 조건을 넣으면 스트레스 DSR을 반영한 대출 한도를 추정해 드려요. 계산 결과를 바탕으로 AI 심층분석도 이어갈 수 있어요.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#FFF2E5">
+<meta property="og:type" content="website"><meta property="og:title" content="DSR 한도 계산기 · 돈버프 금융계산기">
+<meta property="og:description" content="스트레스 DSR을 반영한 대출 한도를 간편하게 추정해 보세요"><meta property="og:image" content="https://donbuff.com/calc/og/dsr.png">
+<meta property="og:url" content="https://donbuff.com/calc/dsr/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/redesign/frame.css">
+<link rel="stylesheet" href="/redesign/calc.css">
+</head>
+<body data-redesign="calc">
+<div class="site">
+<!--@header active=calc over=1-->
+<main id="main">
+<section class="hero3"><div class="wrap"><div class="col">
+ <div class="crumb"><a href="/calc/">금융계산기</a> › DSR 한도</div>
+ <h1>DSR 한도 계산기</h1>
+ <p class="lead3">내 소득과 대출 조건을 넣으면, 스트레스 DSR을 반영한 대출 한도를 추정해 드려요. 실제 한도는 은행 심사 결과에 따라 달라질 수 있어요.</p>
+</div></div></section>
+<div class="rd">
+<div class="card">
+ <label for="inc">연 소득 (세전, 원)</label>
+ <div class="in"><input id="inc" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 60,000,000"><span class="u">원</span></div>
+ <p class="hint" id="inc-hint" style="margin-top:6px" aria-live="polite"></p>
+
+ <div class="req-t" id="type-t">대출 종류</div>
+ <div class="seg two" role="group" aria-labelledby="type-t" id="g-type"><button type="button" id="t-mort" data-v="mortgage" aria-pressed="false">주택담보대출</button><button type="button" id="t-credit" data-v="credit" aria-pressed="false">신용대출</button></div>
+ <div class="sub" id="credit-note" hidden><p class="hint">5년 만기 분할상환 신용대출의 최초 1년 납입액 기준이에요. 만기일시상환·마이너스통장은 산정 방식이 달라요.</p></div>
+
+ <div id="f-region" hidden>
+  <div class="req-t" id="region-t">주택 소재지</div>
+  <div class="seg two" role="group" aria-labelledby="region-t" id="g-region"><button type="button" id="r-metro" data-v="metro" aria-pressed="false">수도권·규제지역</button><button type="button" id="r-non" data-v="non_metro" aria-pressed="false">그 외 지역</button></div>
+  <p class="hint">서울·경기·인천과 규제지역은 스트레스 금리가 더 높아요.</p>
+ </div>
+
+ <div class="req-t" id="rep-t">상환 방식</div>
+ <div class="seg two" role="group" aria-labelledby="rep-t" id="g-rep"><button type="button" id="p-ann" data-v="annuity" aria-pressed="false">원리금균등</button><button type="button" id="p-pe" data-v="principal_equal" aria-pressed="false">원금균등</button></div>
+
+ <div class="row2">
+  <div><label for="rate">대출 금리 (%)</label><div class="in"><input id="rate" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 4.2"><span class="u">%</span></div></div>
+  <div><label for="yrs">대출 기간 (년)</label><div class="in"><input id="yrs" type="text" inputmode="numeric" autocomplete="off" maxlength="2" placeholder="예: 30"><span class="u">년</span></div></div>
+ </div>
+ <p class="hint" id="yrs-note"></p>
+
+ <div class="notice"><b>간편 계산 기준</b>연소득, 금리, 기간, 상환방식만으로 DSR 기준 신규 대출 한도를 추정해요.<br>기존 대출이 있거나 혼합형·고정형 상품이면 결과가 달라질 수 있어요.</div>
+ <div class="err" id="err" role="alert"></div>
+ <button class="btn" id="go" type="button">DSR 한도 계산하기</button>
+</div>
+
+<section id="result" class="card res dsr-res" hidden aria-live="polite" aria-labelledby="rh"></section>
+
+<section id="ai" class="ai-card" hidden aria-labelledby="ai-t">
+ <div class="ai-k">★ AI 심층분석</div>
+ <h2 id="ai-t">복잡한 DSR 대출한도 계산,<br>AI로 한 단계 더 심층분석</h2>
+ <p class="ai-sub">내 계산결과를 바탕으로 내게 필요한 분석내용을 선택하세요.</p>
+ <fieldset class="ai-list" id="ai-list"><legend class="sr">분석 항목 선택</legend></fieldset>
+ <div class="ai-err" id="ai-err" role="alert"></div>
+ <button class="ai-btn" id="make-prompt" type="button" aria-expanded="false" aria-controls="prompt-box">선택한 분석 요청문 만들기</button>
+ <span class="lock">🔒 로그인 후 이용할 수 있어요</span>
+ <div id="prompt-box" hidden>
+  <div class="ai-ph"><span>생성된 프롬프트</span><button class="ai-copy" id="copy-ai" type="button">프롬프트 복사</button></div>
+  <pre id="prompt" tabindex="0" aria-label="생성된 AI 프롬프트"></pre>
+ </div>
+ <p class="ai-foot">생성된 프롬프트를 복사해 원하는 AI 서비스에 붙여넣어 보세요.<br>AI 답변은 금융회사·공식 자료와 교차 확인해 주세요.</p>
+</section>
+<button class="btn sec" id="copy-res" type="button" hidden>공유용 문구 복사</button>
+</div>
+</main>
+<!--@footer-->
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script src="/redesign/frame.js" defer></script>
+<script src="/redesign/calc.js"></script>
+<script src="/calc/shared/dsr-engine.js?v=1.0"></script><script src="/calc/shared/dsr-prompt.js?v=1.0"></script><script src="/calc/shared/dsr-analytics.js?v=1.0"></script><script src="/calc/shared/dsr-app.js?v=1.0"></script>
+</body>
+</html>

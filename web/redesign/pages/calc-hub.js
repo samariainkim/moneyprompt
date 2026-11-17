@@ -11,7 +11,8 @@
   var QUESTION = {
     brokerage: '집을 사고팔거나 계약할 때, 중개보수는 얼마일까요?',
     'loan-prepay': '대출을 미리 갚으면 수수료가 얼마나 나올까요?',
-    fx: '환율 우대 90%, 실제로 얼마나 아낄까요?'
+    fx: '환율 우대 90%, 실제로 얼마나 아낄까요?',
+    dsr: '내 연소득으로 DSR 기준 대출 한도는 얼마일까요?'
   };
   function card(c) {
     var open = c.status === 'open';

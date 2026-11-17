@@ -10,6 +10,7 @@
 | 돈 버는 프롬프트 | `/prompt/` | 있음 | (보완 전) **없음** → **보완:** `prompt_open/copy/ai_open/filter/search`, `today_pick_click`, `new_prompt_click`, `favorite_toggle` |
 | 투자 성향 | `/invest-mbti/` | 있음 | `test_start/complete`, `ai_deepdive_click`, `link_share`, `image_save` |
 | 계산기 4종 | `/calc/brokerage·fx·loan-prepay/`, `/fee/brokerage-fee/` | 있음 | `calc_view/start/result/ai_generate/interest/error` |
+| DSR 한도 계산기(미리보기) | `/calc/dsr/` (운영 미공개) | 있음 | `calc_view/start/result/error/ai_generate/ai_copy/share`, `calculator_id=dsr`, 추가 파라미터 `loan_type`·`repayment`·`stress_applied`(소득·금리·한도 값은 전송하지 않음) |
 | 계산기·수수료 허브 | `/calc/`, `/fee/` | 있음 | `calc_hub_view`, `fee_hub_view`, `calc_interest` |
 | 요율표·새 홈 시안·개인정보 | `/calc/brokerage/rates/`, `/fee/brokerage-rates/`, `/new/`, `/privacy.html` | **없었음 → 보완** | — |
 | 회원 앱 | `/login` `/signup` `/join` `/account` 등 | 있음(production 빌드) | `gate_trigger/view/click`, `signup_start/complete`, `save_click/save_result` → **보완:** `login`, `favorite_toggle` |

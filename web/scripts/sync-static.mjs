@@ -244,7 +244,7 @@ const MARK = 'data-dbx-auth-nav';
 const TAG = `<script ${MARK}>${AUTH_NAV_JS}</script>`;
 // 로그인 게이트는 필요한 페이지에만 넣는다. (경로는 public 기준)
 const GATE_PAGES = new Set([
-  'calc/brokerage/index.html', 'calc/fx/index.html', 'calc/loan-prepay/index.html',
+  'calc/brokerage/index.html', 'calc/fx/index.html', 'calc/loan-prepay/index.html', 'calc/dsr/index.html',
   'fee/brokerage-fee/index.html', 'invest-mbti/index.html', 'prompt/index.html',
 ]);
 const GATE_TAG = `<script data-dbx-gates>${AUTH_GATES_JS}</script>`;

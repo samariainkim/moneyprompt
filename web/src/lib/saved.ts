@@ -3,6 +3,7 @@ export const SAVED_TOOLS = {
   calc_fx: { label: '환전수수료 계산기', path: '/calc/fx/' },
   calc_brokerage: { label: '부동산 중개보수 계산기', path: '/calc/brokerage/' },
   calc_loan: { label: '대출 중도상환 계산기', path: '/calc/loan-prepay/' },
+  calc_dsr: { label: 'DSR 한도 계산기', path: '/calc/dsr/' },
   fee_brokerage: { label: '중개보수 계산기(FEE BUFF)', path: '/fee/brokerage-fee/' },
   mbti: { label: '투자 성향 검사', path: '/invest-mbti/' },
 } as const;
@@ -18,4 +19,4 @@ export const SAVED_PAYLOAD_MAX = 30000; // 직렬화한 글자 수 상한 (DB �
 export const restoreUrl = (tool: SavedTool, id: string) => `${SAVED_TOOLS[tool].path}?dbx_resume=restore&dbx_saved=${encodeURIComponent(id)}`;
 
 // 새 디자인의 '내 결과' 카드 아이콘
-export const SAVED_ICON: Record<SavedTool, string> = { calc_fx: '💱', calc_brokerage: '🏠', calc_loan: '🏦', fee_brokerage: '🏠', mbti: '🧭' };
+export const SAVED_ICON: Record<SavedTool, string> = { calc_fx: '💱', calc_brokerage: '🏠', calc_loan: '🏦', calc_dsr: '🧮', fee_brokerage: '🏠', mbti: '🧭' };
