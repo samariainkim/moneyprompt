@@ -66,7 +66,11 @@ def format_value(v, f):
         return f'{y}.{int(m)}.{int(d)}'
     if f == 'man':  # 약 N만 원(반올림)
         return f'{round(int(v) / 10000):,}'
-    raise SystemExit(f"[build_cards] 알 수 없는 형식 '|{f}' (n, won, d1, d2, d3, man, date)")
+    if f == 'eokman':  # N억 N,NNN만 원(만원 미만 절사, 올림 없음)
+        man = int(v) // 10000
+        eok, rest = divmod(man, 10000)
+        return (f'{eok}억 ' if eok else '') + (f'{rest:,}만 원' if rest or not eok else '원').replace('원원', '원')
+    raise SystemExit(f"[build_cards] 알 수 없는 형식 '|{f}' (n, won, d1, d2, d3, man, eokman, date)")
 
 
 def interpolate(obj, vals):

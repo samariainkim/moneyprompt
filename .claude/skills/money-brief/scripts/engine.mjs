@@ -7,6 +7,7 @@
 //  {"engine":"loan","input":{amountKrw,executionDate,repaymentDate,periodMonths,ratePercent}}   중도상환수수료
 //  {"engine":"loan_compare","of":"<loan 항목 id>","offset_days":30}               상환 시점 비교 한 줄(offset_days 생략=만기일)
 //  {"engine":"const","values":{...}}                                              1차 자료에서 옮겨 온 값(공시 금리 등). 본문에서 {{id.값}} 로 쓰면 출처가 한 곳에 모인다
+//  {"engine":"dsr","input":{incomeKrw,loanType,region,repayment,ratePercent,years,asOf}}      DSR 한도 계산기 엔진(스트레스 금리 규칙은 calc/data/dsr.rules.v*.json, 등록 기간 밖이면 실패). 필드: limit_krw, limit_no_stress_krw, diff_krw, stress_bp …
 //  {"engine":"savings","input":{monthlyKrw,months,ratePercent,taxPercent}}         단리 정액적립식 적금 이자(매월 초 납입 가정, 세율 기본 15.4%). 입력값에 "@id.필드" 로 다른 항목 값을 쓸 수 있다
 import { createRequire } from 'node:module';
 import { readFileSync, readdirSync } from 'node:fs';
@@ -23,7 +24,8 @@ const latest = (prefix) => { // calc/data 의 규칙 파일 중 가장 높은 �
 };
 const FX = req(join(root, 'calc', 'shared', 'fx-engine.js'));
 const LOAN = req(join(root, 'calc', 'shared', 'loan-engine.js'));
-const rulesFx = latest('fx'), rulesLoan = latest('loan-prepay');
+const DSR = req(join(root, 'calc', 'shared', 'dsr-engine.js'));
+const rulesFx = latest('fx'), rulesLoan = latest('loan-prepay'), rulesDsr = latest('dsr');
 const rates = JSON.parse(readFileSync(join(root, 'calc', 'data', 'fx', 'rates.json'), 'utf8'));
 const now = process.env.NOW ? Date.parse(process.env.NOW) : Date.now();
 
@@ -47,6 +49,7 @@ for (const [id, c0] of Object.entries(input.calc || {})) {
     const base = Number(e.base), tts = Number(e.tts), ttb = Number(e.ttb);
     r = { status: 'success', base, tts, ttb, spread_out: Math.round((tts - base) * 1e4) / 1e4, spread_in: Math.round((base - ttb) * 1e4) / 1e4, base_date: rates.base_date, unit: e.unit };
   } else if (c.engine === 'loan') r = LOAN.calculate(c.input, rulesLoan);
+  else if (c.engine === 'dsr') r = DSR.calculate(c.input, rulesDsr);
   else if (c.engine === 'loan_compare') {
     const base = out[c.of]; if (!base) throw new Error(`${id}: ${c.of} 가 먼저 와야 합니다.`);
     const rows = LOAN.compare(base, rulesLoan);
@@ -68,5 +71,5 @@ for (const [id, c0] of Object.entries(input.calc || {})) {
   if (!r || r.status !== 'success') throw new Error(`${id}: 계산 실패 ${JSON.stringify(r)}`);
   out[id] = r;
 }
-out._meta = { fx_base_date: rates.base_date, fx_checked_at: rates.checked_at, fx_rules: rulesFx.version, loan_rules: rulesLoan.version, now: new Date(now).toISOString() };
+out._meta = { fx_base_date: rates.base_date, fx_checked_at: rates.checked_at, fx_rules: rulesFx.version, loan_rules: rulesLoan.version, dsr_rules: rulesDsr.version, now: new Date(now).toISOString() };
 console.log(JSON.stringify(out));

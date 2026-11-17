@@ -62,6 +62,27 @@ def check(root, calc, results):
             tax_i = int((D(pre_i) * tax).to_integral_value(ROUND_FLOOR))
             if (pre_i, pre_i - tax_i) != (r['interest_pre'], r['interest_post']):
                 errs.append(f"{cid}: 적금 이자 불일치 엔진 {r['interest_pre']}/{r['interest_post']} ≠ 독립 계산 {pre_i}/{pre_i - tax_i}")
+        elif eng == 'dsr':
+            # 독립 검산: 파이썬 Decimal, 원금균등은 첫 12개월을 직접 합산(엔진은 닫힌 식)
+            i = c['input']
+            rules_dsr = _latest_rules(root, 'dsr')
+            per = next(p for p in rules_dsr['stress_periods'] if p['from'] <= i['asOf'] <= p['to'])
+            st = D(per['metro_mortgage_bp'] if i['region'] == 'metro' else per['non_metro_mortgage_bp']) / 100 if i['loanType'] == 'mortgage' else D(per['default_bp']) / 100
+            def cap(rate_pct, years):
+                A = (D(str(i['incomeKrw'])) * D(rules_dsr['dsr_limit']['bank_percent']) / 100).to_integral_value(ROUND_FLOOR)
+                r_ = D(rate_pct) / 100 / 12; n_ = years * 12
+                if i['repayment'] == 'annuity':
+                    L = A * n_ / 12 if r_ == 0 else A / 12 * (1 - (1 + r_) ** (-n_)) / r_
+                else:
+                    f = sum(D(1) / n_ + (1 - D(k) / n_) * r_ for k in range(12)); L = A / f
+                return int(L.to_integral_value(ROUND_FLOOR))
+            yrs = int(i['years'])
+            if i['loanType'] == 'mortgage':
+                want_no, want_st = cap(D(str(i['ratePercent'])), yrs), cap(D(str(i['ratePercent'])) + st, yrs)
+                if abs(want_no - r['limit_no_stress_krw']) > 1 or abs(want_st - r['limit_with_stress_krw']) > 1:
+                    errs.append(f"{cid}: DSR 한도 불일치 엔진 {r['limit_no_stress_krw']}/{r['limit_with_stress_krw']} ≠ 독립 계산 {want_no}/{want_st}")
+            else:
+                warns.append(f"{cid}: 신용대출 DSR 경계 처리는 독립 검산 대상이 아닙니다(엔진 단위 시험으로 확인).")
         elif eng in ('fx_rate', 'loan_compare', 'const'):
             pass  # 환율 원본값, 위 loan 결과에서 파생된 값, 1차 자료 값
         else:
