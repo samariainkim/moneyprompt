@@ -70,7 +70,8 @@
 
   /* ───── 확대 보기 ───── */
   var lb = $('#lb'), img = $('#lbImg'), cnt = $('#lbCount'), ttl = $('#lbTitle'), bar = $('#lbBar');
-  var lgBox = $('#lbLogin'), lgGo = $('#lbLoginGo'), lgSkip = $('#lbLoginSkip'), lgShown = false;
+  var loginSeen = false;   // 이 화면에서 로그인 안내를 이미 거쳤는지(안내에서 "둘러볼게요"로 돌아온 경우 포함)
+  if (/[?&]bfl=1(&|$)/.test(location.search)) { loginSeen = true; try { history.replaceState(history.state, '', location.pathname + location.search.replace(/([?&])bfl=1&?/, '$1').replace(/[?&]$/, '') + location.hash); } catch (e) {} }
   var lPrev = $('#lbPrev'), lNext = $('#lbNext'), lClose = $('#lbClose'), hot = $('#lbHot'), cta = $('#lbCta'), rep = $('#lbReport');
   var st = { it: null, n: 1, max: 1, opener: null };
 
@@ -104,24 +105,22 @@
     if (how) ev('brief_card_nav', { issue: it.no, card: st.n, how: how });
   }
   function signedIn() { try { return !!(window.__dbxAuth && window.__dbxAuth.signedIn()); } catch (e) { return false; } }
-  function showLogin() {
-    lgShown = true; lgBox.hidden = false;
-    var next = location.pathname + location.search + '#no' + st.it.no + '-' + st.n;   // 로그인 후 같은 카드로 돌아온다
-    lgGo.href = '/join/?next=' + encodeURIComponent(next) + '&src=brief_zoom';
+  function toLogin() {   // 로그인 안내 화면(/join/)으로 보낸다. 돌아올 때(로그인 후·둘러보기) 같은 카드가 열린다
+    loginSeen = true;
+    var q = location.search + (location.search ? '&' : '?') + 'bfl=1';
+    var next = location.pathname + q + '#no' + st.it.no + '-' + st.n;
     ev('brief_login_prompt_view', { issue: st.it.no, card: st.n });
-    lgGo.focus();
+    location.assign('/join/?next=' + encodeURIComponent(next) + '&src=brief_zoom');
   }
-  function hideLogin() { lgBox.hidden = true; if (lClose) lClose.focus(); }
   function openLb(it, n, source, opener) {
     st.it = it; st.n = n; st.max = n; st.opener = opener || document.activeElement;
     lb.hidden = false; document.documentElement.style.overflow = 'hidden'; setInert(true);
     render(null); lClose.focus();
-    if (!lgShown && !signedIn()) showLogin();   // 처음 확대할 때 한 번(이 화면을 보는 동안)
     ev('brief_card_open', { issue: it.no, card: n, source: source });
   }
   function closeLb(silent) {
     if (lb.hidden) return;
-    lb.hidden = true; lgBox.hidden = true; document.documentElement.style.overflow = ''; setInert(false); clearHash();
+    lb.hidden = true; document.documentElement.style.overflow = ''; setInert(false); clearHash();
     if (!silent) ev('brief_lightbox_close', { issue: st.it.no, last_card: st.n, max_card: st.max });
     if (st.opener && st.opener.focus) { try { st.opener.focus(); } catch (e) {} }
   }
@@ -129,14 +128,14 @@
 
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('#bfRail .bc');
-    if (b) openLb(cur, Number(b.getAttribute('data-n')), 'strip', b);
+    if (!b) return;
+    var n = Number(b.getAttribute('data-n'));
+    if (!loginSeen && !signedIn()) { st.it = cur; st.n = n; toLogin(); return; }   // 비로그인이 카드를 처음 확대하면 로그인 안내 화면으로
+    openLb(cur, n, 'strip', b);
   });
   lPrev.addEventListener('click', function () { go(-1, 'button'); });
   lNext.addEventListener('click', function () { go(1, 'button'); });
   lClose.addEventListener('click', function () { closeLb(); });
-  lgSkip.addEventListener('click', function () { ev('brief_login_prompt_click', { issue: st.it.no, card: st.n, action: 'skip' }); hideLogin(); });
-  lgGo.addEventListener('click', function () { ev('brief_login_prompt_click', { issue: st.it.no, card: st.n, action: 'login' }); });
-  lgBox.addEventListener('click', function (e) { if (e.target === lgBox) hideLogin(); });
   bar.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('button[data-k]'); if (b) { var k = Number(b.getAttribute('data-k')); if (k !== st.n) { st.n = k; render('bar'); } } });
   lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
   [hot, cta].forEach(function (a) { a.addEventListener('click', function () { ev('brief_cta_click', { issue: st.it.no, card: st.n, target: (st.it.cards[st.n - 1].link || {}).target || a.getAttribute('href') }); }); });
@@ -144,13 +143,13 @@
 
   document.addEventListener('keydown', function (e) {
     if (lb.hidden) return;
-    if (e.key === 'Escape') { e.preventDefault(); if (!lgBox.hidden) hideLogin(); else closeLb(); }
+    if (e.key === 'Escape') { e.preventDefault(); closeLb(); }
     else if (e.key === 'ArrowRight') { e.preventDefault(); go(1, 'key'); }
     else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1, 'key'); }
     else if (e.key === 'Home') { e.preventDefault(); if (st.n !== 1) { st.n = 1; render('key'); } }
     else if (e.key === 'End') { e.preventDefault(); if (st.n !== st.it.cards.length) { st.n = st.it.cards.length; render('key'); } }
     else if (e.key === 'Tab') { // 확대 화면 안에서만 이동
-      var f = Array.prototype.filter.call((lgBox.hidden ? lb : lgBox).querySelectorAll('button,a[href]'), function (x) { return !x.hidden && !x.disabled && x.offsetParent !== null; });
+      var f = Array.prototype.filter.call(lb.querySelectorAll('button,a[href]'), function (x) { return !x.hidden && !x.disabled && x.offsetParent !== null; });
       if (!f.length) return;
       var first = f[0], last = f[f.length - 1];
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
