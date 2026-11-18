@@ -62,7 +62,9 @@
     "/calc/fx/",
     "/invest-mbti/",
     "/invest-mbti/paths/",
-    "/brief/"
+    "/brief/",
+    "/calc/dsr/",
+    "/book/"
   ],
   "nextPages": [
     "/join/",
