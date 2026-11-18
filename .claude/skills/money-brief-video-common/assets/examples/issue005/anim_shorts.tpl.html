@@ -1,0 +1,137 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:P;src:url(fonts/node_modules/pretendard/dist/public/static/Pretendard-Medium.otf);font-weight:500}
+@font-face{font-family:P;src:url(fonts/node_modules/pretendard/dist/public/static/Pretendard-Bold.otf);font-weight:700}
+@font-face{font-family:P;src:url(fonts/node_modules/pretendard/dist/public/static/Pretendard-ExtraBold.otf);font-weight:800}
+@font-face{font-family:P;src:url(fonts/node_modules/pretendard/dist/public/static/Pretendard-Black.otf);font-weight:900}
+:root{--o:#FF7900;--n:#10233F;--c:#FFF3E6;--m:#5B6B86}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;font-family:P,sans-serif;color:var(--n);background:var(--n)}
+.sc{position:absolute;inset:0;padding:80px;opacity:0}
+.cream{background:var(--c)}.dark{background:var(--n);color:#fff}
+.brand{position:absolute;left:80px;top:70px;font-weight:900;letter-spacing:1px;font-size:34px}.brand b{color:var(--o)}
+.big{font-weight:900;letter-spacing:-2px;line-height:1.12}.o{color:var(--o)}
+.chip{display:inline-block;background:#fff;border-radius:999px;font-weight:800;padding:.35em .9em;color:var(--o)}
+.abs{position:absolute;left:80px;right:80px}
+.card{background:#fff;border-radius:28px;padding:34px 44px;box-shadow:0 10px 30px rgba(16,35,63,.1);font-weight:800;font-size:50px}
+.card .v{display:block;color:var(--o);font-size:92px;font-weight:900;letter-spacing:-2px;margin-top:6px}
+.card small{font-size:36px;color:var(--m);font-weight:600;margin-left:12px}
+.bars{position:absolute;left:80px;right:80px;display:flex;gap:25px;align-items:flex-end;justify-content:center}
+.bar{width:290px;white-space:nowrap;display:flex;flex-direction:column;align-items:center;font-weight:800;font-size:36px;text-align:center}
+.bar i{display:block;width:100%;border-radius:20px 20px 0 0;background:#C9D5E8;margin:12px 0}
+.bar.hl i{background:var(--o)}
+.sub{position:absolute;left:50%;bottom:310px;transform:translateX(-50%);text-align:center;font-weight:800;color:#fff;background:rgba(16,35,63,.9);padding:.4em .9em;border-radius:16px;line-height:1.4;font-size:50px;white-space:nowrap;opacity:0;z-index:20}
+.dis{position:absolute;left:0;right:0;bottom:80px;text-align:center;color:var(--m);font-size:30px;font-weight:500;z-index:5}
+.dark .dis{color:#9FB0C8}
+.ck{display:flex;align-items:center;gap:28px;background:#fff;border-radius:28px;padding:36px 44px;font-weight:800;font-size:56px;margin-top:34px;box-shadow:0 10px 30px rgba(16,35,63,.08)}
+.ck u{display:grid;place-items:center;width:84px;height:84px;border-radius:20px;border:5px solid #E0D6CA;color:#fff;text-decoration:none;font-size:56px;flex:none}
+.pb{position:absolute;left:0;top:0;height:10px;background:var(--o);z-index:30}
+.btn{display:inline-flex;align-items:center;gap:20px;border-radius:999px;font-weight:900;padding:30px 56px}
+</style></head><body>
+<div class="pb" id="pb"></div>
+
+<div class="sc dark" id="s1"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="abs" style="top:300px"><span class="chip" id="s1c" style="font-size:44px">연소득 6천만 원</span>
+ <div class="big" style="font-size:118px;margin-top:40px"><div id="s1a">대출 한도가</div><div id="s1b" class="o">1억 넘게</div><div id="s1d">줄었다?</div></div></div>
+ <div class="abs" style="top:1000px;font-weight:900"><div id="s1o" style="font-size:50px;color:#9FB0C8;text-decoration:line-through;text-decoration-thickness:5px">4억 898만 원</div><div id="s1n" class="o" style="font-size:118px;letter-spacing:-3px;margin-top:14px">4억 898만 원</div></div>
+ <div class="dis">예시 계산 · 예상치 · 실제 한도는 은행 심사에 따라 달라요</div></div>
+
+<div class="sc cream" id="s2"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="abs big" id="s2t" style="top:190px;font-size:86px">스트레스 DSR이란?</div>
+ <div style="position:absolute;left:150px;top:420px;width:520px"><div id="s2b2" style="height:0;background:var(--o);border-radius:20px 20px 0 0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:46px;overflow:hidden">가산금리 +3.0%p</div>
+  <div id="s2b1" style="height:0;background:var(--n);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:50px;overflow:hidden;border-radius:0 0 20px 20px">실제 금리 4.2%</div></div>
+ <div id="s2br" style="position:absolute;left:720px;top:420px;width:300px;font-weight:900;font-size:44px;line-height:1.3"><div style="border-left:8px solid var(--o);padding-left:24px">한도 심사용<br>금리 <span class="o">7.2%</span></div></div>
+ <div class="abs" id="s2p" style="top:1110px"><span class="chip" style="font-size:42px;background:var(--n);color:#fff">한도 심사 계산에만 더해요</span></div>
+ <div class="abs" id="s2k" style="top:1230px;font-weight:900;font-size:64px;line-height:1.3"><span class="o">✓</span> 실제로 내는 금리는<br>그대로예요</div>
+ <div class="dis">예시 조건: 대출 금리 4.2%, 수도권·규제지역 주택담보대출 기준</div></div>
+
+<div class="sc cream" id="s3"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="abs big" id="s3t" style="top:180px;font-size:86px">내 대출은<br>어느 <span class="o">구간</span>일까?</div>
+ <div class="abs" style="top:470px"><span class="chip" id="s3c" style="font-size:40px">2026년 하반기 적용</span></div>
+ <div class="abs" style="top:570px">
+  <div class="card" id="s3a">수도권·규제지역 주택담보대출<span class="v">3.0%p</span></div>
+  <div class="card" id="s3b" style="margin-top:24px">지방 주택담보대출<small>규제지역 외</small><span class="v">0.75%p</span></div>
+  <div class="card" id="s3d" style="margin-top:24px">신용대출<small>총잔액 1억 원 초과</small><span class="v">1.5%p</span></div></div>
+ <div class="dis">변동금리 기준 · 예상치</div></div>
+
+<div class="sc cream" id="s4"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="abs big" id="s4t" style="top:180px;font-size:80px">같은 소득,<br>한도는 이렇게 <span class="o">달라요</span></div>
+ <div class="abs" style="top:470px"><span class="chip" id="s4c" style="font-size:34px">연소득 6천만 원 · 4.2% · 30년 · 기존 대출 없음</span></div>
+ <div class="bars" style="top:560px;height:760px">
+  <div class="bar" id="s4a"><span id="s4av">4억 898만 원</span><i id="s4ai" style="height:0"></i><span>반영 전</span></div>
+  <div class="bar hl" id="s4b"><span id="s4bv" class="o">2억 9,464만 원</span><i id="s4bi" style="height:0"></i><span>수도권·규제지역</span></div>
+  <div class="bar" id="s4d"><span id="s4dv">3억 7,469만 원</span><i id="s4di" style="height:0"></i><span>지방</span></div></div>
+ <div class="dis">예시 계산 · 예상치 · 실제 한도는 은행 심사에 따라 달라요</div></div>
+
+<div class="sc cream" id="s5"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="abs big" id="s5t" style="top:200px;font-size:86px">대출 받기 전에<br><span class="o">꼭 확인</span>하세요</div>
+ <div class="abs" style="top:560px"><div class="ck" id="s5a"><u id="s5au">✓</u>계약일</div><div class="ck" id="s5b"><u id="s5bu">✓</u>기존 대출</div><div class="ck" id="s5c"><u id="s5cu">✓</u>신용대출 총잔액 1억 초과?</div></div>
+ <div class="dis">일반적인 점검 항목이며 개인별 대출 상담이 아니에요</div></div>
+
+<div class="sc dark" id="s6"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="abs big" id="s6t" style="top:380px;font-size:100px">내 조건으로<br><span class="o">한도 점검</span>해 보세요</div>
+ <div class="abs" id="s6p" style="top:820px;font-size:50px;line-height:1.6">돈버프 「돈 버는 프롬프트」<br><b>내게 맞는 대출한도 설정하기</b></div>
+ <div class="abs" id="s6b" style="top:1130px"><span class="btn" style="background:var(--o);color:var(--n);font-size:54px">설명란 링크 →</span></div>
+ <div class="dis" id="s6d" style="opacity:0;color:#fff;font-size:34px;font-weight:700">※ 예상치예요. 실제 한도는 은행 심사에 따라 달라요</div></div>
+
+<div class="sc dark" id="s7" style="background:linear-gradient(160deg,#16305A,#10233F 60%)"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="abs big" id="s7t" style="top:360px;font-size:92px;text-align:center;left:60px;right:60px">돈버프에서<br><span class="o">자세한 내용을</span><br>확인해보세요</div>
+ <div class="abs" id="s7u" style="top:910px;text-align:center;font-size:56px;font-weight:800;color:#C9D5E8">donbuff.com</div>
+ <div class="abs" id="s7btn" style="top:1130px;display:flex;gap:44px;justify-content:center">
+  <div id="s7s" class="btn" style="background:#E5252A;color:#fff;font-size:54px;position:relative">
+   <svg id="s7bell" width="64" height="64" viewBox="0 0 24 24" fill="#fff"><path d="M12 22a2.5 2.5 0 0 0 2.4-2h-4.8A2.5 2.5 0 0 0 12 22zm7-6V11a7 7 0 0 0-5-6.7V3a2 2 0 0 0-4 0v1.3A7 7 0 0 0 5 11v5l-2 2v1h18v-1z"/></svg><span id="s7st">구독</span></div>
+  <div id="s7l" class="btn" style="background:#fff;color:var(--n);font-size:54px">
+   <svg id="s7th" width="64" height="64" viewBox="0 0 24 24" fill="#10233F"><path d="M2 21h4V9H2v12zm20-11a2 2 0 0 0-2-2h-6.3l1-4.6v-.3a1.5 1.5 0 0 0-.4-1L13.2 1 7.6 6.6A2 2 0 0 0 7 8v11a2 2 0 0 0 2 2h9a2 2 0 0 0 1.8-1.1l3-7a2 2 0 0 0 .2-.9v-2z"/></svg><span id="s7lt">좋아요</span></div></div>
+ <div class="abs" id="s7h" style="top:1440px;text-align:center;font-size:40px;font-weight:600;color:#9FB0C8">도움이 되셨다면 구독과 좋아요 부탁드려요</div>
+ <div class="dis" style="color:#9FB0C8;font-size:28px">예시 계산 · 예상치 · 실제 한도는 은행 심사에 따라 달라요</div></div>
+
+<div class="sub" id="sub"></div>
+<script>
+// MONEY BRIEF 쇼츠 템플릿: 시간표(자막 줄 G, 장면 SCN)는 build_anim.py 가 끼워 넣는다. 화면 요소는 줄 번호 a(i) 에 맞춰 등장한다.
+const G=__GROUPS__;const SCN=__SCENES__;const DUR=__DUR__;const END0=__END0__;
+const $=id=>document.getElementById(id);
+const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=x=>1-Math.pow(1-cl(x),3);
+const eb=x=>{x=cl(x);const c=1.70158;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const p=(t,s,d=0.5)=>cl((t-s)/d);
+const a=i=>G[i].a;
+function show(el,t,s,d=0.5,dy=40,back=false){const k=p(t,s,d);el.style.opacity=eo(k);const e=back?eb(k):eo(k);el.style.transform=`translateY(${(1-e)*dy}px)`;}
+function fmtMan(v){const man=Math.floor(v/10000),eok=Math.floor(man/10000),r=man%10000;return (eok?eok+'억 ':'')+(r?r.toLocaleString('en-US')+'만 원':'원');}
+// 장면 전환: 직전 장면 쉼의 가운데(= 다음 장면 시작 0.4초 전)
+const B=i=>SCN[i].start-0.4;
+const SC=[['s1',0,B(1)],['s2',B(1),B(2)],['s3',B(2),B(3)],['s4',B(3),B(4)],['s5',B(4),B(5)],['s6',B(5),END0],['s7',END0,DUR]];
+function render(t){
+ $('pb').style.width=(cl(t/DUR)*100)+'%';
+ for(const [id,s0,e0] of SC){const el=$(id);let o=0;if(t>=s0-0.001&&t<e0){o=1;if(id!=='s1')o=Math.min(1,(t-s0)/0.28)}el.style.opacity=o;el.style.zIndex=o>0?1:0}
+ // S1 훅: 숫자 4억 898만 원 → 2억 9,464만 원
+ show($('s1c'),t,0.1,.4);show($('s1a'),t,0.25,.45);show($('s1b'),t,0.5,.45);show($('s1d'),t,0.75,.45);
+ show($('s1o'),t,a(1)-.16,.4);const k1=p(t,a(1)+.24,1.6);const v=408983591+(294642713-408983591)*eo(k1);$('s1n').textContent=fmtMan(v);$('s1n').style.opacity=p(t,a(1)-.06,.3);
+ // S2 스트레스 DSR 도식
+ show($('s2t'),t,a(2)-.26,.5);const b1=eo(p(t,a(2)+.14,.9)),b2=eo(p(t,a(3)-.04,.9));$('s2b1').style.height=(b1*380)+'px';$('s2b2').style.height=(b2*270)+'px';
+ $('s2br').style.opacity=p(t,a(3)+.86,.5);show($('s2p'),t,a(3)+1.46,.5);
+ show($('s2k'),t,a(4),.5);$('s2b1').style.boxShadow=t>a(4)?`0 0 0 ${8*eo(p(t,a(4),.4))}px rgba(255,121,0,.55)`:'none';
+ // S3 구간 카드
+ show($('s3t'),t,a(5)-.39,.5);show($('s3c'),t,a(5)+.16,.4);show($('s3a'),t,a(5)+.76,.55,60,true);show($('s3b'),t,a(6)-.14,.55,60,true);show($('s3d'),t,a(7)-.02,.55,60,true);
+ // S4 한도 막대
+ show($('s4t'),t,a(8)-.24,.5);show($('s4c'),t,a(8)+.36,.5);
+ $('s4ai').style.height=(eo(p(t,a(8)+1.36,1.0))*560)+'px';$('s4bi').style.height=(eo(p(t,a(9)+.12,1.0))*403)+'px';$('s4di').style.height=(eo(p(t,a(9)+1.12,1.0))*512)+'px';
+ $('s4av').style.opacity=p(t,a(8)+1.66,.4);$('s4bv').style.opacity=p(t,a(9)+.52,.4);$('s4dv').style.opacity=p(t,a(9)+1.52,.4);
+ // S5 체크
+ show($('s5t'),t,a(10)-.18,.5);
+ [['s5a','s5au',a(10)+.42],['s5b','s5bu',a(10)+1.32],['s5c','s5cu',a(10)+2.22]].forEach(([r,u,s0])=>{show($(r),t,s0-0.15,.35,30);const k=eb(p(t,s0+0.15,.35));$(u).style.background=k>0.02?'var(--o)':'transparent';$(u).style.borderColor=k>0.02?'var(--o)':'#E0D6CA';$(u).style.transform=`scale(${0.4+0.6*k})`;$(u).style.opacity=cl(k*2)});
+ // S6 마무리
+ show($('s6t'),t,a(11)-.3,.55);show($('s6p'),t,a(11)+1.1,.5);show($('s6b'),t,a(11)+2.5,.5,40,true);$('s6d').style.opacity=p(t,a(12),.4);
+ // S7 끝 화면: 구독·좋아요 버튼이 눌린다
+ show($('s7t'),t,END0+.2,.6);show($('s7u'),t,END0+1.0,.5);
+ show($('s7s'),t,END0+1.4,.5,60,true);show($('s7l'),t,END0+1.7,.5,60,true);show($('s7h'),t,END0+2.4,.5);
+ const press=(s0)=>1-0.12*Math.sin(Math.PI*p(t,s0,.35));
+ const sOn=t>=END0+3.2;$('s7s').style.transform=`translateY(${(1-eb(p(t,END0+1.4,.5)))*60}px) scale(${press(END0+3.0)})`;
+ $('s7s').style.background=sOn?'#4A5A75':'#E5252A';$('s7st').textContent=sOn?'구독중 ✓':'구독';
+ $('s7bell').style.transform=t>END0+3.4&&t<END0+4.3?`rotate(${Math.sin((t-END0-3.4)*40)*18}deg)`:'none';
+ const lOn=t>=END0+4.4;$('s7l').style.transform=`translateY(${(1-eb(p(t,END0+1.7,.5)))*60}px) scale(${press(END0+4.2)*(lOn&&t<END0+4.8?1+0.1*Math.sin(Math.PI*p(t,END0+4.4,.4)):1)})`;
+ $('s7l').style.background=lOn?'var(--o)':'#fff';$('s7l').style.color=lOn?'#fff':'var(--n)';$('s7th').setAttribute('fill',lOn?'#fff':'#10233F');$('s7lt').textContent=lOn?'좋아요 ♥':'좋아요';
+ // 자막
+ const sb=$('sub');let cur=null;for(let i=0;i<G.length;i++){const g=G[i];if(t>=g.a&&t<g.b+.12){cur=g;break}}
+ if(cur){sb.innerHTML=cur.text.replace(/\n/g,'<br>');sb.style.opacity=Math.min(1,(t-cur.a)/.1,(cur.b+.12-t)/.08)}else sb.style.opacity=0;
+}
+window.render=render;render(0);
+</script></body></html>

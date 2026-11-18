@@ -1,0 +1,186 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:P;src:url(fonts/node_modules/pretendard/dist/public/static/Pretendard-Medium.otf);font-weight:500}
+@font-face{font-family:P;src:url(fonts/node_modules/pretendard/dist/public/static/Pretendard-Bold.otf);font-weight:700}
+@font-face{font-family:P;src:url(fonts/node_modules/pretendard/dist/public/static/Pretendard-ExtraBold.otf);font-weight:800}
+@font-face{font-family:P;src:url(fonts/node_modules/pretendard/dist/public/static/Pretendard-Black.otf);font-weight:900}
+:root{--o:#FF7900;--n:#10233F;--c:#FFF3E6;--m:#5B6B86}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;font-family:P,sans-serif;color:var(--n);background:var(--n)}
+.sc{position:absolute;inset:0;opacity:0}
+.cream{background:var(--c)}.dark{background:var(--n);color:#fff}
+.brand{position:absolute;left:90px;top:56px;font-weight:900;letter-spacing:1px;font-size:32px}.brand b{color:var(--o)}
+.big{font-weight:900;letter-spacing:-2px;line-height:1.14}.o{color:var(--o)}
+.chip{display:inline-block;background:#fff;border-radius:999px;font-weight:800;padding:.32em .9em;color:var(--o)}
+.dark .chip{background:rgba(255,255,255,.12);color:#fff}
+.a{position:absolute}
+.card{background:#fff;border-radius:26px;padding:30px 36px;box-shadow:0 10px 30px rgba(16,35,63,.1);font-weight:800}
+.row{display:flex;align-items:center;gap:30px;font-weight:800}
+.bar{height:64px;border-radius:14px;background:#C9D5E8;transform-origin:left;width:0}
+.hl{background:var(--o)}
+.sub{position:absolute;left:50%;bottom:120px;transform:translateX(-50%);text-align:center;font-weight:800;color:#fff;background:rgba(16,35,63,.92);padding:.35em .9em;border-radius:16px;line-height:1.38;font-size:46px;white-space:nowrap;opacity:0;z-index:20}
+.dis{position:absolute;left:0;right:0;bottom:44px;text-align:center;color:var(--m);font-size:26px;font-weight:500;z-index:5}
+.dark .dis{color:#9FB0C8}
+.pb{position:absolute;left:0;top:0;height:8px;background:var(--o);z-index:30}
+.ck{display:flex;align-items:center;gap:26px;background:#fff;border-radius:22px;padding:12px 32px;font-weight:800;font-size:40px;box-shadow:0 8px 24px rgba(16,35,63,.08)}
+.ck u{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;border:4px solid #E0D6CA;color:#fff;text-decoration:none;font-size:36px;flex:none}
+.btn{display:inline-flex;align-items:center;gap:20px;border-radius:999px;font-weight:900;padding:26px 54px}
+</style></head><body>
+<div class="pb" id="pb"></div>
+
+<div class="sc dark" id="L01"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="a" style="left:110px;top:200px;width:1000px"><span class="chip" id="a1" style="font-size:38px">뉴스 · 대출규제</span>
+  <div class="big" style="font-size:94px;margin-top:28px"><div id="a2">바뀐 DSR 제도,</div><div id="a3">내 대출 한도는</div><div id="a4" class="o">얼마나 달라졌을까?</div></div>
+  <div id="a5" style="margin-top:44px"><span class="chip" style="font-size:40px">바뀐 DSR 제도 쉽게 정리</span></div></div>
+ <div class="a" style="left:1060px;top:250px;width:760px;text-align:right;font-weight:900">
+  <div id="b0" style="font-size:44px;color:#9FB0C8">연소득 6천만 원 · 대출 30년</div>
+  <div id="b1" style="font-size:56px;color:#9FB0C8;text-decoration:line-through;text-decoration-thickness:5px;margin-top:40px">4억 898만 원</div>
+  <div id="b2" class="o" style="font-size:112px;letter-spacing:-3px;margin-top:10px">2억 9,464만 원</div>
+  <div id="b3" style="font-size:40px;color:#C9D5E8;margin-top:8px">수도권·규제지역 주택담보대출 기준</div>
+  <div id="b4" style="position:absolute;right:30px;top:520px;width:170px;height:170px;border-radius:50%;background:var(--o);color:#fff;font-size:120px;display:grid;place-items:center">?</div></div>
+ <div class="dis">예시 계산 · 예상치 · 실제 한도는 은행 심사에 따라 달라요</div></div>
+
+<div class="sc cream" id="L02"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="a big" id="c0" style="left:110px;top:170px;font-size:92px">DSR이란?</div>
+ <div class="a row" id="cf" style="left:110px;top:300px;font-size:58px;gap:26px">
+  <div class="card" id="c1" style="background:var(--n);color:#fff">연간 원리금</div><div id="c2" style="font-size:80px">÷</div><div class="card" id="c3">연소득</div><div id="c4" style="font-size:80px">=</div><div class="card" id="c5" style="background:var(--o);color:#fff">DSR</div></div>
+ <div class="a" id="c6" style="left:110px;top:480px;font-size:46px;font-weight:800;line-height:1.5"><span class="chip" style="font-size:42px;background:#fff">모든 가계대출의 원금 + 이자</span> 를 합쳐서 계산해요</div>
+ <div class="a" id="c7" style="left:110px;top:590px;width:1300px"><div style="font-weight:800;font-size:40px;margin-bottom:14px">은행권은 <span class="o">40%</span> 이내로 한도를 심사해요 <span style="font-size:28px;color:var(--m);font-weight:500">(금융위원회 자료)</span></div>
+  <div style="height:56px;border-radius:14px;background:#E8DFD3;position:relative;overflow:hidden"><div id="c8" style="position:absolute;left:0;top:0;bottom:0;width:0;background:var(--o);border-radius:14px"></div></div>
+  <div style="display:flex;justify-content:space-between;font-size:28px;color:var(--m);font-weight:600;margin-top:8px"><span>0%</span><span id="c9">40%</span><span>연소득 100%</span></div></div>
+ <div class="dis">DSR = 연간 원리금 ÷ 연소득</div></div>
+
+<div class="sc cream" id="L03"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="a big" id="d0" style="left:110px;top:170px;font-size:92px">스트레스 <span class="o">DSR</span></div>
+ <div class="a" style="left:130px;top:310px;width:440px"><div id="d2" style="height:0;background:var(--o);border-radius:20px 20px 0 0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:44px;overflow:hidden">가산금리 +3.0%p</div>
+  <div id="d1" style="height:0;background:var(--n);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:48px;overflow:hidden;border-radius:0 0 20px 20px">실제 금리 4.2%</div></div>
+ <div class="a" id="d3" style="left:600px;top:310px;font-weight:900;font-size:46px;line-height:1.3"><div style="border-left:8px solid var(--o);padding-left:24px">한도 심사용<br>금리 <span class="o">7.2%</span></div></div>
+ <div class="a" id="d4" style="left:900px;top:320px;width:900px"><div class="card" style="font-size:44px;line-height:1.5">앞으로 금리가 오를 수 있다는 점을<br><span class="o">미리 반영</span>해서 한도를 계산해요</div></div>
+ <div class="a" id="d5" style="left:900px;top:560px"><span class="chip" style="font-size:42px;background:var(--n);color:#fff">가산금리는 한도 계산에만 더해요</span></div>
+ <div class="a" id="d6" style="left:900px;top:660px;font-weight:900;font-size:54px;line-height:1.3"><span class="o">✓</span> 실제로 내는 대출금리는 <br>&nbsp;&nbsp;&nbsp;&nbsp;그대로예요</div>
+ <div class="dis">예시 조건: 대출 금리 4.2%, 수도권·규제지역 주택담보대출 기준</div></div>
+
+<div class="sc cream" id="L04"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="a big" id="e0" style="left:110px;top:160px;font-size:80px">스트레스 DSR, <span class="o">이렇게 바뀌었어요</span></div>
+ <div class="a" style="left:110px;top:360px;width:1700px;display:grid;grid-template-columns:repeat(4,1fr);gap:30px;font-size:42px">
+  <div class="card" id="e1" style="min-height:430px">2025.7<span style="display:block;color:var(--o);font-size:92px;font-weight:900;margin:18px 0">1.5%p</span><span style="font-size:32px;color:var(--m);font-weight:600">3단계 시행<br>(DSR 적용 가계대출)</span></div>
+  <div class="card" id="e2" style="min-height:430px;background:var(--n);color:#fff">2025.10.16~<span style="display:block;color:var(--o);font-size:92px;font-weight:900;margin:18px 0">3.0%p</span><span style="font-size:32px;color:#9FB0C8;font-weight:600">수도권·규제지역<br>주택담보대출</span></div>
+  <div class="card" id="e3" style="min-height:430px">~2026.12.31<span style="display:block;color:var(--o);font-size:92px;font-weight:900;margin:18px 0">0.75%p</span><span style="font-size:32px;color:var(--m);font-weight:600">지방 주택담보대출<br>(규제지역 외)</span></div>
+  <div class="card" id="e4" style="min-height:430px">신용대출<span style="display:block;color:var(--o);font-size:92px;font-weight:900;margin:18px 0">1.5%p</span><span style="font-size:32px;color:var(--m);font-weight:600">총잔액이<br>1억 원 초과일 때만</span></div></div>
+ <div class="dis">출처 · 은행연합회 스트레스금리 공시 · 금융위원회 행정지도 · 변동금리 기준</div></div>
+
+<div class="sc cream" id="L05"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="a big" id="f0" style="left:110px;top:160px;font-size:84px">내 대출은 어느 <span class="o">구간</span>일까?</div>
+ <div class="a" style="left:110px;top:330px;width:1700px;font-size:40px"><style>#L05 .card{padding:16px 36px}</style>
+  <div class="card row" id="f1" style="justify-content:space-between"><span>수도권·규제지역 주택담보대출</span><span class="o" style="font-size:60px;font-weight:900">3.0%p</span></div>
+  <div class="card row" id="f2" style="justify-content:space-between;margin-top:22px"><span>지방 주택담보대출 <span style="font-size:32px;color:var(--m);font-weight:600">서울·경기·인천 외 지역(규제지역 외)</span></span><span class="o" style="font-size:60px;font-weight:900">0.75%p</span></div>
+  <div class="card row" id="f3" style="justify-content:space-between;margin-top:22px"><span>신용대출 <span style="font-size:32px;color:var(--m);font-weight:600">총잔액 1억 원 초과</span></span><span class="o" style="font-size:60px;font-weight:900">1.5%p</span></div></div>
+ <div class="a" id="f4" style="left:110px;top:690px"><span class="chip" style="font-size:40px;background:var(--n);color:#fff">규제지역은 국토교통부 공고로 확인해요</span></div>
+ <div class="a" id="f5" style="left:1020px;top:690px"><span class="chip" style="font-size:36px">변동금리 기준 · 혼합·주기형은 일부만 적용</span></div>
+ <div class="dis">혼합형·주기형은 고정기간 비중에 따라 일부만 적용돼요</div></div>
+
+<div class="sc cream" id="L06"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="a big" id="g0" style="left:110px;top:150px;font-size:80px">같은 소득, 한도는 <span class="o">이렇게 달라요</span></div>
+ <div class="a" id="g1" style="left:110px;top:300px"><span class="chip" style="font-size:38px">연소득 6천만 원</span> <span class="chip" style="font-size:38px">대출금리 4.2%</span> <span class="chip" id="g2" style="font-size:38px">30년 원리금균등</span> <span class="chip" id="g3" style="font-size:38px">기존 대출 없음</span></div>
+ <div class="a" style="left:110px;top:430px;width:1700px;font-size:42px">
+  <div class="row" id="h1"><div style="width:420px">가산금리 반영 전</div><div style="width:760px"><div class="bar" id="h1b"></div></div><div id="h1v" style="font-size:46px;font-weight:900">4억 898만 원</div></div>
+  <div class="row" id="h2" style="margin-top:26px"><div style="width:420px">수도권·규제지역</div><div style="width:760px"><div class="bar hl" id="h2b"></div></div><div style="font-size:46px;font-weight:900"><span class="o">2억 9,464만 원</span><span id="h2d" style="font-size:34px;color:var(--m);margin-left:14px;white-space:nowrap">−1억 1,434만 원</span></div></div>
+  <div class="row" id="h3" style="margin-top:26px"><div style="width:420px">지방</div><div style="width:760px"><div class="bar" id="h3b"></div></div><div style="font-size:46px;font-weight:900">3억 7,469만 원<span id="h3d" style="font-size:34px;color:var(--m);margin-left:14px;white-space:nowrap">−3,429만 원</span></div></div></div>
+ <div class="dis">예시 계산 · 예상치 · 실제 한도는 은행 심사에 따라 달라요</div></div>
+
+<div class="sc cream" id="L07"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="a big" id="i0" style="left:110px;top:150px;font-size:80px">대출 <span class="o">기간</span>에 따라서도 달라져요</div>
+ <div class="a" style="left:110px;top:300px"><span class="chip" style="font-size:36px">수도권·규제지역 주택담보대출 기준</span></div>
+ <div class="a" style="left:110px;top:430px;width:1700px;font-size:44px">
+  <div class="row" id="j1"><div style="width:260px">20년</div><div style="width:1000px"><div class="bar" id="j1b"></div></div><div style="font-size:46px;font-weight:900">2억 5,401만 원</div></div>
+  <div class="row" id="j2" style="margin-top:26px"><div style="width:260px">25년</div><div style="width:1000px"><div class="bar" id="j2b"></div></div><div style="font-size:46px;font-weight:900">2억 7,793만 원</div></div>
+  <div class="row" id="j3" style="margin-top:26px"><div style="width:260px">30년</div><div style="width:1000px"><div class="bar hl" id="j3b"></div></div><div class="o" style="font-size:46px;font-weight:900">2억 9,464만 원</div></div></div>
+ <div class="a" id="j4" style="left:110px;top:712px"><span class="chip" style="font-size:42px;background:var(--n);color:#fff">기간 ↑ 한도 ↑ · 총이자 부담도 ↑</span></div>
+ <div class="a" id="j5" style="left:1000px;top:712px"><span class="chip" style="font-size:34px">기간·상환 조건은 은행·상품마다 제한이 있어요</span></div>
+ <div class="dis">예시 계산 · 예상치 · 연소득 6천만 원, 금리 4.2%, 원리금균등, 기존 대출 없음</div></div>
+
+<div class="sc cream" id="L08"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="a big" id="k0" style="left:110px;top:130px;font-size:76px">대출 전 <span class="o">확인 5가지</span></div>
+ <div class="a" style="left:110px;top:270px;width:1700px;display:grid;gap:14px">
+  <div class="ck" id="k1"><u id="k1u">✓</u>내 주택이 수도권·규제지역인가요?</div>
+  <div class="ck" id="k2"><u id="k2u">✓</u><span>계약일이 언제인가요? <span id="k2n" style="font-size:30px;color:var(--m);font-weight:600;margin-left:10px">2025.10.15까지 계약·계약금 납부를 마쳤다면 이전 규정일 수 있어요</span></span></div>
+  <div class="ck" id="k3"><u id="k3u">✓</u><span>기존 대출이 있나요? <span id="k3n" style="font-size:30px;color:var(--m);font-weight:600;margin-left:10px">연 원리금 100만 원마다 한도 약 1,227만 원 감소(예시)</span></span></div>
+  <div class="ck" id="k4"><u id="k4u">✓</u>신용대출 총잔액이 1억 원을 넘나요?</div>
+  <div class="ck" id="k5"><u id="k5u">✓</u><span>12월 말 새 고시를 확인했나요? <span id="k5n" style="font-size:30px;color:var(--m);font-weight:600;margin-left:10px">스트레스 금리는 6월·12월에 새로 정해져요</span></span></div></div>
+ <div class="dis">일반적인 점검 항목이며 개인별 대출 상담이 아니에요</div></div>
+
+<div class="sc dark" id="L09"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="a big" id="l0" style="left:110px;top:220px;font-size:104px">내 조건으로<br><span class="o">한도 점검</span>해 보세요</div>
+ <div class="a" id="l1" style="left:110px;top:560px;font-size:46px;line-height:1.6">돈버프 「돈 버는 프롬프트」<br><b>내게 맞는 대출한도 설정하기</b> <span style="color:#9FB0C8;font-size:34px">(설명란 링크)</span></div>
+ <div class="a" id="l2" style="left:1060px;top:240px;width:760px;font-size:40px;line-height:1.5"><div style="color:#9FB0C8;font-weight:700;margin-bottom:14px">실제 한도는 이런 것에 따라 달라져요</div>
+  <div style="display:flex;flex-wrap:wrap;gap:16px"><span class="chip l2c" style="font-size:42px">소득 인정</span><span class="chip l2c" style="font-size:42px">LTV</span><span class="chip l2c" style="font-size:42px">DTI</span><span class="chip l2c" style="font-size:42px">신용도</span><span class="chip l2c" style="font-size:42px">은행 심사</span></div></div>
+ <div class="a" id="l3" style="left:1060px;top:620px;font-size:52px;font-weight:900;line-height:1.4">최종 확인은<br><span class="o">은행에서</span> 해 주세요</div>
+ <div class="dis" id="l4" style="color:#fff;font-size:30px;font-weight:700">※ 예시 계산이며 예상치예요. 실제 한도는 은행 심사에 따라 달라요</div></div>
+
+<div class="sc dark" id="END" style="background:linear-gradient(160deg,#16305A,#10233F 60%)"><div class="brand">MONEY <b>BRIEF</b> · 돈버프</div>
+ <div class="a big" id="z1" style="left:120px;top:250px;font-size:104px">돈버프에서<br><span class="o">자세한 내용을</span><br>확인해보세요</div>
+ <div class="a" id="z2" style="left:124px;top:700px;font-size:56px;font-weight:800;color:#C9D5E8">donbuff.com</div>
+ <div class="a" style="left:1060px;top:330px;width:760px;display:grid;gap:44px;justify-items:start">
+  <div id="zs" class="btn" style="background:#E5252A;color:#fff;font-size:64px">
+   <svg id="zb" width="76" height="76" viewBox="0 0 24 24" fill="#fff"><path d="M12 22a2.5 2.5 0 0 0 2.4-2h-4.8A2.5 2.5 0 0 0 12 22zm7-6V11a7 7 0 0 0-5-6.7V3a2 2 0 0 0-4 0v1.3A7 7 0 0 0 5 11v5l-2 2v1h18v-1z"/></svg><span id="zst">구독</span></div>
+  <div id="zl" class="btn" style="background:#fff;color:var(--n);font-size:64px">
+   <svg id="zt" width="76" height="76" viewBox="0 0 24 24" fill="#10233F"><path d="M2 21h4V9H2v12zm20-11a2 2 0 0 0-2-2h-6.3l1-4.6v-.3a1.5 1.5 0 0 0-.4-1L13.2 1 7.6 6.6A2 2 0 0 0 7 8v11a2 2 0 0 0 2 2h9a2 2 0 0 0 1.8-1.1l3-7a2 2 0 0 0 .2-.9v-2z"/></svg><span id="zlt">좋아요</span></div>
+  <div id="zh" style="font-size:38px;font-weight:600;color:#9FB0C8">도움이 되셨다면 구독과 좋아요 부탁드려요</div></div>
+ <div class="dis" style="color:#9FB0C8;font-size:26px">예시 계산 · 예상치 · 실제 한도는 은행 심사에 따라 달라요</div></div>
+
+<div class="sub" id="sub"></div>
+<script>
+const G=__GROUPS__;const SCN=__SCENES__;
+const $=id=>document.getElementById(id);const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=x=>1-Math.pow(1-cl(x),3);const eb=x=>{x=cl(x);const c=1.70158;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const p=(t,s,d=.5)=>cl((t-s)/d);const a=i=>G[i].a;const DUR=__DUR__;const END0=__END0__;
+function show(el,t,s,d=.5,dy=36,back=false){const k=p(t,s,d);el.style.opacity=eo(k);const e=back?eb(k):eo(k);el.style.transform=`translateY(${(1-e)*dy}px)`}
+function fmtMan(v){const man=Math.floor(v/10000),eok=Math.floor(man/10000),r=man%10000;return (eok?eok+'억 ':'')+(r?r.toLocaleString('en-US')+'만 원':'원')}
+const SC=[['L01',0,SCN[1].start-0.4],['L02',SCN[1].start-0.4,SCN[2].start-0.4],['L03',SCN[2].start-0.4,SCN[3].start-0.4],['L04',SCN[3].start-0.4,SCN[4].start-0.4],['L05',SCN[4].start-0.4,SCN[5].start-0.4],['L06',SCN[5].start-0.4,SCN[6].start-0.4],['L07',SCN[6].start-0.4,SCN[7].start-0.4],['L08',SCN[7].start-0.4,SCN[8].start-0.4],['L09',SCN[8].start-0.4,END0],['END',END0,DUR]];
+function grow(el,t,s,w,d=.9){el.style.width=(eo(p(t,s,d))*w)+'px'}
+function check(r,u,t,s){show($(r),t,s-.1,.4,26);const k=eb(p(t,s+.2,.35));$(u).style.background=k>.02?'var(--o)':'transparent';$(u).style.borderColor=k>.02?'var(--o)':'#E0D6CA';$(u).style.transform=`scale(${.4+.6*k})`;$(u).style.opacity=cl(k*2)}
+function render(t){
+ $('pb').style.width=(cl(t/DUR)*100)+'%';
+ for(const [id,s,e] of SC){const el=$(id);let o=0;if(t>=s&&t<e){o=id==='L01'?1:Math.min(1,(t-s)/.3)}el.style.opacity=o;el.style.zIndex=o>0?1:0}
+ // L01
+ show($('a1'),t,.1,.4);show($('a2'),t,.3,.5);show($('a3'),t,.6,.5);show($('a4'),t,.9,.5);show($('b0'),t,1.6,.5);
+ show($('b1'),t,a(1)-.2,.5);$('b2').style.opacity=p(t,a(2)-.3,.4);$('b3').style.opacity=p(t,a(2)-.3,.4);
+ const v=408983591+(294642713-408983591)*eo(p(t,a(2),1.8));$('b2').textContent=t<a(2)-.3?'':fmtMan(v);
+ const q=eb(p(t,a(3),.45));$('b4').style.opacity=q>0?1:0;$('b4').style.transform=`scale(${q})`;show($('a5'),t,a(4),.5);
+ // L02
+ show($('c0'),t,a(5)-.3,.5);[['c1',a(5)],['c2',a(5)+.25],['c3',a(5)+.5],['c4',a(5)+.75],['c5',a(5)+1.0]].forEach(([i,s])=>show($(i),t,s,.4,30,true));
+ show($('c6'),t,a(6),.5);show($('c7'),t,a(7)-.2,.5);$('c8').style.width=(eo(p(t,a(7)+.2,1.2))*40)+'%';
+ // L03
+ show($('d0'),t,a(8)-.2,.5);$('d1').style.height=(eo(p(t,a(9)-.2,.9))*250)+'px';$('d2').style.height=(eo(p(t,a(9)+1.6,.9))*180)+'px';$('d3').style.opacity=p(t,a(9)+2.6,.5);
+ show($('d4'),t,a(10)-.1,.5);show($('d5'),t,a(11),.5);show($('d6'),t,a(12),.5);$('d1').style.boxShadow=t>a(12)?`0 0 0 ${8*eo(p(t,a(12),.4))}px rgba(255,121,0,.55)`:'none';
+ // L04
+ show($('e0'),t,a(13)-.2,.5);show($('e1'),t,a(13)+.5,.5,50,true);show($('e2'),t,a(14),.5,50,true);show($('e3'),t,a(15),.5,50,true);show($('e4'),t,a(16),.5,50,true);
+ // L05
+ show($('f0'),t,a(17)-.2,.5);show($('f1'),t,a(17)+.7,.5,40,true);show($('f2'),t,a(17)+1.5,.5,40,true);show($('f3'),t,a(17)+2.3,.5,40,true);
+ $('f2').style.boxShadow=t>=a(18)?`0 0 0 ${7*eo(p(t,a(18),.4))}px rgba(255,121,0,.7)`:'0 10px 30px rgba(16,35,63,.1)';show($('f4'),t,a(19),.5);show($('f5'),t,a(21)-.4,.5);
+ // L06
+ show($('g0'),t,a(22)-.2,.5);show($('g1'),t,a(23)-.2,.5);$('g2').style.opacity=p(t,a(24)-.1,.4);$('g3').style.opacity=p(t,a(24)+1.2,.4);
+ show($('h1'),t,a(25)-.2,.4);grow($('h1b'),t,a(25),760);show($('h2'),t,a(26)-.2,.4);grow($('h2b'),t,a(26)+.1,547);$('h2d').style.opacity=p(t,a(27),.4);
+ show($('h3'),t,a(28)-.2,.4);grow($('h3b'),t,a(28)+.1,696);$('h3d').style.opacity=p(t,a(29),.4);
+ // L07
+ show($('i0'),t,a(30)-.2,.5);show($('j1'),t,a(31)-.2,.4);grow($('j1b'),t,a(31),880);show($('j2'),t,a(32)-.2,.4);grow($('j2b'),t,a(32),960);show($('j3'),t,a(33)-.2,.4);grow($('j3b'),t,a(33),1000);
+ show($('j4'),t,a(34),.5);show($('j5'),t,a(35),.5);
+ // L08
+ show($('k0'),t,a(36)-.2,.5);check('k1','k1u',t,a(37)+.4);check('k2','k2u',t,a(38)+.4);$('k2n').style.opacity=p(t,a(39),.5);check('k3','k3u',t,a(40)+.4);$('k3n').style.opacity=p(t,a(41),.5);check('k4','k4u',t,a(42)+.4);check('k5','k5u',t,a(43)+.4);$('k5n').style.opacity=p(t,a(44),.5);
+ // L09
+ show($('l0'),t,a(45)-.3,.6);show($('l1'),t,a(45)+1.2,.5);$('l2').style.opacity=p(t,a(47)-.4,.5);document.querySelectorAll('.l2c').forEach((c,i)=>{c.style.opacity=p(t,a(47)+i*.5,.35)});
+ show($('l3'),t,a(48),.5);$('l4').style.opacity=p(t,a(46),.5);
+ // END
+ show($('z1'),t,END0+.2,.6);show($('z2'),t,END0+.8,.5);
+ show($('zs'),t,END0+1.0,.5,60,true);show($('zl'),t,END0+1.3,.5,60,true);show($('zh'),t,END0+1.9,.5);
+ const press=(s)=>1-.12*Math.sin(Math.PI*p(t,s,.35));
+ const sOn=t>=END0+2.4;$('zs').style.transform=`translateY(${(1-eb(p(t,END0+1.0,.5)))*60}px) scale(${press(END0+2.2)})`;$('zs').style.background=sOn?'#4A5A75':'#E5252A';$('zst').textContent=sOn?'구독중 ✓':'구독';
+ $('zb').style.transform=t>END0+2.6&&t<END0+3.5?`rotate(${Math.sin((t-END0-2.6)*40)*18}deg)`:'none';
+ const lOn=t>=END0+3.6;$('zl').style.transform=`translateY(${(1-eb(p(t,END0+1.3,.5)))*60}px) scale(${press(END0+3.4)*(lOn&&t<END0+4.1?1+.1*Math.sin(Math.PI*p(t,END0+3.6,.4)):1)})`;
+ $('zl').style.background=lOn?'var(--o)':'#fff';$('zl').style.color=lOn?'#fff':'var(--n)';$('zt').setAttribute('fill',lOn?'#fff':'#10233F');$('zlt').textContent=lOn?'좋아요 ♥':'좋아요';
+ // 자막
+ const sb=$('sub');let cur=null;for(let i=0;i<G.length;i++){const g=G[i];if(t>=g.a&&t<g.b+.15){cur=g;break}}
+ if(cur&&t<END0+.0001+3){sb.innerHTML=cur.text.replace(/\n/g,'<br>');sb.style.opacity=Math.min(1,(t-cur.a)/.1,(cur.b+.15-t)/.08)}else sb.style.opacity=0;
+ if(t>=END0)sb.style.bottom='90px';else sb.style.bottom='120px';
+}
+window.render=render;render(0);
+</script></body></html>
