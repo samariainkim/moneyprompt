@@ -190,7 +190,7 @@ function renderRedesign(html, ctx) {
     return readFileSync(join(RD_DIR, 'partials', 'footer.html'), 'utf8').replace('{{footer}}', () => footerHtml(menuCfg, isOn, extra));
   });
   // 책 표지: web/redesign/img/book-cover.jpg 가 있을 때만 보여 준다(없으면 표지 없이 글만 — 깨진 이미지 없음).
-  html = html.replace(/<!--@bookcover-->/g, () => (existsSync(join(RD_DIR, 'img', 'book-cover.jpg')) ? '<div class="bk-cover"><img src="/redesign/img/book-cover.jpg" width="600" height="855" alt="『AI로 부자되기』 책 표지 — 김태형 지음, 한빛미디어"></div>' : ''));
+  html = html.replace(/<!--@bookcover-->/g, () => (existsSync(join(RD_DIR, 'img', 'book-cover.jpg')) ? '<div class="bk-cover"><img src="/redesign/img/book-cover.jpg" width="823" height="1200" alt="『AI로 부자되기』 책 표지 — 김태형 지음, 한빛미디어"></div>' : ''));
   // 프롬프트 페이지 → 책 소개 페이지 링크: /book/ 이 이 환경에서 켜져 있을 때만.
   html = html.replace(/<!--@bookpage-->/g, () => (isOn('/book/') ? '<a class="btn line" href="/book/" data-ga="book_page">📘 책 소개 보기</a>' : ''));
   html = html.replace(/<!--@mbtipaths-->/g, () => mbtiPathsHtml());
