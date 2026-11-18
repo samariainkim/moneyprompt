@@ -67,7 +67,7 @@ footer .ft-brand{display:flex;align-items:center;gap:12px}
 footer .ft-brand img{height:34px;width:auto}
 footer .ft-brand b{display:block;color:#fff;font-weight:900;font-size:19px;line-height:1.2}
 footer .ft-brand em{display:block;font-style:normal;color:#FFB066;font-weight:800;font-size:14px;margin-top:2px}
-footer .ft-intro{margin-top:12px;max-width:480px;font-size:13.5px;line-height:1.75;color:rgba(255,255,255,.72)}
+footer .ft-intro{margin-top:12px;font-size:13.5px;line-height:1.75;color:rgba(255,255,255,.72)}
 footer .ft-sns{display:flex;gap:10px;flex:none}
 footer .ft-sns a{position:relative;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;display:grid;place-items:center;transition:background .15s}
 footer .ft-sns a svg{width:20px;height:20px;fill:currentColor}
@@ -82,6 +82,7 @@ footer .ft-4{margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,
 footer a{color:rgba(255,255,255,.75)}
 footer a:hover{color:#fff}
 @media(max-width:640px){.wrap{padding:0 20px}}
+@media(min-width:1000px){footer .ft-intro{white-space:nowrap}}
 @media(max-width:700px){footer{padding:30px 20px 28px}footer .ft{flex-direction:column;gap:20px}footer .ft-sns a::after{right:auto;left:0}footer .ft-sns a:nth-child(n+3)::after{right:0;left:auto}}
 @media(max-width:900px){nav.pc{display:none}.burger{display:block}.logo,.logo img{height:38px}.closing img{height:64px}}
 /* 로그인 메뉴 스크립트(auth-nav.js)가 넣는 버튼을 새 디자인으로 */
