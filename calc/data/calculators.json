@@ -53,7 +53,7 @@
       "desc": "스트레스 DSR을 반영한 대출 한도를 추정해요",
       "category": "loan",
       "icon": "loan",
-      "status": "coming_soon",
+      "status": "open",
       "ai": true,
       "badge": null,
       "order": 4
