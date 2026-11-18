@@ -1,25 +1,12 @@
 <header class="hdr{{over}}"><div class="wrap">
  <a class="logo" href="/"><img src="/redesign/img/logo.png" alt="돈버프 DONBUFF"></a>
- <nav class="dbx-nav pc" aria-label="주 메뉴">
-  <a href="/prompt/" data-nav="prompt"{{cur_prompt}}>돈 버는 프롬프트</a>
-  <a href="/invest-mbti/" data-nav="invest"{{cur_invest}}>나의 투자성향 찾기</a>
-  <div class="dd" id="ddCalc"><button type="button" aria-expanded="false" aria-controls="ddCalcPanel" data-dd="ddCalc">금융계산기 <span style="font-size:11px" aria-hidden="true">▾</span></button>
-   <div class="panel" id="ddCalcPanel">
-    <a href="/calc/brokerage/"><span class="ic" aria-hidden="true">🏠</span><div><b>부동산 중개보수</b><small>거래 금액으로 상한 보수 계산</small></div></a>
-    <a href="/calc/loan-prepay/"><span class="ic" aria-hidden="true">🏦</span><div><b>대출 중도상환</b><small>중도상환수수료 추정</small></div></a>
-    <a href="/calc/fx/"><span class="ic" aria-hidden="true">💱</span><div><b>환전수수료</b><small>환율 우대율별 예상 차액</small></div></a>
-    <hr><a class="all" href="/calc/" data-ga="nav">금융계산기 전체 보기 <span aria-hidden="true">→</span></a>
-   </div></div>
-  {{brief_nav}}
- </nav>
+ <nav class="dbx-nav pc" aria-label="주 메뉴">{{nav}}{{all_btn}}</nav>
  <button class="burger" type="button" id="menuBtn" aria-label="메뉴 열기" aria-expanded="false" aria-controls="menuPanel">☰</button>
-</div></header>
+</div>
+<div class="mega-dim" id="megaDim" hidden></div>
+<div class="mega" id="megaPanel" aria-label="전체 메뉴" hidden>{{mega}}</div></header>
 <div class="mm" id="menuPanel" role="dialog" aria-modal="true" aria-label="전체 메뉴" hidden>
  <div class="top"><a class="logo" href="/"><img src="/redesign/img/logo.png" alt="돈버프"></a><button class="x" type="button" id="menuClose" aria-label="메뉴 닫기">✕</button></div>
- <a class="big" href="/prompt/">돈 버는 프롬프트 <span aria-hidden="true">→</span></a>
- <a class="big" href="/invest-mbti/">나의 투자성향 찾기 <span aria-hidden="true">→</span></a>
- <a class="big" href="/calc/" data-ga="menu" style="border-bottom:0">금융계산기 <span aria-hidden="true">→</span></a>
- <div class="sub"><a href="/calc/brokerage/">🏠 부동산 중개보수</a><a href="/calc/loan-prepay/">🏦 대출 중도상환</a><a href="/calc/fx/">💱 환전수수료</a></div>
- {{brief_menu}}
+ {{mobile_list}}
  <div class="dbx-menu"></div>
 </div>

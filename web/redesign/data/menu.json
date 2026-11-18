@@ -1,0 +1,78 @@
+{
+  "_설명": "헤더(PC)·전체 메뉴(PC 메가메뉴·모바일)·푸터가 모두 이 파일 하나로 만들어진다. requires: 이 주소의 페이지가 그 환경(미리보기/운영)에서 켜져 있을 때만 보인다(pages.json 의 preview/production 기준) — 아직 열지 않은 서비스는 따로 지우지 않아도 자동으로 빠지고, 열리면 자동으로 나타난다. enabled:false 는 수동으로 끄는 스위치. 존재하지 않는 주소는 넣지 않는다.",
+  "core": [
+    { "id": "prompt", "label": "돈 버는 프롬프트", "href": "/prompt/" },
+    { "id": "calc", "label": "금융계산기", "href": "/calc/" },
+    { "id": "brief", "label": "MONEY BRIEF", "href": "/brief/" }
+  ],
+  "hotIssue": {
+    "_설명": "HOT ISSUE(가변 메뉴). enabled·status(public)·기간(activeFrom~activeTo, 한국시간 날짜)·requires(특집 페이지가 그 환경에서 열려 있음)를 모두 만족할 때만 헤더/메뉴에 나온다. 기간이 끝나면 메뉴에서만 빠지고 페이지는 그대로 둔다.",
+    "enabled": false,
+    "status": "draft",
+    "label": "연말정산 특집",
+    "href": "",
+    "requires": "",
+    "activeFrom": "2026-11-01",
+    "activeTo": "2027-02-28",
+    "priority": 1
+  },
+  "categories": [
+    {
+      "id": "prompt", "no": "01", "en": "PROMPT BUFF", "label": "돈 버는 프롬프트", "href": "/prompt/",
+      "children": [
+        { "id": "prompt-today", "label": "오늘의 프롬프트", "href": "/prompt/#todayCard", "requires": "/prompt/" },
+        { "id": "prompt-new", "label": "신규 프롬프트", "href": "/prompt/#newPromptList", "requires": "/prompt/" },
+        { "id": "prompt-search", "label": "프롬프트 검색", "href": "/prompt/#library", "requires": "/prompt/" },
+        { "id": "book", "label": "『AI로 부자되기』 도서 안내", "href": "/book/", "requires": "/book/", "new": true }
+      ]
+    },
+    {
+      "id": "calc", "no": "02", "en": "CALC BUFF", "label": "돈버프 금융계산기", "href": "/calc/",
+      "children": [
+        { "id": "calc-brokerage", "label": "부동산 중개보수", "href": "/calc/brokerage/", "requires": "/calc/brokerage/" },
+        { "id": "calc-loan", "label": "대출 중도상환수수료", "href": "/calc/loan-prepay/", "requires": "/calc/loan-prepay/" },
+        { "id": "calc-fx", "label": "환전수수료", "href": "/calc/fx/", "requires": "/calc/fx/" },
+        { "id": "calc-dsr", "label": "DSR 한도 계산기", "href": "/calc/dsr/", "requires": "/calc/dsr/" },
+        { "id": "calc-why", "label": "돈버프 금융계산기란?", "href": "/calc/why/", "requires": "/calc/why/" }
+      ]
+    },
+    {
+      "id": "brief", "no": "03", "en": "MONEY BRIEF", "label": "돈 버는 카드뉴스", "href": "/brief/",
+      "children": [
+        { "id": "brief-latest", "label": "최신 카드뉴스", "href": "/brief/", "requires": "/brief/" },
+        { "id": "brief-morning", "label": "모닝 브리핑", "href": "", "requires": "", "enabled": false }
+      ]
+    },
+    {
+      "id": "invest", "no": "04", "en": "INVEST BUFF", "label": "나의 투자 성향 찾기", "href": "/invest-mbti/",
+      "children": [
+        { "id": "invest-paths", "label": "16가지 투자 유형이란?", "href": "/invest-mbti/paths/", "requires": "/invest-mbti/paths/" }
+      ]
+    }
+  ],
+  "sns": [
+    { "platform": "youtube", "label": "사마리아인TV (공식 유튜브)", "url": "https://www.youtube.com/@samariaintv", "tip": "youtube.com/@samariaintv", "enabled": true, "order": 1 },
+    { "platform": "blog", "label": "사마리아인 네이버 블로그 (공식 블로그)", "url": "https://blog.naver.com/PostList.naver?blogId=ijesus78&from=postList&categoryNo=148", "tip": "blog.naver.com/ijesus78", "enabled": true, "order": 2 },
+    { "platform": "kakao", "label": "독자 오픈채팅방", "url": "https://open.kakao.com/o/g2JnL4Ai", "tip": "open.kakao.com/o/g2JnL4Ai", "enabled": true, "order": 3 },
+    { "platform": "instagram", "label": "인스타그램 @donbuff_com", "url": "https://www.instagram.com/donbuff_com", "tip": "instagram.com/donbuff_com", "enabled": true, "order": 4 },
+    { "platform": "threads", "label": "Threads", "url": "", "tip": "", "enabled": false, "order": 5 },
+    { "platform": "tiktok", "label": "TikTok", "url": "", "tip": "", "enabled": false, "order": 6 }
+  ],
+  "footer": {
+    "slogan": "돈에 AI를 더하다.",
+    "intro": "돈버프는 AI를 활용해 오늘보다 돈을 잘 다루는 나를 만드는 '금융 + AI' 원칙으로 탄생한 전문 포털입니다.",
+    "links": [
+      { "label": "돈버프 소개", "href": "" },
+      { "label": "운영·편집 원칙", "href": "" },
+      { "label": "개인정보처리방침", "href": "/privacy/" },
+      { "label": "이용약관", "href": "/terms/" },
+      { "label": "광고·제휴 문의", "href": "mailto:samariain.kim@gmail.com" }
+    ],
+    "disclaimer": "금융계산기와 카드뉴스의 결과는 참고용 정보이며 투자·대출 권유가 아닙니다. 최종 의사결정과 그 결과의 책임은 이용자 본인에게 있습니다.",
+    "copyright": "© 2026 DONBUFF. All rights reserved."
+  },
+  "book": {
+    "yes24": "https://www.yes24.com/Product/Goods/194600081",
+    "chat": "https://open.kakao.com/o/g2JnL4Ai"
+  }
+}

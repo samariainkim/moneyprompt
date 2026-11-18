@@ -13,6 +13,29 @@
   });
   document.addEventListener('click', function (e) { dds.forEach(function (d) { if (!d.contains(e.target)) setDd(d, false); }); });
 
+  // PC 전체 메뉴(메가메뉴): 버튼 클릭으로 열고, 버튼 재클릭·바깥 클릭·ESC 로 닫는다(호버로는 열리지 않음).
+  var megaBtn = $('#megaBtn'), mega = $('#megaPanel'), megaDim = $('#megaDim'), hdrEl = $('.hdr');
+  function setMega(open, back) {
+    if (!megaBtn || !mega) return;
+    mega.hidden = !open; if (megaDim) megaDim.hidden = !open;
+    megaBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (hdrEl) hdrEl.classList.toggle('mega-open', open);
+    if (open) ev('nav_mega_open'); else if (back) megaBtn.focus();
+  }
+  if (megaBtn && mega) {
+    megaBtn.addEventListener('click', function (e) { e.stopPropagation(); dds.forEach(function (x) { setDd(x, false); }); setMega(mega.hidden); });
+    document.addEventListener('click', function (e) { if (!mega.hidden && !mega.contains(e.target) && !megaBtn.contains(e.target)) setMega(false); });
+    mega.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('a')) setMega(false); });
+  }
+
+  // 모바일 메뉴의 카테고리 아코디언
+  Array.prototype.forEach.call(document.querySelectorAll('.mx-b'), function (b) {
+    b.addEventListener('click', function () {
+      var p = document.getElementById(b.getAttribute('aria-controls')); if (!p) return;
+      var open = p.hidden; p.hidden = !open; b.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  });
+
   // 모바일 전체 메뉴
   var btn = $('#menuBtn'), panel = $('#menuPanel'), closeBtn = $('#menuClose');
   function setMenu(open) {
@@ -24,16 +47,17 @@
   }
   if (btn) btn.addEventListener('click', function () { setMenu(panel.hidden); });
   if (closeBtn) closeBtn.addEventListener('click', function () { setMenu(false); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { dds.forEach(function (d) { setDd(d, false); }); if (panel && !panel.hidden) setMenu(false); } });
-  window.addEventListener('resize', function () { if (window.innerWidth > 900 && panel && !panel.hidden) setMenu(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { dds.forEach(function (d) { setDd(d, false); }); if (mega && !mega.hidden) setMega(false, true); if (panel && !panel.hidden) setMenu(false); } });
+  window.addEventListener('resize', function () { if (window.innerWidth > 900 && panel && !panel.hidden) setMenu(false); if (window.innerWidth <= 900 && mega && !mega.hidden) setMega(false); });
 
   // 측정: 기존 홈과 같은 이벤트 이름을 유지한다.
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('[data-ga]');
-    if (a) { var t = a.getAttribute('data-ga'); ev(t === 'banner' ? 'calc_home_banner_click' : (t === 'brief_banner' ? 'brief_home_banner_click' : 'nav_menu_click'), { target: t }); }
+    if (a) { var t = a.getAttribute('data-ga'); ev(t === 'banner' ? 'calc_home_banner_click' : (t === 'brief_banner' ? 'brief_home_banner_click' : (t === 'book_buy' ? 'book_buy_click' : (t === 'book_prompt' ? 'book_prompt_click' : 'nav_menu_click'))), { target: t }); }
     var h = e.target.closest && e.target.closest('[data-hero]');
     if (h) ev('hero_tag_click', { target: h.getAttribute('data-hero') });
   });
+  if (document.body.getAttribute('data-redesign') === 'book') ev('book_page_view');
   var banner = $('#svc-calc');
   if (banner && 'IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) { ev('calc_home_banner_view'); io.disconnect(); } }); }, { threshold: 0.5 });

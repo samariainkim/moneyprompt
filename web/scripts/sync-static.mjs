@@ -5,6 +5,7 @@ import { dirname, join, basename, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { minify } from 'terser';
 import vm from 'node:vm';
+import { navHtml, allBtnHtml, megaInnerHtml, mobileListHtml, footerHtml } from '../redesign/shared/chrome.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..', '..');
@@ -37,6 +38,8 @@ const RD_DIR = join(here, '..', 'redesign');
 const rdCfg = JSON.parse(readFileSync(join(RD_DIR, 'pages.json'), 'utf8'));
 const rdEnv = process.env.VERCEL_ENV === 'production' ? 'production' : 'preview';
 const rdOn = (rdCfg[rdEnv] || []).filter((u) => rdCfg.pages[u]);
+const menuCfg = JSON.parse(readFileSync(join(RD_DIR, 'data', 'menu.json'), 'utf8'));
+const isOn = (p) => rdOn.includes(p.endsWith('/') ? p : p + '/'); // 헤더·메뉴·푸터 링크는 이 환경에서 켜진 페이지만
 // Next.js 앱(회원 화면)이 그리는 주소: 정적 파일은 만들지 않지만, 공통 틀(frame.css·member.css 등)은 같이 내보낸다.
 const rdNextOn = (rdCfg[rdEnv] || []).filter((u) => (rdCfg.nextPages || []).includes(u));
 const targetOf = (u) => (u === '/' ? 'index.html' : join(u.replace(/^\/|\/$/g, ''), 'index.html'));
@@ -177,16 +180,19 @@ function renderRedesign(html, ctx) {
     const attrs = Object.fromEntries([...a.matchAll(/(\w+)=(\w+)/g)].map((m) => [m[1], m[2]]));
     let h = readFileSync(join(RD_DIR, 'partials', attrs.variant === 'book' ? 'header-book.html' : 'header.html'), 'utf8');
     h = h.replace('{{over}}', attrs.over === '1' ? ' over' : '');
-    // MONEY BRIEF 메뉴는 /brief/ 가 켜진 환경에서만 넣는다(꺼진 환경에서는 메뉴·배너 모두 없음 = 죽은 링크 없음).
-    h = h.replace('{{brief_nav}}', ctx.briefOn ? '<a href="/brief/" data-nav="brief" data-ga="brief"{{cur_brief}}>MONEY BRIEF</a>' : '')
-      .replace('{{brief_menu}}', ctx.briefOn ? '<a class="big" href="/brief/" data-ga="brief" style="border-bottom:0">MONEY BRIEF <span aria-hidden="true">→</span></a>' : '');
-    for (const k of ['prompt', 'invest', 'brief']) h = h.replace(`{{cur_${k}}}`, attrs.active === k ? ' aria-current="page" class="cur"' : '');
+    // 헤더·전체 메뉴는 menu.json 에서 만든다. 이 환경에서 꺼진 페이지(예: 운영에서 아직 안 연 서비스)는 자동으로 빠진다(죽은 링크 없음).
+    h = h.replace('{{nav}}', navHtml(menuCfg, isOn, { active: attrs.active })).replace('{{all_btn}}', allBtnHtml())
+      .replace('{{mega}}', megaInnerHtml(menuCfg, isOn)).replace('{{mobile_list}}', mobileListHtml(menuCfg, isOn));
     return h;
   });
   html = html.replace(/<!--@footer([^>]*)-->/g, (_, a) => {
-    const extra = /extra=copyright/.test(a) ? '<p class="note" style="margin-top:4px">© 2026 김태형. 이 페이지의 프롬프트는 개인 학습 목적으로만 활용하세요.</p>' : '';
-    return readFileSync(join(RD_DIR, 'partials', 'footer.html'), 'utf8').replace('{{footer_extra}}', extra);
+    const extra = /extra=copyright/.test(a) ? '이 페이지의 프롬프트는 개인 학습 목적으로만 활용하세요.' : '';
+    return readFileSync(join(RD_DIR, 'partials', 'footer.html'), 'utf8').replace('{{footer}}', () => footerHtml(menuCfg, isOn, extra));
   });
+  // 책 표지: web/redesign/img/book-cover.jpg 가 있을 때만 보여 준다(없으면 표지 없이 글만 — 깨진 이미지 없음).
+  html = html.replace(/<!--@bookcover-->/g, () => (existsSync(join(RD_DIR, 'img', 'book-cover.jpg')) ? '<div class="bk-cover"><img src="/redesign/img/book-cover.jpg" width="823" height="1200" alt="『AI로 부자되기』 책 표지 — 김태형 지음, 한빛미디어"></div>' : ''));
+  // 프롬프트 페이지 → 책 소개 페이지 링크: /book/ 이 이 환경에서 켜져 있을 때만.
+  html = html.replace(/<!--@bookpage-->/g, () => (isOn('/book/') ? '<a class="btn line" href="/book/" data-ga="book_page">📘 책 소개 보기</a>' : ''));
   html = html.replace(/<!--@mbtipaths-->/g, () => mbtiPathsHtml());
   if (/<!--@brief(latest|archive|hero|data|banner)-->/.test(html)) {
     const b = briefParts();
