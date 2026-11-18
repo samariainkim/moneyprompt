@@ -11,7 +11,8 @@
     "/calc/dsr/": "calc-dsr.html",
     "/invest-mbti/": "invest-mbti.html",
     "/invest-mbti/paths/": "invest-mbti-paths.html",
-    "/brief/": "brief.html"
+    "/brief/": "brief.html",
+    "/book/": "book.html"
   },
   "preview": [
     "/",
@@ -36,7 +37,8 @@
     "/account/saved/",
     "/pricing/",
     "/terms/",
-    "/privacy/"
+    "/privacy/",
+    "/book/"
   ],
   "production": [
     "/",
