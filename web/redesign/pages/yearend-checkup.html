@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나의 연말정산 체크업 · 확인해 볼 공제 항목 찾기 | 돈버프</title>
+<meta name="description" content="생활 상황에 관한 질문에 답하면 확인해 볼 공제 항목과 준비할 증빙을 정리해 드려요. 공제 가능 여부를 판정하는 것이 아니라 무엇을 확인해야 하는지 알려 드리는 도구예요.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#FFF2E5">
+<meta property="og:type" content="website"><meta property="og:title" content="나의 연말정산 체크업 | 돈버프">
+<meta property="og:description" content="내 상황에서 확인해 볼 공제 항목과 준비할 증빙을 정리해 보세요."><meta property="og:url" content="https://donbuff.com/yearend/checkup/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/redesign/frame.css">
+<link rel="stylesheet" href="/redesign/yearend.css">
+<link rel="stylesheet" href="/redesign/yearend-checkup.css">
+</head>
+<body data-redesign="yearend">
+<div class="site ye">
+<!--@header-->
+<main id="main">
+<div class="wrap yc-wrap">
+ <div class="yc-crumb"><a href="/yearend/">연말정산 특집</a> › 나의 연말정산 체크업</div>
+ <section id="ycIntro" class="yc-intro">
+  <div class="eyebrow">연말정산 체크업 · 2026년 귀속</div>
+  <h1>내 연말정산에서<br>확인해 볼 항목을 찾아보세요</h1>
+  <p class="lead">생활 상황에 관한 질문에 답하면 확인해 볼 공제 항목과 준비할 증빙을 정리해 드려요. 공제 가능 여부를 판정하는 것이 아니라, 무엇을 확인해야 하는지 알려 드리는 도구예요.</p>
+  <div class="yc-gets">
+   <div><i aria-hidden="true">🧭</i><b>확인해 볼 공제 항목</b><span>내 답변과 관련 있는 항목과 확인할 요건</span></div>
+   <div><i aria-hidden="true">🗂</i><b>준비할 증빙</b><span>간소화에서 안 보일 수 있는 자료 체크리스트</span></div>
+   <div><i aria-hidden="true">🔗</i><b>공식 자료</b><span>국세청 안내로 연결</span></div>
+  </div>
+  <div class="yc-start"><button type="button" class="btn or big" id="ycStart">체크업 시작하기 →</button><button type="button" class="btn line big" id="ycResume" hidden>이전 답변으로 이어서 하기</button></div>
+  <p class="yc-meta">약 3~5분 · 최대 8개 질문 · 금액·소득·개인정보는 묻지 않아요</p>
+ </section>
+ <section id="ycQ" class="yc-q" hidden aria-live="polite"></section>
+ <section id="ycR" class="yc-r" hidden></section>
+</div>
+</main>
+<!--@footer-->
+</div>
+<div class="yc-pvbg" id="ycPv" hidden>
+ <div class="yc-pv" role="dialog" aria-modal="true" aria-labelledby="ycPvT" tabindex="-1">
+  <button type="button" class="yc-x" id="ycPvX" aria-label="닫기">✕</button>
+  <h3 id="ycPvT">AI에게 보낼 내용 미리보기</h3>
+  <p class="s2">아래 내용이 AI 서비스에 붙여넣기됩니다. 보내고 싶지 않은 정보는 끄세요. 끄면 그 답변에서 나온 확인 항목도 함께 빠져요.</p>
+  <div id="ycGroups"></div>
+  <div class="ln" id="ycPvLn" aria-live="polite"></div>
+  <label class="cons"><input type="checkbox" id="ycConsent"><span>직접 선택한 생활 상황이 AI 서비스로 전달되는 것에 동의해요. 이름·주민등록번호·계좌번호 같은 직접 식별정보는 들어가지 않아요.</span></label>
+  <pre class="bx" id="ycPrompt" tabindex="0" aria-label="AI에게 보낼 프롬프트 미리보기"></pre>
+  <div class="yc-pvact"><button type="button" class="btn or" id="ycCopy" disabled>복사하기</button><span class="err" id="ycPvErr" role="alert"></span></div>
+  <p class="s3">AI 답변은 틀릴 수 있어요. 국세청 홈택스와 회사 안내로 꼭 교차 확인해 주세요.</p>
+ </div>
+</div>
+<div class="yc-toast" id="ycToast" role="status"></div>
+<!--@yearenddata-->
+<script src="/redesign/frame.js" defer></script>
+<script src="/redesign/yearend-engine.js"></script>
+<script src="/redesign/yearend-prompt.js"></script>
+<script src="/redesign/yearend-checkup.js"></script>
+</body>
+</html>
