@@ -5,7 +5,7 @@ import { dirname, join, basename, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { minify } from 'terser';
 import vm from 'node:vm';
-import { navHtml, allBtnHtml, megaInnerHtml, mobileListHtml, footerHtml } from '../redesign/shared/chrome.mjs';
+import { announce, navHtml, allBtnHtml, megaInnerHtml, mobileListHtml, footerHtml } from '../redesign/shared/chrome.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..', '..');
@@ -205,7 +205,42 @@ function yearendCalHtml() {
   D.items = D.items.filter((i) => i.enabled !== false);
   return `<script type="application/json" id="yeCal">${JSON.stringify(D).replace(/</g, '\\u003c')}</script>`;
 }
+const escA = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+// 특집 오픈 안내: 상단 바(모든 새 디자인 페이지) · 홈 카드 · 떠있는 카드(홈만). /yearend/ 아래에서는 만들지 않는다.
+const ANNC_GA = `function g(n,p){try{window.gtag&&gtag('event',n,p)}catch(e){}}`;
+function anncBar(a, url) {
+  if (!a || !a.bar || a.bar.enabled === false || /^\/yearend\//.test(url)) return '';
+  const k = escA('ye_annc_' + a.version), b = a.bar;
+  return `<div class="annc" id="anncBar" role="region" aria-label="연말정산 특집 안내"><div class="in"><a class="go" href="${escA(a.href)}" data-ga="ye_promo_bar"><span class="chip">${escA(b.chip || 'HOT ISSUE')}</span><span class="tx d">${escA(b.text)}</span><span class="tx m">${escA(b.mobile || b.text)}</span><span class="cta"><span class="d">${escA(b.cta)}</span><span class="m">${escA(b.mobileCta || b.cta)}</span></span></a><button class="x" type="button" aria-label="안내 닫기">✕</button></div></div>
+<script>(function(){var k="${k}",e=document.documentElement;try{if(localStorage.getItem(k))e.classList.add("annc-off")}catch(x){}
+var bar=document.getElementById("anncBar");if(!bar)return;${ANNC_GA}
+if(!e.classList.contains("annc-off"))g("ye_promo_view",{placement:"bar"});
+bar.querySelector(".go").addEventListener("click",function(){g("ye_promo_click",{placement:"bar"})});
+bar.querySelector(".x").addEventListener("click",function(){e.classList.add("annc-off");try{localStorage.setItem(k,"1")}catch(x){}g("ye_promo_close",{placement:"bar"})})})();</script>`;
+}
+function anncHomeCard(a) {
+  if (!a || !a.homeCard || a.homeCard.enabled === false) return '';
+  return `<div class="yec" id="yeCard"><div><div class="kicker">HOT ISSUE · 연말정산 특집</div><h3>돈버프만의 해보는 연말정산,<br>지금 당장 시작해보세요!</h3><p><b>STEP 1</b> · 3~5분이면 내 연말정산에서 확인할 항목을 정리해 드려요.</p><div class="btns"><a class="btn" href="${escA(a.href)}" data-ga="ye_promo_card">나의 연말정산 체크업 시작하기 →</a><a class="btn line" href="${escA(a.subHref || a.href)}" data-ga="ye_promo_card_sub">일정·체크리스트 보기</a></div></div><div class="art"><img src="/redesign/img/yearend-promo.webp" width="900" height="600" alt="연말정산 체크업을 안내하는 3D 일러스트" loading="lazy"></div></div>
+<script>(function(){var c=document.getElementById("yeCard");if(!c)return;${ANNC_GA}c.addEventListener("click",function(ev){var a=ev.target.closest&&ev.target.closest("a");if(a)g("ye_promo_click",{placement:"home_card"})});
+if("IntersectionObserver"in window){var o=new IntersectionObserver(function(es){if(es[0].isIntersecting){g("ye_promo_view",{placement:"home_card"});o.disconnect()}});o.observe(c)}})();</script>`;
+}
+function anncFloat(a) {
+  if (!a || !a.float || a.float.enabled === false) return '';
+  const f = a.float, k = escA('ye_fl_' + a.version);
+  return `<aside class="yfl" id="yeFloat" role="complementary" aria-label="연말정산 특집 안내" hidden><div class="art"><img src="/redesign/img/yearend-promo.webp" width="900" height="600" alt="" loading="lazy"></div><div class="bd"><h4>연말정산 특집이 열렸어요</h4><p>내 상황에서 확인할 항목을 3~5분이면 정리해 드려요.</p><a class="btn" href="${escA(a.href)}" data-ga="ye_promo_float">STEP 1 · 체크업 시작하기 →</a><div class="ft"><button type="button" data-snooze>${Number(f.snoozeDays) || 7}일 동안 보지 않기</button><button type="button" data-close>닫기</button></div></div></aside>
+<script>(function(){var el=document.getElementById("yeFloat");if(!el)return;var k="${k}",SS="ye_fl_s_${escA(a.version)}",D=${Number(f.snoozeDays) || 7};${ANNC_GA}
+try{var t=+localStorage.getItem(k)||0;if(t>Date.now()||sessionStorage.getItem(SS))return}catch(x){}
+function hide(){el.classList.remove("on");setTimeout(function(){el.hidden=true},300)}
+function show(){if(!el.hidden)return;el.hidden=false;requestAnimationFrame(function(){el.classList.add("on")});g("ye_promo_view",{placement:"float"})}
+var done=false;function go(){if(done)return;done=true;show()}
+setTimeout(go,${Number(f.delayMs) || 4000});addEventListener("scroll",function(){if(scrollY>600)go()},{passive:true,once:true});
+el.querySelector("a").addEventListener("click",function(){g("ye_promo_click",{placement:"float"})});
+el.querySelector("[data-close]").addEventListener("click",function(){try{sessionStorage.setItem(SS,"1")}catch(x){}hide();g("ye_promo_close",{placement:"float",kind:"close"})});
+el.querySelector("[data-snooze]").addEventListener("click",function(){try{localStorage.setItem(k,String(Date.now()+D*864e5))}catch(x){}hide();g("ye_promo_close",{placement:"float",kind:"snooze"})});
+addEventListener("keydown",function(e){if(e.key==="Escape"&&!el.hidden){try{sessionStorage.setItem(SS,"1")}catch(x){}hide()}})})();</script>`;
+}
 function renderRedesign(html, ctx) {
+  const A = announce(menuCfg, isOn);
   html = html.replace(/<!--@header([^>]*)-->/g, (_, a) => {
     const attrs = Object.fromEntries([...a.matchAll(/(\w+)=(\w+)/g)].map((m) => [m[1], m[2]]));
     let h = readFileSync(join(RD_DIR, 'partials', attrs.variant === 'book' ? 'header-book.html' : 'header.html'), 'utf8');
@@ -213,8 +248,9 @@ function renderRedesign(html, ctx) {
     // 헤더·전체 메뉴는 menu.json 에서 만든다. 이 환경에서 꺼진 페이지(예: 운영에서 아직 안 연 서비스)는 자동으로 빠진다(죽은 링크 없음).
     h = h.replace('{{nav}}', navHtml(menuCfg, isOn, { active: attrs.active })).replace('{{all_btn}}', allBtnHtml())
       .replace('{{mega}}', megaInnerHtml(menuCfg, isOn)).replace('{{mobile_list}}', mobileListHtml(menuCfg, isOn));
-    return h;
+    return anncBar(A, ctx.url) + h;
   });
+  html = html.replace(/<!--@yearendcard-->/g, () => (/^\/yearend\//.test(ctx.url) ? '' : anncHomeCard(A))).replace(/<!--@yearendfloat-->/g, () => (/^\/yearend\//.test(ctx.url) ? '' : anncFloat(A)));
   html = html.replace(/<!--@footer([^>]*)-->/g, (_, a) => {
     const extra = /extra=copyright/.test(a) ? '이 페이지의 프롬프트는 개인 학습 목적으로만 활용하세요.' : '';
     return readFileSync(join(RD_DIR, 'partials', 'footer.html'), 'utf8').replace('{{footer}}', () => footerHtml(menuCfg, isOn, extra));
@@ -243,7 +279,7 @@ if (rdOn.length || rdNextOn.length) {
   for (const u of rdOn) {
     const out2 = join(out, targetOf(u));
     mkdirSync(dirname(out2), { recursive: true });
-    writeFileSync(out2, renderRedesign(readFileSync(join(RD_DIR, 'pages', rdCfg.pages[u]), 'utf8'), ctx));
+    writeFileSync(out2, renderRedesign(readFileSync(join(RD_DIR, 'pages', rdCfg.pages[u]), 'utf8'), { ...ctx, url: u }));
   }
   // 카드뉴스 이미지(img/brief)는 /brief/ 가 켜진 환경에서만 내보낸다.
   cpSync(join(RD_DIR, 'img'), join(out, 'redesign', 'img'), { recursive: true, filter: (p) => rdOn.includes('/brief/') || !/[\\/]img[\\/]brief([\\/]|$)/.test(p) });

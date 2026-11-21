@@ -22,6 +22,17 @@ export function hotIssue(menu, isOn, now) {
   return h;
 }
 
+/** 특집 오픈 안내(상단 바·홈 카드·떠있는 카드). hotIssue 와 같은 방식으로 켜짐을 판단한다. */
+export function announce(menu, isOn, now) {
+  const a = menu.announce || {};
+  if (!a.enabled || !a.href || !a.version) return null;
+  if (a.requires && !isOn(a.requires)) return null;
+  const d = kstToday(now);
+  if (a.activeFrom && d < a.activeFrom) return null;
+  if (a.activeTo && d > a.activeTo) return null;
+  return a;
+}
+
 export function coreNav(menu, isOn) { return menu.core.filter((c) => isOn(pagePath(c.href))); }
 
 export function categories(menu, isOn) {

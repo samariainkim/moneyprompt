@@ -16,6 +16,19 @@
     "activeTo": "2027-02-28",
     "priority": 1
   },
+  "announce": {
+    "_설명": "연말정산 특집 오픈 안내(상단 바 + 홈 카드 + 하단 떠있는 카드). enabled·기간(activeFrom~activeTo, 한국시간)·requires(특집 페이지가 그 환경에서 열려 있음)를 모두 만족할 때만 나온다. 운영에서 특집을 열지 않으면 자동으로 사라진다. version 을 바꾸면 이미 닫은 사람에게도 다시 보인다. /yearend/ 아래 페이지에서는 나오지 않는다.",
+    "enabled": true,
+    "requires": "/yearend/",
+    "activeFrom": "2026-11-01",
+    "activeTo": "2027-01-31",
+    "version": "ye2026-1",
+    "href": "/yearend/checkup/?utm_source=donbuff&utm_medium=promo&utm_campaign=yearend2026",
+    "subHref": "/yearend/calendar/?utm_source=donbuff&utm_medium=promo&utm_campaign=yearend2026",
+    "bar": { "enabled": true, "chip": "HOT ISSUE", "text": "연말정산 특집 오픈! 내 연말정산, 지금 직접 확인해 보세요", "mobile": "🔥 연말정산 특집 오픈 · 직접 확인해보세요", "cta": "체크업 시작하기 →", "mobileCta": "시작 →" },
+    "homeCard": { "enabled": true },
+    "float": { "enabled": true, "delayMs": 4000, "snoozeDays": 7 }
+  },
   "categories": [
     {
       "id": "prompt", "no": "01", "en": "PROMPT BUFF", "label": "돈 버는 프롬프트", "href": "/prompt/",
