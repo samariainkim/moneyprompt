@@ -175,6 +175,36 @@ function promptStats() {
   const byCat = {}; for (const p of prompts) byCat[p.cat] = (byCat[p.cat] || 0) + 1;
   return { total: prompts.length, categories: Object.keys(byCat).length, ais: new Set(prompts.map((p) => p.ai)).size, byCat };
 }
+// 연말정산 체크업: 규칙·프롬프트 JSON 을 페이지에 직접 넣는다(별도 내려받기 없음). 빌드가 데이터 일관성을 확인하고 이상하면 멈춘다.
+function yearendDataHtml() {
+  const dir = join(RD_DIR, 'data', 'yearend');
+  const R = JSON.parse(readFileSync(join(dir, 'rules.v0.3.1.json'), 'utf8'));
+  const P = JSON.parse(readFileSync(join(dir, 'prompt.v0.2.0.json'), 'utf8'));
+  if (R.tax_year !== P.tax_year) throw new Error('[sync-static] 연말정산 규칙과 프롬프트의 귀속연도가 다릅니다.');
+  if (!R.profiles || !R.profiles[R.meta.profile]) throw new Error('[sync-static] 연말정산 배포 기준(meta.profile)이 올바르지 않습니다.');
+  for (const q of R.questions) for (const o of q.options) if (!(P.labels[q.id] && P.labels[q.id][o])) throw new Error(`[sync-static] 연말정산 선택지 라벨 없음: ${q.id}.${o}`);
+  for (const it of R.items) for (const row of it.rows) if (!(P.rows[it.id] && P.rows[it.id][row.id])) throw new Error(`[sync-static] 연말정산 프롬프트 문구 없음: ${it.id}.${row.id}`);
+  for (const c of R.common) if (!P.common_rows[c.id]) throw new Error(`[sync-static] 연말정산 공통 확인 문구 없음: ${c.id}`);
+  const j = (o) => JSON.stringify(o).replace(/</g, '\\u003c');
+  return `<script type="application/json" id="yeRules">${j(R)}</script><script type="application/json" id="yePrompt">${j(P)}</script>`;
+}
+// 연말정산 일정 데이터(허브 카드·상세 페이지 공용)를 페이지에 직접 넣는다. 형식이 틀리면 빌드가 멈춘다.
+function yearendCalHtml() {
+  const D = JSON.parse(readFileSync(join(RD_DIR, 'data', 'yearend', 'calendar.json'), 'utf8'));
+  const ISO = /^\d{4}-\d{2}-\d{2}$/, ST = ['official', 'secondary', 'wait', 'company', 'self'], AT = ['ext', 'guide', 'checkup', 'off', 'none'];
+  const phases = new Set(D.phases.map((p) => p.id)), ids = new Set();
+  for (const i of D.items) {
+    if (ids.has(i.id)) throw new Error(`[sync-static] 연말정산 일정 id 중복: ${i.id}`); ids.add(i.id);
+    if (!phases.has(i.phase)) throw new Error(`[sync-static] 연말정산 일정 구간 없음: ${i.id}`);
+    if (!ST.includes(i.status)) throw new Error(`[sync-static] 연말정산 일정 상태 값 오류: ${i.id}`);
+    if (!i.action || !AT.includes(i.action.type)) throw new Error(`[sync-static] 연말정산 일정 행동 유형 오류: ${i.id}`);
+    for (const k of ['start', 'end']) if (i[k] && !ISO.test(i[k])) throw new Error(`[sync-static] 연말정산 일정 날짜 형식 오류: ${i.id}.${k}`);
+    if ((i.start || i.when) && i.status === 'self') throw new Error(`[sync-static] 날짜를 주장하는 일정에 출처 있는 상태가 필요합니다: ${i.id}`);
+    if (i.status === 'official' && !(i.source && i.source.name)) throw new Error(`[sync-static] 공식 확인 일정에는 출처가 필요합니다: ${i.id}`);
+  }
+  D.items = D.items.filter((i) => i.enabled !== false);
+  return `<script type="application/json" id="yeCal">${JSON.stringify(D).replace(/</g, '\\u003c')}</script>`;
+}
 function renderRedesign(html, ctx) {
   html = html.replace(/<!--@header([^>]*)-->/g, (_, a) => {
     const attrs = Object.fromEntries([...a.matchAll(/(\w+)=(\w+)/g)].map((m) => [m[1], m[2]]));
@@ -199,6 +229,8 @@ function renderRedesign(html, ctx) {
     html = html.replace(/<!--@brieflatest-->/g, () => b.latestHtml).replace(/<!--@briefarchive-->/g, () => b.archiveHtml)
       .replace(/<!--@briefbanner-->/g, () => (ctx.briefOn ? b.bannerHtml : '')).replace(/<!--@briefhero-->/g, () => b.hero).replace(/<!--@briefdata-->/g, () => `<script type="application/json" id="briefData">${b.json}</script>`);
   }
+  html = html.replace(/<!--@yearenddata-->/g, () => yearendDataHtml());
+  html = html.replace(/<!--@yearendcal-->/g, () => yearendCalHtml());
   html = html.replace(/<!--@promptdata-->/g, () => `<script data-prompt-data>\n${promptData().code}\n</script>`);
   html = html.replace(/\{\{TOTAL\}\}/g, String(ctx.total)).replace(/\{\{CATEGORIES\}\}/g, String(ctx.categories)).replace(/\{\{AIS\}\}/g, String(ctx.ais));
   html = html.replace(/\{\{N:([^}]+)\}\}/g, (_, c) => { if (!(c in ctx.byCat)) throw new Error(`[sync-static] 프롬프트 카테고리 '${c}' 를 찾지 못했습니다.`); return String(ctx.byCat[c]); });
@@ -251,7 +283,7 @@ const TAG = `<script ${MARK}>${AUTH_NAV_JS}</script>`;
 // 로그인 게이트는 필요한 페이지에만 넣는다. (경로는 public 기준)
 const GATE_PAGES = new Set([
   'calc/brokerage/index.html', 'calc/fx/index.html', 'calc/loan-prepay/index.html', 'calc/dsr/index.html',
-  'fee/brokerage-fee/index.html', 'invest-mbti/index.html', 'prompt/index.html',
+  'fee/brokerage-fee/index.html', 'invest-mbti/index.html', 'prompt/index.html', 'yearend/checkup/index.html',
 ]);
 const GATE_TAG = `<script data-dbx-gates>${AUTH_GATES_JS}</script>`;
 let gated = 0;
@@ -300,6 +332,6 @@ console.log(`[sync-static] 파비콘 링크를 넣은 페이지 ${iconAdded}개.
 console.log(`[sync-static] GA4 기본 코드를 새로 넣은 페이지 ${gaAdded}개.`);
 console.log(`[sync-static] 로그인 게이트를 ${gated}개 페이지에 삽입했습니다.`);
 // 새 디자인 페이지만 있는 미공개 계산기(운영에서는 페이지가 생성되지 않음)는 이 환경에서 꺼져 있으면 기대 개수에서 뺀다.
-const GATE_OPTIONAL = { 'calc/dsr/index.html': '/calc/dsr/' };
+const GATE_OPTIONAL = { 'calc/dsr/index.html': '/calc/dsr/', 'yearend/checkup/index.html': '/yearend/checkup/' };
 const gateExpected = [...GATE_PAGES].filter((rel) => !(rel in GATE_OPTIONAL) || rdOn.includes(GATE_OPTIONAL[rel])).length;
 if (gated !== gateExpected) throw new Error(`게이트 대상 ${gateExpected}개 중 ${gated}개만 삽입되었습니다. 경로를 확인하세요.`);

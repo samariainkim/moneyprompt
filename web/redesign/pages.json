@@ -12,7 +12,10 @@
     "/invest-mbti/": "invest-mbti.html",
     "/invest-mbti/paths/": "invest-mbti-paths.html",
     "/brief/": "brief.html",
-    "/book/": "book.html"
+    "/book/": "book.html",
+    "/yearend/": "yearend.html",
+    "/yearend/checkup/": "yearend-checkup.html",
+    "/yearend/calendar/": "yearend-calendar.html"
   },
   "preview": [
     "/",
@@ -38,7 +41,10 @@
     "/pricing/",
     "/terms/",
     "/privacy/",
-    "/book/"
+    "/book/",
+    "/yearend/",
+    "/yearend/checkup/",
+    "/yearend/calendar/"
   ],
   "production": [
     "/",

@@ -21,7 +21,8 @@
     '/calc/dsr/': { kind: 'form', id: 'calc_dsr', saveTool: 'calc_dsr', trigger: '#make-prompt' },
     '/fee/brokerage-fee/': { kind: 'form', id: 'fee_brokerage', saveTool: 'fee_brokerage', trigger: '#make-prompt' },
     '/invest-mbti/': { kind: 'mbti', id: 'mbti_prompt', saveTool: 'mbti', triggers: ['#aiCta', '#copyBtn'] },
-    '/prompt/': { kind: 'fav', id: 'fav' }
+    '/prompt/': { kind: 'fav', id: 'fav' },
+    '/yearend/checkup/': { kind: 'yearend', id: 'yearend_prompt', trigger: '#ye-make' }
   };
 
   var path = location.pathname;
@@ -455,10 +456,23 @@
     });
   }
 
+  /* ───────── 연말정산 체크업: AI 질문 만들기(로그인 후) ─────────
+     체크업 화면이 응답을 이 기기에 저장해 두므로(localStorage), 여기서는 비로그인 클릭만 가로채 로그인 안내로 보낸다.
+     로그인하고 돌아오면(?dbx_resume=ye-prompt) 체크업 화면이 저장된 응답으로 미리보기를 이어서 연다. */
+  function initYearend() {
+    document.addEventListener('click', function (e) {
+      var t = e.target.closest && e.target.closest(cfg.trigger);
+      if (!t || signedIn()) return;
+      e.preventDefault(); e.stopImmediatePropagation();
+      goJoin({ resume: 'ye-prompt' });
+    }, true);
+  }
+
   /* ───────── 시작 ───────── */
   function start() {
     addCss();
-    if (cfg.kind === 'form') initForm();
+    if (cfg.kind === 'yearend') initYearend();
+    else if (cfg.kind === 'form') initForm();
     else if (cfg.kind === 'mbti') initMbti();
     else if (cfg.kind === 'fav') initFav();
   }

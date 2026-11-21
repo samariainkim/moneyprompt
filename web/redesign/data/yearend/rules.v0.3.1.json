@@ -1,0 +1,416 @@
+{
+ "id": "yearend-checkup",
+ "version": "0.3.1",
+ "tax_year": 2026,
+ "status": "draft",
+ "questions": [
+  {
+   "id": "Q1",
+   "type": "single",
+   "options": [
+    "same",
+    "first_job",
+    "other_workplace",
+    "unknown"
+   ]
+  },
+  {
+   "id": "Q2",
+   "type": "single",
+   "options": [
+    "rent",
+    "jeonse",
+    "own",
+    "family",
+    "unknown"
+   ]
+  },
+  {
+   "id": "Q3",
+   "type": "multi",
+   "options": [
+    "spouse",
+    "child_young",
+    "child_older",
+    "parent",
+    "none"
+   ],
+   "exclusive": [
+    "none"
+   ]
+  },
+  {
+   "id": "Q4",
+   "type": "single",
+   "options": [
+    "dual",
+    "single_income",
+    "unknown"
+   ],
+   "showIf": {
+    "Q3": "spouse"
+   }
+  },
+  {
+   "id": "Q5",
+   "type": "single",
+   "options": [
+    "paid",
+    "joined_unpaid",
+    "none",
+    "unknown"
+   ]
+  },
+  {
+   "id": "Q6",
+   "type": "multi",
+   "options": [
+    "medical",
+    "edu",
+    "donation",
+    "none"
+   ],
+   "exclusive": [
+    "none"
+   ]
+  },
+  {
+   "id": "Q6M",
+   "sub": true,
+   "type": "multi",
+   "options": [
+    "insurance_received",
+    "infertility",
+    "premature_congenital"
+   ],
+   "showIf": {
+    "Q6": "medical"
+   }
+  },
+  {
+   "id": "Q6D",
+   "sub": true,
+   "type": "multi",
+   "options": [
+    "hometown",
+    "other"
+   ],
+   "showIf": {
+    "Q6": "donation"
+   }
+  },
+  {
+   "id": "Q7",
+   "type": "multi",
+   "options": [
+    "credit",
+    "debit",
+    "cash_receipt",
+    "market_transit",
+    "none"
+   ],
+   "exclusive": [
+    "none"
+   ]
+  },
+  {
+   "id": "Q8",
+   "type": "multi",
+   "options": [
+    "married",
+    "birth",
+    "moved",
+    "family_income",
+    "none",
+    "unknown"
+   ],
+   "exclusive": [
+    "none",
+    "unknown"
+   ]
+  }
+ ],
+ "unknown_topics": {
+  "Q1": "직장 상황",
+  "Q2": "주거 형태",
+  "Q5": "연금저축·IRP 가입·납입",
+  "Q8": "올해 생활 변화"
+ },
+ "common": [
+  {
+   "id": "common-income-tax",
+   "status": "secondary_matched"
+  },
+  {
+   "id": "common-evidence",
+   "status": "secondary_matched"
+  }
+ ],
+ "items": [
+  {
+   "id": "TAX-2026-PENSION",
+   "title": "연금저축·IRP 세액공제",
+   "step": "세액공제",
+   "type": "공제 요건 확인",
+   "priority": 1,
+   "status": "secondary_matched",
+   "rows": [
+    {
+     "id": "limit",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "year_end_deposit",
+     "status": "secondary_matched"
+    }
+   ],
+   "official_link": "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2304&cntntsId=238938",
+   "link_scope": "generic",
+   "source_id": "NTS_GUIDE_2026",
+   "legal_verified_at": null
+  },
+  {
+   "id": "TAX-2026-RENT",
+   "title": "월세 세액공제",
+   "step": "세액공제",
+   "type": "공제 요건 확인",
+   "priority": 2,
+   "status": "secondary_matched",
+   "rows": [
+    {
+     "id": "income",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "housing",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "address_contract",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "payment_evidence",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "moved_contract_address",
+     "status": "unverified"
+    }
+   ],
+   "official_link": "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2304&cntntsId=238938",
+   "link_scope": "generic",
+   "source_id": "NTS_GUIDE_2026",
+   "legal_verified_at": null
+  },
+  {
+   "id": "TAX-2026-MARRIAGE",
+   "title": "혼인 세액공제",
+   "step": "세액공제",
+   "type": "공제 요건 확인",
+   "priority": 3,
+   "status": "secondary_matched",
+   "rows": [
+    {
+     "id": "filing_year",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "once_in_lifetime",
+     "status": "secondary_matched"
+    }
+   ],
+   "official_link": "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2304&cntntsId=238938",
+   "link_scope": "generic",
+   "source_id": "NTS_GUIDE_2026",
+   "legal_verified_at": null
+  },
+  {
+   "id": "TAX-2026-CHILD",
+   "title": "자녀·출산·입양 세액공제",
+   "step": "세액공제",
+   "type": "공제 요건 확인",
+   "priority": 4,
+   "status": "secondary_matched",
+   "rows": [
+    {
+     "id": "age_requirement",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "birth_adoption",
+     "status": "secondary_matched"
+    }
+   ],
+   "official_link": "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2304&cntntsId=238938",
+   "link_scope": "generic",
+   "source_id": "NTS_GUIDE_2026",
+   "legal_verified_at": null
+  },
+  {
+   "id": "TAX-2026-CARD",
+   "title": "신용카드 소득공제",
+   "step": "소득공제",
+   "type": "공제 기준 확인",
+   "priority": 5,
+   "status": "secondary_matched",
+   "rows": [
+    {
+     "id": "threshold",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "method_difference",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "special_items",
+     "status": "secondary_matched"
+    }
+   ],
+   "official_link": "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2304&cntntsId=238938",
+   "link_scope": "generic",
+   "source_id": "NTS_GUIDE_2026",
+   "legal_verified_at": null
+  },
+  {
+   "id": "TAX-2026-DEPENDENT",
+   "title": "부양가족 기본공제",
+   "step": "소득공제",
+   "type": "공제 요건 확인",
+   "priority": 6,
+   "status": "secondary_matched",
+   "rows": [
+    {
+     "id": "income_age",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "dual_income_no_duplicate",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "income_change",
+     "status": "secondary_matched"
+    }
+   ],
+   "official_link": "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2304&cntntsId=238938",
+   "link_scope": "generic",
+   "source_id": "NTS_GUIDE_2026",
+   "legal_verified_at": null
+  },
+  {
+   "id": "TAX-2026-MEDICAL",
+   "title": "의료비 세액공제",
+   "step": "세액공제",
+   "type": "공제 요건 확인",
+   "priority": 7,
+   "status": "secondary_matched",
+   "rows": [
+    {
+     "id": "base",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "insurance_excluded",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "infertility",
+     "status": "unverified"
+    },
+    {
+     "id": "premature_congenital",
+     "status": "unverified"
+    }
+   ],
+   "official_link": "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2304&cntntsId=238938",
+   "link_scope": "generic",
+   "source_id": "NTS_GUIDE_2026",
+   "legal_verified_at": null
+  },
+  {
+   "id": "TAX-2026-EDU",
+   "title": "교육비 세액공제",
+   "step": "세액공제",
+   "type": "공제 요건 확인",
+   "priority": 8,
+   "status": "secondary_matched",
+   "rows": [
+    {
+     "id": "base",
+     "status": "secondary_matched"
+    }
+   ],
+   "official_link": "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2304&cntntsId=238938",
+   "link_scope": "generic",
+   "source_id": "NTS_GUIDE_2026",
+   "legal_verified_at": null
+  },
+  {
+   "id": "TAX-2026-DONATION",
+   "title": "기부금 세액공제",
+   "step": "세액공제",
+   "type": "공제 요건 확인",
+   "priority": 9,
+   "status": "secondary_matched",
+   "rows": [
+    {
+     "id": "base",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "hometown",
+     "status": "unverified"
+    }
+   ],
+   "official_link": "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2304&cntntsId=238938",
+   "link_scope": "generic",
+   "source_id": "NTS_GUIDE_2026",
+   "legal_verified_at": null
+  },
+  {
+   "id": "TAX-2026-JOB-CHANGE",
+   "title": "다른 회사 근무 시 소득·자료 확인",
+   "step": null,
+   "type": "소득·자료 확인",
+   "priority": 10,
+   "status": "secondary_matched",
+   "rows": [
+    {
+     "id": "previous_income",
+     "status": "secondary_matched"
+    },
+    {
+     "id": "previous_documents",
+     "status": "secondary_matched"
+    }
+   ],
+   "official_link": "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2304&cntntsId=238938",
+   "link_scope": "generic",
+   "source_id": "NTS_GUIDE_2026",
+   "legal_verified_at": null
+  }
+ ],
+ "profiles": {
+  "internal": [
+   "verified",
+   "secondary_matched",
+   "unverified"
+  ],
+  "staging": [
+   "verified",
+   "secondary_matched"
+  ],
+  "production": [
+   "verified"
+  ]
+ },
+ "meta": {
+  "rules_updated_at": "2026-11-19",
+  "legal_verified_at": null,
+  "source_version": "2차 자료 일치(원문 대조 진행 중)",
+  "profile": "staging",
+  "_profile_설명": "화면에 보여줄 항목의 검증 기준. production=원문 확인(verified)만, staging=원문 확인+2차 자료 일치, internal=전부(내부 확인용). 법령 원문 확인이 끝나면 항목·행 status 를 verified 로 바꾸고 이 값을 production 으로 올린다."
+ }
+}

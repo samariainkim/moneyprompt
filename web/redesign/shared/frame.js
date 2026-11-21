@@ -53,7 +53,7 @@
   // 측정: 기존 홈과 같은 이벤트 이름을 유지한다.
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('[data-ga]');
-    if (a) { var t = a.getAttribute('data-ga'); ev(t === 'banner' ? 'calc_home_banner_click' : (t === 'brief_banner' ? 'brief_home_banner_click' : (t === 'book_buy' ? 'book_buy_click' : (t === 'book_prompt' ? 'book_prompt_click' : 'nav_menu_click'))), { target: t }); }
+    if (a && !/^ye_/.test(a.getAttribute('data-ga'))) { var t = a.getAttribute('data-ga'); ev(t === 'banner' ? 'calc_home_banner_click' : (t === 'brief_banner' ? 'brief_home_banner_click' : (t === 'book_buy' ? 'book_buy_click' : (t === 'book_prompt' ? 'book_prompt_click' : 'nav_menu_click'))), { target: t }); }
     var h = e.target.closest && e.target.closest('[data-hero]');
     if (h) ev('hero_tag_click', { target: h.getAttribute('data-hero') });
   });

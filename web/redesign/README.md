@@ -105,3 +105,21 @@
 - **마케팅·광고성 이메일 수신 동의** 문구는 별도 페이지가 아니라 개인정보처리방침의 한 조항(`#marketing`, `privacy.ts` 의 `id: 'marketing'`)이다. 가입·약관 동의 화면의 마케팅 동의 링크는 `lib/consents.ts` 가 `/privacy/#marketing` 으로 연결한다(DB 값은 `/privacy/` 그대로).
 
 - **용어 팝업 제거(2026-11-16)**: 결과 화면 "나를 만든 4가지 성향" 옆의 `i` 팝업을 없애고, 같은 자리의 `8가지 성향 자세히 보기 →` 링크로 상세 페이지(`/invest-mbti/paths/`) 하나로 통일했다. 성향 설명은 상세 페이지(`mbtiPathsHtml`)에서만 관리한다.
+
+## 연말정산 특집 (`/yearend/` 허브 · `/yearend/checkup/` 나의 연말정산 체크업) — 1차
+- **상태**: 테스트 환경(`preview`)에만 켜 두었다. 운영에 열 때는 `pages.json` 의 `production` 에 `/yearend/`·`/yearend/checkup/` 두 주소를 추가한다(HOT ISSUE 메뉴는 `menu.json` 의 `hotIssue`(enabled·public·requires `/yearend/`)가 켜진 환경에서만 자동으로 나타난다). 사이트맵(`INDEXABLE_PATHS`)은 열 때 정한다. 두 페이지 모두 지금은 `noindex`.
+- **허브** `pages/yearend.html·css·js`: 일정 카드(오늘 날짜=한국 기준으로 "지금 진행 중" 강조·D-day, 지난 일정 흐림 — 일정 데이터는 `yearend.js` 의 `SCHED`), 서비스 카드(미오픈 기능은 "준비중" 비활성), 계산 단계 안내·FAQ, 내 상황별 진입(`/yearend/checkup/?p=first|rent|dual|child|pension|job` → 관련 질문 미리 선택), 블로그 시리즈(1편 링크 연결, 2·3편 "발행 예정" — 발행하면 `yearend.html` 의 `.post.g` 를 링크로 바꾼다).
+- **체크업** `pages/yearend-checkup.*`: 화면만 그린다. 판정은 `yearend-engine.js`(규칙 JSON을 받는 순수 함수), AI 질문은 `yearend-prompt.js`. 규칙·문구 데이터는 `data/yearend/rules.v0.3.1.json`, `prompt.v0.2.0.json` 이고 **빌드가 페이지에 직접 넣으며**(`<!--@yearenddata-->`) 질문 라벨·행 문구·귀속연도가 어긋나면 빌드가 멈춘다.
+- **검증 상태 스위치**: 규칙의 항목·행마다 `status`(verified/secondary_matched/unverified)가 있고, `rules.meta.profile`(지금 `staging` = 원문 확인 + 2차 자료 일치)이 화면에 보일 상태를 정한다. 법령 원문 확인이 끝난 항목은 `verified` 로 바꾸고, 전부 끝나면 `profile` 을 `production` 으로 올린다. 문제가 있는 행은 상태만 `unverified` 로 바꾸면 결과·AI 질문에서 즉시 빠진다(화면에는 "일부 공제 항목은 공식 기준 확인 중" 안내). `legal_verified_at` 이 비어 있는 동안 프롬프트에는 "법령 원문 검증: 진행 중"으로 표시된다.
+- **개인정보 원칙**: 입력은 선택지뿐(금액·소득·자유 텍스트 없음). 응답은 이 기기 `localStorage`(`dbx:ye:answers`, 24시간)에만 두며 서버로 보내지 않는다. 측정(GA4)에는 질문 ID·개수만 보내고 선택한 값은 보내지 않는다.
+- **AI 질문 만들기는 로그인 후**: `auth-gates.js` 에 `/yearend/checkup/`(kind `yearend`, `#ye-make`) 추가 — 비로그인은 `/join/` 으로 보내고, 로그인하고 돌아오면(`?dbx_resume=ye-prompt`) 저장된 응답으로 결과와 미리보기를 이어서 연다. 미리보기에서는 응답 단위로 제외할 수 있고, 제외하면 남은 응답으로 체크업을 다시 계산해 파생 항목·선정 이유까지 함께 빠진다. 동의 체크 후에만 복사할 수 있다. 1차에는 "복사하기"만 있다(ChatGPT·Claude 바로 열기 없음).
+- **시험**: `node web/scripts/test-yearend-engine.cjs`(41건) · `node web/scripts/test-yearend-prompt.cjs`(27건, 무작위 3,000회 포함). 규칙·문구를 고치면 둘 다 돌릴 것.
+- **측정(GA4)**: `ye_hub_view` `ye_hub_cta` `ye_hub_service` `ye_hub_step` `ye_hub_faq` `ye_hub_case` `ye_blog_click` `ye_official`(허브) · `ye_checkup_start` `ye_q_view` `ye_q_answer` `ye_q_skip` `ye_checkup_complete` `ye_official_click` `ye_prompt_preview_open` `ye_prompt_exclude` `ye_prompt_copy` `ye_prompt_blocked`(체크업) · 로그인 유도 `gate_trigger`(gate_id `yearend_prompt`). `frame.js` 의 공통 `data-ga` 측정은 `ye_` 로 시작하는 값을 건너뛴다.
+
+### 연말정산 일정·체크리스트 (`/yearend/calendar/`) — 허브 캘린더 카드의 상세 페이지
+- **데이터 한 곳**: `data/yearend/calendar.json`(구간 A~D + 항목 13개)을 허브 카드와 상세 페이지가 같이 읽는다(빌드가 `<!--@yearendcal-->` 로 페이지에 넣고, id 중복·상태·행동 유형·날짜 형식·출처 규칙이 틀리면 **빌드가 멈춘다**).
+- **status 는 "정보의 검증 상태"**(official 공식 확인 / secondary 2차 자료 일치·원문 확인 중 / wait 공식 발표 대기 / company 회사별 확인 / self 내가 직접 확인). "지금 진행 중"·D-day 는 코드가 오늘(한국시간)로 계산하므로 데이터에 넣지 않는다. **`official` 은 출처 원문 확인이 끝난 일정에만** 부여한다(지금은 미리보기 종료 12/18 하나). 12/31 연금 납입·일괄제공 동의 기간(12/1~1/19, 회사 일괄제공 1/20~)은 2차 자료 일치(`secondary`)이므로 원문 확인 후 `official` 로 바꾼다. 문제가 있는 항목은 `enabled:false` 로 숨긴다.
+- **D-day**: 기간 일정은 "시작 D-n"(시작 전)·"종료 D-n"(기간 중)·"종료됨", 단일 날짜는 "D-n"·"D-DAY"·"지남", 대략 일정(approx)은 표시 안 함(`pages/yearend-cal.js`, 시험 `node web/scripts/test-yearend-cal.cjs`).
+- **허브 카드**: 카드 전체가 `/yearend/calendar/#항목id` 링크, 출처는 "출처: 국세청" 문구만. 상세 페이지는 해당 항목을 펼치고 스크롤·강조(2.6초). 모바일은 구간별 접기(현재 구간·이동한 구간만 펼침).
+- **체크**: 항목별 3상태(미확인 / 확인함 / 해당 없음), 진행률은 "확인·해당 없음·남음"으로 분리 표시. 이 기기 `localStorage`(`dbx:ye:cal`)에만 저장, 로그인 후 계정 저장은 3차. 측정에는 항목 ID·상태만 보낸다(`ye_hub_cal` `ye_cal_view` `ye_cal_check` `ye_cal_cta`).
+- **버튼은 목적별**: 체크업 연결은 4개 항목뿐, 나머지는 홈택스·국세청 이동 / 계산 흐름 보기 / 준비중 / 없음(회사 항목).

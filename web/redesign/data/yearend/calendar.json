@@ -1,0 +1,242 @@
+{
+ "_설명": "연말정산 일정·체크리스트(허브 캘린더 카드 + /yearend/calendar/)의 단일 데이터. status = 정보의 검증 상태(날짜에 따른 '지금 진행 중' 같은 상태는 코드가 오늘 날짜로 계산한다). official=공식 자료로 확인, secondary=2차 자료 일치(원문 확인 중), wait=공식 발표 대기, company=회사별 확인, self=내가 직접 확인하는 일(날짜 주장 없음). 원문 확인이 끝나면 status 를 official 로 바꾼다. 문제가 있는 항목은 enabled:false 로 즉시 숨긴다.",
+ "tax_year": 2026,
+ "phases": [
+  {
+   "id": "A",
+   "name": "미리보기",
+   "period": "10/28 ~ 12/18",
+   "note": "공식 이용 기간",
+   "start": "2026-10-28",
+   "end": "2026-12-18"
+  },
+  {
+   "id": "B",
+   "name": "연말 전 준비",
+   "period": "지금부터 12/31까지",
+   "note": "지금 바로 확인하고 준비할 수 있어요",
+   "start": "2026-01-01",
+   "end": "2026-12-31"
+  },
+  {
+   "id": "C",
+   "name": "간소화 자료",
+   "period": "12월부터 · 개통 후",
+   "note": "공식 개통일은 발표 전이에요"
+  },
+  {
+   "id": "D",
+   "name": "회사 제출·정산",
+   "period": "회사별 일정",
+   "note": "회사 공지를 따라 주세요"
+  }
+ ],
+ "items": [
+  {
+   "id": "preview-check",
+   "phase": "A",
+   "enabled": true,
+   "status": "official",
+   "title": "홈택스 ‘연말정산 미리보기’로 예상 세액 확인하기",
+   "where": "홈택스",
+   "start": "2026-10-28",
+   "end": "2026-12-18",
+   "source": {
+    "name": "국세청",
+    "url": "https://hometax.go.kr"
+   },
+   "action": {
+    "type": "ext",
+    "label": "홈택스에서 확인",
+    "href": "https://hometax.go.kr"
+   },
+   "hub": {
+    "label": "12/18",
+    "title": "홈택스 연말정산 미리보기 종료",
+    "note": "10/28부터 이용 중",
+    "order": 1
+   }
+  },
+  {
+   "id": "salary-tax",
+   "phase": "A",
+   "enabled": true,
+   "status": "self",
+   "title": "내 총급여와 이미 낸 세금(기납부세액) 확인하기",
+   "where": "급여명세·원천징수영수증",
+   "action": {
+    "type": "guide",
+    "label": "확인 방법 보기",
+    "href": "/yearend/#guide"
+   }
+  },
+  {
+   "id": "dependents",
+   "phase": "A",
+   "enabled": true,
+   "status": "self",
+   "title": "부양가족·소득 요건에 변동이 있는지 점검하기",
+   "where": "가족 구성·올해 변동",
+   "action": {
+    "type": "checkup",
+    "label": "체크업으로 확인",
+    "href": "/yearend/checkup/"
+   }
+  },
+  {
+   "id": "missing-deductions",
+   "phase": "A",
+   "enabled": true,
+   "status": "self",
+   "title": "미리보기에 안 보이는 공제 항목, 체크업으로 확인하기",
+   "where": "내 상황 질문 3~5분",
+   "action": {
+    "type": "checkup",
+    "label": "체크업 시작",
+    "href": "/yearend/checkup/"
+   }
+  },
+  {
+   "id": "pension-1231",
+   "phase": "B",
+   "enabled": true,
+   "status": "secondary",
+   "title": "연금저축·IRP, 올해 납입분이 12/31 기준인지 확인하기",
+   "where": "금융회사",
+   "start": "2026-12-31",
+   "note": "금융회사별 처리 시각은 별도 확인",
+   "source": {
+    "name": "국세청",
+    "url": "https://www.nts.go.kr"
+   },
+   "action": {
+    "type": "off",
+    "label": "연금·IRP 납입 효과 · 준비중"
+   },
+   "hub": {
+    "label": "12/31",
+    "title": "연금저축·IRP 올해 납입 마감 · 금융회사별 처리 시각은 별도 확인",
+    "order": 2
+   }
+  },
+  {
+   "id": "evidence",
+   "phase": "B",
+   "enabled": true,
+   "status": "self",
+   "title": "월세·의료비·교육비·기부 증빙 챙기기",
+   "where": "간소화에 안 잡힐 수 있는 자료",
+   "action": {
+    "type": "checkup",
+    "label": "필요한 증빙 확인",
+    "href": "/yearend/checkup/"
+   }
+  },
+  {
+   "id": "life-changes",
+   "phase": "B",
+   "enabled": true,
+   "status": "self",
+   "title": "결혼·출산·이직 등 올해 달라진 점 정리하기",
+   "where": "부양가족·소득 변동",
+   "action": {
+    "type": "checkup",
+    "label": "체크업으로 확인",
+    "href": "/yearend/checkup/"
+   }
+  },
+  {
+   "id": "simplified-open",
+   "phase": "C",
+   "enabled": true,
+   "status": "wait",
+   "title": "간소화 서비스 개통 공지 확인하기",
+   "where": "홈택스",
+   "when": "1월 중순 · 개통일 발표 전",
+   "approx": true,
+   "source": {
+    "name": "국세청",
+    "url": "https://www.nts.go.kr"
+   },
+   "action": {
+    "type": "ext",
+    "label": "홈택스 공지 확인",
+    "href": "https://hometax.go.kr"
+   },
+   "hub": {
+    "label": "1월 중순",
+    "title": "연말정산 간소화 서비스 개통 · 공식 개통일 발표 전",
+    "order": 4
+   }
+  },
+  {
+   "id": "consent-window",
+   "phase": "C",
+   "enabled": true,
+   "status": "secondary",
+   "title": "간소화자료 일괄제공 동의 확인하기(회사가 일괄제공을 신청한 경우)",
+   "where": "홈택스",
+   "start": "2026-12-01",
+   "end": "2027-01-19",
+   "note": "근로자 확인·동의 기간 · 회사에 대한 일괄제공은 1/20부터(안내 자료 기준, 원문 확인 중)",
+   "source": {
+    "name": "국세청",
+    "url": "https://www.nts.go.kr"
+   },
+   "action": {
+    "type": "ext",
+    "label": "국세청 안내",
+    "href": "https://www.nts.go.kr"
+   },
+   "hub": {
+    "label": "12/1~1/19",
+    "title": "간소화자료 일괄제공 동의(회사가 신청한 경우) · 절차별 기간 재확인 중",
+    "order": 3
+   }
+  },
+  {
+   "id": "missing-docs",
+   "phase": "C",
+   "enabled": true,
+   "status": "self",
+   "title": "간소화에 빠진 증빙이 없는지 확인하고 보완하기",
+   "where": "의료비·월세·기부 등",
+   "action": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "company-schedule",
+   "phase": "D",
+   "enabled": true,
+   "status": "company",
+   "title": "회사의 제출 일정과 방법 확인하기",
+   "where": "회사 안내",
+   "action": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "submit-docs",
+   "phase": "D",
+   "enabled": true,
+   "status": "company",
+   "title": "증빙·부양가족 서류 제출하기",
+   "where": "회사",
+   "action": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "result",
+   "phase": "D",
+   "enabled": true,
+   "status": "company",
+   "title": "환급·추가납부 결과와 반영 시기 확인하기",
+   "where": "급여명세",
+   "action": {
+    "type": "none"
+   }
+  }
+ ]
+}

@@ -7,11 +7,11 @@
   ],
   "hotIssue": {
     "_설명": "HOT ISSUE(가변 메뉴). enabled·status(public)·기간(activeFrom~activeTo, 한국시간 날짜)·requires(특집 페이지가 그 환경에서 열려 있음)를 모두 만족할 때만 헤더/메뉴에 나온다. 기간이 끝나면 메뉴에서만 빠지고 페이지는 그대로 둔다.",
-    "enabled": false,
-    "status": "draft",
+    "enabled": true,
+    "status": "public",
     "label": "연말정산 특집",
-    "href": "",
-    "requires": "",
+    "href": "/yearend/",
+    "requires": "/yearend/",
     "activeFrom": "2026-11-01",
     "activeTo": "2027-02-28",
     "priority": 1
