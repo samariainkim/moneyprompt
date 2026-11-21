@@ -145,9 +145,10 @@
     $('ycR').innerHTML = '<div class="sumb"><div class="eyebrow">체크업 결과 · 2026년 귀속</div><h2>' + esc(title) + '</h2><p>선택하신 답변과 관련된 항목이에요. 공제 가능 여부를 판정한 결과가 아니며, 요건은 각 항목에서 확인해 주세요.</p></div>' +
       (r.notice ? '<div class="notice">ℹ️ 일부 공제 항목은 공식 기준을 확인 중이라 아직 결과에 보이지 않을 수 있어요. 국세청 안내로 함께 확인해 주세요.</div>' : '') +
       '<div class="yc-cols"><div>' + first + left.join('') + '</div><div>' + right.join('') + '</div></div>' + common + skipped +
-      '<div class="yc-act"><div class="ai"><h3>이 결과로 AI에게 질문하기</h3><p>PROMPT BUFF · AI가 공제 여부를 판단하는 것이 아니라, 내가 확인할 질문을 만들어 드려요.</p><div class="row"><button type="button" class="btn or" id="ye-make">AI 질문 만들기</button><span class="btn off" aria-disabled="true">결과 카드 공유 · 준비중</span></div></div>' +
-      '<div class="card"><b class="h3">결과 저장하고 이어서 보기</b><p>체크한 항목을 저장해 1월 간소화 시기에 이어서 확인해요.</p><span class="btn off" aria-disabled="true">결과 저장 · 준비중</span></div></div>' +
+      '<div class="yc-act"><div class="ai"><h3>이 결과로 AI에게 질문하기</h3><p>PROMPT BUFF · AI가 공제 여부를 판단하는 것이 아니라, 내가 확인할 질문을 만들어 드려요.</p><div class="row"><button type="button" class="btn or" id="ye-make">내 결과로 맞춤 AI 프롬프트 생성하기</button></div></div>' +
+      '<div class="card"><b class="h3">결과 저장하고 이어서 보기</b><p>체크한 항목을 저장해 1월 간소화 시기에 이어서 확인해요.</p><span class="btn off" aria-disabled="true">결과 저장하기 · 준비중</span></div></div>' +
       '<div class="ye-disc">※ 체크업 결과는 <b>참고용 정보</b>이며 세무 상담·신고 대행이 아닙니다. 공제 가능 여부는 요건 확인이 필요하고 실제 결과는 개인별 조건에 따라 달라요. 2026년 귀속 기준 · 출처는 각 항목에 표시해요.</div>' +
+      '<div class="yc-share"><b>주변 분들에게도 꼭 알려주세요!</b><p>연말정산, 혼자 놓치기 쉬워요. 가족·동료·친구도 3~5분이면 내 항목을 확인해 볼 수 있어요.</p><button type="button" class="btn or" id="ycShare">연말정산 체크업 서비스 공유하기</button></div>' +
       '<div class="yc-again"><button type="button" class="btn line" id="ycRedo">처음부터 다시 하기</button></div>';
     show('ycR');
     if (!seenResult) { seenResult = true; ga('ye_checkup_complete', { items: r.items.length, skipped: r.skipped.length, notice: r.notice ? 1 : 0 }); }
@@ -198,6 +199,14 @@
     else if ((b = c('[data-redo]'))) { var q2 = b.getAttribute('data-redo'), i = steps().indexOf(q2); if (i >= 0) { stepIdx = i; show('ycQ'); renderQ(); } }
     else if (c('#ycRedo')) { ans = {}; save(); startFlow(0); }
     else if (c('#ye-make')) { openPreview(); }
+    else if (c('#ycShare')) {
+      /* 결과·답변은 담지 않고 서비스 소개만 공유한다. */
+      var url = location.origin + '/yearend/checkup/?utm_source=share&utm_medium=social&utm_campaign=yearend2026';
+      var msg = '연말정산, 놓치는 항목 없는지 3~5분이면 확인해 볼 수 있어요. 돈버프 연말정산 체크업 한 번 해보세요!';
+      ga('ye_share_click', { kind: navigator.share ? 'native' : 'copy' });
+      if (navigator.share) navigator.share({ title: '돈버프 연말정산 체크업', text: msg, url: url }).catch(function () {});
+      else copyText(msg + ' ' + url).then(function () { toast('링크를 복사했어요. 주변 분들께 전해 주세요!'); });
+    }
     else if (c('#ycPvX') || (t.id === 'ycPv')) closePreview();
     else if ((b = c('[data-ex]'))) { var k = b.getAttribute('data-ex'); exSet[k] = !exSet[k]; renderPreview(); ga('ye_prompt_exclude', { q: k, on: exSet[k] ? 1 : 0 }); }
     else if (c('#ycCopy')) {
