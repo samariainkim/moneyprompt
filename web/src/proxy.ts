@@ -58,7 +58,8 @@ export async function proxy(request: NextRequest) {
 // 앱 라우트에서만 실행한다. 기존 정적 페이지(/calc 등)에는 영향을 주지 않는다.
 export const config = {
   matcher: [
-    '/',
+    // 메인(/)은 로그인 코드(?code=)가 붙어 올 때만 실행한다. 그 외 메인 요청(전체 방문의 대부분)은 미들웨어를 거치지 않게 해 호출·요금을 줄인다.
+    { source: '/', has: [{ type: 'query', key: 'code' }] },
     '/login', '/login/', '/signup', '/signup/', '/pricing', '/pricing/',
     '/join', '/join/', '/account', '/account/:path*', '/onboarding', '/onboarding/:path*', '/welcome', '/welcome/:path*',
     '/auth/:path*', '/terms', '/terms/', '/privacy', '/privacy/',
