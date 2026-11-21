@@ -22,7 +22,7 @@
     '/fee/brokerage-fee/': { kind: 'form', id: 'fee_brokerage', saveTool: 'fee_brokerage', trigger: '#make-prompt' },
     '/invest-mbti/': { kind: 'mbti', id: 'mbti_prompt', saveTool: 'mbti', triggers: ['#aiCta', '#copyBtn'] },
     '/prompt/': { kind: 'fav', id: 'fav' },
-    '/yearend/checkup/': { kind: 'yearend', id: 'yearend_prompt', trigger: '#ye-make' }
+    '/yearend/checkup/': { kind: 'yearend', id: 'yearend_prompt', saveTool: 'yearend', trigger: '#ye-make' }
   };
 
   var path = location.pathname;
@@ -466,6 +466,31 @@
       e.preventDefault(); e.stopImmediatePropagation();
       goJoin({ resume: 'ye-prompt' });
     }, true);
+    // 결과 저장: 체크업 화면이 window.__yeItem() 으로 저장할 내용(선택한 답변만)을 준다.
+    function item() { try { return window.__yeItem && window.__yeItem(); } catch (e) { return null; } }
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('#ycSaveBtn');
+      if (!b) return;
+      var it = item(); if (!it) { toast('저장할 결과가 아직 없어요.'); return; }
+      var note = document.getElementById('ycSaveNote');
+      if (!signedIn()) { ga('save_click', { tool: cfg.saveTool, signed_in: false }); goJoin({ resume: 'ye-save', gateId: 'save_' + cfg.id }); return; }
+      ga('save_click', { tool: cfg.saveTool, signed_in: true });
+      doSave(it, b, note);
+    });
+    var q = new URLSearchParams(location.search), mode = q.get('dbx_resume');
+    if (mode === 'restore') {
+      if (!signedIn()) { stripResumeFromUrl(); return; }
+      var sid = q.get('dbx_saved'); stripResumeFromUrl(); if (!sid) return;
+      fetch('/api/saved/?id=' + encodeURIComponent(sid), { credentials: 'same-origin', cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+        .then(function (j) {
+          var p = j && j.item && j.item.payload;
+          if (!p || p.v !== 1 || !p.ans || typeof p.ans !== 'object') throw new Error('empty');
+          lsSet('dbx:ye:answers', JSON.stringify({ v: 1, ts: Date.now(), ans: p.ans }));
+          location.replace(location.pathname + '?dbx_resume=ye-view');
+        })
+        .catch(function () { toast('저장한 결과를 불러오지 못했어요.'); });
+    }
   }
 
   /* ───────── 시작 ───────── */

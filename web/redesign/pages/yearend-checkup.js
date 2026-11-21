@@ -146,10 +146,11 @@
       (r.notice ? '<div class="notice">ℹ️ 일부 공제 항목은 공식 기준을 확인 중이라 아직 결과에 보이지 않을 수 있어요. 국세청 안내로 함께 확인해 주세요.</div>' : '') +
       '<div class="yc-cols"><div>' + first + left.join('') + '</div><div>' + right.join('') + '</div></div>' + common + skipped +
       '<div class="yc-act"><div class="ai"><h3>이 결과로 AI에게 질문하기</h3><p>PROMPT BUFF · AI가 공제 여부를 판단하는 것이 아니라, 내가 확인할 질문을 만들어 드려요.</p><div class="row"><button type="button" class="btn or" id="ye-make">내 결과로 맞춤 AI 프롬프트 생성하기</button></div></div>' +
-      '<div class="card"><b class="h3">결과 저장하고 이어서 보기</b><p>체크한 항목을 저장해 1월 간소화 시기에 이어서 확인해요.</p><span class="btn off" aria-disabled="true">결과 저장하기 · 준비중</span></div></div>' +
+      '<div class="card"><b class="h3">결과 저장하고 이어서 보기</b><p>체크한 항목을 저장해 1월 간소화 시기에 이어서 확인해요.</p><button type="button" class="btn or" id="ycSaveBtn">결과 저장하기</button><div class="yc-note" id="ycSaveNote">선택하신 답변만 내 계정에 저장돼요. 금액·이름 같은 입력은 받지 않아요.</div></div></div>' +
       '<div class="ye-disc">※ 체크업 결과는 <b>참고용 정보</b>이며 세무 상담·신고 대행이 아닙니다. 공제 가능 여부는 요건 확인이 필요하고 실제 결과는 개인별 조건에 따라 달라요. 2026년 귀속 기준 · 출처는 각 항목에 표시해요.</div>' +
       '<div class="yc-share"><b>주변 분들에게도 꼭 알려주세요!</b><p>연말정산, 혼자 놓치기 쉬워요. 가족·동료·친구도 3~5분이면 내 항목을 확인해 볼 수 있어요.</p><button type="button" class="btn or" id="ycShare">연말정산 체크업 서비스 공유하기</button></div>' +
       '<div class="yc-again"><button type="button" class="btn line" id="ycRedo">처음부터 다시 하기</button></div>';
+    window.__yeItem = function () { return { title: '연말정산 체크업 결과', summary: (r.items.length ? '확인해 볼 항목 ' + r.items.length + '가지' : '확인해 볼 항목 없음') + ' · 2026년 귀속', payload: { v: 1, ans: ans } }; };
     show('ycR');
     if (!seenResult) { seenResult = true; ga('ye_checkup_complete', { items: r.items.length, skipped: r.skipped.length, notice: r.notice ? 1 : 0 }); }
   }
@@ -223,11 +224,11 @@
 
   /* ── 시작: 프리셋(?p=) · 로그인 후 이어하기(?dbx_resume=ye-prompt) · 이전 답변 ── */
   (function init() {
-    var q = new URLSearchParams(location.search), p = q.get('p'), resume = q.get('dbx_resume') === 'ye-prompt', saved = load();
+    var q = new URLSearchParams(location.search), p = q.get('p'), rm = q.get('dbx_resume'), resume = rm === 'ye-prompt' || rm === 'ye-save' || rm === 'ye-view', saved = load();
     if (saved && !sane(saved)) saved = null;
     if (resume) {
       try { q.delete('dbx_resume'); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q.toString() : '')); } catch (e) {}
-      if (saved) { ans = saved; seenResult = true; renderResult(); if (signedIn()) openPreview(); return; }
+      if (saved) { ans = saved; seenResult = true; renderResult(); if (rm === 'ye-prompt' && signedIn()) openPreview(); if (rm === 'ye-save') { var tr = 0; setTimeout(function w() { var b = $('ycSaveBtn'); if (b && signedIn()) { b.click(); return; } if (++tr < 40) setTimeout(w, 150); }, 500); } return; }
     }
     if (saved && Object.keys(saved).length) $('ycResume').hidden = false;
     if (p && PRESET[p]) { ans = JSON.parse(JSON.stringify(PRESET[p])); if (!sane(ans)) ans = {}; save(); startFlow(0); }
