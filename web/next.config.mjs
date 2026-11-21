@@ -25,7 +25,20 @@ const nextConfig = {
   trailingSlash: true, // 기존 사이트 URL(/calc/ 등)과 동일하게 유지
   // 정식 도메인이 아닌 주소(테스트 주소 등)는 검색엔진이 색인하지 않도록 한다.
   async headers() {
-    return [{ source: '/:path*', missing: [{ type: 'host', value: 'donbuff.com' }], headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] }];
+    // 정적 파일 캐시: 기본값(max-age=0, must-revalidate)이면 방문할 때마다 파일 수만큼 "바뀌었나요?" 확인(304)이 CDN 요청으로 쌓인다.
+    // 이미지는 1시간, CSS·JS·계산기 파일은 5분 동안 브라우저가 다시 묻지 않게 한다(같은 파일명으로 교체해도 최대 이 시간 안에 반영, 만료 후에는 백그라운드 갱신).
+    // HTML 페이지는 건드리지 않는다(내용 수정이 바로 반영되도록). 뒤에 오는 규칙이 같은 헤더를 덮어쓰므로 일반 → 구체 순서로 둔다.
+    const cache = (v) => [{ key: 'Cache-Control', value: v }];
+    const SHORT = 'public, max-age=300, stale-while-revalidate=600';
+    const IMAGE = 'public, max-age=3600, stale-while-revalidate=86400';
+    return [
+      { source: '/:path*', missing: [{ type: 'host', value: 'donbuff.com' }], headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] },
+      { source: '/redesign/:path*', headers: cache(SHORT) },
+      { source: '/calc/shared/:path*', headers: cache(SHORT) },
+      { source: '/calc/data/:path*', headers: cache(SHORT) },
+      { source: '/redesign/img/:path*', headers: cache(IMAGE) },
+      { source: '/assets/:path*', headers: cache(IMAGE) },
+    ];
   },
   // 예전 개인정보처리방침 주소(/privacy.html)는 새 방침 페이지로 영구 이동한다. (이전 원문은 /archive/privacy-legacy-2026.html 에 보관)
   async redirects() {
