@@ -9,7 +9,7 @@
 .ye .h3{font-size:17px;font-weight:900}
 .ye .tag{display:inline-block;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:999px;margin-top:10px;background:#eef0f4;color:#6b7587}
 .ye .tag.ok{background:#e6f6ec;color:#17803d}.ye .tag.chk{background:#fff4d6;color:#8a6a00}.ye .tag.wait{background:#eef0f4;color:#6b7587}
-.ye-hero{background:linear-gradient(120deg,#fff 40%,var(--hero));padding:64px 0 56px;border-bottom:1px solid var(--line)}
+.ye-hero{background:linear-gradient(120deg,#fff 40%,var(--hero));padding:148px 0 72px;border-bottom:1px solid var(--line)} /* 헤더가 위에 겹쳐 있어(over) 헤더 높이(약 76px)만큼 + 여백 */
 .ye-hero h1{font-size:46px;line-height:1.25;font-weight:900;margin:12px 0 16px}
 .ye-hero h1 em{font-style:normal;color:var(--orange)}
 .ye-cta{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap}
@@ -73,7 +73,7 @@
 .ye-ai .chip{background:rgba(255,255,255,.1);border-color:transparent;color:#fff}
 .ye-disc{margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 20px;font-size:13px;line-height:1.7;color:var(--muted)}
 @media (max-width:900px){
- .ye-hero{padding:40px 0 36px}.ye-hero h1{font-size:30px}.ye .lead{font-size:15px}
+ .ye-hero{padding:104px 0 44px}.ye-hero h1{font-size:30px}.ye .lead{font-size:15px}
  .ye-sec{padding:38px 0}.ye-sec h2{font-size:23px}
  .ye-sched,.ye-tools,.ye-cases,.ye-two,.ye-stepbox{grid-template-columns:1fr}
  .ye-steps{grid-template-columns:repeat(4,1fr)}
