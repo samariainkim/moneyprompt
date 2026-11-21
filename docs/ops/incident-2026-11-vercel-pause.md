@@ -92,3 +92,17 @@ Hobby(무료) 팀 `HITS Brand Lab` 의 **CDN(Edge) 요청이 무료 한도 100�
 ## 7. 교훈
 - 무료 요금제의 한도는 **팀 합계**이고 초과하면 **배포가 한 달 중지**된다. 경고(80%→131%→459%)가 며칠 전부터 와 있었으나 알림을 놓쳤다 → 알림 채널 정비가 가장 값싼 예방책.
 - 함수 호출 최적화만으로는 CDN 요청 한도를 지킬 수 없다. 정지 사유 항목(Edge Requests)을 기준으로 지표를 봐야 한다.
+
+## 8. 재발 시 대응 절차(런북)
+알림(usage-spike-alert / Default Alert Rule / Spend Management 50·75·100%)이 오면 다음 순서로 본다.
+1. **지금 상태 확인**: Vercel › moneyprompt › Observability › CDN Requests (기간 6시간~7일). Usage 화면의 Edge Requests 줄도 확인.
+2. **출처 찾기**: CDN Requests 표의 기준을 바꿔 가며 상위 값을 본다 — **Client IP → User Agent → JA4 → Referrer → Routes**. 한 곳에 몰렸는지 먼저 본다.
+3. **차단**:
+   - 한두 개 IP 라면 Firewall › Rules › **IP Blocking › Add IP**(차단 요청 무료).
+   - 여러 IP 로 퍼졌다면 같은 UA·JA4·경로 조건으로 Firewall 규칙(Deny/Challenge/Rate Limit)을 만든다.
+   - 급하면 Firewall › **Attack Challenge Mode** 를 임시로 켠다(정상 방문자도 확인 화면을 봄) → 진정되면 끈다.
+4. **비용 확인**: Billing › Spend Management 사용액, Usage. 상한(1달러) 도달 시 프로젝트가 자동 중지되므로 중지됐다면 사유와 사용량을 확인한 뒤 상한·차단을 조정해 재개한다.
+5. **공지**: 커뮤니티방에 중단·복구 상황을 짧게 알린다(원인 단정은 확인된 범위까지만).
+6. **기록**: 이 문서에 시간순·원인·조치를 추가한다.
+
+현재 방어선: IP Blocking(단일 IP) · 메인 요청 제한(IP당 60초 30회 → 429) · Bot Protection(Log) · 알림 3종 · 지출 상한 1달러 + 100% 자동 중지 · 코드(함수 호출·미들웨어 제거, 정적 파일 캐시). 한계: 새 IP·분산 접속은 규칙만으로 막히지 않을 수 있으며, 그때는 알림 → 3번 절차로 대응한다. 장기 대안: 앞단 프록시(Cloudflare), 팀 분리(donbuff / hitsbrandlab).
