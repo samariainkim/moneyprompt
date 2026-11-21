@@ -104,7 +104,9 @@
   }
 
   // 서버에서 로그인 여부를 확인하고, 추정과 다르면 이미 있는 버튼만 바로잡는다.
+  // 로그인 쿠키가 아예 없으면 로그인 상태일 수 없으므로 서버를 부르지 않는다(방문자 대부분·검색 로봇의 함수 호출을 없앤다).
   function verify() {
+    if (!cookieHint()) return;
     try {
       fetch('/api/me/', { credentials: 'same-origin', cache: 'no-store' })
         .then(function (r) { return r.ok ? r.json() : null; })
