@@ -24,7 +24,6 @@
 .ye-sched .t{font-size:14px;line-height:1.55;font-weight:700;color:#2b3a52;margin-top:4px}
 .ye-sched .t small{font-weight:500;color:var(--muted)}
 .ye-sched .tag{align-self:flex-start}
-.ye-sched .src{margin-top:auto;padding-top:10px;text-align:right;font-size:12px;font-weight:600;color:var(--muted)}
 .ye-sched .dday{font-size:12px;font-weight:900;background:var(--navy);color:#fff;padding:3px 8px;border-radius:99px;margin-left:8px;vertical-align:middle}
 .ye-sched .dday.soft{background:#e6e9ef;color:#4b5870}
 .ye-sched .sc.done{background:#f7f7f5}.ye-sched .sc.done .d,.ye-sched .sc.done .t{color:#8a93a3}
@@ -91,3 +90,11 @@
 .gd .side .off{color:#8a93a3;border-style:dashed;background:#f3f3f0;cursor:default}
 
 @media (max-width:900px){.gd{grid-template-columns:1fr}.gd .main{padding:22px 20px}}
+
+/* 일정 카드 = 링크 */
+.ye-sched a.sc{color:inherit;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.ye-sched a.sc:hover{box-shadow:0 12px 30px rgba(16,35,63,.12);transform:translateY(-3px)}.ye-sched a.sc.now:hover{transform:translateY(-6px)}
+.ye-sched .arr{position:absolute;right:16px;top:16px;width:30px;height:30px;border-radius:50%;background:#f2f3f6;display:grid;place-items:center;font-size:14px;color:var(--navy)}
+.ye-sched .sc.now .arr{background:var(--navy);color:#fff}
+.ye-sched .srcT{margin-top:auto;padding-top:12px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.ye-sched .sc.now .t{padding-right:22px}

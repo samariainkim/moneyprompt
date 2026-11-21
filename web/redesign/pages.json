@@ -14,7 +14,8 @@
     "/brief/": "brief.html",
     "/book/": "book.html",
     "/yearend/": "yearend.html",
-    "/yearend/checkup/": "yearend-checkup.html"
+    "/yearend/checkup/": "yearend-checkup.html",
+    "/yearend/calendar/": "yearend-calendar.html"
   },
   "preview": [
     "/",
@@ -42,7 +43,8 @@
     "/privacy/",
     "/book/",
     "/yearend/",
-    "/yearend/checkup/"
+    "/yearend/checkup/",
+    "/yearend/calendar/"
   ],
   "production": [
     "/",

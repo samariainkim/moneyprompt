@@ -115,3 +115,11 @@
 - **AI 질문 만들기는 로그인 후**: `auth-gates.js` 에 `/yearend/checkup/`(kind `yearend`, `#ye-make`) 추가 — 비로그인은 `/join/` 으로 보내고, 로그인하고 돌아오면(`?dbx_resume=ye-prompt`) 저장된 응답으로 결과와 미리보기를 이어서 연다. 미리보기에서는 응답 단위로 제외할 수 있고, 제외하면 남은 응답으로 체크업을 다시 계산해 파생 항목·선정 이유까지 함께 빠진다. 동의 체크 후에만 복사할 수 있다. 1차에는 "복사하기"만 있다(ChatGPT·Claude 바로 열기 없음).
 - **시험**: `node web/scripts/test-yearend-engine.cjs`(41건) · `node web/scripts/test-yearend-prompt.cjs`(27건, 무작위 3,000회 포함). 규칙·문구를 고치면 둘 다 돌릴 것.
 - **측정(GA4)**: `ye_hub_view` `ye_hub_cta` `ye_hub_service` `ye_hub_step` `ye_hub_faq` `ye_hub_case` `ye_blog_click` `ye_official`(허브) · `ye_checkup_start` `ye_q_view` `ye_q_answer` `ye_q_skip` `ye_checkup_complete` `ye_official_click` `ye_prompt_preview_open` `ye_prompt_exclude` `ye_prompt_copy` `ye_prompt_blocked`(체크업) · 로그인 유도 `gate_trigger`(gate_id `yearend_prompt`). `frame.js` 의 공통 `data-ga` 측정은 `ye_` 로 시작하는 값을 건너뛴다.
+
+### 연말정산 일정·체크리스트 (`/yearend/calendar/`) — 허브 캘린더 카드의 상세 페이지
+- **데이터 한 곳**: `data/yearend/calendar.json`(구간 A~D + 항목 13개)을 허브 카드와 상세 페이지가 같이 읽는다(빌드가 `<!--@yearendcal-->` 로 페이지에 넣고, id 중복·상태·행동 유형·날짜 형식·출처 규칙이 틀리면 **빌드가 멈춘다**).
+- **status 는 "정보의 검증 상태"**(official 공식 확인 / secondary 2차 자료 일치·원문 확인 중 / wait 공식 발표 대기 / company 회사별 확인 / self 내가 직접 확인). "지금 진행 중"·D-day 는 코드가 오늘(한국시간)로 계산하므로 데이터에 넣지 않는다. **`official` 은 출처 원문 확인이 끝난 일정에만** 부여한다(지금은 미리보기 종료 12/18 하나). 12/31 연금 납입·일괄제공 동의 기간(12/1~1/19, 회사 일괄제공 1/20~)은 2차 자료 일치(`secondary`)이므로 원문 확인 후 `official` 로 바꾼다. 문제가 있는 항목은 `enabled:false` 로 숨긴다.
+- **D-day**: 기간 일정은 "시작 D-n"(시작 전)·"종료 D-n"(기간 중)·"종료됨", 단일 날짜는 "D-n"·"D-DAY"·"지남", 대략 일정(approx)은 표시 안 함(`pages/yearend-cal.js`, 시험 `node web/scripts/test-yearend-cal.cjs`).
+- **허브 카드**: 카드 전체가 `/yearend/calendar/#항목id` 링크, 출처는 "출처: 국세청" 문구만. 상세 페이지는 해당 항목을 펼치고 스크롤·강조(2.6초). 모바일은 구간별 접기(현재 구간·이동한 구간만 펼침).
+- **체크**: 항목별 3상태(미확인 / 확인함 / 해당 없음), 진행률은 "확인·해당 없음·남음"으로 분리 표시. 이 기기 `localStorage`(`dbx:ye:cal`)에만 저장, 로그인 후 계정 저장은 3차. 측정에는 항목 ID·상태만 보낸다(`ye_hub_cal` `ye_cal_view` `ye_cal_check` `ye_cal_cta`).
+- **버튼은 목적별**: 체크업 연결은 4개 항목뿐, 나머지는 홈택스·국세청 이동 / 계산 흐름 보기 / 준비중 / 없음(회사 항목).

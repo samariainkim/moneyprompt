@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>연말정산 일정·체크리스트 · 지금 확인할 일 | 돈버프</title>
+<meta name="description" content="2026년 귀속 연말정산, 언제 무엇을 어디서 확인해야 하는지 한눈에 보고 체크리스트로 직접 확인해 보세요.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#FFF2E5">
+<meta property="og:type" content="website"><meta property="og:title" content="연말정산 일정·체크리스트 | 돈버프">
+<meta property="og:description" content="언제, 무엇을, 어디서 확인해야 하는지 한 번에 보세요."><meta property="og:url" content="https://donbuff.com/yearend/calendar/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/redesign/frame.css">
+<link rel="stylesheet" href="/redesign/yearend.css">
+<link rel="stylesheet" href="/redesign/yearend-calendar.css">
+</head>
+<body data-redesign="yearend">
+<div class="site ye">
+<!--@header over=1-->
+<main id="main">
+<section class="cal-hero"><div class="wrap">
+ <nav class="crumb2" aria-label="현재 위치"><a href="/yearend/">연말정산 특집</a> › 일정·체크리스트</nav>
+ <div class="eyebrow">CALENDAR · CHECKLIST</div>
+ <h1>연말정산 일정과 체크리스트</h1>
+ <p class="lead">언제, 무엇을, 어디서 해야 하는지 한 번에 보세요. 공식 확인이 끝난 일정은 날짜로, 확인 중이거나 회사마다 다른 것은 따로 표시해요.</p>
+ <div class="cal-top"><span class="pill" id="calToday"></span><div class="prog2" id="calProg" aria-live="polite"></div><a class="btn or sm" href="/yearend/checkup/" data-ga="ye_cal_cta" data-type="top_checkup">STEP 1 · 나의 연말정산 체크업 →</a></div>
+ <p class="hint2">직접 확인했을 때 체크하세요. 나에게 해당하지 않는 항목은 ‘해당 없음’을 눌러 주세요. 체크 상태는 이 기기에만 저장돼요.</p>
+ <div class="tl" id="calTl"></div>
+</div></section>
+<div id="calBody"></div>
+<section class="sec2"><div class="wrap"><div class="cta2"><div><h3>체크리스트의 첫 단계, 지금 시작해보세요</h3><p>내 상황에 맞는 확인 항목과 준비할 증빙을 3~5분이면 정리해 드려요.</p></div><a class="btn or" href="/yearend/checkup/" data-ga="ye_cal_cta" data-type="bottom_checkup">STEP 1 · 체크업 시작하기 →</a></div>
+<p class="disc2">※ 일정과 체크리스트는 <b>참고용 정보</b>이며 세무 상담·신고 대행이 아닙니다. 공식 일정은 국세청·회사 안내에서 최종 확인해 주세요.</p></div></section>
+</main>
+<!--@footer-->
+</div>
+<div class="toast2" id="calToast" role="status"></div>
+<!--@yearendcal-->
+<script src="/redesign/frame.js" defer></script>
+<script src="/redesign/yearend-cal.js"></script>
+<script src="/redesign/yearend-calendar.js"></script>
+</body>
+</html>

@@ -6,27 +6,18 @@
   function kstToday() { var d = new Date(Date.now() + 9 * 3600 * 1000); return d.toISOString().slice(0, 10); }
   function days(a, b) { return Math.round((Date.parse(b + 'T00:00:00Z') - Date.parse(a + 'T00:00:00Z')) / 86400000); }
 
-  /* ── 일정 (공식 안내 기준) ──
-     tag: ok=공식 일정 확인 / chk=확인 필요 / wait=공식 발표 대기. 날짜는 한국 기준 YYYY-MM-DD, end 가 없으면 하루짜리. */
-  var SCHED = [
-    { start: '2026-10-28', end: '2026-12-18', label: '12/18', title: '홈택스 연말정산 미리보기 종료', note: '10/28부터 이용 중', tag: 'ok', src: 'https://hometax.go.kr' },
-    { start: '2026-12-31', label: '12/31', title: '연금저축·IRP 올해 납입 마감 · 금융회사별 처리 시각은 별도 확인', tag: 'ok', src: 'https://www.nts.go.kr' },
-    { start: '2026-12-01', end: '2027-01-19', label: '12/1~1/19', title: '간소화자료 일괄제공 동의(회사가 신청한 경우) · 절차별 기간 재확인 중', tag: 'chk', src: 'https://www.nts.go.kr' },
-    { start: '2027-01-15', label: '1월 중순', title: '연말정산 간소화 서비스 개통 · 공식 개통일 발표 전', tag: 'wait', src: 'https://www.nts.go.kr', soft: true }
-  ];
-  var TAGS = { ok: '공식 일정 확인', chk: '확인 필요', wait: '공식 발표 대기' };
-
+  /* ── 일정 카드: 데이터(yeCal)에서 그린다. 카드 전체가 상세 페이지의 해당 항목으로 가는 링크이고, 출처는 문구로만 보여 준다. ── */
+  var CAL = JSON.parse((document.getElementById('yeCal') || { textContent: '{"items":[]}' }).textContent);
   function renderSched() {
     var el = document.getElementById('yeSched'); if (!el) return;
-    var today = kstToday(), nowIdx = -1;
-    SCHED.forEach(function (s, i) { var e = s.end || s.start; if (!s.soft && s.start <= today && today <= e && nowIdx < 0) nowIdx = i; });
-    el.innerHTML = SCHED.map(function (s, i) {
-      var e = s.end || s.start, done = e < today && !s.soft, now = i === nowIdx;
-      var dd = now && s.end ? '<span class="dday">D-' + days(today, s.end) + '</span>' : (!done && !now && !s.soft && s.start > today ? '<span class="dday soft">D-' + days(today, s.start) + '</span>' : '');
-      return '<div class="sc' + (done ? ' done' : '') + (now ? ' now' : '') + '">' + (now ? '<div class="nowb">● 지금 진행 중</div>' : '') +
-        '<div class="d">' + esc(s.label) + dd + '</div><div class="t">' + esc(s.title) + (s.note ? ' <small>(' + esc(s.note) + ')</small>' : '') + '</div>' +
-        '<span class="tag ' + s.tag + '">' + TAGS[s.tag] + '</span>' +
-        '<a class="src" href="' + esc(s.src) + '" target="_blank" rel="noopener" data-ga="ye_official" data-target="sched_' + i + '">출처 ↗</a></div>';
+    var today = YearendCal.kstToday(), items = CAL.items.filter(function (i) { return i.hub; }).sort(function (a, b) { return (a.hub.order || 9) - (b.hub.order || 9); }), nowIdx = -1;
+    items.forEach(function (it, n) { if (nowIdx < 0 && YearendCal.isNow(it, today)) nowIdx = n; });
+    el.innerHTML = items.map(function (it, n) {
+      var dd = YearendCal.dday(it, today), now = n === nowIdx, done = !!dd && dd.kind === 'done', st = YearendCal.STATUS[it.status];
+      var chip = dd && dd.kind !== 'done' ? '<span class="dday' + (now ? '' : ' soft') + '">' + esc(dd.text) + '</span>' : '';
+      return '<a class="sc' + (done ? ' done' : '') + (now ? ' now' : '') + '" href="/yearend/calendar/#' + esc(it.id) + '" data-ga="ye_hub_cal" data-target="' + esc(it.id) + '">' + (now ? '<div class="nowb">● 지금 진행 중</div>' : '') +
+        '<span class="arr" aria-hidden="true">→</span><div class="d">' + esc(it.hub.label) + chip + '</div><div class="t">' + esc(it.hub.title) + (it.hub.note ? ' <small>(' + esc(it.hub.note) + ')</small>' : '') + '</div>' +
+        '<span class="tag ' + st[0] + '">' + esc(st[1]) + '</span><div class="srcT">출처: ' + esc(it.source ? it.source.name : '국세청') + '</div></a>';
     }).join('');
     ga('ye_hub_view', { has_active: nowIdx >= 0 ? 1 : 0 });
   }
