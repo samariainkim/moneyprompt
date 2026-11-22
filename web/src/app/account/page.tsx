@@ -60,7 +60,7 @@ export default async function AccountPage() {
               <div className="av" aria-hidden="true">{initial}</div>
               <div>
                 <h1>{profile?.nickname || '회원'}<span> 님</span></h1>
-                <div className="em">{user.email}</div>
+                <div className="em">{user.email ?? "이메일 정보 없음"}</div>
                 <span className="role">{ROLE[profile?.role ?? 'member']}</span>
               </div>
               <div className="ring">
@@ -142,7 +142,7 @@ export default async function AccountPage() {
   return (
     <>
       <h1>내 계정</h1>
-      <p className="lead">{user.email} · {ROLE[profile?.role ?? 'member']}</p>
+      <p className="lead">{user.email ?? "이메일 정보 없음"} · {ROLE[profile?.role ?? 'member']}</p>
 
       <div className="card narrow" style={{ margin: '0 0 20px' }}>
         <h2>내 결과</h2>
