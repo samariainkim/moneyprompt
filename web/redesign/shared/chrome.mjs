@@ -110,5 +110,5 @@ export function footerHtml(menu, isOn, extraNote) {
   }).join('');
   return `<footer><div class="ft"><div class="ft-1"><div class="ft-brand"><img src="/redesign/img/symbol.png" alt=""><div><b>돈버프 DONBUFF</b><em>${esc(f.slogan)}</em></div></div><p class="ft-intro">${esc(f.intro)}</p></div>`
     + (sns ? `<div class="ft-sns" aria-label="돈버프 공식 채널">${sns}</div>` : '')
-    + `</div><div class="ft-links">${links}</div><div class="ft-4"><p>${esc(f.disclaimer)}</p>${extraNote ? `<p>${esc(extraNote)}</p>` : ''}<p>${esc(f.copyright)}</p></div></footer>`;
+    + `</div><div class="ft-links">${links}</div><div class="ft-4"><p>${esc(f.disclaimer)}</p>${extraNote ? `<p>${esc(extraNote)}</p>` : ''}${f.rights ? `<p>${esc(f.rights)}</p>` : ''}<p>${esc(f.copyright)}</p></div></footer>`;
 }
