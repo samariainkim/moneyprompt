@@ -30,7 +30,8 @@ npm run dev                  # http://localhost:3000
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | O | Supabase 프로젝트 URL |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | O | publishable(anon) 키. RLS 로 보호됨 |
-| `NEXT_PUBLIC_OAUTH_PROVIDERS` | O | 켜 둔 소셜 로그인. 예: `google` 또는 `google,kakao` |
+| `NEXT_PUBLIC_OAUTH_PROVIDERS` | O | 켜 둔 소셜 로그인. 예: `google` 또는 `google,kakao` (카카오는 한국시간 2026-11-29부터 버튼이 보임) |
+| `NEXT_PUBLIC_KAKAO_OPEN_DATE` | X | 카카오 버튼이 보이기 시작하는 날짜(YYYY-MM-DD, 기본 2026-11-29). 시험용 배포에서만 앞당길 때 씀 |
 | `SUPABASE_SECRET_KEY` | **X** | 회원 탈퇴 처리 전용. 서버에서만 사용. 저장소·채팅에 올리지 말 것 |
 
 ## Supabase 설정 순서

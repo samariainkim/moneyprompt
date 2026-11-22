@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 const GoogleIcon = () => (
@@ -11,11 +11,17 @@ const KakaoIcon = () => (
   <svg className="gicon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#191919" d="M12 3C6.48 3 2 6.58 2 11c0 2.86 1.87 5.37 4.68 6.78l-.96 3.5a.4.4 0 0 0 .6.44l4.1-2.7c.5.06 1.04.1 1.58.1 5.52 0 10-3.58 10-8s-4.48-8-10-8z" /></svg>
 );
 
+// 카카오 로그인은 개인정보처리방침 개정(2026-11-29 시행)에 맞춰 이 날짜(한국시간)부터 보인다. 시험용 배포는 NEXT_PUBLIC_KAKAO_OPEN_DATE 로 앞당길 수 있다.
+const KAKAO_OPEN_DATE = process.env.NEXT_PUBLIC_KAKAO_OPEN_DATE || '2026-11-29';
+const kstToday = () => new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+
 const LABELS: Record<string, string> = { google: 'Google로 계속하기', kakao: '카카오로 계속하기' };
 
 export default function OAuthButtons({ next, src, compact = false, onStart }: { next: string; src?: string | null; compact?: boolean; onStart?: (provider: string) => void }) {
+  const [kakaoOpen, setKakaoOpen] = useState(false);
+  useEffect(() => { setKakaoOpen(kstToday() >= KAKAO_OPEN_DATE); }, []);
   const providers = (process.env.NEXT_PUBLIC_OAUTH_PROVIDERS ?? 'google')
-    .split(',').map((s) => s.trim()).filter((p) => p in LABELS);
+    .split(',').map((s) => s.trim()).filter((p) => p in LABELS && (p !== 'kakao' || kakaoOpen));
   const [error, setError] = useState('');
   const [busy, setBusy] = useState('');
   if (providers.length === 0) return null;
