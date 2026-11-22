@@ -1,28 +1,61 @@
-/* 돈버프 소개 · 운영·편집 원칙 */
-.ab-hero{background:var(--hero);padding:132px 0 64px}
+/* 돈버프 소개 · 운영·편집 철학 */
+.ab-hero{padding:136px 0 76px}
 .ab-hero .wrap{max-width:900px;margin:0 auto}
-.ab-hero h1{font-size:64px;line-height:1.12;letter-spacing:-2.4px;font-weight:300;margin:14px 0 18px;color:var(--navy)}
-.ab-hero h1 b{font-weight:900;color:var(--orange)}
-.ab-hero p{font-size:18px;line-height:1.85;color:var(--muted);max-width:720px}
-.ab-sec{padding:72px 0}.ab-sec.alt{background:#fff}
-.ab-sec .wrap{max-width:900px;margin:0 auto}
-.ab-sec h2{font-size:34px;letter-spacing:-1.2px;font-weight:900;margin:8px 0 10px;color:var(--navy)}
-.ab-ld{font-size:16.5px;line-height:1.8;color:var(--muted);margin-bottom:28px;max-width:720px}
-.ab-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:26px}
-.ab-grid.five{grid-template-columns:repeat(3,1fr)}
-.ab-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:24px;padding:26px;transition:transform .15s,box-shadow .15s}
-a.ab-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(16,35,63,.1)}
-.ab-card i{font-style:normal;font-size:12px;font-weight:900;letter-spacing:.1em;color:var(--orange-text)}
-.ab-card h3{font-size:20px;font-weight:900;letter-spacing:-.5px;margin:8px 0 8px;color:var(--navy)}
-.ab-card p{font-size:14.5px;line-height:1.75;color:var(--muted);flex:1}
-.ab-card span{margin-top:14px;font-size:14px;font-weight:800;color:var(--orange-text)}
-.ab-card.flat{background:var(--off)}
-.ab-sec.alt .ab-card.flat{background:var(--cream)}
-.ab-list{list-style:none;padding:0;margin:26px 0 0;display:grid;gap:14px}
-.ab-list li{background:var(--off);border:1px solid var(--line);border-radius:20px;padding:22px 24px}
-.ab-sec.alt .ab-list li{background:var(--cream);border-color:transparent}
-.ab-list b{display:block;font-size:17px;font-weight:900;color:var(--navy);margin-bottom:6px}
-.ab-list span{display:block;font-size:15px;line-height:1.8;color:var(--muted)}
-.ab-more{margin-top:28px;display:flex;gap:10px;flex-wrap:wrap}
-.ab-note{margin-top:22px;font-size:13px;color:var(--muted)}
-@media(max-width:900px){.ab-hero{padding:104px 0 44px}.ab-hero h1{font-size:42px;letter-spacing:-1.6px}.ab-hero p{font-size:16px}.ab-sec{padding:52px 0}.ab-sec h2{font-size:26px}.ab-grid,.ab-grid.five{grid-template-columns:1fr}.ab-list li{padding:18px}}
+.ab-hero.dark{background:var(--navy);color:#fff;padding-top:84px}
+.ab-hero.dark .eyebrow{color:var(--orange)}
+.ab-hero.light{background:var(--hero)}
+.ab-hero h1{font-size:60px;line-height:1.14;letter-spacing:-2.4px;font-weight:900;margin:16px 0 14px}
+.ab-hero.dark h1{color:#fff}
+.ab-hero.light h1{font-weight:300;color:var(--navy);font-size:52px}.ab-hero.light h1 b{font-weight:900;color:var(--orange)}
+.ab-hero .sub{font-size:34px;line-height:1.3;letter-spacing:-1.2px;font-weight:300;color:#dbe4f3;margin:0 0 24px}
+.ab-hero .sub b{font-weight:900;color:var(--orange)}
+.ab-hero p{font-size:18px;line-height:1.85;max-width:720px}
+.ab-hero.dark p{color:#c8d3e6}.ab-hero.light p{color:var(--muted)}
+.ab-hero .by{margin-top:26px;display:inline-block;font-size:14px;font-weight:800;color:var(--navy);background:var(--orange);padding:7px 14px;border-radius:999px}
+.ab-sec{padding:76px 0}.ab-sec.alt{background:#fff}
+.ab-sec .wrap{max-width:900px;margin:0 auto}.ab-sec .wrap.narrow,.ab-end .wrap.narrow{max-width:720px}
+.center{text-align:center}
+.ab-k{font-size:13px;font-weight:900;letter-spacing:.14em;color:var(--orange-text)}.ab-k.lt{color:var(--orange)}
+.ab-sec h2{font-size:34px;line-height:1.3;letter-spacing:-1.2px;font-weight:900;margin:10px 0 18px;color:var(--navy)}
+.ab-p{font-size:17px;line-height:1.95;color:#3b4a60;margin-bottom:16px}
+.ab-ld{font-size:16.5px;line-height:1.8;color:var(--muted);margin-bottom:26px}
+.ab-trio{display:grid;gap:12px;margin-top:22px}
+.ab-trio div{background:var(--cream);border-radius:20px;padding:20px 24px}
+.ab-trio b{display:block;font-size:17px;font-weight:900;color:var(--navy);margin-bottom:4px}.ab-trio span{font-size:15px;line-height:1.75;color:var(--muted)}
+.ab-q{margin:22px 0 0;padding:6px 0 6px 24px;border-left:4px solid var(--orange)}
+.ab-q p{font-size:17.5px;line-height:1.95;color:#2a3a52;margin-bottom:14px}
+.ab-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ab-step{background:var(--cream);border-radius:22px;padding:24px}
+.ab-step i{font-style:normal;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;font-weight:900;font-size:15px}
+.ab-step h3{font-size:20px;font-weight:900;margin:12px 0 6px;color:var(--navy)}.ab-step p{font-size:14.5px;line-height:1.7;color:var(--muted)}
+.ab-step em{display:block;margin-top:12px;font-style:normal;font-size:13.5px;font-weight:700;color:var(--orange-text);background:#fff;border-radius:12px;padding:9px 12px}
+.ab-svc{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+.ab-sv{display:flex;flex-direction:column;border-radius:26px;padding:26px;min-height:270px;transition:transform .15s,box-shadow .15s}
+.ab-sv:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(16,35,63,.14)}
+.ab-sv.o{background:var(--orange);color:var(--navy)}.ab-sv.k{background:var(--navy);color:#fff}.ab-sv.w{background:#fff;border:1px solid var(--line);color:var(--navy)}
+.ab-sv .kk{font-size:12px;font-weight:900;letter-spacing:.1em;opacity:.85}
+.ab-sv h3{font-size:22px;font-weight:900;letter-spacing:-.6px;margin:8px 0 14px}
+.ab-sv .pr,.ab-sv .ex{font-size:14px;line-height:1.7;margin-bottom:8px}.ab-sv b{display:block;font-size:11.5px;font-weight:900;letter-spacing:.06em;opacity:.7}
+.ab-sv span{margin-top:auto;font-size:14px;font-weight:900}
+.ab-now{margin-top:18px;background:#fff;border:1px dashed #d6d0c5;border-radius:22px;padding:20px 22px;display:grid;grid-template-columns:auto 1fr 1fr;gap:16px;align-items:center}
+.ab-now .nl{font-size:13px;font-weight:900;color:var(--orange-text);max-width:130px;line-height:1.5}
+.ab-now a{display:block;background:var(--off);border-radius:16px;padding:14px 16px}.ab-now a b{display:block;font-size:15.5px;font-weight:900;color:var(--navy)}.ab-now a span{font-size:13px;line-height:1.6;color:var(--muted)}
+.ab-more{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}.ab-more.c{justify-content:center}
+.btn.ghost-w{background:transparent;border-color:#fff;color:#fff}
+.ab-end{background:var(--navy);color:#fff;padding:84px 0 92px}
+.ab-end h2{font-size:38px;line-height:1.3;letter-spacing:-1.4px;font-weight:900;margin:12px 0 14px;color:#fff}
+.ab-end p{font-size:16.5px;line-height:1.85;color:#c8d3e6}
+.ab-end.light{background:var(--hero)}.ab-end.light h2{color:var(--navy);font-size:30px}
+.ab-six{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:26px}
+.ab-six article{background:#fff;border:1px solid var(--line);border-radius:24px;padding:26px}
+.ab-six i{font-style:normal;font-size:13px;font-weight:900;letter-spacing:.1em;color:var(--orange-text)}
+.ab-six h3{font-size:19px;line-height:1.45;font-weight:900;letter-spacing:-.4px;margin:8px 0 10px;color:var(--navy)}
+.ab-six p{font-size:14.5px;line-height:1.8;color:var(--muted)}
+.ab-tbl{width:100%;border-collapse:collapse;margin-top:22px;background:var(--off);border-radius:20px;overflow:hidden}
+.ab-tbl th{width:150px;text-align:left;vertical-align:top;font-size:14px;font-weight:900;color:var(--navy);padding:16px 18px;border-bottom:1px solid var(--line)}
+.ab-tbl td{font-size:14.5px;line-height:1.8;color:var(--muted);padding:16px 18px;border-bottom:1px solid var(--line)}
+.ab-tbl td b{color:var(--navy)}.ab-tbl a{color:var(--orange-text);font-weight:800;text-decoration:underline}
+.ab-state{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ab-state>div{background:var(--cream);border-radius:20px;padding:20px 22px}.ab-state b{font-size:15px;font-weight:900;color:var(--navy)}
+.ab-state ul{margin:10px 0 0;padding-left:18px;font-size:14px;line-height:1.85;color:var(--muted)}
+@media(max-width:900px){.ab-hero{padding:104px 0 52px}.ab-hero h1{font-size:38px;letter-spacing:-1.4px}.ab-hero.light h1{font-size:32px}.ab-hero .sub{font-size:24px}.ab-hero p{font-size:16px}.ab-sec{padding:54px 0}.ab-sec h2{font-size:26px}.ab-steps,.ab-svc,.ab-six,.ab-state{grid-template-columns:1fr}.ab-now{grid-template-columns:1fr}.ab-now .nl{max-width:none}.ab-end h2{font-size:28px}.ab-tbl th{width:96px;padding:12px}.ab-tbl td{padding:12px}}
