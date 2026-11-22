@@ -104,7 +104,7 @@ export function footerHtml(menu, isOn, extraNote) {
   const sns = menu.sns.filter((s) => s.enabled && s.url).sort((a, b) => a.order - b.order)
     .map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener" aria-label="${esc(s.label)}" data-tip="${esc(s.tip || s.url)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[s.platform] || ''}</svg></a>`).join('');
   const links = f.links.map((l) => {
-    if (!l.href) return `<span class="off" aria-disabled="true">${esc(l.label)}</span>`;
+    if (!l.href || (l.requires && !isOn(l.requires))) return `<span class="off" aria-disabled="true">${esc(l.label)}</span>`;
     const ext = /^https?:|^mailto:/.test(l.href);
     return `<a href="${esc(l.href)}"${/^https?:/.test(l.href) ? ' target="_blank" rel="noopener"' : ''}>${esc(l.label)}</a>`;
   }).join('');
