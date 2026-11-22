@@ -114,15 +114,7 @@ h1 em{font-style:normal;color:var(--orange);font-weight:900}
 
 .h3d{position:absolute;left:44px;top:34px;width:512px;height:auto;display:block;filter:drop-shadow(0 26px 30px rgba(16,35,63,.20));user-select:none;-webkit-user-drag:none}
 
-/* 연말정산 특집 오픈 카드(홈 SERVICES 맨 위) + 떠있는 안내 카드 */
-.yec{background:var(--orange);color:var(--navy);border-radius:32px;padding:34px 38px;margin-bottom:22px;display:grid;grid-template-columns:1fr 300px;gap:28px;align-items:center}
-.yec .kicker{font-size:12px;font-weight:900;letter-spacing:1px}
-.yec h3{font-size:34px;line-height:1.2;letter-spacing:-1px;margin:8px 0 10px;font-weight:900}
-.yec p{font-size:16px;line-height:1.6;margin:0 0 20px}
-.yec .btns{display:flex;gap:10px;flex-wrap:wrap}
-.yec .btns .btn.line{border-color:var(--navy)}
-.yec .art{background:var(--cream);border-radius:24px;overflow:hidden}
-.yec .art img{display:block;width:100%;height:auto}
+
 .yfl{position:fixed;right:20px;bottom:20px;width:340px;z-index:70;background:#fff;border:1px solid var(--line,#e5e0d8);border-radius:22px;box-shadow:0 12px 40px rgba(16,35,63,.22);overflow:hidden;transform:translateY(24px);opacity:0;transition:transform .3s,opacity .3s}
 .yfl.on{transform:none;opacity:1}
 .yfl[hidden]{display:none}
@@ -133,6 +125,39 @@ h1 em{font-style:normal;color:var(--orange);font-weight:900}
 .yfl .btn{width:100%;justify-content:center;background:var(--orange);border-color:var(--orange);color:var(--navy)}
 .yfl .ft{display:flex;justify-content:space-between;margin-top:10px}
 .yfl .ft button{background:none;border:0;font-size:13px;color:var(--muted);cursor:pointer;padding:6px 4px}
-@media(max-width:900px){.yec{grid-template-columns:1fr;padding:26px 22px;border-radius:26px}.yec h3{font-size:26px}.yec .art{order:-1}}
+@media(max-width:900px){}
 @media(max-width:700px){.yfl{left:0;right:0;bottom:0;width:auto;border-radius:22px 22px 0 0;transform:translateY(100%)}.yfl .art{display:none}}
 @media(prefers-reduced-motion:reduce){.yfl{transition:none}}
+
+/* 연말정산 특집 띠(히어로 바로 아래, 다른 서비스 카드와 다른 시즌 한정 느낌) */
+.yes{position:relative;overflow:hidden;background:linear-gradient(115deg,#0A1A32 0%,#10233F 52%,#1B3A66 100%);color:#fff}
+.yes::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.04) 0 14px,transparent 14px 28px);pointer-events:none}
+.yes::after{content:"";position:absolute;right:-120px;top:-160px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(255,121,0,.38),rgba(255,121,0,0) 68%);pointer-events:none}
+.yes .yin{position:relative;z-index:1;display:grid;grid-template-columns:1fr 330px;gap:34px;align-items:center;padding:40px 0}
+.yes .ytag{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.yes .yb{background:var(--orange);color:var(--navy);font-size:12px;font-weight:900;letter-spacing:.14em;padding:5px 12px;border-radius:6px}
+.yes .yp{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:#ffd9b3;border:1px solid rgba(255,217,179,.45);padding:4px 12px;border-radius:999px}
+.yes .yp i{width:7px;height:7px;border-radius:50%;background:var(--orange);animation:yepulse 1.8s ease-in-out infinite}
+@keyframes yepulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.5)}}
+.yes h3{font-size:38px;line-height:1.25;letter-spacing:-1.3px;font-weight:900;margin:0 0 12px}.yes h3 em{font-style:normal;color:var(--orange)}
+.yes p{font-size:16px;line-height:1.7;color:#c8d3e6;margin:0 0 22px}.yes p b{color:#fff}
+.yes .btns{display:flex;gap:10px;flex-wrap:wrap}
+.yes .btn.ghost-w{background:transparent;border-color:rgba(255,255,255,.7);color:#fff}
+.yes .yart{background:var(--cream);border-radius:26px;overflow:hidden;transform:rotate(2.2deg);box-shadow:0 18px 44px rgba(0,0,0,.35);border:4px solid rgba(255,255,255,.9)}
+.yes .yart img{display:block;width:100%;height:auto}
+@media(prefers-reduced-motion:reduce){.yes .yp i{animation:none}}
+@media(max-width:900px){.yes .yin{grid-template-columns:1fr;padding:30px 0 34px;gap:22px}.yes h3{font-size:27px}.yes p{font-size:15px}.yes .yart{max-width:300px;transform:rotate(1.5deg)}}
+/* MONEY BRIEF 영역(프롬프트 카테고리 자리) */
+.bfh .cath h2 em{font-style:normal;color:var(--orange)}
+.bfh .cath h2{text-wrap:balance}
+.bfg{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:26px}
+.bg{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;transition:transform .15s,box-shadow .15s}
+.bg:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(16,35,63,.13)}
+.bg.new{border-color:var(--orange);box-shadow:0 0 0 2px rgba(255,121,0,.18)}
+.bg .cv{position:relative;aspect-ratio:4/5;background:var(--navy);overflow:hidden}
+.bg .cv img{display:block;width:100%;height:100%;object-fit:cover}
+.bg .nw{position:absolute;left:12px;top:12px;background:var(--orange);color:var(--navy);font-size:11px;font-weight:900;letter-spacing:.1em;padding:4px 10px;border-radius:999px}
+.bg .bt{padding:14px 16px 18px}
+.bg .bt i{display:block;font-style:normal;font-size:12px;font-weight:900;color:var(--orange-text);margin-bottom:6px}
+.bg .bt h3{font-size:15.5px;line-height:1.5;font-weight:800;color:var(--navy);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+@media(max-width:900px){.bfg{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 20px;gap:12px;margin:22px -20px 0;padding:4px 20px 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none}.bfg::-webkit-scrollbar{display:none}.bg{flex:0 0 56%;scroll-snap-align:start}}

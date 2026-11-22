@@ -121,9 +121,12 @@ function briefParts() {
 <div class="l1">정책과 금리, 수수료가 바뀌면 내 돈은 얼마가 달라질까요? 쉽게 정리해 드려요.</div>
 <div class="new"><i>No.${latest.no}</i>${escHtml(latest.title)}</div><span class="go">뉴스 보러가기 →</span></div>
 <div class="cards">${bannerFigs}</div></a>`;
+  // 메인 페이지: 최신 4개 호를 표지 카드로 보여 주는 MONEY BRIEF 영역(프롬프트 카테고리 자리)
+  const gridHtml = `<section class="sec bfh" id="brief-home"><div class="wrap"><div class="cath"><div><div class="eyebrow">MONEY BRIEF · 돈 되는 뉴스</div><h2>돈 되는 최신 금융 정보를 <em>한 눈에</em></h2></div><a class="all" href="/brief/" data-ga="brief_home_all">전체 보기 →</a></div>
+<div class="bfg" role="list">${issues.slice(0, 4).map((it, i) => `<a class="bg${i === 0 ? ' new' : ''}" role="listitem" href="${i === 0 ? '/brief/' : '/brief/?n=' + it.no}" data-ga="brief_home_card" data-no="${it.no}"><div class="cv"><img src="${src(it.id, 1)}" alt="" width="1080" height="1350" loading="lazy" decoding="async">${i === 0 ? '<span class="nw">NEW</span>' : ''}</div><div class="bt"><i>No.${it.no} · ${escHtml(it.category)}</i><h3>${escHtml(it.short)}</h3></div></a>`).join('')}</div></div></section>`;
   const hero = (data.hero || []).map((h) => { const [id, n] = h.split('/'); return `<img src="${src(id, Number(n))}" alt="" width="1080" height="1350" loading="eager" decoding="async">`; }).join('');
   const json = JSON.stringify({ issues: issues.map((it) => ({ no: it.no, id: it.id, category: it.category, title: it.title, base_date: it.base_date, cards: it.cards.map((c) => ({ n: c.n, alt: c.alt, ...(c.link ? { link: c.link } : {}) })) })) }).replace(/</g, '\\u003c');
-  return { latestHtml, archiveHtml, hero, json, bannerHtml };
+  return { latestHtml, archiveHtml, hero, json, bannerHtml, gridHtml };
 }
 function extractConst(src, name) {
   const m = new RegExp(`(^|\\n)const ${name}\\s*=`).exec(src);
@@ -220,7 +223,7 @@ bar.querySelector(".x").addEventListener("click",function(){e.classList.add("ann
 }
 function anncHomeCard(a) {
   if (!a || !a.homeCard || a.homeCard.enabled === false) return '';
-  return `<div class="yec" id="yeCard"><div><div class="kicker">HOT ISSUE · 연말정산 특집</div><h3>돈버프만의 해보는 연말정산,<br>지금 당장 시작해보세요!</h3><p><b>STEP 1</b> · 3~5분이면 내 연말정산에서 확인할 항목을 정리해 드려요.</p><div class="btns"><a class="btn" href="${escA(a.href)}" data-ga="ye_promo_card">나의 연말정산 체크업 시작하기 →</a><a class="btn line" href="${escA(a.subHref || a.href)}" data-ga="ye_promo_card_sub">일정·체크리스트 보기</a></div></div><div class="art"><img src="/redesign/img/yearend-promo.webp" width="900" height="600" alt="연말정산 체크업을 안내하는 3D 일러스트" loading="lazy"></div></div>
+  return `<section class="yes" id="yeCard" aria-label="연말정산 특집"><div class="wrap"><div class="yin"><div class="ytx"><div class="ytag"><span class="yb">SPECIAL</span><span class="yp"><i aria-hidden="true"></i>시즌 한정 특집</span></div><h3>돈버프만의 해보는 연말정산,<br><em>지금 당장 시작해보세요!</em></h3><p><b>STEP 1</b> · 3~5분이면 내 연말정산에서 확인할 항목을 정리해 드려요.</p><div class="btns"><a class="btn or" href="${escA(a.href)}" data-ga="ye_promo_card">나의 연말정산 체크업 시작하기 →</a><a class="btn ghost-w" href="${escA(a.subHref || a.href)}" data-ga="ye_promo_card_sub">일정·체크리스트 보기</a></div></div><div class="yart"><img src="/redesign/img/yearend-promo.webp" width="900" height="600" alt="연말정산 체크업을 안내하는 3D 일러스트" loading="lazy"></div></div></div></section>
 <script>(function(){var c=document.getElementById("yeCard");if(!c)return;${ANNC_GA}c.addEventListener("click",function(ev){var a=ev.target.closest&&ev.target.closest("a");if(a)g("ye_promo_click",{placement:"home_card"})});
 if("IntersectionObserver"in window){var o=new IntersectionObserver(function(es){if(es[0].isIntersecting){g("ye_promo_view",{placement:"home_card"});o.disconnect()}});o.observe(c)}})();</script>`;
 }
@@ -260,10 +263,10 @@ function renderRedesign(html, ctx) {
   // 프롬프트 페이지 → 책 소개 페이지 링크: /book/ 이 이 환경에서 켜져 있을 때만.
   html = html.replace(/<!--@bookpage-->/g, () => (isOn('/book/') ? '<a class="btn line" href="/book/" data-ga="book_page">📘 책 소개 보기</a>' : ''));
   html = html.replace(/<!--@mbtipaths-->/g, () => mbtiPathsHtml());
-  if (/<!--@brief(latest|archive|hero|data|banner)-->/.test(html)) {
+  if (/<!--@brief(latest|archive|hero|data|banner|grid)-->/.test(html)) {
     const b = briefParts();
     html = html.replace(/<!--@brieflatest-->/g, () => b.latestHtml).replace(/<!--@briefarchive-->/g, () => b.archiveHtml)
-      .replace(/<!--@briefbanner-->/g, () => (ctx.briefOn ? b.bannerHtml : '')).replace(/<!--@briefhero-->/g, () => b.hero).replace(/<!--@briefdata-->/g, () => `<script type="application/json" id="briefData">${b.json}</script>`);
+      .replace(/<!--@briefbanner-->/g, () => (ctx.briefOn ? b.bannerHtml : '')).replace(/<!--@briefgrid-->/g, () => (ctx.briefOn ? b.gridHtml : '')).replace(/<!--@briefhero-->/g, () => b.hero).replace(/<!--@briefdata-->/g, () => `<script type="application/json" id="briefData">${b.json}</script>`);
   }
   html = html.replace(/<!--@yearenddata-->/g, () => yearendDataHtml());
   html = html.replace(/<!--@yearendcal-->/g, () => yearendCalHtml());
