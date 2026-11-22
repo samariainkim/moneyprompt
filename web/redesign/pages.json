@@ -15,7 +15,9 @@
     "/book/": "book.html",
     "/yearend/": "yearend.html",
     "/yearend/checkup/": "yearend-checkup.html",
-    "/yearend/calendar/": "yearend-calendar.html"
+    "/yearend/calendar/": "yearend-calendar.html",
+    "/about/": "about.html",
+    "/editorial/": "editorial.html"
   },
   "preview": [
     "/",
@@ -44,7 +46,9 @@
     "/book/",
     "/yearend/",
     "/yearend/checkup/",
-    "/yearend/calendar/"
+    "/yearend/calendar/",
+    "/about/",
+    "/editorial/"
   ],
   "production": [
     "/",
@@ -73,7 +77,9 @@
     "/book/",
     "/yearend/",
     "/yearend/checkup/",
-    "/yearend/calendar/"
+    "/yearend/calendar/",
+    "/about/",
+    "/editorial/"
   ],
   "nextPages": [
     "/join/",

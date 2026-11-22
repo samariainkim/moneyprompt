@@ -75,8 +75,8 @@
     "slogan": "돈에 AI를 더하다.",
     "intro": "돈버프는 AI를 활용해 오늘보다 돈을 잘 다루는 나를 만드는 '금융 + AI' 원칙으로 탄생한 전문 포털입니다.",
     "links": [
-      { "label": "돈버프 소개", "href": "" },
-      { "label": "운영·편집 원칙", "href": "" },
+      { "label": "돈버프 소개", "href": "/about/", "requires": "/about/" },
+      { "label": "운영·편집 원칙", "href": "/editorial/", "requires": "/editorial/" },
       { "label": "개인정보처리방침", "href": "/privacy/" },
       { "label": "이용약관", "href": "/terms/" },
       { "label": "광고·제휴 문의", "href": "mailto:samariain.kim@gmail.com" }
