@@ -14,6 +14,7 @@
 .ab-hero .by{margin-top:26px;display:inline-block;font-size:14px;font-weight:800;color:var(--navy);background:var(--orange);padding:7px 14px;border-radius:999px}
 .ab-sec{padding:76px 0}.ab-sec.alt{background:#fff}
 .ab-sec .wrap{max-width:900px;margin:0 auto}.ab-sec .wrap.narrow,.ab-end .wrap.narrow{max-width:720px}
+.ab-end .wrap{margin:0 auto}
 .center{text-align:center}
 .ab-k{font-size:13px;font-weight:900;letter-spacing:.14em;color:var(--orange-text)}.ab-k.lt{color:var(--orange)}
 .ab-sec h2{font-size:34px;line-height:1.3;letter-spacing:-1.2px;font-weight:900;margin:10px 0 18px;color:var(--navy)}
@@ -65,3 +66,7 @@
 .ab-tbl details p{margin-top:8px;font-size:13.5px;line-height:1.85;color:var(--muted);background:var(--cream);border-radius:12px;padding:10px 14px}
 
 .ab-contact{margin-top:20px;background:var(--cream);border-radius:20px;padding:20px 24px}.ab-contact b{display:block;font-size:16px;font-weight:900;color:var(--navy);margin-bottom:4px}.ab-contact p{font-size:14.5px;line-height:1.8;color:var(--muted)}.ab-contact a{color:var(--orange-text);font-weight:800;text-decoration:underline}
+
+.center h2{text-wrap:balance}
+.m-br{display:none}
+@media(max-width:900px){.m-br{display:inline}.ab-end.light h2{font-size:23px;line-height:1.45}}
