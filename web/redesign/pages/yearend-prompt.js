@@ -39,7 +39,7 @@
     // ④ 생성
     const L = []; const ruleIds = []; const rule = x => { ruleIds.push(x.id); return x.text; };
     const title = Object.fromEntries(R.items.map(i => [i.id, i.title]));
-    const reasonOf = i => { const rs = []; for (const tok of i.reason.split(' | ')) { const key = P.reasons[tok] ? tok : (tok.startsWith('Q7=') ? 'Q7' : tok.startsWith('Q3=child') ? 'Q3=child' : tok.startsWith('Q3=') ? 'Q3' : tok); if (P.reasons[key]) rs.push(P.reasons[key]); } return [...new Set(rs)].join(' / '); };
+    const reasonOf = i => { const rs = []; for (const tok of i.reason.split(' | ')) { if (/^Q3=/.test(tok) && tok !== 'Q3=child') { const vs = tok.slice(3).split(','); const parts = []; for (const k of ['spouse', 'child', 'parent']) if (vs.some(v => v === k || (k === 'child' && v.startsWith('child_')))) parts.push(P.reason_parts[k]); if (parts.length) { rs.push(parts.join(', ') + ' 답함'); continue; } } const key = P.reasons[tok] ? tok : (tok.startsWith('Q7=') ? 'Q7' : tok.startsWith('Q3=child') ? 'Q3=child' : tok.startsWith('Q3=') ? 'Q3' : tok); if (P.reasons[key]) rs.push(P.reasons[key]); } return [...new Set(rs)].join(' / '); };
     const legal = R.meta.legal_verified_at || '진행 중';
     L.push('# 역할'); P.role.forEach(x => L.push(rule(x)));
     L.push(`프롬프트 v${P.version} · 체크업 규칙 v${R.version} · 작성 기준일 ${asOf} · 법령 원문 검증: ${legal} · ${P.tax_year}년 귀속`); L.push('');
@@ -57,7 +57,7 @@
     L.push('[입력되지 않은 정보]'); P.missing_info.forEach(x => L.push('- ' + x)); L.push('');
     L.push('# 2. VERIFY — 검증 기준'); P.verify_rules.forEach(x => L.push('- ' + rule(x))); L.push('');
     L.push('# 3. SIMULATE — 필요한 추가 정보와 요건 검토'); P.simulate_rules.forEach(x => L.push('- ' + rule(x))); L.push('');
-    L.push('# 4. ACT — 확인할 일'); P.act_rules.forEach(x => L.push('- ' + rule(x))); L.push('');
+    L.push('# 4. ACT — 확인할 일'); L.push(P.official_schedule.title); P.official_schedule.items.forEach(x => L.push('- ' + rule(x))); P.act_rules.forEach(x => L.push('- ' + rule(x))); L.push('');
     L.push('# 공통 규칙'); P.common_rules.forEach(x => L.push('- ' + rule(x))); L.push('');
     const f = P.format; L.push('# 답변 형식'); L.push(`1. ${f.summary_title} (${f.summary_max_lines}줄 이내)`); L.push(`2. ${f.items_title}`); L.push(`3. ${f.question_title} (최대 ${f.question_max}개)`); L.push(`4. ${f.action_title}`);
     const text = L.join('\n');
@@ -72,11 +72,15 @@
     [/\d[\d,]*\s*(만\s*)?(억\s*)?원/, '금액 숫자(입력하지 않은 수치)'], [/\d+(\.\d+)?\s*%/, '공제율·비율 숫자'],
     [/\d{6}\s*-\s*[1-4]\d{6}/, '주민등록번호 형태'], [/01[016789][-\s]?\d{3,4}[-\s]?\d{4}/, '휴대전화 번호 형태'], [/[\w.+-]+@[\w-]+\.[\w.-]+/, '이메일 형태'], [/\d{2,4}-\d{2,6}-\d{2,8}/, '계좌·전화 번호 형태'],
     [/추천합니다|가입하세요|가입을 권/, '상품 추천·권유 표현'], [/개인 정보는 포함되어 있지 않/, '"개인정보 없음" 단정 표현']];
+  const DATE_PATTERNS = [/\d{4}\.\d{1,2}\.\d{1,2}/, /\d{1,2}월\s*\d{1,2}일/, /\d{1,2}월\s*(초|중순|말|중)/, /\d{4}년\s*\d{1,2}월/, /\d{1,2}\.\d{1,2}\([월화수목금토일]\)/];
   const HEADINGS = ['# 역할', '# 1. USER INPUT', '# 2. VERIFY', '# 3. SIMULATE', '# 4. ACT', '# 공통 규칙', '# 답변 형식'];
-  const ALL_RULES = Object.fromEntries([...P.role, ...P.verify_rules, ...P.simulate_rules, ...P.act_rules, ...P.common_rules].map(x => [x.id, x.text]));
+  const ALL_RULES = Object.fromEntries([...P.role, ...P.verify_rules, ...P.simulate_rules, ...P.act_rules, ...P.official_schedule.items, ...P.common_rules].map(x => [x.id, x.text]));
   function check(text, ctx = {}) {
     const v = []; const scan = text.replace(/\d{4}-\d{2}-\d{2}/g, 'DATE').replace(/v\d+\.\d+\.\d+/g, 'VER'); // 날짜·버전은 번호/금액으로 오인하지 않는다
     for (const [re, name] of FORBIDDEN) if (re.test(scan)) v.push('금지: ' + name);
+    // 공식으로 확인된 일정(P.official_schedule.allowed_dates)에 없는 구체 날짜·시기는 프롬프트에 넣을 수 없다(AI가 날짜를 만들어 내는 것을 막는 첫 단계)
+    let dscan = scan; for (const ok of P.official_schedule.allowed_dates) dscan = dscan.split(ok).join('');
+    for (const re of DATE_PATTERNS) { const m = dscan.match(re); if (m) v.push('확인되지 않은 날짜·시기: ' + m[0]); }
     // 필수 규칙은 문구가 아니라 규칙 ID로 확인(문구가 바뀌어도 ID로 대조): 생성기가 실제로 넣은 규칙 ID + 그 규칙의 현재 문구가 본문에 있는지
     const ids = ctx.ruleIds || []; for (const id of P.required_rule_ids) { if (!ids.includes(id)) v.push('필수 규칙 ID 없음: ' + id); else if (!text.includes(ALL_RULES[id])) v.push('규칙 ID는 있으나 본문에 문구 없음: ' + id); }
     let last = -1; for (const h of HEADINGS) { const i = text.indexOf(h); if (i < 0 || i < last) v.push('섹션 순서·누락: ' + h); last = i; }

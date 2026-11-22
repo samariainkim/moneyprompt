@@ -179,7 +179,7 @@ function promptStats() {
 function yearendDataHtml() {
   const dir = join(RD_DIR, 'data', 'yearend');
   const R = JSON.parse(readFileSync(join(dir, 'rules.v0.3.1.json'), 'utf8'));
-  const P = JSON.parse(readFileSync(join(dir, 'prompt.v0.2.0.json'), 'utf8'));
+  const P = JSON.parse(readFileSync(join(dir, 'prompt.v0.3.0.json'), 'utf8'));
   if (R.tax_year !== P.tax_year) throw new Error('[sync-static] 연말정산 규칙과 프롬프트의 귀속연도가 다릅니다.');
   if (!R.profiles || !R.profiles[R.meta.profile]) throw new Error('[sync-static] 연말정산 배포 기준(meta.profile)이 올바르지 않습니다.');
   for (const q of R.questions) for (const o of q.options) if (!(P.labels[q.id] && P.labels[q.id][o])) throw new Error(`[sync-static] 연말정산 선택지 라벨 없음: ${q.id}.${o}`);

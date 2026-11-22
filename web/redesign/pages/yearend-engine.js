@@ -18,6 +18,7 @@
         a = [...new Set(a)];
         const ex = (q.exclusive || []).find(e => a.includes(e)); if (ex) a = [ex]; // 배타 옵션
         if (!a.every(x => q.options.includes(x))) throw new Error('bad option ' + q.id);
+        a = q.options.filter(o => a.includes(o)); // 클릭한 순서가 아니라 선택지 순서로 고정(같은 답변 = 같은 결과·같은 프롬프트)
       } else { if (!q.options.includes(a)) throw new Error('bad option ' + q.id); a = [a]; }
       out[q.id] = a;
     }

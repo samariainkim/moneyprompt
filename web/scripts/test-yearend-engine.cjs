@@ -2,7 +2,7 @@
 const assert = require('assert');
 const path = require('path'); const RD = path.join(__dirname, '..', 'redesign');
 const YE = require(path.join(RD, 'pages', 'yearend-engine.js')).make(require(path.join(RD, 'data', 'yearend', 'rules.v0.3.1.json')));
-const YP = require(path.join(RD, 'pages', 'yearend-prompt.js')).make(require(path.join(RD, 'data', 'yearend', 'prompt.v0.2.0.json')), YE);
+const YP = require(path.join(RD, 'pages', 'yearend-prompt.js')).make(require(path.join(RD, 'data', 'yearend', 'prompt.v0.3.0.json')), YE);
 const { run: runRaw, R } = YE;
 const run = (a, o = {}) => runRaw(a, { mode: 'staging', ...o }); // 기본: 미리보기 배포 기준(원문 확인 + 2차 일치)
 const ids = r => r.items.map(i => i.id.replace('TAX-2026-', ''));
