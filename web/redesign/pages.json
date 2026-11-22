@@ -70,7 +70,10 @@
     "/invest-mbti/paths/",
     "/brief/",
     "/calc/dsr/",
-    "/book/"
+    "/book/",
+    "/yearend/",
+    "/yearend/checkup/",
+    "/yearend/calendar/"
   ],
   "nextPages": [
     "/join/",
