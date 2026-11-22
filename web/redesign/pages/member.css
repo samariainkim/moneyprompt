@@ -70,6 +70,7 @@ body.rd .rdm{max-width:none;margin:0;padding:0}
 .rd .join-panel h2{font-size:25px;font-weight:900;letter-spacing:-.8px;margin:0}.rd .join-sub{color:var(--muted);margin:4px 0 20px;font-size:14.5px}
 .rd .join-actions{display:grid;gap:10px}.rd .join-actions .btn{width:100%}
 .rd .btn.google{width:100%}
+.rd .btn.kakao,.rd .btn.kakao:hover{background:#FEE500;border-color:#FEE500;color:#191919}
 .rd .join-signup{color:var(--orange-text);font-weight:800;text-decoration:underline}
 .rd .join-keep{margin-top:18px;background:var(--cream);border-radius:16px;padding:12px 16px;font-size:13.5px;font-weight:700;color:var(--orange-text)}
 .rd .join-back{display:block;text-align:center;margin-top:14px;color:var(--muted);font-size:13.5px;text-decoration:underline}

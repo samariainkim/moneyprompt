@@ -12,7 +12,7 @@
 ## 2. 기술 스택
 
 - **앱**: Next.js (App Router) + TypeScript
-- **DB·인증**: Supabase (서울 리전), 접근은 RLS로 제어
+- **DB·인증**: Supabase (아일랜드 리전 eu-west-1 — 국외 보관, 방침 제7조에 공개), 접근은 RLS로 제어
 - **배포**: Vercel (GitHub 연동, PR 미리보기)
 - **결제**: 토스페이먼츠 또는 PortOne (2차)
 - 기존 정적 페이지(`/calc`, `/fee`, `/prompt`, `/invest-mbti`)는 `public/`에 그대로 두어 URL·SEO 유지
