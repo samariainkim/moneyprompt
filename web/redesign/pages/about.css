@@ -1,5 +1,5 @@
 /* 돈버프 소개 · 운영·편집 철학 */
-.ab-hero{padding:136px 0 76px}
+.ab-hero{padding:136px 0 84px}
 .ab-hero .wrap{max-width:900px;margin:0 auto}
 .ab-hero.dark{background:var(--navy);color:#fff;padding-top:84px}
 .ab-hero.dark .eyebrow{color:var(--orange)}
@@ -21,7 +21,7 @@
 .ab-ld{font-size:16.5px;line-height:1.8;color:var(--muted);margin-bottom:26px}
 .ab-trio{display:grid;gap:12px;margin-top:22px}
 .ab-trio div{background:var(--cream);border-radius:20px;padding:20px 24px}
-.ab-trio b{display:block;font-size:17px;font-weight:900;color:var(--navy);margin-bottom:4px}.ab-trio span{font-size:15px;line-height:1.75;color:var(--muted)}
+.ab-trio b{display:block;font-size:26px;line-height:1.35;letter-spacing:-.8px;font-weight:900;color:var(--navy);margin-bottom:6px}.ab-trio span{font-size:15px;line-height:1.75;color:var(--muted)}
 .ab-q{margin:22px 0 0;padding:6px 0 6px 24px;border-left:4px solid var(--orange)}
 .ab-q p{font-size:17.5px;line-height:1.95;color:#2a3a52;margin-bottom:14px}
 .ab-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
