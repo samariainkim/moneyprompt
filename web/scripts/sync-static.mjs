@@ -200,6 +200,7 @@ function yearendCalHtml() {
     if (!i.action || !AT.includes(i.action.type)) throw new Error(`[sync-static] 연말정산 일정 행동 유형 오류: ${i.id}`);
     for (const k of ['start', 'end']) if (i[k] && !ISO.test(i[k])) throw new Error(`[sync-static] 연말정산 일정 날짜 형식 오류: ${i.id}.${k}`);
     if ((i.start || i.when) && i.status === 'self') throw new Error(`[sync-static] 날짜를 주장하는 일정에 출처 있는 상태가 필요합니다: ${i.id}`);
+    if (i.related && !(i.related.label && /^https:\/\/blog\.naver\.com\/ijesus78\/\d+$/.test(i.related.url || ''))) throw new Error(`[sync-static] 연말정산 일정 관련 글 형식 오류: ${i.id}`);
     if (i.status === 'official' && !(i.source && i.source.name)) throw new Error(`[sync-static] 공식 확인 일정에는 출처가 필요합니다: ${i.id}`);
   }
   D.items = D.items.filter((i) => i.enabled !== false);

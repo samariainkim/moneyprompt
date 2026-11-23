@@ -167,7 +167,11 @@
    "official_link": "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2304&cntntsId=238938",
    "link_scope": "generic",
    "source_id": "NTS_GUIDE_2026",
-   "legal_verified_at": null
+   "legal_verified_at": null,
+   "ref_post": {
+    "label": "연말정산, 12월 31일 전에 꼭 확인해야 할 7가지!",
+    "url": "https://blog.naver.com/ijesus78/224486760938"
+   }
   },
   {
    "id": "TAX-2026-RENT",

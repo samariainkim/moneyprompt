@@ -132,7 +132,7 @@
       '<div class="chips2">' + (STEPCHIP[def.step] ? '<span class="chip2 c-step">' + STEPCHIP[def.step] + '</span>' : '') + '<span class="chip2 c-type">' + esc(def.type) + '</span></div>' +
       '<div class="rsn"><b>선정 이유</b> · ' + esc(reasonsOf(it)) + '</div><ul>' + rows + '</ul>' +
       (EVID[it.id] ? '<div class="ev">🗂 준비할 증빙 · ' + esc(EVID[it.id]) + '</div>' : '') +
-      (def.official_link ? '<div class="lk"><a href="' + esc(def.official_link) + '" target="_blank" rel="noopener" data-item="' + it.id + '">공식 요건 보기 ↗</a></div>' : '') + '</article>';
+      ((def.official_link || def.ref_post) ? '<div class="lk">' + (def.official_link ? '<a href="' + esc(def.official_link) + '" target="_blank" rel="noopener" data-item="' + it.id + '">공식 요건 보기 ↗</a>' : '') + (def.ref_post ? '<a class="ref" href="' + esc(def.ref_post.url) + '" target="_blank" rel="noopener" data-post="3" title="' + esc(def.ref_post.label) + '">돈버프 블로그 참고 글 ↗</a>' : '') + '</div>' : '') + '</article>';
   }
   function renderResult() {
     var r = E.run(ans, { mode: MODE }), defs = {}; RULES.items.forEach(function (i) { defs[i.id] = i; });
@@ -214,6 +214,7 @@
       var o = PR.build(ans, { mode: MODE, exclude: exList() }); if (o.violations.length || !$('ycConsent').checked) return;
       copyText(o.text).then(function () { var l = renderPreview.last || {}; toast('복사했어요. AI 서비스에 붙여넣어 보세요.'); ga('ye_prompt_copy', { shared: l.shared, total: l.total, len: o.text.length }); }, function () { toast('복사하지 못했어요. 미리보기 내용을 직접 선택해 복사해 주세요.'); });
     }
+    else if ((b = c('a[data-post]'))) ga('ye_blog_click', { post: b.getAttribute('data-post'), from: 'checkup' });
     else if ((b = c('a[data-item]'))) ga('ye_official_click', { item: b.getAttribute('data-item') });
   });
   document.addEventListener('keydown', function (e) {
