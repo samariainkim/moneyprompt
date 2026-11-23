@@ -89,3 +89,5 @@
 .yc-share{background:var(--cream);border-radius:22px;padding:26px;text-align:center;margin:0 0 16px}.yc-share b{display:block;font-size:20px;font-weight:900;color:var(--navy)}.yc-share p{font-size:14px;line-height:1.7;color:var(--muted);margin:6px 0 16px}
 
 .yc-note{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.6}.yc-note a{font-weight:800;color:var(--navy)}
+
+.ri .lk a.ref{border-style:dashed;color:var(--muted);font-weight:700}

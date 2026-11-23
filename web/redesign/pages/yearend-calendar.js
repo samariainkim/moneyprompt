@@ -29,9 +29,10 @@
     var when = it.when || (it.start && it.end ? md(it.start) + '~' + md(it.end) : (it.start ? md(it.start) : ''));
     if (when) chips.push('<span class="ch">' + esc(when) + '</span>');
     var src = it.source ? '<span class="src">출처: ' + esc(it.source.name) + (it.source.url ? ' · <a href="' + esc(it.source.url) + '" target="_blank" rel="noopener" data-ga="ye_cal_cta" data-type="source" data-id="' + esc(it.id) + '">공식 자료 ↗</a>' : '') + '</span>' : (it.status === 'company' ? '<span class="src">회사 공지를 확인하세요</span>' : '');
+    var rel = it.related ? '<span class="src rel">관련 글: <a href="' + esc(it.related.url) + '" target="_blank" rel="noopener" data-ga="ye_cal_cta" data-type="post" data-id="' + esc(it.id) + '">' + esc(it.related.label) + ' ↗</a></span>' : '';
     var cls = 'it' + (st[it.id] === 'done' ? ' done' : '') + (st[it.id] === 'na' ? ' na' : '');
     return '<div class="' + cls + '" id="' + esc(it.id) + '"><button type="button" class="cb" role="checkbox" aria-checked="' + (st[it.id] === 'done') + '" aria-label="' + esc(it.title) + ' 확인함" data-chk="' + esc(it.id) + '"' + (st[it.id] === 'na' ? ' disabled' : '') + '></button>' +
-      '<div><h3>' + esc(it.title) + '</h3><div class="mt">' + chips.join('') + src + '</div>' + (it.note ? '<p class="note">' + esc(it.note) + '</p>' : '') + '</div>' +
+      '<div><h3>' + esc(it.title) + '</h3><div class="mt">' + chips.join('') + src + rel + '</div>' + (it.note ? '<p class="note">' + esc(it.note) + '</p>' : '') + '</div>' +
       '<div class="act">' + actionHtml(it) + '<button type="button" class="na-b" data-na="' + esc(it.id) + '" aria-pressed="' + (st[it.id] === 'na') + '">' + (st[it.id] === 'na' ? '해당 없음 취소' : '해당 없음') + '</button></div></div>';
   }
   function counts(list) { var d = 0, n = 0; list.forEach(function (i) { if (st[i.id] === 'done') d++; else if (st[i.id] === 'na') n++; }); return { d: d, n: n, left: list.length - d - n }; }
