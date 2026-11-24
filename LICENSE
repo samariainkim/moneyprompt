@@ -1,0 +1,42 @@
+돈버프(DONBUFF) 저장소 사용 조건 · Copyright and Usage Notice
+
+Copyright (c) 2026 DONBUFF. All rights reserved.
+
+[한국어]
+
+1. 이 저장소(https://github.com/samariainkim/moneyprompt)는 투명성을 위해 공개되어 있을 뿐, 오픈소스가 아닙니다. 어떠한 오픈소스 라이선스도 부여하지 않으며, 저장소에 포함된 모든 소스 코드, 문서, 프롬프트, 카드뉴스 원고·이미지, 디자인, 화면 구성, 데이터 파일, 스킬(작업 지침) 및 그 밖의 모든 자료에 대한 권리는 돈버프(DONBUFF)에게 있습니다.
+
+2. 허용되는 것
+   - GitHub에서 저장소를 열람하는 것
+   - GitHub 이용약관이 공개 저장소에 대해 허용하는 범위의 포크(복제)와 열람
+   - 법령(저작권법)이 허용하는 범위의 인용(출처 표시 필수)
+
+3. 허용되지 않는 것 (돈버프의 사전 서면 허락 없이는 금지)
+   - 저장소의 전부 또는 일부를 복제, 수정, 배포, 전송, 공개 게시, 호스팅, 판매, 재판매, 대여, 재라이선스하는 행위
+   - 저장소의 코드·문서·프롬프트·카드뉴스·디자인을 이용해 동일하거나 유사한 서비스를 제공하거나 자신의 서비스·상품에 포함하는 행위
+   - 출처 표시, 저작권 표시 또는 로고를 삭제·변경하거나 자신이 만든 것처럼 게시하는 행위
+   - 자동화된 수단으로 저장소 내용을 대량으로 수집해 학습·재배포·상업적으로 이용하는 행위
+
+4. 이 조건을 위반하는 경우 저작권법 등 관련 법령에 따라 사용 중단 요구, 게시물 삭제 요청, 손해배상 청구 및 형사 고소 등의 조치를 할 수 있습니다.
+
+5. 제3자 자료
+   - 저장소가 사용하는 오픈소스 패키지, 글꼴, 이미지 등 제3자 저작물은 각각의 라이선스를 따르며, 이 문서는 그 권리를 변경하지 않습니다.
+   - 저장소에 인용·정리된 국세청, 금융위원회 등 공공기관 자료와 한국수출입은행 환율 등의 데이터의 권리와 이용 조건은 각 출처의 권리자에게 있습니다. 돈버프의 권리는 돈버프가 창작한 구성·표현·디자인·코드에 한정됩니다.
+
+6. 사용 허락·문의: samariain.kim@gmail.com (사용 목적, 범위, 기간을 적어 서면으로 요청해 주세요.)
+
+[English]
+
+Copyright (c) 2026 DONBUFF. All rights reserved.
+
+This repository is publicly viewable for transparency only. It is NOT open source, and no license is granted. All source code, documents, prompts, card-news text and images, designs, data files and other materials in this repository are the property of DONBUFF.
+
+Permitted: viewing the repository on GitHub, and viewing and forking as permitted by the GitHub Terms of Service for public repositories, and quotation permitted by applicable copyright law with attribution.
+
+Not permitted without prior written permission from DONBUFF: copying, modifying, distributing, publishing, hosting, selling, reselling, sublicensing, or using any part of this repository to provide a similar service or to include it in your own products; removing or altering copyright notices or logos; or bulk-collecting the contents by automated means for training, redistribution or commercial use.
+
+Violations may result in takedown requests, claims for damages, and legal action under applicable copyright law.
+
+Third-party components (open-source packages, fonts, images) remain under their own licenses. Materials from public institutions cited in this repository remain subject to their respective terms; DONBUFF's rights are limited to what DONBUFF created.
+
+Contact for permission: samariain.kim@gmail.com
