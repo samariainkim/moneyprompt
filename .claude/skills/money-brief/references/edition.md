@@ -49,3 +49,12 @@
 
 ## 빌드가 만드는 것 (작업폴더/out, 작업폴더/)
 `out/01~07.png`(1080×1350), `out/alt.json`(카드 속 글자 = 검색·접근성용 대체 텍스트), `out/metrics.json`(넘침 점검용), `sheet.jpg`(모아보기), `nums.json`(엔진 값), `meta.json`(연동 링크 영역).
+
+## 이미지형 카드 (No.8 에서 추가)
+성향 콘텐츠처럼 캐릭터·일러스트를 쓰는 호를 위한 종류다. 이미지는 작업폴더 `img/` 에 `invest-type-<코드>.jpg` 로 둔다(저장소 `assets/invest-type/` 에서 복사, 가공하지 않는다).
+- `cover_art`: 네이비 표지 + 제목·부제 + 캐릭터 타일 2×2. `title_lines`, `sub`, `tiles`[{`code`,`name`}] 4개.
+- `cover_hero`: 크림 표지 + 상단 전면 일러스트. `hero`(코드), `tiles` 4개, `title_lines`, `sub`.
+- `chars`: 흰 카드 안에 이미지+이름+한 줄 설명 2×2. `chars`[{`code`,`name`,`catch`}], `note`(선택).
+- `chars_full`: 이미지가 카드 전체를 채우고 글자는 이미지 위. `chars` 는 위와 같다.
+- `boxes` 에 `band`(코드), `body_top`(px) 를 넣으면 맨 위에 이미지 띠가 생긴다. 띠 아래 본문이 줄어드니 `fs` 를 줄여 글자 넘침 점검을 통과시킨다.
+- 이름·한 줄 설명은 사이트 데이터(`web/redesign/pages/mbti.js`)에서 가져와 그대로 쓴다(바꾸지 않는다). 검증 보고서에 원문 대조 결과를 적는다.

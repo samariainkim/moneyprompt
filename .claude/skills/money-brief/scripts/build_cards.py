@@ -139,7 +139,9 @@ def r_boxes(c, i, ed):
     else:
         bx = ''.join(f'<div class="lbx{" on" if b.get("dark") else ""}"><span class="tag">{fmt(b["tag"])}</span><h3>{fmt(b["title"])}</h3><p>{fmt(b["text"])}</p></div>' for b in c['boxes'])
         body = bx + note
-    return f'<div class="{card_open(c, i)}">{bar(i)}<div class="body">{chip(c, ed)}{head(c)}{body}</div>{src(source_of(c, ed))}{dots(i)}</div>'
+    band = f'<img class="band" src="../img/invest-type-{c["band"]}.jpg" alt="">' if c.get('band') else ''
+    bst = ' style="top:%dpx"' % c['body_top'] if c.get('body_top') else ''
+    return f'<div class="{card_open(c, i)}">{bar(i)}{band}<div class="body"{bst}>{chip(c, ed)}{head(c)}{body}</div>{src(source_of(c, ed))}{dots(i)}</div>'
 
 
 def _cell(x):
@@ -204,7 +206,37 @@ def r_cta(c, i, ed):
             f'<div class="sub" style="top:{L["sub_top"]}px">{fmt(c["sub"])}</div>{dots(i)}</div>')
 
 
-RENDER = {'cover': r_cover, 'points': r_points, 'boxes': r_boxes, 'table': r_table, 'compare': r_compare, 'rates': r_rates, 'checklist': r_checklist, 'cta': r_cta}
+def r_cover_art(c, i, ed):
+    cat = ed['category'].split(' · ')
+    tag = c.get('chip_tag') or (f'{cat[0]} <em>{cat[1]}</em>' if len(cat) == 2 else ed['category'])
+    lines = c['title_lines']
+    t = '<br>'.join(f'<u>{html.escape(x[1:-1], quote=False)}</u>' if x.startswith('*') and x.endswith('*') else html.escape(x, quote=False) for x in lines)
+    tiles = ''.join(f'<div class="tile"><img src="../img/invest-type-{x["code"]}.jpg" alt=""><span>{fmt(x["name"])}</span></div>' for x in c['tiles'])
+    return (f'<div class="card dark cover art">{bar(i)}<div class="chip">{tag}</div><h1 class="t">{t}</h1>'
+            f'<p class="s">{fmt(c["sub"])}</p><div class="tiles">{tiles}</div>{dots(i)}</div>')
+
+
+def r_chars(c, i, ed):
+    cs = ''.join(f'<div class="chr"><img src="../img/invest-type-{x["code"]}.jpg" alt=""><div class="tx"><span class="cd">{fmt(x["code"])}</span><h3>{fmt(x["name"])}</h3><p>{fmt(x["catch"])}</p></div></div>' for x in c['chars'])
+    note = f'<span class="note">{fmt(c["note"])}</span>' if c.get('note') else ''
+    return f'<div class="{card_open(c, i)}">{bar(i)}<div class="body">{chip(c, ed)}{head(c)}<div class="chrs">{cs}</div>{note}</div>{src(source_of(c, ed))}{dots(i)}</div>'
+
+
+def r_cover_hero(c, i, ed):
+    cat = ed['category'].split(' · ')
+    tag = c.get('chip_tag') or (f'{cat[0]} <em>{cat[1]}</em>' if len(cat) == 2 else ed['category'])
+    t = '<br>'.join(f'<u>{html.escape(x[1:-1], quote=False)}</u>' if x.startswith('*') and x.endswith('*') else html.escape(x, quote=False) for x in c['title_lines'])
+    th = ''.join(f'<div class="th"><img src="../img/invest-type-{x["code"]}.jpg" alt=""><span>{fmt(x["name"])}</span></div>' for x in c['tiles'])
+    return (f'<div class="card warm cover hero">{bar(i)}<img class="himg" src="../img/invest-type-{c["hero"]}.jpg" alt=""><div class="fade"></div>'
+            f'<div class="chip">{tag}</div><h1 class="t">{t}</h1><p class="s">{fmt(c["sub"])}</p><div class="ths">{th}</div>{dots(i)}</div>')
+
+
+def r_chars_full(c, i, ed):
+    cs = ''.join(f'<div class="cf"><img src="../img/invest-type-{x["code"]}.jpg" alt=""><div class="ov"><span class="cd">{fmt(x["code"])}</span><h3>{fmt(x["name"])}</h3><p>{fmt(x["catch"])}</p></div></div>' for x in c['chars'])
+    return f'<div class="{card_open(c, i)}">{bar(i)}<div class="body">{chip(c, ed)}{head(c)}<div class="cfs">{cs}</div></div>{src(source_of(c, ed))}{dots(i)}</div>'
+
+
+RENDER = {'cover_hero': r_cover_hero, 'chars_full': r_chars_full, 'cover_art': r_cover_art, 'chars': r_chars, 'cover': r_cover, 'points': r_points, 'boxes': r_boxes, 'table': r_table, 'compare': r_compare, 'rates': r_rates, 'checklist': r_checklist, 'cta': r_cta}
 
 
 # ───────── 실행 ─────────
@@ -261,7 +293,7 @@ def main():
         import check_edition
         sys.exit(check_edition.run(ed, root))
     cards = ed['cards']
-    if len(cards) != TOTAL or cards[0]['type'] != 'cover' or cards[-1]['type'] != 'cta':
+    if len(cards) != TOTAL or cards[0]['type'] not in ('cover','cover_art','cover_hero') or cards[-1]['type'] != 'cta':
         raise SystemExit(f'[build_cards] 카드는 {TOTAL}장이어야 하고 첫 장은 cover, 마지막 장은 cta 여야 합니다.')
     vals = run_calc(ed, root)
     ed2 = interpolate(ed, vals)
