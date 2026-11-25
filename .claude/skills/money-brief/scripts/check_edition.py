@@ -8,6 +8,10 @@ import datetime, glob, json, os, re, sys
 
 REQUIRED = {
     'cover': ['title_lines', 'sub', 'pills'],
+    'cover_art': ['title_lines', 'sub', 'tiles'],
+    'cover_hero': ['title_lines', 'sub', 'tiles', 'hero'],
+    'chars_full': ['label', 'heading', 'chars'],
+    'chars': ['label', 'heading', 'chars'],
     'points': ['label', 'heading', 'items'],
     'boxes': ['label', 'heading', 'boxes'],
     'table': ['label', 'heading', 'columns', 'rows'],
@@ -55,7 +59,7 @@ def run(ed, root, strict=False):
     if len(cards) != 7:
         errs.append(f'카드는 7장이어야 합니다(현재 {len(cards)}장).')
     else:
-        if cards[0].get('type') != 'cover':
+        if cards[0].get('type') not in ('cover', 'cover_art', 'cover_hero'):
             errs.append('첫 장은 cover 여야 합니다.')
         if cards[-1].get('type') != 'cta':
             errs.append('마지막 장은 cta(계산기·프롬프트 등으로 이어지는 카드)여야 합니다.')
@@ -81,7 +85,7 @@ def run(ed, root, strict=False):
     # 3) 출처·기준일
     sd = ed.get('source_default', '')
     for i, c in enumerate(cards, 1):
-        if c.get('type') in ('points', 'boxes', 'table', 'compare', 'rates'):
+        if c.get('type') in ('points', 'boxes', 'table', 'compare', 'rates', 'chars', 'chars_full'):
             s = c.get('source') or sd
             if not s:
                 errs.append(f'카드 {i}: 출처 줄(source)이 없습니다.')
