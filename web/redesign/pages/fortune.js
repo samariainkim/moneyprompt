@@ -26,10 +26,12 @@
   function prev() { var i = ORDER.indexOf(S.screen); go(i <= 0 ? 'intro' : ORDER[i - 1]); }
 
   /* ───── 화면 조각 ───── */
+  var TITLE = '새해 재테크 운세';
   function bar(step, label) {
     var n = ORDER.indexOf(S.screen) + 1;
-    return '<div class="stb"><button class="bk" data-act="prev" aria-label="이전">←</button><div class="prog"><div class="pl"><span><b>' + (step || n + '단계') + '</b> ' + label + '</span><span>' + n + ' / ' + ORDER.length + '</span></div><div class="pb"><i style="width:' + (n / ORDER.length * 100) + '%"></i></div></div><button class="so" data-act="home">닫기</button></div>';
+    return '<div class="step-topbar"><div class="stb-in"><button class="step-back" data-act="prev" aria-label="이전 단계">←</button><div class="prog"><div class="prog-l"><span>' + TITLE + '</span><b>' + n + ' / ' + ORDER.length + '</b></div><div class="prog-bar"><i style="width:' + (n / ORDER.length * 100) + '%"></i></div></div><a class="step-out" href="/">나가기</a></div></div>';
   }
+  function ey(t) { return '<div class="step-eyebrow">' + t + '</div>'; }
   function foot(next, nextLabel, disabled, skip) {
     return '<div class="foot"><div class="in">' + (skip ? '<button class="btn2 g" data-act="' + skip + '">건너뛰기</button>' : '') + '<button class="btn2" data-act="' + next + '"' + (disabled ? ' disabled' : '') + '>' + nextLabel + '</button></div></div>';
   }
@@ -70,7 +72,7 @@
   function sol() { return S.conv && S.conv.ok ? S.conv : null; }
   function birth() {
     var lunar = S.cal === 'lunar', dmax = lunar ? 30 : daysIn(S.y, S.m); if (S.d > dmax) S.d = dmax;
-    return bar('1단계', '출생정보') + '<div class="main"><h1>태어난 날과 시간을<br>알려주세요</h1><div class="sub">양력·음력 모두 입력할 수 있어요. 계산은 이 기기 안에서만 이뤄져요.</div>' +
+    return bar() + '<div class="main">' + ey('1단계 · 출생정보') + '<h1>태어난 날과 시간을<br>알려주세요</h1><div class="sub">양력·음력 모두 입력할 수 있어요. 계산은 이 기기 안에서만 이뤄져요.</div>' +
       '<div class="lbl">생년월일</div><div class="seg" role="radiogroup" aria-label="양력 음력 선택"><button class="chip' + (!lunar ? ' on' : '') + '" role="radio" aria-checked="' + !lunar + '" data-cal="solar">양력</button><button class="chip' + (lunar ? ' on' : '') + '" role="radio" aria-checked="' + lunar + '" data-cal="lunar">음력</button></div>' +
       '<div class="row" style="margin-top:10px"><select id="y" aria-label="년">' + opts(1930, 2026, S.y, '년') + '</select><select id="m" aria-label="월">' + opts(1, 12, S.m, '월') + '</select><select id="d" aria-label="일">' + opts(1, dmax, S.d, '일') + '</select></div>' +
       (lunar ? '<label class="leap"><input type="checkbox" id="leap"' + (S.leap ? ' checked' : '') + '> 윤달이에요 <small>(해당 월이 윤달일 때만 체크)</small></label>' : '') +
@@ -98,21 +100,21 @@
     return r.map(function (c) { var i = P.PLACES.indexOf(c); return '<button class="city' + (S.place === c ? ' on' : '') + '" data-pl="' + i + '">' + esc(P.show(c)) + '<small>' + (S.place === c ? '✓ 선택됨' : '') + '</small></button>'; }).join('');
   }
   function place() {
-    return bar('1단계', '출생지') + '<div class="main"><h1>태어난 곳은<br>어디인가요?</h1><div class="sub">시·군 단위로 입력하면 경도에 맞춰 시각을 보정해요.</div>' +
+    return bar() + '<div class="main">' + ey('1단계 · 출생지') + '<h1>태어난 곳은<br>어디인가요?</h1><div class="sub">시·군 단위로 입력하면 경도에 맞춰 시각을 보정해요.</div>' +
       '<div class="lbl">자주 찾는 도시</div><div>' + P.QUICK.map(function (l) { var c = P.PLACES.filter(function (x) { return x.label === l; })[0]; return '<button class="chip' + (S.place === c ? ' on' : '') + '" data-pl="' + P.PLACES.indexOf(c) + '">' + esc(c.base) + '</button>'; }).join('') + '</div>' +
       '<div class="lbl">직접 입력</div><input id="pq" type="text" placeholder="예) 서울시, 고성군" value="' + esc(S.q) + '" autocomplete="off" aria-label="출생지 직접 입력">' +
       '<p class="hint">예) 서울시, 고성군 처럼 시·군 단위로 입력해 주세요. 구·동·읍·면은 입력하지 않아도 돼요.</p><div id="pl">' + placeList() + '</div>' +
       (S.place ? '<div class="ok" style="margin-top:14px">✓ 출생지: ' + esc(P.show(S.place)) + '</div>' : '') + '</div>' + foot('next', '계속', !S.place);
   }
   function who() {
-    return bar('1단계', '이름·성별') + '<div class="main"><h1>마지막으로<br>기본 정보를 알려주세요</h1>' +
+    return bar() + '<div class="main">' + ey('1단계 · 이름·성별') + '<h1>마지막으로<br>기본 정보를 알려주세요</h1>' +
       '<div class="lbl">이름 또는 별명 <em>선택</em></div><input id="nm" type="text" maxlength="12" placeholder="결과 화면에서 불러 드려요" value="' + esc(S.name) + '" autocomplete="off"><p class="hint">입력하지 않아도 돼요. 공유 카드와 AI 질문에는 담기지 않아요.</p>' +
       '<div class="lbl">성별 <em>필수</em></div><div class="seg"><button class="chip' + (S.gender === 'female' ? ' on' : '') + '" data-g="female">여성</button><button class="chip' + (S.gender === 'male' ? ' on' : '') + '" data-g="male">남성</button></div>' +
       '<p class="hint">자미두수 명반과 사주 대운 방향을 정하는 데 쓰여요.</p></div>' + foot('next', '계속', !S.gender);
   }
   function story() {
     function chips(arr, on, key, max) { return arr.map(function (c) { return '<button class="chip' + (on.indexOf(c) >= 0 ? ' on' : '') + '" data-k="' + key + '" data-v="' + esc(c) + '">' + esc(c) + '</button>'; }).join(''); }
-    return bar('2단계', '나의 돈 이야기') + '<div class="main"><div class="ok">✓ 기본정보 완료! 이제 내 돈 고민을 골라볼까요?</div><h1>새해 돈 이야기를<br>조금 더 알려주세요</h1><div class="sub">답하고 싶은 것만 골라도 돼요. 건너뛰어도 결과는 같아요.</div><div class="sw"><button type="button" class="swb' + (S.useAi ? ' on' : '') + '" role="switch" aria-checked="' + S.useAi + '" id="useai" aria-label="내 이야기를 AI 프롬프트에 반영하기"><i></i></button><div><b>내 이야기를 AI 프롬프트에 반영하기</b><span>이 버튼을 켜두면 선택한 이야기들이 나만의 프롬프트에 반영돼요.</span></div></div>' +
+    return bar() + '<div class="main">' + ey('2단계 · 나의 돈 이야기') + '<div class="ok">✓ 기본정보 완료! 이제 내 돈 고민을 골라볼까요?</div><h1>새해 돈 이야기를<br>조금 더 알려주세요</h1><div class="sub">답하고 싶은 것만 골라도 돼요. 건너뛰어도 결과는 같아요.</div><div class="sw"><button type="button" class="swb' + (S.useAi ? ' on' : '') + '" role="switch" aria-checked="' + S.useAi + '" id="useai" aria-label="내 이야기를 AI 프롬프트에 반영하기"><i></i></button><div><b>내 이야기를 AI 프롬프트에 반영하기</b><span>이 버튼을 켜두면 선택한 이야기들이 나만의 프롬프트에 반영돼요.</span></div></div>' +
       '<div class="lbl">지금 나는?</div>' + chips(JOBS, [S.job], 'job') +
       '<div class="lbl">새해에는 돈과 관련해 무엇이 가장 달라졌으면 하나요? <em>최대 3개</em></div>' + chips(WANTS, S.wants, 'wants') +
       '<div class="lbl">내 돈 습관, 하나만 바꾼다면? <em>선택</em></div>' + chips(HABITS, [S.habit], 'habit') +
@@ -123,13 +125,14 @@
   }
   function pad2(n) { return String(n).padStart(2, '0'); }
   function confirm() {
-    return bar('2단계', '입력 확인') + '<div class="main"><h1>입력한 내용이<br>맞는지 확인해 주세요</h1><div class="sum">' +
+    return bar() + '<div class="main">' + ey('2단계 · 입력 확인') + '<h1>입력한 내용이<br>맞는지 확인해 주세요</h1><div class="sum">' +
       '<div><span>생년월일</span><b>' + (S.cal === 'lunar' ? '음력 ' + S.y + '년 ' + S.m + '월 ' + S.d + '일' + (S.leap ? ' (윤달)' : '') + '<br><small style="font-weight:600;color:var(--muted)">양력 ' + S.conv.y + '년 ' + S.conv.m + '월 ' + S.conv.d + '일</small>' : S.y + '년 ' + S.m + '월 ' + S.d + '일 (양력)') + '</b></div><div><span>태어난 시간</span><b>' + pad2(S.hh) + ':' + pad2(S.mm) + '</b></div><div><span>출생지</span><b>' + esc(S.place.label) + '</b></div><div><span>성별</span><b>' + (S.gender === 'male' ? '남성' : '여성') + '</b></div><div><span>이름</span><b>' + (S.name ? esc(S.name) : '입력 안 함') + '</b></div></div>' +
       '<p class="hint">\'계산하기\'를 누르면 이 기기에서 세 가지 차트를 계산해요. 입력한 내용은 서버로 전송되지 않아요.</p></div>' + foot('calc', '계산하기');
   }
   function loading() {
     var items = [['사주팔자', '네 기둥과 십신을 계산했어요'], ['자미두수', '12궁에 별을 배치했어요'], ['점성술', '행성의 위치를 계산했어요'], ['재물운·투자운', '세 가지 결과를 비교했어요']];
-    return '<div class="stb"><div style="width:40px"></div><div class="prog"><div class="pl"><span><b>계산 중</b></span><span></span></div><div class="pb"><i style="width:85%"></i></div></div><span style="width:40px"></span></div><div class="main"><div class="ld-wrap">' +
+    return '<div class="step-topbar"><div class="stb-in"><span class="step-back invisible"></span><div class="prog"><div class="prog-l"><span>' + TITLE + '</span><b>계산 중</b></div><div class="prog-bar"><i style="width:90%"></i></div></div><span style="width:40px"></span></div></div>' +
+      '<div class="main"><div class="ld-wrap">' +
       '<h1 class="fi" style="animation-delay:.2s">세 가지 시선으로<br>나의 재테크 운세를 읽고 있어요</h1><div class="sub fi" style="animation-delay:1.2s">잠시만 기다려 주세요.</div><div style="max-width:340px;margin:22px auto 0;width:100%">' +
       items.map(function (t, i) { return '<div class="li fi" style="animation-delay:' + (2.2 + i * 1.2) + 's"><i>✓</i><div><b>' + t[0] + '</b><span>' + t[1] + '</span></div></div>'; }).join('') + '</div></div></div>';
   }
