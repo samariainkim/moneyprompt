@@ -22,6 +22,8 @@
   function loadLunar() { return lunarP || (lunarP = loadScript('/redesign/fortune-lunar.js', 'DBFortuneLunar').catch(function (e) { lunarP = null; throw e; })); }
   function daysIn(y, m) { return new Date(y, m, 0).getDate(); }
   function opts(from, to, sel, suf, pad) { var h = ''; for (var i = from; i <= to; i++) h += '<option value="' + i + '"' + (i === sel ? ' selected' : '') + '>' + (pad ? String(i).padStart(2, '0') : i) + suf + '</option>'; return h; }
+  function signedIn() { try { return !!(window.__dbxAuth && window.__dbxAuth.signedIn()); } catch (e) { return false; } }
+  function toLogin() { ev('fortune_login_prompt'); location.assign('/join/?next=' + encodeURIComponent('/fortune/?start=1') + '&src=fortune_start'); }
   function go(sc) { S.screen = sc; render(); window.scrollTo(0, 0); }
   function prev() { var i = ORDER.indexOf(S.screen); go(i <= 0 ? 'intro' : ORDER[i - 1]); }
 
@@ -45,7 +47,7 @@
       '<p class="lead serif">동서양의 세 가지 시선으로 읽는<br>나의 재물운</p>' +
       '<p class="d">한국의 사주팔자, 베트남식 자미두수, 서양의 점성술까지. 돈버프는 동서양을 대표하는 세 가지 시선에서 오직 <b>\'재물운과 투자운\'</b>만 뽑아 <b>\'나만의 투자 신호\'</b>를 살펴봅니다.</p>' +
       '<div class="chips"><div><b class="serif">4</b><span>단계</span></div><div><b class="serif">3</b><span>분 소요</span></div><div><b class="serif">3</b><span>가지 결과</span></div></div>' +
-      '<button class="cta-o" id="heroCta" data-act="start">' + CTA + '</button></div>' +
+      '<button class="cta-o" id="heroCta" data-act="start">' + CTA + '</button><p class="loginhint" id="loginhint"' + (signedIn() ? ' hidden' : '') + '>시작하려면 로그인이 필요해요.</p></div>' +
       '<div class="vis"><img src="/redesign/img/fortune/hero.jpg" width="1200" height="880" alt="사주팔자·자미두수·점성술 차트와 금화 일러스트" fetchpriority="high"></div></div></div>' +
       '<div class="sec why"><div class="eyb">WHY DONBUFF</div><h2>돈버프 재테크 운세는 달라요!</h2><p class="ld">하나의 사주로 여러 가지 운세를 보는 대신,<br>동서양의 세 가지 운세로 오직 나의 재물운과 투자운을 살펴봐요.</p><div class="three">' +
       '<div class="wc"><div class="re">한국 · 四柱八字</div><h3>사주팔자</h3><div class="tp">타고난 재물의 흐름</div><p>오행과 재성의 관계를 통해 타고난 재물 성향과 경제활동의 흐름을 살펴봐요.</p><div class="pt"><span>재성</span><span>세운·대운</span></div></div>' +
@@ -72,7 +74,7 @@
   function sol() { return S.conv && S.conv.ok ? S.conv : null; }
   function birth() {
     var lunar = S.cal === 'lunar', dmax = lunar ? 30 : daysIn(S.y, S.m); if (S.d > dmax) S.d = dmax;
-    return bar() + '<div class="main">' + ey('1단계 · 출생정보') + '<h1>태어난 날과 시간을<br>알려주세요</h1><div class="sub">양력·음력 모두 입력할 수 있어요. 계산은 이 기기 안에서만 이뤄져요.</div>' +
+    return bar() + '<div class="main">' + ey('1단계 · 출생정보') + '<h1>태어난 날과 시간을<br>알려주세요</h1><div class="sub">양력·음력 모두 입력할 수 있어요.</div>' +
       '<div class="lbl">생년월일</div><div class="seg" role="radiogroup" aria-label="양력 음력 선택"><button class="chip' + (!lunar ? ' on' : '') + '" role="radio" aria-checked="' + !lunar + '" data-cal="solar">양력</button><button class="chip' + (lunar ? ' on' : '') + '" role="radio" aria-checked="' + lunar + '" data-cal="lunar">음력</button></div>' +
       '<div class="row" style="margin-top:10px"><select id="y" aria-label="년">' + opts(1930, 2026, S.y, '년') + '</select><select id="m" aria-label="월">' + opts(1, 12, S.m, '월') + '</select><select id="d" aria-label="일">' + opts(1, dmax, S.d, '일') + '</select></div>' +
       (lunar ? '<label class="leap"><input type="checkbox" id="leap"' + (S.leap ? ' checked' : '') + '> 윤달이에요 <small>(해당 월이 윤달일 때만 체크)</small></label>' : '') +
@@ -108,13 +110,13 @@
   }
   function who() {
     return bar() + '<div class="main">' + ey('1단계 · 이름·성별') + '<h1>마지막으로<br>기본 정보를 알려주세요</h1>' +
-      '<div class="lbl">이름 또는 별명 <em>선택</em></div><input id="nm" type="text" maxlength="12" placeholder="결과 화면에서 불러 드려요" value="' + esc(S.name) + '" autocomplete="off"><p class="hint">입력하지 않아도 돼요. 공유 카드와 AI 질문에는 담기지 않아요.</p>' +
+      '<div class="lbl">이름 또는 별명 <em>선택</em></div><input id="nm" type="text" maxlength="12" placeholder="결과 화면에서 불러 드려요" value="' + esc(S.name) + '" autocomplete="off">' +
       '<div class="lbl">성별 <em>필수</em></div><div class="seg"><button class="chip' + (S.gender === 'female' ? ' on' : '') + '" data-g="female">여성</button><button class="chip' + (S.gender === 'male' ? ' on' : '') + '" data-g="male">남성</button></div>' +
       '<p class="hint">자미두수 명반과 사주 대운 방향을 정하는 데 쓰여요.</p></div>' + foot('next', '계속', !S.gender);
   }
   function story() {
     function chips(arr, on, key, max) { return arr.map(function (c) { return '<button class="chip' + (on.indexOf(c) >= 0 ? ' on' : '') + '" data-k="' + key + '" data-v="' + esc(c) + '">' + esc(c) + '</button>'; }).join(''); }
-    return bar() + '<div class="main">' + ey('2단계 · 나의 돈 이야기') + '<div class="ok">✓ 기본정보 완료! 이제 내 돈 고민을 골라볼까요?</div><h1>새해 돈 이야기를<br>조금 더 알려주세요</h1><div class="sub">답하고 싶은 것만 골라도 돼요. 건너뛰어도 결과는 같아요.</div><div class="sw"><button type="button" class="swb' + (S.useAi ? ' on' : '') + '" role="switch" aria-checked="' + S.useAi + '" id="useai" aria-label="내 이야기를 AI 프롬프트에 반영하기"><i></i></button><div><b>내 이야기를 AI 프롬프트에 반영하기</b><span>이 버튼을 켜두면 선택한 이야기들이 나만의 프롬프트에 반영돼요.</span></div></div>' +
+    return bar() + '<div class="main">' + ey('2단계 · 나의 돈 이야기') + '<div class="ok">✓ 기본정보 완료! 이제 내 돈 고민을 골라볼까요?</div><h1>새해 돈 이야기를<br>조금 더 알려주세요</h1><div class="sub">답하고 싶은 것만 골라도 돼요. 건너뛰어도 되지만, AI 프롬프트에는 반영되지 않아요.</div><div class="sw"><button type="button" class="swb' + (S.useAi ? ' on' : '') + '" role="switch" aria-checked="' + S.useAi + '" id="useai" aria-label="내 이야기를 AI 프롬프트에 반영하기"><i></i></button><div><b>내 이야기를 AI 프롬프트에 반영하기</b><span>이 버튼을 켜두면 선택한 이야기들이 나만의 프롬프트에 반영돼요.</span></div></div>' +
       '<div class="lbl">지금 나는?</div>' + chips(JOBS, [S.job], 'job') +
       '<div class="lbl">새해에는 돈과 관련해 무엇이 가장 달라졌으면 하나요? <em>최대 3개</em></div>' + chips(WANTS, S.wants, 'wants') +
       '<div class="lbl">내 돈 습관, 하나만 바꾼다면? <em>선택</em></div>' + chips(HABITS, [S.habit], 'habit') +
@@ -127,7 +129,7 @@
   function confirm() {
     return bar() + '<div class="main">' + ey('2단계 · 입력 확인') + '<h1>입력한 내용이<br>맞는지 확인해 주세요</h1><div class="sum">' +
       '<div><span>생년월일</span><b>' + (S.cal === 'lunar' ? '음력 ' + S.y + '년 ' + S.m + '월 ' + S.d + '일' + (S.leap ? ' (윤달)' : '') + '<br><small style="font-weight:600;color:var(--muted)">양력 ' + S.conv.y + '년 ' + S.conv.m + '월 ' + S.conv.d + '일</small>' : S.y + '년 ' + S.m + '월 ' + S.d + '일 (양력)') + '</b></div><div><span>태어난 시간</span><b>' + pad2(S.hh) + ':' + pad2(S.mm) + '</b></div><div><span>출생지</span><b>' + esc(S.place.label) + '</b></div><div><span>성별</span><b>' + (S.gender === 'male' ? '남성' : '여성') + '</b></div><div><span>이름</span><b>' + (S.name ? esc(S.name) : '입력 안 함') + '</b></div></div>' +
-      '<p class="hint">\'계산하기\'를 누르면 이 기기에서 세 가지 차트를 계산해요. 입력한 내용은 서버로 전송되지 않아요.</p></div>' + foot('calc', '계산하기');
+      '<p class="hint">\'나만의 운세 분석하기\'를 누르면 이 기기에서 세 가지 차트를 계산해요. 입력한 내용은 서버로 전송되지 않아요.</p></div>' + foot('calc', '나만의 운세 분석하기');
   }
   function loading() {
     var items = [['사주팔자', '네 기둥과 십신을 계산했어요'], ['자미두수', '12궁에 별을 배치했어요'], ['점성술', '행성의 위치를 계산했어요'], ['재물운·투자운', '세 가지 결과를 비교했어요']];
@@ -162,7 +164,7 @@
     if (t.hasAttribute('data-cal')) { S.cal = t.getAttribute('data-cal'); S.leap = false; render(); return; }
     if (t.hasAttribute('data-g')) { S.gender = t.getAttribute('data-g'); render(); return; }
     if (t.hasAttribute('data-k')) { var k = t.getAttribute('data-k'), v = t.getAttribute('data-v'); if (k === 'wants') { var i = S.wants.indexOf(v); if (i >= 0) S.wants.splice(i, 1); else if (S.wants.length < 3) S.wants.push(v); else toast('최대 3개까지 고를 수 있어요'); } else S[k] = S[k] === v ? '' : v; var y = window.scrollY; render(); window.scrollTo(0, y); return; }
-    if (a === 'start') { ev('fortune_start'); go('birth'); }
+    if (a === 'start') { if (!signedIn()) { toLogin(); return; } ev('fortune_start'); go('birth'); }
     else if (a === 'prev') prev(); else if (a === 'home') go('intro');
     else if (a === 'next') { var i2 = ORDER.indexOf(S.screen); go(ORDER[i2 + 1]); }
     else if (a === 'calc') calc();
@@ -179,4 +181,6 @@
     else if (id === 'ask') { S.ask = e.target.value.slice(0, 100); document.getElementById('cnt').textContent = S.ask.length + ' / 100'; }
   });
   render();
+  try { if (window.__dbxAuth && window.__dbxAuth.onChange) window.__dbxAuth.onChange(function () { var el = document.getElementById('loginhint'); if (el) el.hidden = signedIn(); }); } catch (e) {}
+  try { var q = new URLSearchParams(location.search); if (q.get('start') === '1') { q.delete('start'); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); if (signedIn()) { ev('fortune_start'); go('birth'); } } } catch (e) {}
 })();

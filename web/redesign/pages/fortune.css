@@ -222,3 +222,24 @@ details.fold{padding:0}.fold>summary{list-style:none;cursor:pointer;padding:16px
 .zoomin.save{max-width:420px}.tg2{display:flex;gap:8px;align-items:center;font-size:15px;font-weight:700;padding:8px 0}.tg2 input{width:20px;height:20px;accent-color:var(--orange)}.tg2 small{font-weight:500;color:var(--muted)}
 .ai .swl{margin-top:14px}.ai .b:disabled{background:#6B7790;cursor:not-allowed}
 @media(max-width:560px){.mapc{grid-template-columns:96px 1fr;gap:10px}.sum4{gap:8px}.s4{padding:12px}.s4 b{font-size:17px}}
+
+.loginhint{font-size:13.5px;color:var(--muted);font-weight:700;margin-top:12px}.loginhint[hidden]{display:none}
+
+/* v4: 운명 지도 세로 3단(이미지 위, 글자·CTA 아래) · 공통/차이 핵심 박스 · 근거 상시 표기 */
+.mapc{display:block;padding:14px}
+.mapc .mapsvg{max-width:520px;margin:0 auto}
+.mapc .mapt{margin-top:14px;text-align:left}
+.mapc .go{width:100%;margin-top:6px;padding:14px;font-size:15px}
+.keybox{margin-top:16px;border-radius:26px;overflow:hidden;background:var(--navy);color:#fff}
+.kb-a,.kb-b{padding:24px 22px}
+.kb-a{background:linear-gradient(160deg,#27364D,#35476A)}
+.kb-k{font-size:11.5px;font-weight:900;letter-spacing:.16em;color:#E5B98A}
+.keybox h4{font-family:'Noto Serif KR',serif;font-size:19px;margin:6px 0 12px}
+.kb-sys{display:flex;gap:6px;margin-bottom:12px}.kb-sys i{font-style:normal;font-size:12px;font-weight:800;background:rgba(229,185,138,.18);color:#E5B98A;border-radius:99px;padding:5px 11px}
+.kb-a p{font-size:21px;line-height:1.55;font-weight:700;color:#fff}.kb-a p b{color:#F6D79A}
+.kb-vs{position:relative;height:0}.kb-vs span{position:absolute;left:50%;top:-18px;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;background:#E5B98A;color:var(--navy);font:900 20px var(--font);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 5px var(--navy)}
+.kb-b{background:#FBF1E6;color:var(--navy);padding-top:34px}.kb-b .kb-k{color:var(--orange-text)}
+.kb-rows{display:grid;gap:8px}.kb-rows div{display:flex;gap:12px;align-items:center;background:#fff;border-radius:14px;padding:12px 14px}.kb-rows b{flex:none;width:64px;font-size:13px;color:var(--orange-text)}.kb-rows span{font-size:16px;font-weight:800}
+.v3head{margin:22px 0 4px;font-size:14px;font-weight:900;color:var(--muted);letter-spacing:.04em}
+.v3 .ev{margin-top:10px;padding-top:8px;border-top:1px dashed var(--line);font-size:12px;line-height:1.7;color:var(--muted)}.v3 .ev b{display:inline-block;margin-right:6px;color:var(--navy)}.v3 .ev div{display:inline}.v3 .ev div:after{content:' · '}.v3 .ev div:last-child:after{content:''}
+.imgbar .btn2{width:100%}

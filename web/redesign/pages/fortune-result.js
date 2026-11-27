@@ -298,9 +298,6 @@
     return P.join('\n\n');
   }
   /* ───── 화면 조각 ───── */
-  function modeBar() {
-    return '<div class="seg mode" role="tablist" aria-label="보기 기준">' + [['y2027', '2027년 재물운', '새해의 변화와 흐름'], ['birth', '타고난 재물운', '나의 기본 재물 성향']].map(function (m) { return '<button class="chip' + (st.mode === m[0] ? ' on' : '') + '" role="tab" aria-selected="' + (st.mode === m[0]) + '" data-mode="' + m[0] + '"><b>' + m[1] + '</b><small>' + m[2] + '</small></button>'; }).join('') + '</div>';
-  }
   var MAPS = [
     ['saju', 'SAJU', '사주팔자', '四柱', '재성 · 오행 · 십성', '전체 만세력 보기 →', '주황색: 재성(정재·편재)이 있는 기둥과 글자'],
     ['ziwei', 'ZIWEI', '자미두수', '紫微斗數', '재백궁 · 관록궁 · 전택궁 · 복덕궁', '전체 명반 보기 →', '주황색: 재물 관련 궁 · 동그라미: 사화'],
@@ -310,7 +307,7 @@
     return '<div class="maps">' + MAPS.map(function (m) { var k = m[0]; return '<article class="mapc"><div class="mapsvg">' + SVG[k]() + '</div><div class="mapt"><div class="rk">' + m[1] + '</div><h3>' + m[2] + ' <small>' + m[3] + '</small></h3><div class="mp-sub">' + m[4] + '</div><button type="button" class="go" data-tab="' + k + '">' + m[5] + '</button></div></article>'; }).join('') + '</div>';
   }
   function proEvidence(k) {
-    var s = C.saju, z = C.ziwei, w = C.western, y27 = st.mode === 'y2027', sg = C.signals.parts, r = [];
+    var s = C.saju, z = C.ziwei, w = C.western, y27 = true, sg = C.signals.parts, r = [];
     if (k === 'saju') { r.push(sg.cai.length ? '재성(정재·편재, 지장간 포함): ' + sg.cai.join('·') : '재성(정재·편재)이 드러나지 않음'); if (y27) { var lk = s.luck2027, nd = lk && lk.current; r.push('2027 세운 ' + s.sewoon.gz + '(' + s.sewoon.tg + ')' + (nd ? ' · 대운 ' + nd.gz + '(' + nd.tg + ')' + (lk.next ? ' → ' + lk.next.gz + '(2027년 중 전환)' : '') : '')); } }
     else if (k === 'zw') { r.push(E.ZW_WEALTH.map(function (zw) { var p = z.palaces.filter(function (q) { return q.name === zw[0]; })[0]; return zw[0] + '궁 ' + (p.major.map(function (x) { return x.n; }).join('·') || '주성 없음'); }).join(' / ')); if (y27) r.push('2027 유년 사화 ' + ['록', '권', '과', '기'].map(function (m, i) { return '화' + m + ' ' + z.mutagen[i]; }).join(' · ')); }
     else { r.push(sg.astro.map(function (a) { return a.house + '하우스 ' + a.sign; }).join(' · ')); r.push(sg.wealthPlanets.map(function (p) { return p.n + ' ' + p.sign + '(' + p.house + 'H)'; }).join(', ')); if (y27) r.push('2027 ' + w.transit.map(function (t) { return t.ko + ' ' + t.start.sign + '(' + t.start.house + 'H) → ' + t.end.sign + '(' + t.end.house + 'H)'; }).join(' · ')); }
@@ -318,15 +315,18 @@
   }
   function compareHtml() {
     var tp = E.TOPICS4[st.topic];
-    function card(sys, key, arr) { return '<div class="v3"><span class="s">' + sys + '</span><p class="t">' + arr[0] + '</p><p class="x">' + arr[1] + '</p><small>' + E.EASY[key] + '</small><details class="pro"><summary>전문 분석 근거 펼쳐보기</summary>' + proEvidence(key) + '</details></div>'; }
-    return '<div class="seg tabs4" role="tablist">' + Object.keys(E.TOPICS4).map(function (k) { return '<button class="chip' + (k === st.topic ? ' on' : '') + '" role="tab" aria-selected="' + (k === st.topic) + '" data-topic="' + k + '">' + E.TOPICS4[k].label + '</button>'; }).join('') + '</div><div class="v3row">' + card('사주팔자', 'saju', tp.saju) + card('자미두수', 'zw', tp.zw) + card('점성술', 'as', tp.as) + '</div>' +
-      '<div class="two"><div class="pn" style="background:var(--okbg)"><b style="color:var(--ok)">공통적으로 나타나는 해석</b>' + tp.same + '</div><div class="pn" style="background:#FDF0E7"><b style="color:var(--orange-text)">서로 다르게 보는 부분</b>' + tp.diff + '</div></div>' +
-      '<p class="hint"><span class="ribbon">시안 샘플</span>제목·문장은 규칙 확정 전의 예시이고, <b>전문 분석 근거의 값은 실제 계산 결과</b>예요. 몇 개 관점이 일치했는지로 점수나 결론을 내지 않아요.</p>';
+    function card(sys, key, arr) { return '<div class="v3"><span class="s">' + sys + '</span><p class="t">' + arr[0] + '</p><p class="x">' + arr[1] + '</p><div class="ev"><b>근거</b>' + proEvidence(key) + '</div></div>'; }
+    var chips = ['사주', '자미두수', '점성술'].map(function (n) { return '<i>' + n + '</i>'; }).join('');
+    return '<div class="seg tabs4" role="tablist">' + Object.keys(E.TOPICS4).map(function (k) { return '<button class="chip' + (k === st.topic ? ' on' : '') + '" role="tab" aria-selected="' + (k === st.topic) + '" data-topic="' + k + '">' + E.TOPICS4[k].label + '</button>'; }).join('') + '</div>' +
+      '<div class="keybox"><div class="kb-a"><div class="kb-k">COMMON</div><h4>공통적으로 나타나는 해석</h4><div class="kb-sys">' + chips + '</div><p class="serif">' + tp.same + '</p></div>' +
+      '<div class="kb-vs" aria-hidden="true"><span>≠</span></div>' +
+      '<div class="kb-b"><div class="kb-k">DIFFERENT</div><h4>서로 다르게 보는 부분</h4><div class="kb-rows">' + tp.diffs.map(function (d) { return '<div><b>' + d[0] + '</b><span>' + d[1] + '</span></div>'; }).join('') + '</div></div></div>' +
+      '<div class="v3head">세 관점 자세히 보기</div><div class="v3row">' + card('사주팔자', 'saju', tp.saju) + card('자미두수', 'zw', tp.zw) + card('점성술', 'as', tp.as) + '</div>';
   }
   function aiBuilder() {
     return '<section class="ai" id="ai"><div class="k">AI INTEGRATED FORTUNE</div><h2>세 가지 운명 지도에 AI를 더하다.</h2><p>나의 명반 3종과 재테크 관심사를 담은 세상에 하나뿐인 통합 재물운 프롬프트를 만들어 드려요.</p>' +
       '<ul class="inc"><li>사주팔자 만세력·대운·세운·월운</li><li>자미두수 12궁 명반·사화·대한·유년</li><li>서양 점성차트·애스펙트·2027 트랜짓</li><li>내가 선택한 재테크 관심사와 고민 <em>(선택)</em></li></ul>' +
-      '<button class="b" data-act2="aiopen">통합 AI 재물운 프롬프트 만들기 →</button><div id="aibox"' + (st.aiOpen ? '' : ' hidden') + '>' + builderPanel() + '</div><span class="lock">🔒 계산은 이 기기에서만 이뤄지고 서버로 보내지 않아요</span></section>';
+      '<button class="b" data-act2="aiopen">통합 AI 재물운 프롬프트 만들기 →</button><div id="aibox"' + (st.aiOpen ? '' : ' hidden') + '>' + builderPanel() + '</div></section>';
   }
   function builderPanel() {
     return '<div class="warn">아래 프롬프트에는 <b>내 명반을 계산한 데이터</b>가 들어 있어요. 이름·생년월일은 넣지 않았지만, 복사해서 붙여 넣으면 <b>사용하는 AI 서비스로 내용이 전달</b>돼요. 내용을 확인한 뒤 원할 때만 사용하세요.</div>' +
@@ -342,16 +342,15 @@
     var sg = C.signals, th = E.THEME, ts = C.saju.trueSolar ? '진태양시 ' + C.saju.trueSolar.time + ' · ' : '';
     return '<div class="rh"><div class="rh-in"><div class="th-l">2027년 나의 재물운 테마</div><div class="th serif">' + th.name + '</div><div class="th-s">' + th.sub + '</div>' +
       '<h1 class="serif">' + sg.keySentence + '</h1><div class="tags">' + th.keywords.map(function (k) { return '<span># ' + k + '</span>'; }).join('') + '</div>' +
-      '<p class="ds">사주팔자 · 자미두수 · 점성술 3종 관점 · 2027 정미년 · ' + ts + '오락·참고용이며 투자 권유가 아니에요.</p>' + (sg.sample ? '<p class="ds"><span class="ribbon">시안 샘플</span>테마·총평 문구는 규칙 확정 전의 예시이고, 실제 해석 규칙으로 생성하게 됩니다.</p>' : '') + '</div></div>' +
+      '<p class="ds">사주팔자 · 자미두수 · 점성술 3종 관점 · 2027 정미년' + (C.saju.trueSolar ? ' · 진태양시 ' + C.saju.trueSolar.time + ' 기준' : '') + '</p></div></div>' +
       '<nav class="anch" aria-label="페이지 안 바로가기"><a href="#sum">재물운 요약</a><a href="#maps">운명 지도</a><a href="#cmp">세 가지 해석</a><a href="#ai">AI 프롬프트</a><a href="#share">카드 저장</a></nav><div class="rd">' +
-      '<section class="rdc" id="sum"><div class="rk">MY MONEY FORTUNE</div><h3>한눈에 보는 나의 재물운</h3><p class="hint" style="margin:-6px 0 12px">2027년, 나의 돈 이야기를 네 가지 관점에서 살펴봤어요.</p><div class="sum4">' + E.SUMMARY4.map(function (s4) { return '<div class="s4"><i>' + s4.label + '</i><b class="serif">' + s4.title + '</b><span>' + s4.text + '</span></div>'; }).join('') + '</div><p class="hint"><span class="ribbon">시안 샘플</span>요약 문구는 규칙 확정 전의 예시예요.</p></section>' +
-      '<section class="rdc" id="maps"><div class="rk">MY THREE FORTUNE MAPS</div><h3>나의 세 가지 운명 지도</h3><p class="hint" style="margin:-6px 0 12px">서로 다른 세 가지 운세 체계로 나의 재물운을 살펴봐요. 전체 명반은 각 탭에서 확인할 수 있어요.</p><div id="modebar">' + modeBar() + '</div><div id="mapsbody">' + mapsHtml() + '</div></section>' +
+      '<section class="rdc" id="sum"><div class="rk">MY MONEY FORTUNE</div><h3>한눈에 보는 나의 재물운</h3><p class="hint" style="margin:-6px 0 12px">2027년, 나의 돈 이야기를 네 가지 관점에서 살펴봤어요.</p><div class="sum4">' + E.SUMMARY4.map(function (s4) { return '<div class="s4"><i>' + s4.label + '</i><b class="serif">' + s4.title + '</b><span>' + s4.text + '</span></div>'; }).join('') + '</div></section>' +
+      '<section class="rdc" id="maps"><div class="rk">MY THREE FORTUNE MAPS</div><h3>나의 세 가지 운명 지도</h3><p class="hint" style="margin:-6px 0 12px">서로 다른 세 가지 운세 체계로 나의 재물운을 살펴봐요. 전체 명반은 각 탭에서 확인할 수 있어요.</p><div id="mapsbody">' + mapsHtml() + '</div></section>' +
       '<section class="rdc" id="cmp"><div class="rk">THREE PERSPECTIVES</div><h3>나의 재물운, 세 가지 해석</h3><div id="cmpbody">' + compareHtml() + '</div></section>' + aiBuilder() +
       '<section class="rdc" id="share" style="background:var(--cream);border-color:#EBDCC6;text-align:center"><div class="rk">SHARE</div><h3 style="text-align:center">나의 재물운을 카드로 남기기</h3><p class="hint" style="margin:-6px 0 0">이름·생년월일·시간·고민은 카드에 담기지 않아요.</p><div class="sharecard"><canvas id="cv" width="1080" height="1350" role="img" aria-label="공유 카드 미리보기"></canvas></div><div class="shbtn"><button class="btn2" data-act2="save">결과 카드 이미지 저장</button><button class="btn2 g" data-act2="link">서비스 링크 복사</button><button class="btn2 g" data-act2="nshare" id="nshare" hidden>공유하기</button></div><p class="hint" style="text-align:left">\'결과 카드 저장\'은 내 결과를 이미지로 남기는 기능이고, \'링크 복사\'는 결과 없이 서비스 주소만 전달해요.</p></section></div>';
   }
   var HEAD = { saju: ['SAJU · 四柱八字', '나의 사주팔자 만세력', '나의 타고난 명식과 시간에 따른 운세의 흐름'], ziwei: ['ZIWEI · 紫微斗數', '나의 자미두수 명반', '12궁과 별의 배치로 읽는 나의 운명 지도'], astro: ['ASTRO · NATAL CHART', '나의 서양 점성차트', '태어난 순간의 행성과 별자리가 담긴 운명 지도'] };
-  function card(title, sc, idx, extra) { return '<section class="dsec"><div class="dh"><h4>' + title + '</h4>' + (extra || '') + '<button type="button" class="zbtn" data-zoom="' + idx + '" aria-label="' + title + ' 확대 보기">확대</button></div><div class="dsvg">' + secSvg(sc) + '</div></section>'; }
-  var NOTE = { saju: '대운·세운은 엔진 계산값이고, 월운은 절기 기준 12개월의 간지·십성만 보여 줘요(양력 날짜 미제공).', ziwei: '2027 유년 사화·유년 12궁은 계산돼요. 월별 유월 흐름은 제공하지 않아요.', astro: '2027 트랜짓은 목성·토성만 계산해요(월별 위치, 별자리·하우스 진입일, 순행·역행 전환일 / 한국 정오 기준 일 단위). 다른 행성은 계산하지 않아요.' };
+  function card(title, sc, idx, extra) { return '<section class="dsec"><div class="dh"><h4>' + title + '</h4>' + (extra || '') + '</div><div class="dsvg">' + secSvg(sc) + '</div></section>'; }
   function layerSeg(k) {
     if (k === 'ziwei') return '<div class="seg lay"><button class="chip' + (st.zwLayer === 'birth' ? ' on' : '') + '" data-lay="birth">타고난 명반 (생년 사화)</button><button class="chip' + (st.zwLayer === 'y2027' ? ' on' : '') + '" data-lay="y2027">2027 유년 사화</button></div>';
     if (k === 'astro') return '<div class="seg lay"><button class="chip' + (st.astroLayer === 'birth' ? ' on' : '') + '" data-lay="birth">출생차트</button><button class="chip' + (st.astroLayer === 'y2027' ? ' on' : '') + '" data-lay="y2027">2027 트랜짓</button></div>';
@@ -381,18 +380,17 @@
     var det = DETAIL[k].map(function (d) { return card(d[0], secs[d[1]], d[1]); }).join('');
     var birth = '<div class="bl">' + birthLines(true).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('') + basisLines(k).map(function (l) { return '<div class="bs">' + esc(l) + '</div>'; }).join('') + '</div><dl class="gdl">' + gl.map(function (g2) { return '<dt>' + g2[0] + '</dt><dd>' + g2[1] + '</dd>'; }).join('') + '</dl>';
     return '<div class="rd"><div class="ptitle"><div class="rk">' + h[0] + '</div><h2 class="serif">' + h[1] + '</h2><p>' + h[2] + '</p></div>' +
-      '<section class="dsec mainc">' + layerSeg(k) + '<div class="dsvg">' + secSvg(secs[0]) + '</div><div class="imgbar"><button class="btn2 sm" data-act2="imgopen" data-tab-k="' + k + '">이미지 저장</button><button class="btn2 g sm" data-zoom="0">확대 보기</button></div><p class="calcnote">' + NOTE[k] + '</p></section>' +
+      '<section class="dsec mainc">' + layerSeg(k) + '<div class="dsvg">' + secSvg(secs[0]) + '</div><div class="imgbar"><button class="btn2" data-act2="imgdl" data-tab-k="' + k + '">' + ({ saju: '만세력', ziwei: '명반', astro: '점성차트' }[k]) + ' 이미지 저장</button></div></section>' +
       '<section class="dsec"><div class="dh"><h4>재물운 관련 핵심 정보</h4></div>' + coreCards(k) + '</section>' +
       '<details class="dsec fold"><summary>상세 전문 데이터 보기</summary><div class="foldin"><button class="btn2 g sm cp" data-act2="datacopy" data-tab-k="' + k + '">이 명반 데이터 복사</button>' + det + '</div></details>' +
-      '<details class="dsec fold"><summary>계산 기준 · 출생 정보</summary><div class="foldin">' + birth + '</div></details>' +
-      '<button class="backint" data-tab="int">← 통합 재물운으로 돌아가기</button></div>';
+      '<details class="dsec fold"><summary>출생 정보(계산기준)</summary><div class="foldin">' + birth + '</div></details>' +
+      '</div>';
   }
   function paneHtml() { return st.tab === 'int' ? paneInt() : paneDetail(st.tab); }
   function html(ctx) {
     E = ctx.E; C = ctx.chart; S = ctx.S; X = ctx;
     return '<div id="rwrap"><div class="rtop"><div class="ey">DONBUFF · 2027 MONEY FORTUNE</div><div class="rh-t">' + (S.name ? esc(S.name) + '님의 ' : '나의 ') + '2027년 재테크 운세</div></div>' + tabsBar() + '<div id="tabpane">' + paneHtml() + '</div>' +
-      '<p class="note" style="text-align:center;margin:16px 0 40px">오락·참고용이며 투자 권유가 아니에요. 결과가 정확히 맞는다고 보장하지 않아요. · <a href="/privacy/" style="text-decoration:underline">개인정보처리방침</a></p>' +
-      '<div class="zoomov" id="saveov" hidden><div class="zoomin save" role="dialog" aria-modal="true" aria-label="이미지 저장 옵션"><h3 class="serif" style="margin:0 0 12px">이미지 저장 옵션</h3><label class="tg2"><input type="checkbox" id="sv-hl" checked> 재물 관련 요소 강조</label><label class="tg2"><input type="checkbox" id="sv-pi"> 이름·출생 정보 포함 <small>(기본은 제외)</small></label><p class="hint">풀버전 명반(상세 데이터 포함)을 PNG로 저장해요. 화면의 버튼은 이미지에 들어가지 않아요.</p><div class="row" style="margin-top:12px"><button class="btn2 g" data-act2="saveclose" style="flex:1">취소</button><button class="btn2" data-act2="imgsave" style="flex:2">저장하기</button></div></div></div><div class="zoomov" id="zoomov" hidden><div class="zoomin" role="dialog" aria-modal="true" aria-label="확대 보기"><button class="zx" data-act2="zclose" aria-label="닫기">✕</button><div id="zbody"></div></div></div></div>';
+      '</div>';
   }
 
   /* ───── 공유 카드(1080×1350 네이비 골드) ───── */
@@ -413,7 +411,7 @@
     c.fillStyle = 'rgba(255,255,255,.14)'; c.fillRect(80, 1090, 920, 2);
     c.fillStyle = '#fff'; c.font = '800 38px ' + SANS; c.fillText('세 가지 운명 지도에 AI를 더하다.', 80, 1160);
     c.fillStyle = GOLD; c.font = '700 30px ' + SANS; c.fillText('사주팔자 · 자미두수 · 점성술', 80, 1214);
-    c.fillStyle = 'rgba(255,255,255,.7)'; c.font = '600 26px ' + SANS; c.fillText('donbuff.com · 오락·참고용' + (C.signals.sample ? ' · 시안 샘플 문구' : ''), 80, 1290);
+    c.fillStyle = 'rgba(255,255,255,.7)'; c.font = '600 26px ' + SANS; c.fillText('donbuff.com · 오락·참고용', 80, 1290);
   }
 
   /* ───── 명반 이미지 저장(전문 명반 이미지: 공유 카드와 별개) ───── */
@@ -443,20 +441,15 @@
   function bind(el) {
     root = el; refreshPane(el, false);
     el.addEventListener('click', function (e) {
-      var t = e.target.closest('[data-tab],[data-mode],[data-topic],[data-zoom],[data-lay],[data-act2]'); if (!t) return;
+      var t = e.target.closest('[data-tab],[data-topic],[data-lay],[data-act2]'); if (!t) return;
       if (t.hasAttribute('data-tab')) { setTab(el, t.getAttribute('data-tab')); return; }
-      if (t.hasAttribute('data-mode')) { st.mode = t.getAttribute('data-mode'); el.querySelector('#modebar').innerHTML = modeBar(); el.querySelector('#mapsbody').innerHTML = mapsHtml(); el.querySelector('#cmpbody').innerHTML = compareHtml(); X.ev('fortune_mode', { mode: st.mode }); return; }
       if (t.hasAttribute('data-topic')) { st.topic = t.getAttribute('data-topic'); el.querySelector('#cmpbody').innerHTML = compareHtml(); X.ev('fortune_topic', { topic: st.topic }); return; }
       if (t.hasAttribute('data-lay')) { if (st.tab === 'ziwei') st.zwLayer = t.getAttribute('data-lay'); else st.astroLayer = t.getAttribute('data-lay'); refreshPane(el, true); return; }
-      if (t.hasAttribute('data-zoom')) { var i = +t.getAttribute('data-zoom'), sc = sections(st.tab)[i]; el.querySelector('#zbody').innerHTML = '<div class="zscroll">' + secSvg(sc, 900) + '</div>'; el.querySelector('#zoomov').hidden = false; el.querySelector('.zx').focus(); X.ev('fortune_map', { action: 'zoom', system: st.tab }); return; }
       var a = t.getAttribute('data-act2');
-      if (a === 'zclose') el.querySelector('#zoomov').hidden = true;
-      else if (a === 'save') { var cv = el.querySelector('#cv'); cv.toBlob(function (b) { download(b, 'donbuff-2027-money-fortune.png'); X.ev('fortune_share', { channel: 'image' }); }); }
+      if (a === 'save') { var cv = el.querySelector('#cv'); cv.toBlob(function (b) { download(b, 'donbuff-2027-money-fortune.png'); X.ev('fortune_share', { channel: 'image' }); }); }
       else if (a === 'link') { copy(location.origin + '/fortune/?utm_source=share&utm_medium=link&utm_campaign=fortune2027', '링크를 복사했어요'); X.ev('fortune_share', { channel: 'link' }); }
       else if (a === 'nshare') { var cv2 = el.querySelector('#cv'); cv2.toBlob(function (b) { var f = new File([b], 'donbuff-2027.png', { type: 'image/png' }); var d = { files: [f], title: '돈버프 새해 재테크 운세', text: '나의 2027년 재물운 테마 · donbuff.com' }; if (navigator.canShare(d)) navigator.share(d).then(function () { X.ev('fortune_share', { channel: 'native' }); }, function () {}); else X.toast('이 기기에서는 이미지 공유를 지원하지 않아요'); }); }
-      else if (a === 'imgopen') { st.saveK = t.getAttribute('data-tab-k'); el.querySelector('#sv-hl').checked = true; el.querySelector('#sv-pi').checked = false; el.querySelector('#saveov').hidden = false; el.querySelector('#sv-hl').focus(); }
-      else if (a === 'saveclose') el.querySelector('#saveov').hidden = true;
-      else if (a === 'imgsave') { var k = st.saveK, hl0 = st.hl; st.hl = el.querySelector('#sv-hl').checked; st.pinfo = el.querySelector('#sv-pi').checked; st.noDates = !st.pinfo; var cp = compose(k); st.hl = hl0; st.noDates = false; el.querySelector('#saveov').hidden = true; rasterize(cp.svg, cp.w, cp.h, 'donbuff-' + k + '-2027.png'); X.ev('fortune_map', { action: 'save', system: k, personal: st.pinfo ? 1 : 0 }); }
+      else if (a === 'imgdl') { var k = t.getAttribute('data-tab-k'), hl0 = st.hl; st.hl = false; st.pinfo = false; st.noDates = true; var cp = compose(k); st.hl = hl0; st.noDates = false; rasterize(cp.svg, cp.w, cp.h, 'donbuff-' + k + '-2027.png'); X.ev('fortune_map', { action: 'save', system: k }); }
       else if (a === 'datacopy') { var k2 = t.getAttribute('data-tab-k'); copy(TITLE[k2] + '\n' + dataText(k2, true), '데이터를 복사했어요. 붙여 넣는 곳으로 내용이 전달돼요.'); X.ev('fortune_map', { action: 'copy', system: k2 }); }
       else if (a === 'aiopen') { st.aiOpen = !st.aiOpen; var bx = el.querySelector('#aibox'); bx.hidden = !st.aiOpen; if (st.aiOpen) { bx.innerHTML = builderPanel(); X.ev('fortune_ai_open'); } }
       else if (a === 'aicopy') { if (!st.aiOk) { X.toast('먼저 안내 확인에 체크해 주세요'); return; } copy(el.querySelector('#aip').value, '프롬프트를 복사했어요'); X.ev('fortune_ai_copy'); }
@@ -468,7 +461,6 @@
       else if (id === 'aiok') { st.aiOk = e.target.checked; var cb = el.querySelector('#aicopy'); if (cb) cb.disabled = !st.aiOk; }
     });
     el.addEventListener('input', function (e) { if (e.target.id === 'aiextra') { st.extra = e.target.value.slice(0, 100); refreshPrompt(el); } });
-    document.addEventListener('keydown', function esc2(e) { if (!document.getElementById('zoomov')) { document.removeEventListener('keydown', esc2); return; } if (e.key === 'Escape') { ['zoomov', 'saveov'].forEach(function (i) { var z = document.getElementById(i); if (z) z.hidden = true; }); } });
   }
   window.DBR = { html: html, bind: bind };
 })();
