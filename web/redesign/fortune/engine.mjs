@@ -89,6 +89,17 @@ function transits2027(cusps, lat, lon) {
   });
 }
 
+/** 자미두수 엔진 호출. mode 'solar'(기본): 양력 입력 그대로 / 'korean-lunar': 한국 음력→byLunar(받지 못하면 엔진 기본으로 대체) */
+export function ziweiCore({ y, m, d, hh, mm, gender }, mode = 'solar') {
+  const g = gender === 'male' ? '男' : '女', t = timeIndex(hh, mm), kl = koLunar(y, m, d);
+  let zw = null, src = 'solar';
+  if (mode === 'korean-lunar' && kl) { try { zw = astro.byLunar(kl.y + '-' + kl.m + '-' + kl.d, t, g, kl.leap, true, 'ko-KR'); src = 'ko'; } catch (e) { zw = null; } }
+  if (!zw) { zw = astro.bySolar(`${y}-${m}-${d}`, t, g, true, 'ko-KR'); src = mode === 'korean-lunar' ? 'engine-fallback' : 'solar'; }
+  const r = zw.rawDates && zw.rawDates.lunarDate, engineLunar = r ? { y: r.lunarYear, m: r.lunarMonth, d: r.lunarDay, leap: !!r.isLeap } : null;
+  const mismatch = !!(kl && engineLunar && (kl.y !== engineLunar.y || kl.m !== engineLunar.m || kl.d !== engineLunar.d || kl.leap !== engineLunar.leap));
+  return { zw, src, kl, engineLunar, mismatch };
+}
+
 const SHICHEN = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥', '子(만)'];
 
 /** input: { y, m, d, hh, mm, gender:'male'|'female', lat, lon } (양력, 한국 표준시 입력) */
@@ -112,18 +123,16 @@ export function calculate(input) {
   const kl = koLunar(y, m, d);
 
   // 자미두수: 한국 음력(한국천문연구원 자료 기반)을 기준으로 명반을 만든다. 범위 밖이면 엔진 기본(양력 입력)으로 대체.
-  const zwG = gender === 'male' ? '男' : '女', zwT = timeIndex(hh, mm);
-  // iztro 는 중국식 음력으로 날짜를 검증하므로, 한국 음력에는 있으나 중국식에는 없는 날(예: 중국식으로 29일까지인 달의 30일)은 받지 못한다.
-  // 이때는 엔진 기본(양력 입력 → 중국식 음력)으로 대체하고, 그 사실을 계산 기준에 표시한다(정책 확인 필요 항목).
-  let zw, zwSrc = 'ko';
-  if (kl) { try { zw = astro.byLunar(kl.y + '-' + kl.m + '-' + kl.d, zwT, zwG, kl.leap, true, 'ko-KR'); } catch (e) { zw = null; } }
-  if (!zw) { zw = astro.bySolar(`${y}-${m}-${d}`, zwT, zwG, true, 'ko-KR'); zwSrc = 'engine'; }
+  const zwT = timeIndex(hh, mm);
+  // 자미두수는 확정된 양력 출생일을 그대로 iztro(bySolar)에 넣는다. iztro 가 내부에서 쓰는 음력(중국식)과 한국 음력은 따로 보관한다.
+  // (이전 방식 'korean-lunar': 한국 음력을 byLunar 에 넣고, 받지 못하는 경계일은 엔진 기본으로 대체 — 비교·되돌리기용으로만 남겨 둔다.)
+  const zz = ziweiCore({ y, m, d, hh, mm, gender }, input.ziweiMode || 'solar'), zw = zz.zw, zwSrc = zz.src;
   const zwY = zw.horoscope(`${YEAR}-2-10`);
   const palaces = zw.palaces.map((p, i) => ({ name: p.name, stem: p.heavenlyStem, branch: p.earthlyBranch, range: p.decadal.range, dname: zwY.decadal.palaceNames[i], yname: zwY.yearly.palaceNames[i],
     major: p.majorStars.map((s) => ({ n: s.name, m: s.mutagen })), minor: p.minorStars.map((s) => ({ n: s.name, m: s.mutagen })), isBody: p.isBodyPalace }));
   const sanfang = {}; ['재백', '관록', '전택', '복덕'].forEach((n) => { try { const r = zw.surroundedPalaces(n); sanfang[n] = [r.opposite, r.wealth, r.career].map((x) => x && x.name).filter(Boolean); } catch (e) { sanfang[n] = []; } });
   const curDec = palaces.findIndex((p) => zwY.age && p.range[0] <= zwY.age.nominalAge && zwY.age.nominalAge <= p.range[1]);
-  const ziwei = { calendarSource: zwSrc, palaces, sanfang, curDecadal: curDec, age: zwY.age ? zwY.age.nominalAge : null, mutagen: zwY.yearly.mutagen, decMutagen: zwY.decadal.mutagen, lunar: zw.lunarDate, soul: zw.earthlyBranchOfSoulPalace, body: zw.earthlyBranchOfBodyPalace, five: zw.fiveElementsClass };
+  const ziwei = { calendarSource: zwSrc, engineLunar: zz.engineLunar, lunarMismatch: zz.mismatch, solarInput: { y, m, d }, palaces, sanfang, curDecadal: curDec, age: zwY.age ? zwY.age.nominalAge : null, mutagen: zwY.yearly.mutagen, decMutagen: zwY.decadal.mutagen, lunar: zw.lunarDate, soul: zw.earthlyBranchOfSoulPalace, body: zw.earthlyBranchOfBodyPalace, five: zw.fiveElementsClass };
 
   const hs = mkHs({ year: y, month: m - 1, date: d, hour: hh, minute: mm, latitude: lat, longitude: lon }, true);
   // 하우스는 라이브러리의 House.id 를 쓰지 않고 시작점(cusp) 기준으로 직접 판정한다.
@@ -140,12 +149,12 @@ export function calculate(input) {
   const utc = hs.origin && hs.origin.utcTime && hs.origin.utcTime.format ? hs.origin.utcTime.format('YYYY-MM-DD HH:mm') : '';
   const basis = {
     saju: '진태양시 ' + (tst ? tst.time : '-') + ' 기준 · 자시 23시 경계 · 절기(입춘) 기준 연·월',
-    ziwei: '입력한 시계 시각 ' + pad2(hh) + ':' + pad2(mm) + ' → ' + SHICHEN[zwT] + '시 · ' + (zwSrc === 'ko' ? '한국 음력(' + kl.y + '.' + kl.m + '.' + kl.d + (kl.leap ? ' 윤달' : '') + ') 기준 명반' : '엔진 기본 역법(중국식 음력) — 한국·중국식 음력이 달라지는 경계일이라 엔진 기본값을 사용했고 검증이 필요해요') + ' · 윤달 보정 fixLeap',
+    ziwei: '입력한 시계 시각 ' + pad2(hh) + ':' + pad2(mm) + ' → ' + SHICHEN[zwT] + '시 · 양력 출생일을 자미두수 엔진(iztro)에 입력 → 엔진 음력(' + (zz.engineLunar ? zz.engineLunar.y + '.' + zz.engineLunar.m + '.' + zz.engineLunar.d + (zz.engineLunar.leap ? ' 윤달' : '') : '-') + ') 기준 명반' + (zz.mismatch ? ' · 한국 음력(' + kl.y + '.' + kl.m + '.' + kl.d + (kl.leap ? ' 윤달' : '') + ')과 날짜가 다른 경계일이에요(역법 적합성 검증 중)' : '') + ' · 윤달 보정 fixLeap',
     astro: '출생지 시간대 기준 UTC ' + utc + ' 환산 · 트로피컬 · 플라시더스',
     periods: { sewoon: '사주 세운·월운: 입춘 기준(2027년 2월 4일경 ~ 다음 입춘)', yearly: '자미두수 유년: 음력 설 기준(' + pd(s1) + ' ~ ' + pd(s2) + ' 전날)', transit: '점성술 트랜짓: 2027-01-01 ~ 2027-12-31 (한국 정오 기준)' },
   };
   // 이미지·AI 프롬프트에 쓰는 공개용 계산 기준: 출생 날짜·음력 날짜·UTC 일시를 뺀다.
-  const basisPublic = { saju: '진태양시 보정 적용 · 자시 23시 경계 · 절기(입춘) 기준 연·월', ziwei: '입력한 시계 시각의 시진 · ' + (zwSrc === 'ko' ? '한국 음력 기준 명반' : '엔진 기본 역법(중국식 음력)') + ' · 윤달 보정 fixLeap', astro: '출생지 시간대 기준 UTC 환산 · 트로피컬 · 플라시더스', periods: basis.periods };
+  const basisPublic = { saju: '진태양시 보정 적용 · 자시 23시 경계 · 절기(입춘) 기준 연·월', ziwei: '입력한 시계 시각의 시진 · 양력 출생일을 엔진(iztro)에 입력해 엔진 음력(중국식) 기준 명반' + (zz.mismatch ? ' · 한국 음력과 다른 경계일(역법 적합성 검증 중)' : '') + ' · 윤달 보정 fixLeap', astro: '출생지 시간대 기준 UTC 환산 · 트로피컬 · 플라시더스', periods: basis.periods };
   const chart = { year: YEAR, kLunar: kl, basis, basisPublic, saju: { dm: DM, pillars, cycles, luck2027, sewoon, relations, lunar: kl, trueSolar: tst || null }, ziwei, western };
   chart.signals = deriveSignals(chart);
   return chart;

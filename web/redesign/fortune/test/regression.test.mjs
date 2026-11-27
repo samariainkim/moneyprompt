@@ -4,7 +4,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
-import { calculate, houseOf, koLunar, timeIndex } from '../engine.mjs';
+import { calculate, houseOf, koLunar, timeIndex, ziweiCore } from '../engine.mjs';
+import { toSolar } from '../lunar.mjs';
 
 const require = createRequire(import.meta.url);
 const A = require('astronomy-engine');
@@ -105,26 +106,36 @@ test('세운·월운 공식이 lunar-javascript 와 일치 (2020~2035, 절기월
 });
 
 /* ───── 자미두수·역법 ───── */
-test('한국 음력 기준 자미두수: 한국·중국 설날이 다른 해(1997-02-08 = 한국 음력 1월 1일, 중국식은 1월 2일)', () => {
-  const kl = koLunar(1997, 2, 8); assert.deepEqual([kl.y, kl.m, kl.d, kl.leap], [1997, 1, 1, false]);
-  const c = calculate({ ...base, y: 1997, m: 2, d: 8 }); assert.equal(c.ziwei.calendarSource, 'ko'); assert.ok(c.ziwei.lunar.includes('1월 1일'), c.ziwei.lunar);
-});
-test('한국 음력에만 있는 날(1997-02-07 = 한국 음력 1996.12.30, 중국식은 29일까지)은 엔진 기본으로 대체하고 표시한다 — 오류로 멈추지 않는다', () => {
-  const kl = koLunar(1997, 2, 7); assert.deepEqual([kl.y, kl.m, kl.d], [1996, 12, 30]);
-  const c = calculate({ ...base, y: 1997, m: 2, d: 7 }); assert.equal(c.ziwei.calendarSource, 'engine'); assert.ok(c.basis.ziwei.includes('경계일'));
-});
-test('byLunar 경로가 중국식과 음력이 같은 날에는 iztro bySolar 와 동일한 명반을 만든다 (시드 41, 80건, 자시 포함)', () => {
-  const r = rng(41), key = (z) => z.palaces.map((p) => p.name + p.earthlyBranch + p.majorStars.map((s) => s.name + s.mutagen).join()).join('|');
-  let tested = 0;
-  for (let i = 0; i < 400 && tested < 80; i++) {
-    const y = r(1940, 2010), m = r(1, 12), d = r(1, 28), hh = i % 7 === 0 ? 23 : r(0, 23), mm = r(0, 59), kl = koLunar(y, m, d), cl = Solar.fromYmd(y, m, d).getLunar(), cm = cl.getMonth();
-    if (!kl || kl.y !== cl.getYear() || kl.m !== Math.abs(cm) || kl.d !== cl.getDay() || kl.leap !== (cm < 0)) continue;
-    const c = calculate({ ...base, y, m, d, hh, mm }), ref = astro.bySolar(`${y}-${m}-${d}`, timeIndex(hh, mm), '男', true, 'ko-KR');
-    assert.equal(c.ziwei.palaces.map((p) => p.name + p.branch + p.major.map((s) => s.n + s.m).join()).join('|'), key(ref), [y, m, d, hh, mm].join('-')); tested++;
+test('자미두수는 양력 출생일을 그대로 iztro(bySolar)에 넣는다 — 한국·중국 음력이 다른 날도 오류 없이 계산되고 두 음력을 따로 보관한다', () => {
+  for (const [ymd, ko, eng] of [[[1997, 2, 8], [1997, 1, 1], [1997, 1, 2]], [[1997, 2, 7], [1996, 12, 30], [1997, 1, 1]], [[1990, 5, 15], [1990, 4, 21], [1990, 4, 21]]]) {
+    const c = calculate({ ...base, y: ymd[0], m: ymd[1], d: ymd[2] });
+    assert.equal(c.ziwei.calendarSource, 'solar'); assert.deepEqual(c.ziwei.solarInput, { y: ymd[0], m: ymd[1], d: ymd[2] });
+    assert.deepEqual([c.kLunar.y, c.kLunar.m, c.kLunar.d], ko); assert.deepEqual([c.ziwei.engineLunar.y, c.ziwei.engineLunar.m, c.ziwei.engineLunar.d], eng);
+    assert.equal(c.ziwei.lunarMismatch, ko.join() !== eng.join());
   }
-  assert.ok(tested >= 60);
+});
+test('기존 계산 실패 39일(한국 음력은 있으나 iztro가 받지 못한 날)이 모두 정상 계산된다', () => {
+  const fx = JSON.parse(fs.readFileSync(new URL('./fixtures/ziwei-fallback-days.json', import.meta.url), 'utf8'));
+  assert.equal(fx.days.length, 39);
+  for (const [y, m, d] of fx.days) for (const g of ['male', 'female']) { const c = calculate({ ...base, y, m, d, gender: g }); assert.equal(c.ziwei.calendarSource, 'solar'); assert.equal(c.ziwei.palaces.length, 12); assert.equal(c.ziwei.lunarMismatch, true); }
+});
+test('같은 출생일을 양력으로 입력하든 한국 음력으로 입력하든 같은 명반이 만들어진다 (시드 51, 300건, 윤달 포함) — 양력 출생일은 바뀌지 않는다', () => {
+  const r = rng(51), sig = (z) => z.zw.palaces.map((p) => p.earthlyBranch + p.majorStars.map((s) => s.name + s.mutagen).join('·') + p.minorStars.map((s) => s.name).join('·')).join('|') + z.zw.fiveElementsClass + z.zw.earthlyBranchOfSoulPalace;
+  for (let i = 0; i < 300; i++) {
+    const y = r(1930, 2026), m = r(1, 12), d = r(1, 28), hh = r(0, 23), mm = r(0, 59), g = i % 2 ? 'male' : 'female', kl = koLunar(y, m, d);
+    const back = toSolar(kl.y, kl.m, kl.d, kl.leap); assert.deepEqual([back.y, back.m, back.d], [y, m, d]);
+    assert.equal(sig(ziweiCore({ y, m, d, hh, mm, gender: g })), sig(ziweiCore({ y: back.y, m: back.m, d: back.d, hh, mm, gender: g })));
+  }
+});
+test('1930~2026 전 기간 음력↔양력 왕복이 매일 일치하고 자미두수 계산이 실패하지 않는다 (왕복은 매일, 자미두수 계산은 29일 간격 표본·시진·성별 교차 — 전수 실행은 별도 검증 보고서 참고)', () => {
+  let n = 0;
+  for (let t = Date.UTC(1930, 0, 1); t <= Date.UTC(2026, 11, 31); t += 864e5) {
+    const dt = new Date(t), y = dt.getUTCFullYear(), m = dt.getUTCMonth() + 1, d = dt.getUTCDate(), kl = koLunar(y, m, d), b = toSolar(kl.y, kl.m, kl.d, kl.leap);
+    assert.deepEqual([b.y, b.m, b.d], [y, m, d]);
+    if (n++ % 29 === 0) { const hh = [0, 7, 14, 23][n % 4], g = n % 2 ? 'male' : 'female'; const z = ziweiCore({ y, m, d, hh, mm: 0, gender: g }); assert.equal(z.zw.palaces.length, 12); }
+  }
 });
 test('경계 입력 전체가 오류 없이 계산된다 (자시·입춘·윤달·1950~60년대·서머타임·윤년)', () => {
   const cases = [[2000, 2, 4, 20, 30], [2000, 2, 4, 21, 30], [1988, 5, 8, 2, 30], [1988, 5, 8, 3, 30], [1958, 7, 7, 7, 30], [1954, 3, 21, 0, 10], [1961, 8, 9, 23, 50], [1985, 12, 31, 23, 59], [1996, 2, 29, 0, 0], [2023, 3, 31, 12, 0], [1930, 1, 1, 0, 0], [2026, 12, 31, 23, 59]];
-  for (const [y, m, d, hh, mm] of cases) for (const g of ['male', 'female']) { const c = calculate({ ...base, y, m, d, hh, mm, gender: g }); assert.equal(c.saju.pillars.length, 4); assert.equal(c.ziwei.palaces.length, 12); assert.equal(c.western.bodies.length, 10); assert.ok(c.basis.ziwei.includes('한국 음력')); }
+  for (const [y, m, d, hh, mm] of cases) for (const g of ['male', 'female']) { const c = calculate({ ...base, y, m, d, hh, mm, gender: g }); assert.equal(c.saju.pillars.length, 4); assert.equal(c.ziwei.palaces.length, 12); assert.equal(c.western.bodies.length, 10); assert.ok(c.basis.ziwei.includes('엔진 음력')); }
 });
