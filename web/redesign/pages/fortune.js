@@ -3,32 +3,23 @@
   'use strict';
   var $app = document.getElementById('app');
   var ENGINE_SRC = '/redesign/fortune-engine.js';
-  var CITIES = [
-    ['서울', 37.57, 126.98], ['부산', 35.18, 129.08], ['대구', 35.87, 128.6], ['인천', 37.46, 126.71], ['광주', 35.16, 126.85], ['대전', 36.35, 127.38], ['울산', 35.54, 129.31],
-    ['세종', 36.48, 127.29], ['수원', 37.26, 127.03], ['성남', 37.42, 127.13], ['고양', 37.66, 126.83], ['용인', 37.24, 127.18], ['창원', 35.23, 128.68], ['청주', 36.64, 127.49],
-    ['전주', 35.82, 127.15], ['천안', 36.82, 127.15], ['포항', 36.02, 129.37], ['김해', 35.23, 128.88], ['제주', 33.5, 126.53], ['춘천', 37.88, 127.73], ['강릉', 37.75, 128.88],
-    ['원주', 37.34, 127.92], ['안동', 36.57, 128.73], ['목포', 34.81, 126.39], ['여수', 34.76, 127.66], ['순천', 34.95, 127.49], ['군산', 35.97, 126.74], ['진주', 35.18, 128.11],
-    ['평양(북한)', 39.02, 125.75], ['도쿄(일본)', 35.68, 139.69], ['오사카(일본)', 34.69, 135.5], ['베이징(중국)', 39.9, 116.4], ['상하이(중국)', 31.23, 121.47], ['타이베이(대만)', 25.03, 121.57],
-    ['호치민(베트남)', 10.78, 106.7], ['하노이(베트남)', 21.03, 105.85], ['방콕(태국)', 13.76, 100.5], ['싱가포르', 1.35, 103.82], ['시드니(호주)', -33.87, 151.21],
-    ['로스앤젤레스(미국)', 34.05, -118.24], ['뉴욕(미국)', 40.71, -74.01], ['시카고(미국)', 41.88, -87.63], ['토론토(캐나다)', 43.65, -79.38], ['런던(영국)', 51.51, -0.13], ['파리(프랑스)', 48.86, 2.35], ['프랑크푸르트(독일)', 50.11, 8.68]
-  ];
   var JOBS = ['직장인', '프리랜서', '자영업', '구직·이직 중', '학생', '전업주부', '은퇴'];
   var WANTS = ['월급 안정', '저축 늘리기', '지출 줄이기', '부채 정리', '투자 공부·시작', '부수입', '내 집 마련', '노후 준비'];
   var HABITS = ['수입 늘리기', '지출 습관', '저축 습관', '투자 공부', '빚 줄이기'];
   var ORDER = ['birth', 'place', 'who', 'story', 'confirm'];
-  var S = { screen: 'intro', y: 1990, m: 5, d: 15, hh: 12, mm: 0, place: null, q: '', name: '', gender: '', job: '', wants: [], habit: '', ask: '', useAi: true };
-  var chart = null, engineP = null, topic = 'save';
+  var S = { screen: 'intro', cal: 'solar', leap: false, conv: null, y: 1990, m: 5, d: 15, hh: 12, mm: 0, place: null, q: '', name: '', gender: '', job: '', wants: [], habit: '', ask: '', useAi: true };
+  var chart = null, engineP = null, lunarP = null, topic = 'save';
 
   function $(h) { var t = document.createElement('template'); t.innerHTML = h.trim(); return t.content.firstChild; }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function ev(n, p) { try { if (typeof gtag === 'function') gtag('event', n, p || {}); } catch (e) {} }
   function toast(t) { var el = document.getElementById('toast'); el.textContent = t; el.classList.add('on'); setTimeout(function () { el.classList.remove('on'); }, 2200); }
-  function loadEngine() {
-    if (window.DBFortuneEngine) return Promise.resolve(window.DBFortuneEngine);
-    if (engineP) return engineP;
-    engineP = new Promise(function (ok, ng) { var s = document.createElement('script'); s.src = ENGINE_SRC; s.onload = function () { ok(window.DBFortuneEngine); }; s.onerror = function () { engineP = null; ng(new Error('engine')); }; document.head.appendChild(s); });
-    return engineP;
+  function loadScript(src, glob) {
+    if (window[glob]) return Promise.resolve(window[glob]);
+    return new Promise(function (ok, ng) { var t = document.createElement('script'); t.src = src; t.onload = function () { ok(window[glob]); }; t.onerror = function () { ng(new Error(glob)); }; document.head.appendChild(t); });
   }
+  function loadEngine() { return engineP || (engineP = loadScript(ENGINE_SRC, 'DBFortuneEngine').catch(function (e) { engineP = null; throw e; })); }
+  function loadLunar() { return lunarP || (lunarP = loadScript('/redesign/fortune-lunar.js', 'DBFortuneLunar').catch(function (e) { lunarP = null; throw e; })); }
   function daysIn(y, m) { return new Date(y, m, 0).getDate(); }
   function opts(from, to, sel, suf, pad) { var h = ''; for (var i = from; i <= to; i++) h += '<option value="' + i + '"' + (i === sel ? ' selected' : '') + '>' + (pad ? String(i).padStart(2, '0') : i) + suf + '</option>'; return h; }
   function go(sc) { S.screen = sc; render(); window.scrollTo(0, 0); }
@@ -75,18 +66,43 @@
     new IntersectionObserver(function (e) { fv = e[0].isIntersecting; upd(); }).observe(f);
   }
 
+  var P = window.DBPlaces;
+  function sol() { return S.conv && S.conv.ok ? S.conv : null; }
   function birth() {
-    var dmax = daysIn(S.y, S.m); if (S.d > dmax) S.d = dmax;
-    return bar('1단계', '출생정보') + '<div class="main"><h1>태어난 날과 시간을<br>알려주세요</h1><div class="sub">양력 기준이에요. 계산은 이 기기 안에서만 이뤄져요.</div>' +
-      '<div class="lbl">생년월일 <em>양력</em></div><div class="row"><select id="y" aria-label="년">' + opts(1930, 2026, S.y, '년') + '</select><select id="m" aria-label="월">' + opts(1, 12, S.m, '월') + '</select><select id="d" aria-label="일">' + opts(1, dmax, S.d, '일') + '</select></div>' +
+    var lunar = S.cal === 'lunar', dmax = lunar ? 30 : daysIn(S.y, S.m); if (S.d > dmax) S.d = dmax;
+    return bar('1단계', '출생정보') + '<div class="main"><h1>태어난 날과 시간을<br>알려주세요</h1><div class="sub">양력·음력 모두 입력할 수 있어요. 계산은 이 기기 안에서만 이뤄져요.</div>' +
+      '<div class="lbl">생년월일</div><div class="seg" role="radiogroup" aria-label="양력 음력 선택"><button class="chip' + (!lunar ? ' on' : '') + '" role="radio" aria-checked="' + !lunar + '" data-cal="solar">양력</button><button class="chip' + (lunar ? ' on' : '') + '" role="radio" aria-checked="' + lunar + '" data-cal="lunar">음력</button></div>' +
+      '<div class="row" style="margin-top:10px"><select id="y" aria-label="년">' + opts(1930, 2026, S.y, '년') + '</select><select id="m" aria-label="월">' + opts(1, 12, S.m, '월') + '</select><select id="d" aria-label="일">' + opts(1, dmax, S.d, '일') + '</select></div>' +
+      (lunar ? '<label class="leap"><input type="checkbox" id="leap"' + (S.leap ? ' checked' : '') + '> 윤달이에요 <small>(해당 월이 윤달일 때만 체크)</small></label>' : '') +
+      '<div id="convmsg" class="conv-msg" aria-live="polite"></div>' +
       '<div class="lbl">태어난 시간 <em>한국 표준시</em></div><div class="row"><select id="hh" aria-label="시">' + opts(0, 23, S.hh, '시', true) + '</select><select id="mm" aria-label="분">' + opts(0, 59, S.mm, '분', true) + '</select></div>' +
-      '<p class="hint">출생 시각이 정확할수록 사주 시주·자미두수 명궁·점성술 상승점이 정확해져요. 시간을 정확히 모르면 부모님이나 출생증명서로 한 번 확인해 보세요.</p></div>' + foot('next', '계속');
+      '<p class="hint">출생 시각이 정확할수록 사주 시주·자미두수 명궁·점성술 상승점이 정확해져요. 시간을 정확히 모르면 부모님이나 출생증명서로 한 번 확인해 보세요.</p></div>' + foot('next', '계속', true);
+  }
+  function setNext(on) { var b = $app.querySelector('.foot [data-act=next]'); if (b) b.disabled = !on; }
+  function updConv() {
+    var el = document.getElementById('convmsg'); if (!el) return;
+    if (S.cal !== 'lunar') { S.conv = { ok: true, y: S.y, m: S.m, d: S.d }; el.textContent = ''; el.className = 'conv-msg'; setNext(true); return; }
+    S.conv = null; el.className = 'conv-msg'; el.textContent = '양력으로 바꾸는 중…'; setNext(false);
+    var key = [S.y, S.m, S.d, S.leap].join();
+    loadLunar().then(function (L) {
+      if ([S.y, S.m, S.d, S.leap].join() !== key || S.screen !== 'birth') return;
+      var r = L.toSolar(S.y, S.m, S.d, S.leap); S.conv = r; var e2 = document.getElementById('convmsg'); if (!e2) return;
+      if (r.ok) { e2.className = 'conv-msg ok2'; e2.textContent = '양력으로는 ' + r.y + '년 ' + r.m + '월 ' + r.d + '일이에요.'; setNext(true); } else { e2.className = 'conv-msg bad'; e2.textContent = r.msg; setNext(false); }
+    }).catch(function () { var e3 = document.getElementById('convmsg'); if (e3) { e3.className = 'conv-msg bad'; e3.textContent = '음력 변환을 불러오지 못했어요. 양력으로 입력하거나 잠시 후 다시 시도해 주세요.'; } });
+  }
+  function placeList() {
+    var q = S.q.trim();
+    if (!q) return '';
+    var r = P.find(q);
+    if (!r.length) return '<p class="hint">검색 결과가 없어요. 시·군 단위로 다시 입력하거나, 위의 도시 중 가까운 곳을 골라 주세요.</p>';
+    return r.map(function (c) { var i = P.PLACES.indexOf(c); return '<button class="city' + (S.place === c ? ' on' : '') + '" data-pl="' + i + '">' + esc(P.show(c)) + '<small>' + (S.place === c ? '✓ 선택됨' : '') + '</small></button>'; }).join('');
   }
   function place() {
-    var q = S.q.trim(); var list = CITIES.filter(function (c) { return !q || c[0].indexOf(q) >= 0; });
-    return bar('1단계', '출생지') + '<div class="main"><h1>태어난 곳은<br>어디인가요?</h1><div class="sub">도시를 고르면 경도에 맞춰 시각을 보정해요.</div>' +
-      '<div class="lbl">도시 검색</div><input id="q" type="text" placeholder="예: 서울, 부산, 도쿄" value="' + esc(S.q) + '" autocomplete="off" aria-label="도시 검색">' +
-      '<div id="cl">' + (list.length ? list.map(function (c) { return '<button class="city' + (S.place && S.place[0] === c[0] ? ' on' : '') + '" data-city="' + esc(c[0]) + '">' + esc(c[0]) + '<small>' + (S.place && S.place[0] === c[0] ? '✓ 선택됨' : '') + '</small></button>'; }).join('') : '<p class="hint">검색 결과가 없어요. 가까운 도시를 목록에서 골라 주세요. <button class="chip" data-act="clearq">전체 목록 보기</button></p>') + '</div></div>' + foot('next', '계속', !S.place);
+    return bar('1단계', '출생지') + '<div class="main"><h1>태어난 곳은<br>어디인가요?</h1><div class="sub">시·군 단위로 입력하면 경도에 맞춰 시각을 보정해요.</div>' +
+      '<div class="lbl">자주 찾는 도시</div><div>' + P.QUICK.map(function (l) { var c = P.PLACES.filter(function (x) { return x.label === l; })[0]; return '<button class="chip' + (S.place === c ? ' on' : '') + '" data-pl="' + P.PLACES.indexOf(c) + '">' + esc(c.base) + '</button>'; }).join('') + '</div>' +
+      '<div class="lbl">직접 입력</div><input id="pq" type="text" placeholder="예) 서울시, 고성군" value="' + esc(S.q) + '" autocomplete="off" aria-label="출생지 직접 입력">' +
+      '<p class="hint">예) 서울시, 고성군 처럼 시·군 단위로 입력해 주세요. 구·동·읍·면은 입력하지 않아도 돼요.</p><div id="pl">' + placeList() + '</div>' +
+      (S.place ? '<div class="ok" style="margin-top:14px">✓ 출생지: ' + esc(P.show(S.place)) + '</div>' : '') + '</div>' + foot('next', '계속', !S.place);
   }
   function who() {
     return bar('1단계', '이름·성별') + '<div class="main"><h1>마지막으로<br>기본 정보를 알려주세요</h1>' +
@@ -96,26 +112,26 @@
   }
   function story() {
     function chips(arr, on, key, max) { return arr.map(function (c) { return '<button class="chip' + (on.indexOf(c) >= 0 ? ' on' : '') + '" data-k="' + key + '" data-v="' + esc(c) + '">' + esc(c) + '</button>'; }).join(''); }
-    return bar('2단계', '나의 돈 이야기') + '<div class="main"><div class="ok">✓ 기본정보 완료! 이제 내 돈 고민을 골라볼까요?</div><h1>새해 돈 이야기를<br>조금 더 알려주세요</h1><div class="sub">답하고 싶은 것만 골라도 돼요. 건너뛰어도 결과는 같아요.</div>' +
+    return bar('2단계', '나의 돈 이야기') + '<div class="main"><div class="ok">✓ 기본정보 완료! 이제 내 돈 고민을 골라볼까요?</div><h1>새해 돈 이야기를<br>조금 더 알려주세요</h1><div class="sub">답하고 싶은 것만 골라도 돼요. 건너뛰어도 결과는 같아요.</div><div class="sw"><button type="button" class="swb' + (S.useAi ? ' on' : '') + '" role="switch" aria-checked="' + S.useAi + '" id="useai" aria-label="내 이야기를 AI 프롬프트에 반영하기"><i></i></button><div><b>내 이야기를 AI 프롬프트에 반영하기</b><span>이 버튼을 켜두면 선택한 이야기들이 나만의 프롬프트에 반영돼요.</span></div></div>' +
       '<div class="lbl">지금 나는?</div>' + chips(JOBS, [S.job], 'job') +
       '<div class="lbl">새해에는 돈과 관련해 무엇이 가장 달라졌으면 하나요? <em>최대 3개</em></div>' + chips(WANTS, S.wants, 'wants') +
       '<div class="lbl">내 돈 습관, 하나만 바꾼다면? <em>선택</em></div>' + chips(HABITS, [S.habit], 'habit') +
       '<div class="lbl">요즘 가장 궁금한 돈 이야기 한 가지는? <em>선택</em></div><textarea id="ask" maxlength="100" placeholder="예: 월급이 들어오면 금방 사라져요. 어디부터 점검하면 좋을까요?">' + esc(S.ask) + '</textarea>' +
       '<div class="hint" style="display:flex;justify-content:space-between"><span>이메일·전화번호·주소 같은 개인정보는 적지 마세요</span><span id="cnt">' + S.ask.length + ' / 100</span></div>' +
       '<p class="hint">투자 경험이나 위험 성향, 자금 여력은 묻지 않아요. 이 서비스는 투자 적합성을 진단하지 않아요.</p>' +
-      '<label class="chip" style="display:flex;gap:10px;align-items:flex-start;border-radius:16px;margin-top:14px;border-color:var(--line);background:var(--cream)"><input type="checkbox" id="useai"' + (S.useAi ? ' checked' : '') + ' style="margin-top:4px"><span><b>내 선택을 AI 질문에 반영하기</b><br><small style="font-weight:500;color:var(--muted)">켜 두면 마지막 \'물어보기\'에 위 선택이 담겨요. 결과 화면은 같아요.</small></span></label></div>' + foot('next', '계속', false, 'next');
+      '</div>' + foot('next', '계속', false, 'next');
   }
   function pad2(n) { return String(n).padStart(2, '0'); }
   function confirm() {
     return bar('2단계', '입력 확인') + '<div class="main"><h1>입력한 내용이<br>맞는지 확인해 주세요</h1><div class="sum">' +
-      '<div><span>생년월일</span><b>' + S.y + '년 ' + S.m + '월 ' + S.d + '일 (양력)</b></div><div><span>태어난 시간</span><b>' + pad2(S.hh) + ':' + pad2(S.mm) + '</b></div><div><span>출생지</span><b>' + esc(S.place[0]) + '</b></div><div><span>성별</span><b>' + (S.gender === 'male' ? '남성' : '여성') + '</b></div><div><span>이름</span><b>' + (S.name ? esc(S.name) : '입력 안 함') + '</b></div></div>' +
+      '<div><span>생년월일</span><b>' + (S.cal === 'lunar' ? '음력 ' + S.y + '년 ' + S.m + '월 ' + S.d + '일' + (S.leap ? ' (윤달)' : '') + '<br><small style="font-weight:600;color:var(--muted)">양력 ' + S.conv.y + '년 ' + S.conv.m + '월 ' + S.conv.d + '일</small>' : S.y + '년 ' + S.m + '월 ' + S.d + '일 (양력)') + '</b></div><div><span>태어난 시간</span><b>' + pad2(S.hh) + ':' + pad2(S.mm) + '</b></div><div><span>출생지</span><b>' + esc(S.place.label) + '</b></div><div><span>성별</span><b>' + (S.gender === 'male' ? '남성' : '여성') + '</b></div><div><span>이름</span><b>' + (S.name ? esc(S.name) : '입력 안 함') + '</b></div></div>' +
       '<p class="hint">\'계산하기\'를 누르면 이 기기에서 세 가지 차트를 계산해요. 입력한 내용은 서버로 전송되지 않아요.</p></div>' + foot('calc', '계산하기');
   }
   function loading() {
     var items = [['사주팔자', '네 기둥과 십신을 계산했어요'], ['자미두수', '12궁에 별을 배치했어요'], ['점성술', '행성의 위치를 계산했어요'], ['재물운·투자운', '세 가지 결과를 비교했어요']];
     return '<div class="stb"><div style="width:40px"></div><div class="prog"><div class="pl"><span><b>계산 중</b></span><span></span></div><div class="pb"><i style="width:85%"></i></div></div><span style="width:40px"></span></div><div class="main"><div class="ld-wrap">' +
-      '<h1 class="fi" style="animation-delay:.1s">세 가지 시선으로<br>나의 재테크 운세를 읽고 있어요</h1><div class="sub fi" style="animation-delay:.6s">잠시만 기다려 주세요.</div><div style="max-width:340px;margin:22px auto 0;width:100%">' +
-      items.map(function (t, i) { return '<div class="li fi" style="animation-delay:' + (1.1 + i * .6) + 's"><i>✓</i><div><b>' + t[0] + '</b><span>' + t[1] + '</span></div></div>'; }).join('') + '</div></div></div>';
+      '<h1 class="fi" style="animation-delay:.2s">세 가지 시선으로<br>나의 재테크 운세를 읽고 있어요</h1><div class="sub fi" style="animation-delay:1.2s">잠시만 기다려 주세요.</div><div style="max-width:340px;margin:22px auto 0;width:100%">' +
+      items.map(function (t, i) { return '<div class="li fi" style="animation-delay:' + (2.2 + i * 1.2) + 's"><i>✓</i><div><b>' + t[0] + '</b><span>' + t[1] + '</span></div></div>'; }).join('') + '</div></div></div>';
   }
 
   /* ───── 결과 ───── */
@@ -211,17 +227,20 @@
     $app.innerHTML = map[S.screen]();
     if (S.screen === 'result') { drawCard(); window.scrollTo(0, 0); }
     if (S.screen === 'intro') watchSticky();
+    if (S.screen === 'birth') updConv();
   }
   function calc() {
     go('load'); var t0 = Date.now();
-    var p = loadEngine().then(function (E) { return new Promise(function (ok) { setTimeout(function () { ok(E.calculate({ y: S.y, m: S.m, d: S.d, hh: S.hh, mm: S.mm, gender: S.gender, lat: S.place[1], lon: S.place[2] })); }, 30); }); });
-    p.then(function (c) { chart = c; var wait = Math.max(0, 3600 - (Date.now() - t0)); setTimeout(function () { ev('fortune_complete'); go('result'); }, matchMedia('(prefers-reduced-motion:reduce)').matches ? 300 : wait); })
+    var p = loadEngine().then(function (E) { return new Promise(function (ok) { setTimeout(function () { ok(E.calculate({ y: S.conv.y, m: S.conv.m, d: S.conv.d, hh: S.hh, mm: S.mm, gender: S.gender, lat: S.place.lat, lon: S.place.lon })); }, 30); }); });
+    p.then(function (c) { chart = c; var wait = Math.max(0, 7600 - (Date.now() - t0)); setTimeout(function () { ev('fortune_complete'); go('result'); }, matchMedia('(prefers-reduced-motion:reduce)').matches ? 300 : wait); })
       .catch(function () { toast('계산을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.'); go('confirm'); });
   }
   $app.addEventListener('click', function (e) {
-    var t = e.target.closest('[data-act],[data-city],[data-g],[data-k],[data-topic],[data-more]'); if (!t) return;
+    var t = e.target.closest('[data-act],[data-pl],[data-cal],[data-g],[data-k],[data-topic],[data-more],#useai'); if (!t) return;
     var a = t.getAttribute('data-act');
-    if (t.hasAttribute('data-city')) { S.place = CITIES.filter(function (c) { return c[0] === t.getAttribute('data-city'); })[0]; render(); return; }
+    if (t.id === 'useai') { S.useAi = !S.useAi; t.classList.toggle('on', S.useAi); t.setAttribute('aria-checked', S.useAi); return; }
+    if (t.hasAttribute('data-pl')) { S.place = P.PLACES[+t.getAttribute('data-pl')]; S.q = S.place.label; render(); return; }
+    if (t.hasAttribute('data-cal')) { S.cal = t.getAttribute('data-cal'); S.leap = false; render(); return; }
     if (t.hasAttribute('data-g')) { S.gender = t.getAttribute('data-g'); render(); return; }
     if (t.hasAttribute('data-k')) { var k = t.getAttribute('data-k'), v = t.getAttribute('data-v'); if (k === 'wants') { var i = S.wants.indexOf(v); if (i >= 0) S.wants.splice(i, 1); else if (S.wants.length < 3) S.wants.push(v); else toast('최대 3개까지 고를 수 있어요'); } else S[k] = S[k] === v ? '' : v; var y = window.scrollY; render(); window.scrollTo(0, y); return; }
     if (t.hasAttribute('data-topic')) { topic = t.getAttribute('data-topic'); document.getElementById('cmpbody').innerHTML = compare(); ev('fortune_topic', { topic: topic }); return; }
@@ -229,7 +248,6 @@
     if (a === 'start') { ev('fortune_start'); go('birth'); }
     else if (a === 'prev') prev(); else if (a === 'home') go('intro');
     else if (a === 'next') { var i2 = ORDER.indexOf(S.screen); go(ORDER[i2 + 1]); }
-    else if (a === 'clearq') { S.q = ''; render(); }
     else if (a === 'calc') calc();
     else if (a === 'save') { document.getElementById('cv').toBlob(function (b) { var u = URL.createObjectURL(b), l = document.createElement('a'); l.href = u; l.download = 'donbuff-2027-fortune.png'; l.click(); setTimeout(function () { URL.revokeObjectURL(u); }, 1000); ev('fortune_share', { channel: 'image' }); toast('이미지를 저장했어요'); }); }
     else if (a === 'link') { var url = location.origin + '/fortune/?utm_source=share&utm_medium=link&utm_campaign=fortune2027'; (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { toast('링크를 복사했어요'); ev('fortune_share', { channel: 'link' }); }, function () { toast('복사하지 못했어요. 주소창의 주소를 직접 복사해 주세요.'); }); }
@@ -240,12 +258,12 @@
   });
   $app.addEventListener('change', function (e) {
     var id = e.target.id;
-    if (['y', 'm', 'd', 'hh', 'mm'].indexOf(id) >= 0) { S[id] = +e.target.value; if (id === 'y' || id === 'm') render(); }
-    else if (id === 'useai') S.useAi = e.target.checked;
+    if (['y', 'm', 'd', 'hh', 'mm'].indexOf(id) >= 0) { S[id] = +e.target.value; if ((id === 'y' || id === 'm') && S.cal === 'solar') render(); else if (id !== 'hh' && id !== 'mm') updConv(); }
+    else if (id === 'leap') { S.leap = e.target.checked; updConv(); }
   });
   $app.addEventListener('input', function (e) {
     var id = e.target.id;
-    if (id === 'q') { S.q = e.target.value; var pos = e.target.selectionStart; render(); var q = document.getElementById('q'); q.focus(); q.setSelectionRange(pos, pos); }
+    if (id === 'pq') { S.q = e.target.value; if (S.place && S.place.label !== S.q) { S.place = null; setNext(false); var okb = $app.querySelector('.ok'); if (okb) okb.remove(); } document.getElementById('pl').innerHTML = placeList(); }
     else if (id === 'nm') S.name = e.target.value.slice(0, 12);
     else if (id === 'ask') { S.ask = e.target.value.slice(0, 100); document.getElementById('cnt').textContent = S.ask.length + ' / 100'; }
   });

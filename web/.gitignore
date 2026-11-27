@@ -10,3 +10,4 @@ next-env.d.ts
 
 # 새해 재테크 운세 계산 엔진 번들(빌드 때 생성)
 /redesign/pages/fortune-engine.js
+/redesign/pages/fortune-lunar.js
