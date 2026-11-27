@@ -89,15 +89,13 @@ function transits2027(cusps, lat, lon) {
   });
 }
 
-/** 자미두수 엔진 호출. mode 'solar'(기본): 양력 입력 그대로 / 'korean-lunar': 한국 음력→byLunar(받지 못하면 엔진 기본으로 대체) */
-export function ziweiCore({ y, m, d, hh, mm, gender }, mode = 'solar') {
-  const g = gender === 'male' ? '男' : '女', t = timeIndex(hh, mm), kl = koLunar(y, m, d);
-  let zw = null, src = 'solar';
-  if (mode === 'korean-lunar' && kl) { try { zw = astro.byLunar(kl.y + '-' + kl.m + '-' + kl.d, t, g, kl.leap, true, 'ko-KR'); src = 'ko'; } catch (e) { zw = null; } }
-  if (!zw) { zw = astro.bySolar(`${y}-${m}-${d}`, t, g, true, 'ko-KR'); src = mode === 'korean-lunar' ? 'engine-fallback' : 'solar'; }
+/** 자미두수 엔진 호출 — 확정된 양력 출생일을 그대로 iztro(bySolar)에 넣는다(공통 산출 정책, fortune/POLICY.md).
+ *  iztro 가 내부에서 쓴 음력(엔진 음력, 중국식)과 한국 음력은 따로 보관하고, 둘이 다른 경계일이면 표시한다. */
+export function ziweiCore({ y, m, d, hh, mm, gender }) {
+  const zw = astro.bySolar(`${y}-${m}-${d}`, timeIndex(hh, mm), gender === 'male' ? '男' : '女', true, 'ko-KR'), kl = koLunar(y, m, d);
   const r = zw.rawDates && zw.rawDates.lunarDate, engineLunar = r ? { y: r.lunarYear, m: r.lunarMonth, d: r.lunarDay, leap: !!r.isLeap } : null;
   const mismatch = !!(kl && engineLunar && (kl.y !== engineLunar.y || kl.m !== engineLunar.m || kl.d !== engineLunar.d || kl.leap !== engineLunar.leap));
-  return { zw, src, kl, engineLunar, mismatch };
+  return { zw, src: 'solar', kl, engineLunar, mismatch };
 }
 
 const SHICHEN = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥', '子(만)'];
@@ -125,8 +123,7 @@ export function calculate(input) {
   // 자미두수: 한국 음력(한국천문연구원 자료 기반)을 기준으로 명반을 만든다. 범위 밖이면 엔진 기본(양력 입력)으로 대체.
   const zwT = timeIndex(hh, mm);
   // 자미두수는 확정된 양력 출생일을 그대로 iztro(bySolar)에 넣는다. iztro 가 내부에서 쓰는 음력(중국식)과 한국 음력은 따로 보관한다.
-  // (이전 방식 'korean-lunar': 한국 음력을 byLunar 에 넣고, 받지 못하는 경계일은 엔진 기본으로 대체 — 비교·되돌리기용으로만 남겨 둔다.)
-  const zz = ziweiCore({ y, m, d, hh, mm, gender }, input.ziweiMode || 'solar'), zw = zz.zw, zwSrc = zz.src;
+  const zz = ziweiCore({ y, m, d, hh, mm, gender }), zw = zz.zw, zwSrc = zz.src;
   const zwY = zw.horoscope(`${YEAR}-2-10`);
   const palaces = zw.palaces.map((p, i) => ({ name: p.name, stem: p.heavenlyStem, branch: p.earthlyBranch, range: p.decadal.range, dname: zwY.decadal.palaceNames[i], yname: zwY.yearly.palaceNames[i],
     major: p.majorStars.map((s) => ({ n: s.name, m: s.mutagen })), minor: p.minorStars.map((s) => ({ n: s.name, m: s.mutagen })), isBody: p.isBodyPalace }));
