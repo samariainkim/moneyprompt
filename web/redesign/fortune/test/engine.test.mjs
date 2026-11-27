@@ -44,3 +44,11 @@ test('경계 입력이 오류 없이 계산된다 (입춘 전후·자시·과거
 test('재물 신호는 샘플 표시가 붙는다', () => {
   assert.equal(calculate(base).signals.sample, true);
 });
+
+test('2027 목성·토성 연초·연말 위치와 하우스', () => {
+  const c = calculate(base);
+  assert.equal(c.western.transit.length, 2);
+  for (const t of c.western.transit) for (const k of ['start', 'end']) { assert.ok(t[k].house >= 1 && t[k].house <= 12); assert.ok(t[k].lon >= 0 && t[k].lon < 360); }
+  assert.equal(c.western.transit[1].start.sign, '양자리'); // 토성 2027-01 양자리
+  assert.equal(c.western.transit[0].end.sign, '처녀자리'); // 목성 2027-12 처녀자리
+});
