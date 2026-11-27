@@ -267,3 +267,11 @@ details.fold{padding:0}.fold>summary{list-style:none;cursor:pointer;padding:16px
 .cc .ccv{display:block;width:100%;height:auto;border-radius:8px}
 .cc b{display:block;margin-top:8px;color:#E5B98A;font:700 15px 'Noto Serif KR',serif}.cc i{display:block;font:700 11px var(--font);font-style:normal;letter-spacing:.02em}.cc span:not(.cme){display:block;font-size:12px;color:rgba(255,255,255,.8);margin-top:2px}
 .cc.me{box-shadow:0 0 0 3px #E5B98A,0 10px 20px rgba(39,54,77,.3)}.cme{position:absolute;left:50%;top:-10px;transform:translateX(-50%);background:#E5B98A;color:#27364D;font:900 11px var(--font);padding:3px 10px;border-radius:999px;white-space:nowrap}
+/* ── AI 프롬프트 v2.0 화면 ── */
+.ai .aih{font:800 19px 'Noto Serif KR',serif;margin:18px 0 4px;color:#fff}.ai .aisub{margin:0;font-size:14px;color:#C7D2E6}
+.ai .aicnt{text-align:right;font-size:12px;color:#9FB0CC;margin-top:4px}
+.ai .aifix{margin-top:12px;background:rgba(255,255,255,.08);border-radius:14px;padding:11px 14px;font-size:13.5px;color:#E5EAF3;display:flex;flex-direction:column;gap:2px}.ai .aifix b{color:#fff}
+.ai .aidet{margin-top:12px}.ai .aidet summary{cursor:pointer;font-size:14px;font-weight:700;color:#E5B98A;padding:6px 0}.ai .aidet textarea{min-height:300px}
+.ai .aigo{margin-top:14px;font-size:13px;color:#C7D2E6;line-height:1.7}.ai .aigo div{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 6px}
+.ai .aigo a{flex:1;min-width:104px;text-align:center;padding:12px 10px;border-radius:999px;border:1.5px solid rgba(229,185,138,.6);color:#E5B98A;font-weight:800;font-size:14px;text-decoration:none}
+.ai .aigo small{color:#9FB0CC}

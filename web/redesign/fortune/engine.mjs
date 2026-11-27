@@ -148,7 +148,7 @@ export function calculate(input) {
     saju: '진태양시 ' + (tst ? tst.time : '-') + ' 기준 · 자시 23시 경계 · 절기(입춘) 기준 연·월',
     ziwei: '입력한 시계 시각 ' + pad2(hh) + ':' + pad2(mm) + ' → ' + SHICHEN[zwT] + '시 · 양력 출생일을 자미두수 엔진(iztro)에 입력 → 엔진 음력(' + (zz.engineLunar ? zz.engineLunar.y + '.' + zz.engineLunar.m + '.' + zz.engineLunar.d + (zz.engineLunar.leap ? ' 윤달' : '') : '-') + ') 기준 명반' + (zz.mismatch ? ' · 한국 음력(' + kl.y + '.' + kl.m + '.' + kl.d + (kl.leap ? ' 윤달' : '') + ')과 날짜가 다른 경계일이에요(역법 적합성 검증 중)' : '') + ' · 윤달 보정 fixLeap',
     astro: '출생지 시간대 기준 UTC ' + utc + ' 환산 · 트로피컬 · 플라시더스',
-    periods: { sewoon: '사주 세운·월운: 입춘 기준(2027년 2월 4일경 ~ 다음 입춘)', yearly: '자미두수 유년: 음력 설 기준(' + pd(s1) + ' ~ ' + pd(s2) + ' 전날)', transit: '점성술 트랜짓: 2027-01-01 ~ 2027-12-31 (한국 정오 기준)' },
+    periods: { sewoon: '사주 세운·월운: 입춘 기준(2027년 2월 4일경 ~ 다음 입춘)', yearly: '자미두수 유년: 엔진(iztro)의 중국식 음력 설 기준(2027-02-06 ~ 2028-01-25). 한국 음력 설(2027-02-07, 2028-01-27)과 하루씩 다릅니다', transit: '점성술 트랜짓: 2027-01-01 ~ 2027-12-31 (한국 정오 기준)' },
   };
   // 이미지·AI 프롬프트에 쓰는 공개용 계산 기준: 출생 날짜·음력 날짜·UTC 일시를 뺀다.
   const basisPublic = { saju: '진태양시 보정 적용 · 자시 23시 경계 · 절기(입춘) 기준 연·월', ziwei: '입력한 시계 시각의 시진 · 양력 출생일을 엔진(iztro)에 입력해 엔진 음력(중국식) 기준 명반' + (zz.mismatch ? ' · 한국 음력과 다른 경계일(역법 적합성 검증 중)' : '') + ' · 윤달 보정 fixLeap', astro: '출생지 시간대 기준 UTC 환산 · 트로피컬 · 플라시더스', periods: basis.periods };
