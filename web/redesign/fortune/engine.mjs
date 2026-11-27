@@ -1,4 +1,4 @@
-export { THEME, SUMMARY4, TOPICS4, EASY, GLOSSARY, ZW_WEALTH, AS_WEALTH } from './rules.mjs';
+export { CARDS, pickCard, THEME, SUMMARY4, TOPICS4, EASY, GLOSSARY, ZW_WEALTH, AS_WEALTH } from './rules.mjs';
 // 돈버프 새해 재테크 운세 — 계산 엔진 (브라우저에서만 실행, 서버 전송 없음)
 // 사주: @openfate/bazi-engine · 자미두수: iztro · 점성술: circular-natal-horoscope-js
 // ※ 재물 신호 문장·키워드는 rules.mjs 의 '시안 샘플'이며 규칙표 확정 전까지 sample:true 로 표시한다.

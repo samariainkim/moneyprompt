@@ -249,3 +249,21 @@ details.fold{padding:0}.fold>summary{list-style:none;cursor:pointer;padding:16px
 .shbtn{display:block;max-width:480px;margin:18px auto 0}.shbtn .shp{width:100%;padding:18px;font-size:17px}
 .shrow{display:flex;gap:10px;margin-top:6px}.shrow .btn2{flex:1;min-width:0}
 .shs{font-size:13px;color:var(--muted);line-height:1.6;margin:10px 0 0}
+/* ── FORTUNE CARD (뒤집기 + 전체 카드 보기) ── */
+.fcsec{background:var(--cream);border-color:#EBDCC6;text-align:center}.fcsec h3{text-align:center}
+.fcwrap{perspective:1400px;width:100%;max-width:380px;margin:22px auto 0}
+.fcard{position:relative;width:100%;aspect-ratio:4/5;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.3,.7,.2,1);cursor:pointer;border-radius:22px;outline-offset:4px}
+.fcard.flip{transform:rotateY(180deg)}
+.fcf{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;overflow:hidden;box-shadow:0 18px 40px rgba(39,54,77,.28)}
+.fcf canvas{display:block;width:100%;height:100%}
+.fcfr{transform:rotateY(180deg)}
+.fcmsg{margin:18px 0 0;font-size:15.5px;line-height:1.7;color:var(--navy)}.fcmsg b{color:var(--orange-d,#94582A)}.fcmsg i{display:block;margin-top:4px;color:var(--muted);font-style:normal}
+@media (prefers-reduced-motion:reduce){.fcard{transition:none}}
+.colin{max-width:560px}.colin .rk,.colin h3{text-align:center}
+.zclose{position:absolute;right:12px;top:8px;width:40px;height:40px;border:0;background:none;font-size:28px;color:var(--muted);cursor:pointer}
+.cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0}
+@media(min-width:560px){.cgrid{grid-template-columns:repeat(4,1fr)}}
+.cc{position:relative;border-radius:14px;padding:8px 8px 10px;text-align:center;color:#fff;box-shadow:0 6px 14px rgba(39,54,77,.18)}
+.cc .ccv{display:block;width:100%;height:auto;border-radius:8px}
+.cc b{display:block;margin-top:8px;color:#E5B98A;font:700 15px 'Noto Serif KR',serif}.cc i{display:block;font:700 11px var(--font);font-style:normal;letter-spacing:.02em}.cc span:not(.cme){display:block;font-size:12px;color:rgba(255,255,255,.8);margin-top:2px}
+.cc.me{box-shadow:0 0 0 3px #E5B98A,0 10px 20px rgba(39,54,77,.3)}.cme{position:absolute;left:50%;top:-10px;transform:translateX(-50%);background:#E5B98A;color:#27364D;font:900 11px var(--font);padding:3px 10px;border-radius:999px;white-space:nowrap}

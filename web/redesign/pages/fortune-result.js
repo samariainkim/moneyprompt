@@ -343,11 +343,14 @@
     return '<div class="rh"><div class="rh-in"><div class="th-l">2027년 나의 재물운 테마</div><div class="th serif">' + th.name + '</div><div class="th-s">' + th.sub + '</div>' +
       '<h1 class="serif">' + sg.keySentence + '</h1><div class="tags">' + th.keywords.map(function (k) { return '<span># ' + k + '</span>'; }).join('') + '</div>' +
       '<p class="ds">사주팔자 · 자미두수 · 점성술 3종 관점 · 2027 정미년' + (C.saju.trueSolar ? ' · 진태양시 ' + C.saju.trueSolar.time + ' 기준' : '') + '</p></div></div>' +
-      '<nav class="anch" aria-label="페이지 안 바로가기"><a href="#sum">재물운 요약</a><a href="#maps">운명 지도</a><a href="#cmp">세 가지 해석</a><a href="#ai">AI 프롬프트</a><a href="#share">카드 저장</a></nav><div class="rd">' +
+      '<nav class="anch" aria-label="페이지 안 바로가기"><a href="#sum">재물운 요약</a><a href="#maps">운명 지도</a><a href="#cmp">세 가지 해석</a><a href="#ai">AI 프롬프트</a><a href="#share">행운 카드</a></nav><div class="rd">' +
       '<section class="rdc" id="sum"><div class="rk">MY MONEY FORTUNE</div><h3>한눈에 보는 나의 재물운</h3><p class="hint" style="margin:-6px 0 12px">2027년, 나의 돈 이야기를 네 가지 관점에서 살펴봤어요.</p><div class="sum4">' + E.SUMMARY4.map(function (s4) { return '<div class="s4"><i>' + s4.label + '</i><b class="serif">' + s4.title + '</b><span>' + s4.text + '</span></div>'; }).join('') + '</div></section>' +
       '<section class="rdc" id="maps"><div class="rk">MY THREE FORTUNE MAPS</div><h3>나의 세 가지 운명 지도</h3><p class="hint" style="margin:-6px 0 12px">서로 다른 세 가지 운세 체계로 나의 재물운을 살펴봐요. 전체 명반은 각 탭에서 확인할 수 있어요.</p><div id="mapsbody">' + mapsHtml() + '</div></section>' +
       '<section class="rdc" id="cmp"><div class="rk">THREE PERSPECTIVES</div><h3>나의 재물운, 세 가지 해석</h3><div id="cmpbody">' + compareHtml() + '</div></section>' + aiBuilder() +
-      '<section class=\"rdc\" id=\"share\" style=\"background:var(--cream);border-color:#EBDCC6;text-align:center\"><div class=\"rk\">SHARE</div><h3 style=\"text-align:center\">내 재물운 리포트 카드</h3><p class=\"hint\" style=\"margin:-6px 0 0\">이름·생년월일·시간·고민은 카드에 담기지 않아요.</p><div class=\"sharecard\"><canvas id=\"cv\" width=\"1080\" height=\"1350\" role=\"img\" aria-label=\"내 재물운 리포트 카드 미리보기\"></canvas></div><div class=\"shbtn\"><button class=\"btn2 shp\" data-act2=\"save\">내 운세 카드 저장</button><p class=\"shs\">내 재물운 카드를 저장해 두고 2027년 내내 참고해 보세요.</p><div class=\"shrow\"><button class=\"btn2 g\" data-act2=\"nshare\" id=\"nshare\" hidden>친구에게 공유하기</button><button class=\"btn2 g\" data-act2=\"link\">서비스 링크 복사</button></div><p class=\"shs\">SNS에 공유하고 친구와 운세를 비교해 보세요. 링크에는 내 결과가 담기지 않아요.</p></div></section></div>';
+      '<section class="rdc fcsec" id="share"><div class="rk">2027 DONBUFF FORTUNE CARD</div><h3>나의 행운 카드가 도착했어요</h3><p class="hint" style="margin:-6px 0 0">당신의 새해를 상징하는 행운 카드가 도착했어요.<br>8가지 재물운 카드 중 나의 운세와 어울리는 카드는 무엇일까요?</p>' +
+      '<div class="fcwrap"><div class="fcard" id="fcard" role="button" tabindex="0" aria-label="카드 뒤집기"><div class="fcf fcbk"><canvas id="cvb" width="540" height="675"></canvas></div><div class="fcf fcfr"><canvas id="cv" width="1080" height="1350" role="img" aria-label="나의 2027년 재물운 카드 미리보기"></canvas></div></div></div>' +
+      '<p class="fcmsg" id="fcmsg"></p><p class="shs" style="margin-top:6px">이름·생년월일·시간·고민은 카드에 담기지 않아요.</p>' +
+      '<div class="shbtn"><button class="btn2 shp" data-act2="save">나의 행운 카드 저장하기</button><div class="shrow"><button class="btn2 g" data-act2="nshare" id="nshare" hidden>친구에게 공유하기</button><button class="btn2 g" data-act2="cards">전체 카드 보기</button></div></div></section></div>';
   }
   var HEAD = { saju: ['SAJU · 四柱八字', '나의 사주팔자 만세력', '나의 타고난 명식과 시간에 따른 운세의 흐름'], ziwei: ['ZIWEI · 紫微斗數', '나의 자미두수 명반', '12궁과 별의 배치로 읽는 나의 운명 지도'], astro: ['ASTRO · NATAL CHART', '나의 서양 점성차트', '태어난 순간의 행성과 별자리가 담긴 운명 지도'] };
   function card(title, sc, idx, extra) { return '<section class="dsec"><div class="dh"><h4>' + title + '</h4>' + (extra || '') + '</div><div class="dsvg">' + secSvg(sc) + '</div></section>'; }
@@ -389,7 +392,7 @@
   function paneHtml() { return st.tab === 'int' ? paneInt() : paneDetail(st.tab); }
   function html(ctx) {
     E = ctx.E; C = ctx.chart; S = ctx.S; X = ctx;
-    return '<div id="rwrap"><div class="rtop"><div class="ey">DONBUFF · 2027 MONEY FORTUNE</div><div class="rh-t">' + (S.name ? esc(S.name) + '님의 ' : '나의 ') + '2027년 재테크 운세</div></div>' + tabsBar() + '<div id="tabpane">' + paneHtml() + '</div>' +
+    return '<div id="rwrap"><div class="rtop"><div class="ey">DONBUFF · 2027 MONEY FORTUNE</div><div class="rh-t">' + (S.name ? esc(S.name) + '님의 ' : '나의 ') + '2027년 재테크 운세</div></div>' + tabsBar() + '<div id="tabpane">' + paneHtml() + '</div><div class="zoomov" id="colov" hidden></div>' +
       '</div>';
   }
 
@@ -397,39 +400,108 @@
   function wrapText(c, t, x, y, mw, lh) { var line = '', yy = y; for (var i = 0; i < t.length; i++) { var test = line + t[i]; if (c.measureText(test).width > mw && line) { c.fillText(line, x, yy); line = t[i]; yy += lh; } else line = test; } c.fillText(line, x, yy); return yy + lh; }
   function rr(c, x, y, w, h, r) { c.beginPath(); if (c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h); }
   function fit(c, text, maxW, size, weight, font) { var s = size; c.font = weight + ' ' + s + 'px ' + font; while (c.measureText(text).width > maxW && s > 20) { s -= 2; c.font = weight + ' ' + s + 'px ' + font; } return s; }
-  function drawShare(cv) {
-    var c = cv.getContext('2d'), th = E.THEME, S4 = E.SUMMARY4, GOLD = '#E5B98A', G2 = '#D9B26A', SANS = FONT, SERIF = "'Noto Serif KR','Nanum Myeongjo',serif", W0 = 1080, H0 = 1350;
-    // 배경: 세로 그라데이션 + 은은한 방사형 광택 + 별 점 + 미세한 입자
-    var g = c.createLinearGradient(0, 0, 0, H0); g.addColorStop(0, '#1E2D47'); g.addColorStop(.55, '#27364D'); g.addColorStop(1, '#18233A'); c.fillStyle = g; c.fillRect(0, 0, W0, H0);
-    var gl = c.createRadialGradient(820, 220, 10, 820, 220, 520); gl.addColorStop(0, 'rgba(229,185,138,.26)'); gl.addColorStop(1, 'rgba(229,185,138,0)'); c.fillStyle = gl; c.fillRect(0, 0, W0, H0);
-    var seed = 7; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
-    for (var i = 0; i < 90; i++) { c.fillStyle = 'rgba(229,185,138,' + (0.12 + rnd() * .5) + ')'; c.beginPath(); c.arc(rnd() * W0, rnd() * H0, 0.8 + rnd() * 2.2, 0, 7); c.fill(); }
-    for (var n = 0; n < 1400; n++) { c.fillStyle = 'rgba(255,255,255,' + (rnd() * .04) + ')'; c.fillRect(rnd() * W0, rnd() * H0, 2, 2); }
-    // 상단: 브랜드 + 3중 운명 지도 심볼(사주 기둥 · 자미두수 12궁 · 점성 휠 · 코인)
-    c.fillStyle = GOLD; c.font = '900 30px ' + SANS; c.fillText('D O N B U F F  ·  2 0 2 7', 80, 112); c.fillStyle = 'rgba(255,255,255,.72)'; c.font = '700 26px ' + SANS; c.fillText('MY MONEY FORTUNE', 80, 158);
-    var cx = 850, cy = 170, R = 118; c.strokeStyle = 'rgba(229,185,138,.6)'; c.lineWidth = 2;
-    [R, R - 26].forEach(function (r) { c.beginPath(); c.arc(cx, cy, r, 0, 7); c.stroke(); });
-    for (var k = 0; k < 12; k++) { var an = k * Math.PI / 6; c.beginPath(); c.moveTo(cx + (R - 26) * Math.cos(an), cy + (R - 26) * Math.sin(an)); c.lineTo(cx + R * Math.cos(an), cy + R * Math.sin(an)); c.stroke(); }
-    var gs = 38, gx = cx - gs * 2, gy = cy - gs * 2; c.lineWidth = 1.6; c.strokeStyle = 'rgba(229,185,138,.8)'; c.strokeRect(gx, gy, gs * 4, gs * 4); for (var q = 1; q < 4; q++) { c.beginPath(); c.moveTo(gx + q * gs, gy); c.lineTo(gx + q * gs, gy + gs * 4); c.moveTo(gx, gy + q * gs); c.lineTo(gx + gs * 4, gy + q * gs); c.stroke(); }
-    c.fillStyle = '#1E2D47'; c.fillRect(gx + gs + 1, gy + gs + 1, gs * 2 - 2, gs * 2 - 2);
-    var cg = c.createRadialGradient(cx - 6, cy - 6, 3, cx, cy, 34); cg.addColorStop(0, '#F6D79A'); cg.addColorStop(1, '#C8923F'); c.fillStyle = cg; c.beginPath(); c.arc(cx, cy, 30, 0, 7); c.fill(); c.fillStyle = '#27364D'; c.font = '900 34px ' + SANS; c.textAlign = 'center'; c.fillText('₩', cx, cy + 12); c.textAlign = 'left';
-    for (var pi = 0; pi < 4; pi++) { c.fillStyle = 'rgba(229,185,138,' + (0.35 + pi * .15) + ')'; rr(c, cx - 66 + pi * 36, cy + R + 14, 24, 36, 5); c.fill(); }
-    // 중단: 테마 + 유형 라벨 + 한 줄 인상평 + 키워드
-    c.fillStyle = 'rgba(255,255,255,.75)'; c.font = '700 30px ' + SANS; c.fillText('나의 2027년 재물운 테마', 80, 372);
-    var tw = c.measureText('나의 2027년 재물운 테마').width; c.font = '800 24px ' + SANS; var tl = th.type + ' 재물운', tlw = c.measureText(tl).width + 36; c.strokeStyle = G2; c.lineWidth = 2; rr(c, 80 + tw + 20, 346, tlw, 38, 19); c.stroke(); c.fillStyle = GOLD; c.fillText(tl, 80 + tw + 38, 373);
-    c.fillStyle = '#fff'; var ts = fit(c, th.name, 920, 104, 700, SERIF); c.fillText(th.name, 80, 372 + ts + 14);
-    var y = 372 + ts + 14; c.fillStyle = GOLD; c.font = '700 36px ' + SANS; c.fillText(th.sub, 80, y + 58);
-    y += 100; c.fillStyle = 'rgba(229,185,138,.12)'; rr(c, 80, y, 920, 118, 22); c.fill(); c.strokeStyle = 'rgba(229,185,138,.45)'; c.lineWidth = 2; rr(c, 80, y, 920, 118, 22); c.stroke();
-    c.fillStyle = G2; c.font = '700 70px ' + SERIF; c.fillText('“', 104, y + 84); c.fillStyle = '#fff'; var tg = fit(c, th.tagline, 800, 46, 700, SERIF); c.fillText(th.tagline, 168, y + 60 + tg / 3);
-    y += 118 + 54; var x = 80; c.font = '800 32px ' + SANS; th.keywords.forEach(function (kw) { var w = c.measureText('# ' + kw).width + 52; c.strokeStyle = G2; c.lineWidth = 2.5; rr(c, x, y - 40, w, 64, 32); c.stroke(); c.fillStyle = GOLD; c.fillText('# ' + kw, x + 26, y + 2); x += w + 14; });
-    // 하단: 돈 벌기·모으기·불리기·지키기 4요약 + 3관점 배지 + 브랜드
-    y += 54; var cw = 450, ch = 118, gp = 20;
-    S4.forEach(function (s4, i) { var bx = 80 + (i % 2) * (cw + gp), by = y + Math.floor(i / 2) * (ch + gp); c.fillStyle = 'rgba(255,255,255,.06)'; rr(c, bx, by, cw, ch, 20); c.fill(); c.strokeStyle = 'rgba(229,185,138,.35)'; c.lineWidth = 1.5; rr(c, bx, by, cw, ch, 20); c.stroke(); c.fillStyle = GOLD; c.font = '800 24px ' + SANS; c.fillText(E.TOPICS4[s4.id].label, bx + 26, by + 42); c.fillStyle = '#fff'; var fs = fit(c, s4.title, cw - 52, 36, 800, SANS); c.fillText(s4.title, bx + 26, by + 88); });
-    y += 2 * ch + gp + 44; c.fillStyle = 'rgba(255,255,255,.14)'; c.fillRect(80, y, 920, 2);
-    y += 46; var bd = [['SAJU', '사주팔자'], ['ZIWEI', '자미두수'], ['ASTRO', '점성술']]; var bx2 = 80; bd.forEach(function (b) { c.font = '900 22px ' + SANS; var w1 = c.measureText(b[0]).width; c.font = '700 26px ' + SANS; var w2 = c.measureText(b[1]).width, w = w1 + w2 + 66; c.fillStyle = 'rgba(229,185,138,.16)'; rr(c, bx2, y - 34, w, 52, 26); c.fill(); c.fillStyle = G2; c.font = '900 22px ' + SANS; c.fillText(b[0], bx2 + 24, y); c.fillStyle = '#fff'; c.font = '700 26px ' + SANS; c.fillText(b[1], bx2 + 24 + w1 + 14, y); bx2 += w + 14; });
-    c.fillStyle = '#fff'; c.font = '800 30px ' + SANS; c.fillText('세 가지 운명 지도에 AI를 더하다.', 80, y + 70);
-    c.fillStyle = 'rgba(255,255,255,.7)'; c.font = '600 24px ' + SANS; c.fillText('donbuff.com · 오락·참고용', 80, y + 118);
+  /* ───── DONBUFF FORTUNE CARD (8종) ───── */
+  var ARTDIR = '/redesign/img/fortune/cards/', artC = {};
+  function loadArt(name, cb) { if (name in artC) { cb(artC[name]); return; } artC[name] = null; var im = new Image(); im.onload = function () { artC[name] = im; cb(im); }; im.onerror = function () { artC[name] = false; cb(false); }; im.src = ARTDIR + name; }
+  function curCard() {
+    var c = E.pickCard(E.THEME);
+    if (location.hostname.indexOf('donbuff.com') < 0) { var m = /[?&]card=([1-8])\b/.exec(location.search); if (m) c = E.CARDS[+m[1] - 1]; }  // 미리보기 전용: ?card=1..8
+    return c;
   }
+  function coverDraw(c, im, W0, H0) { var r = Math.max(W0 / im.width, H0 / im.height), w = im.width * r, h = im.height * r; c.drawImage(im, (W0 - w) / 2, (H0 - h) / 2, w, h); }
+  function emblem(c, no, cx, cy, r, GOLD) {
+    c.save(); c.strokeStyle = GOLD; c.fillStyle = GOLD; c.lineWidth = 4; c.lineCap = 'round'; c.lineJoin = 'round';
+    function ring(x, y, rad) { c.beginPath(); c.arc(x, y, rad, 0, 7); c.stroke(); }
+    if (no === 1) { ring(cx, cy, r * .42); for (var i = 0; i < 16; i++) { var a = i * Math.PI / 8, r1 = r * .52, r2 = r * (i % 2 ? .72 : .9); c.beginPath(); c.moveTo(cx + r1 * Math.cos(a), cy + r1 * Math.sin(a)); c.lineTo(cx + r2 * Math.cos(a), cy + r2 * Math.sin(a)); c.stroke(); } }
+    else if (no === 2) { c.beginPath(); c.moveTo(cx, cy + r * .9); c.lineTo(cx, cy - r * .1); c.moveTo(cx, cy + r * .3); c.lineTo(cx - r * .35, cy + r * .05); c.moveTo(cx, cy + r * .1); c.lineTo(cx + r * .35, cy - r * .15); c.stroke(); ring(cx, cy - r * .35, r * .55); for (var j = 0; j < 7; j++) { c.beginPath(); c.arc(cx + (j - 3) * r * .15, cy - r * .35 + ((j % 3) - 1) * r * .2, 7, 0, 7); c.fill(); } }
+    else if (no === 3) { ring(cx, cy, r * .85); ring(cx, cy, r * .72); c.beginPath(); c.moveTo(cx, cy - r * .6); c.lineTo(cx + r * .14, cy); c.lineTo(cx, cy + r * .6); c.lineTo(cx - r * .14, cy); c.closePath(); c.stroke(); c.beginPath(); c.moveTo(cx - r * .6, cy); c.lineTo(cx, cy + r * .12); c.lineTo(cx + r * .6, cy); c.lineTo(cx, cy - r * .12); c.closePath(); c.stroke(); c.beginPath(); c.arc(cx, cy, 9, 0, 7); c.fill(); }
+    else if (no === 4) { c.beginPath(); c.moveTo(cx - r * .62, cy - r * .7); c.lineTo(cx + r * .62, cy - r * .7); c.lineTo(cx + r * .62, cy + r * .05); c.quadraticCurveTo(cx + r * .6, cy + r * .6, cx, cy + r * .9); c.quadraticCurveTo(cx - r * .6, cy + r * .6, cx - r * .62, cy + r * .05); c.closePath(); c.stroke(); c.beginPath(); c.moveTo(cx, cy - r * .5); c.lineTo(cx, cy + r * .55); c.moveTo(cx - r * .32, cy - r * .08); c.lineTo(cx + r * .32, cy - r * .08); c.stroke(); }
+    else if (no === 5) { c.beginPath(); c.moveTo(cx, cy - r * .8); c.lineTo(cx, cy + r * .75); c.moveTo(cx - r * .38, cy + r * .78); c.lineTo(cx + r * .38, cy + r * .78); c.moveTo(cx - r * .75, cy - r * .5); c.lineTo(cx + r * .75, cy - r * .5); c.stroke(); [-1, 1].forEach(function (d) { var x = cx + d * r * .75; c.beginPath(); c.moveTo(x, cy - r * .5); c.lineTo(x - r * .3, cy + r * .1); c.lineTo(x + r * .3, cy + r * .1); c.closePath(); c.stroke(); c.beginPath(); c.arc(x, cy + r * .1, r * .3, 0, Math.PI); c.stroke(); }); }
+    else if (no === 6) { ring(cx - r * .38, cy - r * .38, r * .3); c.beginPath(); c.moveTo(cx - r * .17, cy - r * .17); c.lineTo(cx + r * .6, cy + r * .6); c.moveTo(cx + r * .3, cy + r * .3); c.lineTo(cx + r * .5, cy + r * .1); c.moveTo(cx + r * .46, cy + r * .46); c.lineTo(cx + r * .66, cy + r * .26); c.stroke(); }
+    else if (no === 7) { for (var k = -2; k <= 2; k++) { c.save(); c.translate(cx, cy + r * .45); c.rotate(k * .42); c.beginPath(); c.ellipse(0, -r * .5, r * .17, r * .5, 0, 0, 7); c.stroke(); c.restore(); } c.beginPath(); c.ellipse(cx, cy + r * .5, r * .95, r * .16, 0, 0, Math.PI); c.stroke(); }
+    else { ring(cx, cy, r * .85); ring(cx, cy, r * .62); for (var q = 0; q < 8; q++) { var an = q * Math.PI / 4 - Math.PI / 2; c.beginPath(); c.moveTo(cx + r * .62 * Math.cos(an), cy + r * .62 * Math.sin(an)); c.lineTo(cx + r * .3 * Math.cos(an + Math.PI / 8), cy + r * .3 * Math.sin(an + Math.PI / 8)); c.lineTo(cx + r * .62 * Math.cos(an + Math.PI / 4), cy + r * .62 * Math.sin(an + Math.PI / 4)); c.stroke(); } c.beginPath(); c.arc(cx, cy, 8, 0, 7); c.fill(); }
+    c.restore();
+  }
+  function paintBack(cv, im) {
+    var c = cv.getContext('2d'), W0 = cv.width, H0 = cv.height, GOLD = '#E5B98A', SERIF = "'Noto Serif KR','Nanum Myeongjo',serif";
+    if (im) { coverDraw(c, im, W0, H0); return; }
+    var g = c.createLinearGradient(0, 0, 0, H0); g.addColorStop(0, '#1E2D47'); g.addColorStop(1, '#0F182B'); c.fillStyle = g; c.fillRect(0, 0, W0, H0);
+    c.strokeStyle = 'rgba(229,185,138,.7)'; c.lineWidth = 2; rr(c, 22, 22, W0 - 44, H0 - 44, 22); c.stroke(); c.strokeStyle = 'rgba(229,185,138,.35)'; rr(c, 38, 38, W0 - 76, H0 - 76, 16); c.stroke();
+    var cx = W0 / 2, cy = H0 / 2 - 20; c.strokeStyle = 'rgba(229,185,138,.55)'; c.beginPath(); c.arc(cx, cy, 150, 0, 7); c.stroke(); c.beginPath(); c.arc(cx, cy, 120, 0, 7); c.stroke();
+    for (var k = 0; k < 12; k++) { var an = k * Math.PI / 6; c.beginPath(); c.moveTo(cx + 120 * Math.cos(an), cy + 120 * Math.sin(an)); c.lineTo(cx + 150 * Math.cos(an), cy + 150 * Math.sin(an)); c.stroke(); }
+    c.fillStyle = GOLD; c.textAlign = 'center'; c.font = '900 64px ' + SERIF; c.fillText('D', cx, cy + 22); c.font = '900 22px ' + FONT; c.fillText('D O N B U F F', cx, H0 - 120); c.font = '700 18px ' + FONT; c.fillStyle = 'rgba(255,255,255,.6)'; c.fillText('F O R T U N E   C A R D  ·  2 0 2 7', cx, H0 - 88); c.textAlign = 'left';
+  }
+  function paintCard(cv, card, art) {
+    var c = cv.getContext('2d'), S4 = E.SUMMARY4, GOLD = '#E5B98A', G2 = '#D9B26A', SANS = FONT, SERIF = "'Noto Serif KR','Nanum Myeongjo',serif", W0 = 1080, H0 = 1350, CX = W0 / 2;
+    c.clearRect(0, 0, W0, H0); c.textAlign = 'left';
+    var g = c.createLinearGradient(0, 0, 0, H0); g.addColorStop(0, card.c1); g.addColorStop(1, card.c2); c.fillStyle = g; c.fillRect(0, 0, W0, H0);
+    if (art) { coverDraw(c, art, W0, H0); }
+    else {
+      var gl = c.createRadialGradient(CX, 430, 10, CX, 430, 520); gl.addColorStop(0, 'rgba(229,185,138,.30)'); gl.addColorStop(1, 'rgba(229,185,138,0)'); c.fillStyle = gl; c.fillRect(0, 0, W0, H0);
+      var seed = 11 + card.no; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+      for (var i = 0; i < 80; i++) { c.fillStyle = 'rgba(229,185,138,' + (0.10 + rnd() * .45) + ')'; c.beginPath(); c.arc(rnd() * W0, rnd() * H0, 0.8 + rnd() * 2.2, 0, 7); c.fill(); }
+      c.strokeStyle = 'rgba(229,185,138,.35)'; c.lineWidth = 2; c.beginPath(); c.arc(CX, 430, 250, 0, 7); c.stroke(); c.beginPath(); c.arc(CX, 430, 232, 0, 7); c.stroke();
+      emblem(c, card.no, CX, 430, 170, GOLD);
+    }
+    // 하단 가독성용 어두운 막(그림이 어떤 것이든 글자가 읽히도록)
+    var sc = c.createLinearGradient(0, 560, 0, H0); sc.addColorStop(0, 'rgba(8,10,24,0)'); sc.addColorStop(.28, 'rgba(8,10,24,.72)'); sc.addColorStop(1, 'rgba(8,10,24,.9)'); c.fillStyle = sc; c.fillRect(0, 560, W0, H0 - 560);
+    var tp = c.createLinearGradient(0, 0, 0, 230); tp.addColorStop(0, 'rgba(8,10,24,.6)'); tp.addColorStop(1, 'rgba(8,10,24,0)'); c.fillStyle = tp; c.fillRect(0, 0, W0, 230);
+    // 금색 이중 테두리
+    c.strokeStyle = 'rgba(229,185,138,.9)'; c.lineWidth = 3; rr(c, 26, 26, W0 - 52, H0 - 52, 30); c.stroke(); c.strokeStyle = 'rgba(229,185,138,.4)'; c.lineWidth = 1.5; rr(c, 44, 44, W0 - 88, H0 - 88, 22); c.stroke();
+    // 상단
+    c.fillStyle = GOLD; c.font = '900 28px ' + SANS; c.fillText('D O N B U F F  ·  2 0 2 7', 84, 110); c.fillStyle = 'rgba(255,255,255,.85)'; c.font = '700 26px ' + SANS; c.fillText('MY MONEY FORTUNE CARD', 84, 154);
+    c.textAlign = 'right'; c.fillStyle = GOLD; c.font = '700 70px ' + SERIF; c.fillText(card.roman, W0 - 84, 150); c.textAlign = 'left';
+    // 이름
+    c.textAlign = 'center'; c.fillStyle = GOLD; c.font = '700 26px ' + SANS; c.fillText('✧  ' + card.roman + '  ·  2027  ✧', CX, 690);
+    c.fillStyle = '#fff'; fit(c, card.en, 880, 74, 700, SERIF); c.fillText(card.en, CX, 770);
+    c.fillStyle = GOLD; c.font = '800 40px ' + SANS; c.fillText(card.ko, CX, 828);
+    c.fillStyle = 'rgba(255,255,255,.78)'; c.font = '600 27px ' + SANS; c.fillText('나의 2027년 재물운  ·  ' + card.theme, CX, 884);
+    c.fillStyle = '#fff'; fit(c, '“' + card.quote + '”', 880, 32, 600, SERIF); c.fillText('“' + card.quote + '”', CX, 940); c.textAlign = 'left';
+    // 4요약
+    var cw = 448, ch = 70, gp = 16, y0 = 976;
+    S4.forEach(function (s4, i) { var bx = 84 + (i % 2) * (cw + gp), by = y0 + Math.floor(i / 2) * (ch + gp); c.fillStyle = 'rgba(255,255,255,.08)'; rr(c, bx, by, cw, ch, 16); c.fill(); c.strokeStyle = 'rgba(229,185,138,.4)'; c.lineWidth = 1.5; rr(c, bx, by, cw, ch, 16); c.stroke(); c.fillStyle = GOLD; c.font = '800 22px ' + SANS; c.fillText(E.TOPICS4[s4.id].label, bx + 20, by + 43); c.font = '700 22px ' + SANS; var lw = c.measureText(E.TOPICS4[s4.id].label).width; c.fillStyle = '#fff'; fit(c, s4.title, cw - 56 - lw, 28, 800, SANS); c.fillText(s4.title, bx + 36 + lw, by + 45); });
+    // 키워드·3관점
+    c.textAlign = 'center'; c.fillStyle = G2; c.font = '800 28px ' + SANS; c.fillText(card.kw.map(function (k) { return '#' + k; }).join('   '), CX, 1186);
+    c.fillStyle = 'rgba(255,255,255,.7)'; c.font = '600 24px ' + SANS; c.fillText('사주팔자  ·  자미두수  ·  점성술', CX, 1228); c.textAlign = 'left';
+    c.fillStyle = 'rgba(229,185,138,.35)'; c.fillRect(84, 1252, W0 - 168, 1.5);
+    c.fillStyle = '#fff'; c.font = '800 26px ' + SANS; c.fillText('돈에 AI를 더하다. DONBUFF', 84, 1298); c.textAlign = 'right'; c.fillStyle = 'rgba(255,255,255,.75)'; c.font = '600 24px ' + SANS; c.fillText('donbuff.com', W0 - 84, 1298); c.textAlign = 'left';
+  }
+  function cardMsg(card) { return '당신의 카드는 <b>' + card.short + '</b>이에요.<br>올해의 재물운 테마는 ‘' + card.theme + '’이에요.<br><i>“' + card.quote + '”</i>'; }
+  function setupCard(el) {
+    var cv = el.querySelector('#cv'), cvb = el.querySelector('#cvb'), fc = el.querySelector('#fcard'); if (!cv || !fc) return;
+    var card = curCard(); st.card = card;
+    paintCard(cv, card, null); paintBack(cvb, null);
+    loadArt('card-0' + card.no + '.jpg', function (im) { if (im) paintCard(cv, card, im); });
+    loadArt('card-back.jpg', function (im) { if (im) paintBack(cvb, im); });
+    var m = el.querySelector('#fcmsg'); if (m) m.innerHTML = cardMsg(card);
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function flip() { fc.classList.add('flip'); }
+    if (reduce || !('IntersectionObserver' in window)) flip();
+    else { var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); setTimeout(flip, 500); } }, { threshold: .55 }); io.observe(fc); }
+    fc.onclick = function () { fc.classList.toggle('flip'); };
+    fc.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fc.classList.toggle('flip'); } };
+  }
+  function cardBlob(el, cb) { // 그림이 아직 로딩 중이면 마무리 후 저장
+    var card = st.card || curCard(), cv = el.querySelector('#cv');
+    loadArt('card-0' + card.no + '.jpg', function (im) { paintCard(cv, card, im || null); cv.toBlob(cb); });
+  }
+  function collectionHtml() {
+    var my = (st.card || curCard()).no;
+    return '<div class="zoomin colin"><button class="zclose" data-act2="cardsx" aria-label="닫기">×</button><div class="rk">DONBUFF FORTUNE COLLECTION</div><h3>8가지 재물운 카드</h3><div class="cgrid">' + E.CARDS.map(function (cd) {
+      return '<div class="cc' + (cd.no === my ? ' me' : '') + '" style="background:linear-gradient(160deg,' + cd.c1 + ',' + cd.c2 + ')"><canvas class="ccv" data-cn="' + cd.no + '" width="300" height="375"></canvas>' + (cd.no === my ? '<span class="cme">나의 카드</span>' : '') + '<b>' + cd.roman + '</b><i>' + cd.en + '</i><span>' + cd.ko + '</span></div>';
+    }).join('') + '</div><p class="shs" style="text-align:center">모든 카드는 서로 다른 재물운의 상징과 이야기를 담고 있어요.</p></div>';
+  }
+  function openCollection(el) {
+    var ov = el.querySelector('#colov'); ov.innerHTML = collectionHtml(); ov.hidden = false; document.body.style.overflow = 'hidden';
+    ov.querySelectorAll('.ccv').forEach(function (cv) {
+      var no = +cv.getAttribute('data-cn'), cd = E.CARDS[no - 1], c = cv.getContext('2d'); c.clearRect(0, 0, 300, 375);
+      var gl = c.createRadialGradient(150, 150, 5, 150, 150, 150); gl.addColorStop(0, 'rgba(229,185,138,.28)'); gl.addColorStop(1, 'rgba(229,185,138,0)'); c.fillStyle = gl; c.fillRect(0, 0, 300, 375);
+      c.strokeStyle = 'rgba(229,185,138,.5)'; c.lineWidth = 1.5; c.strokeRect(10, 10, 280, 355); emblem(c, no, 150, 170, 80, '#E5B98A');
+      loadArt('card-0' + no + '.jpg', function (im) { if (im) { c.clearRect(0, 0, 300, 375); coverDraw(c, im, 300, 375); } });
+    });
+    var x = ov.querySelector('.zclose'); if (x) x.focus(); X.ev('fortune_cards_open');
+  }
+  function closeCollection(el) { var ov = el.querySelector('#colov'); ov.hidden = true; ov.innerHTML = ''; document.body.style.overflow = ''; }
 
   /* ───── 명반 이미지 저장(전문 명반 이미지: 공유 카드와 별개) ───── */
   function compose(k) {
@@ -452,20 +524,23 @@
   function copy(text, okMsg) { (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { X.toast(okMsg); }, function () { X.toast('복사하지 못했어요. 직접 선택해서 복사해 주세요.'); }); }
 
   /* ───── 이벤트 ───── */
-  function refreshPane(el, keepScroll) { var y = window.scrollY; el.querySelector('#tabpane').innerHTML = paneHtml(); if (st.tab === 'int') { var cv = el.querySelector('#cv'); if (cv) { drawShare(cv); if (navigator.canShare) { var n = el.querySelector('#nshare'); if (n) n.hidden = false; } } } if (keepScroll) window.scrollTo(0, y); }
+  function refreshPane(el, keepScroll) { var y = window.scrollY; el.querySelector('#tabpane').innerHTML = paneHtml(); if (st.tab === 'int') { setupCard(el); if (navigator.canShare) { var n = el.querySelector('#nshare'); if (n) n.hidden = false; } } if (keepScroll) window.scrollTo(0, y); }
   function setTab(el, k) { st.tab = k; st.aiOpen = false; el.querySelector('.rtabwrap').outerHTML = tabsBar(); refreshPane(el, false); var top = el.querySelector('.rtabwrap').getBoundingClientRect().top + window.scrollY - 0; window.scrollTo(0, Math.max(0, top - 1)); X.ev('fortune_tab', { tab: k }); }
   function refreshPrompt(el) { var p = el.querySelector('#aip'); if (p) p.value = aiPrompt('int'); }
   function bind(el) {
     root = el; refreshPane(el, false);
     el.addEventListener('click', function (e) {
+      if (e.target.id === 'colov') { closeCollection(el); return; }
       var t = e.target.closest('[data-tab],[data-topic],[data-lay],[data-act2]'); if (!t) return;
       if (t.hasAttribute('data-tab')) { setTab(el, t.getAttribute('data-tab')); return; }
       if (t.hasAttribute('data-topic')) { st.topic = t.getAttribute('data-topic'); el.querySelector('#cmpbody').innerHTML = compareHtml(); X.ev('fortune_topic', { topic: st.topic }); return; }
       if (t.hasAttribute('data-lay')) { if (st.tab === 'ziwei') st.zwLayer = t.getAttribute('data-lay'); else st.astroLayer = t.getAttribute('data-lay'); refreshPane(el, true); return; }
       var a = t.getAttribute('data-act2');
-      if (a === 'save') { var cv = el.querySelector('#cv'); cv.toBlob(function (b) { download(b, 'donbuff-2027-money-fortune.png'); X.ev('fortune_share', { channel: 'image' }); }); }
+      if (a === 'save') { cardBlob(el, function (b) { download(b, 'donbuff-2027-fortune-card.png'); X.ev('fortune_share', { channel: 'image' }); }); }
+      else if (a === 'cards') { openCollection(el); }
+      else if (a === 'cardsx') { closeCollection(el); }
       else if (a === 'link') { copy(location.origin + '/fortune/?utm_source=share&utm_medium=link&utm_campaign=fortune2027', '링크를 복사했어요'); X.ev('fortune_share', { channel: 'link' }); }
-      else if (a === 'nshare') { var cv2 = el.querySelector('#cv'); cv2.toBlob(function (b) { var f = new File([b], 'donbuff-2027.png', { type: 'image/png' }); var d = { files: [f], title: '돈버프 새해 재테크 운세', text: '나의 2027년 재물운 테마 · donbuff.com' }; if (navigator.canShare(d)) navigator.share(d).then(function () { X.ev('fortune_share', { channel: 'native' }); }, function () {}); else X.toast('이 기기에서는 이미지 공유를 지원하지 않아요'); }); }
+      else if (a === 'nshare') { cardBlob(el, function (b) { var f = new File([b], 'donbuff-2027-fortune-card.png', { type: 'image/png' }); var d = { files: [f], title: '돈버프 새해 재테크 운세', text: '나의 2027년 행운 카드 · donbuff.com' }; if (navigator.canShare(d)) navigator.share(d).then(function () { X.ev('fortune_share', { channel: 'native' }); }, function () {}); else X.toast('이 기기에서는 이미지 공유를 지원하지 않아요'); }); }
       else if (a === 'imgdl') { var k = t.getAttribute('data-tab-k'), hl0 = st.hl; st.hl = false; st.pinfo = false; st.noDates = true; var cp = compose(k); st.hl = hl0; st.noDates = false; rasterize(cp.svg, cp.w, cp.h, 'donbuff-' + k + '-2027.png'); X.ev('fortune_map', { action: 'save', system: k }); }
       else if (a === 'datacopy') { var k2 = t.getAttribute('data-tab-k'); copy(TITLE[k2] + '\n' + dataText(k2, true), '데이터를 복사했어요. 붙여 넣는 곳으로 내용이 전달돼요.'); X.ev('fortune_map', { action: 'copy', system: k2 }); }
       else if (a === 'aiopen') { st.aiOpen = !st.aiOpen; var bx = el.querySelector('#aibox'); bx.hidden = !st.aiOpen; if (st.aiOpen) { bx.innerHTML = builderPanel(); X.ev('fortune_ai_open'); } }
@@ -477,6 +552,7 @@
       else if (id === 'aiuse') { S.useAi = e.target.checked; refreshPrompt(el); }
       else if (id === 'aiok') { st.aiOk = e.target.checked; var cb = el.querySelector('#aicopy'); if (cb) cb.disabled = !st.aiOk; }
     });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var ov = el.querySelector('#colov'); if (ov && !ov.hidden) closeCollection(el); } });
     el.addEventListener('input', function (e) { if (e.target.id === 'aiextra') { st.extra = e.target.value.slice(0, 100); refreshPrompt(el); } });
   }
   window.DBR = { html: html, bind: bind };

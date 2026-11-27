@@ -29,6 +29,21 @@ export function deriveSignals(c) {
 
 // ───── 결과 화면 문구 (⚠ 모두 '시안 샘플' — 규칙표 확정 전) ─────
 export const THEME = { name: '내실을 다지는 해', sub: '확장보다 관리에 주목하는 재물운', keywords: ['자산 축적', '변화와 정비', '지출 점검'], tagline: '올해는 더 벌기보다 새는 돈을 막는 해', type: '관리형' };
+
+/* DONBUFF FORTUNE CARD 8종 — 8가지 재물운 테마와 1:1 대응(동등한 상징 카드, 등급·희귀도 없음).
+   배정 = 통합 재물운 테마(THEME.name) 매칭. 랜덤·추가 점수·추가 AI 호출 없음. 같은 입력+같은 규칙 버전 → 같은 카드.
+   ※ 테마 판정 규칙표가 확정되기 전까지 THEME는 샘플이라 모든 결과가 7번으로 매칭됨(시안). */
+export const CARDS = [
+  { no: 1, roman: 'I', en: 'THE GOLDEN SUN', ko: '황금 태양의 카드', kw: ['기회', '도전', '확장'], theme: '기회를 확장하는 해', quote: '새로운 가능성을 향해 빛을 밝혀라.', c1: '#6E1830', c2: '#2A0A14', short: '황금 태양' },
+  { no: 2, roman: 'II', en: 'THE GOLDEN TREE', ko: '황금 나무의 카드', kw: ['축적', '성장', '꾸준함'], theme: '꾸준히 쌓아가는 해', quote: '깊은 뿌리가 풍성한 열매를 맺는다.', c1: '#0F5A44', c2: '#06241B', short: '황금 나무' },
+  { no: 3, roman: 'III', en: 'THE COMPASS', ko: '운명의 나침반 카드', kw: ['변화', '탐색', '선택'], theme: '새로운 방향을 탐색하는 해', quote: '길이 바뀌면 새로운 풍경이 열린다.', c1: '#1B3566', c2: '#0A1530', short: '운명의 나침반' },
+  { no: 4, roman: 'IV', en: 'THE GUARDIAN', ko: '황금 수호의 카드', kw: ['보호', '안정', '관리'], theme: '소중한 자산을 지키는 해', quote: '소중한 것을 지키는 것도 풍요의 시작이다.', c1: '#4A2A72', c2: '#1B0E31', short: '황금 수호' },
+  { no: 5, roman: 'V', en: 'THE BALANCE', ko: '천칭의 카드', kw: ['균형', '조화', '절제'], theme: '균형을 되찾는 해', quote: '균형을 이루는 곳에 여유가 깃든다.', c1: '#0E5A60', c2: '#052428', short: '천칭' },
+  { no: 6, roman: 'VI', en: 'THE GOLDEN KEY', ko: '행운의 열쇠 카드', kw: ['발견', '가능성', '준비'], theme: '새로운 가능성을 발견하는 해', quote: '새로운 문을 여는 열쇠는 가까이에 있다.', c1: '#7A1F2E', c2: '#2E0A10', short: '행운의 열쇠' },
+  { no: 7, roman: 'VII', en: 'THE GOLDEN LOTUS', ko: '황금 연꽃의 카드', kw: ['정비', '인내', '내실'], theme: '내실을 다지는 해', quote: '고요한 시간 속에서도 성장은 계속된다.', c1: '#2B2E78', c2: '#0F1038', short: '황금 연꽃' },
+  { no: 8, roman: 'VIII', en: 'THE DESTINY', ko: '운명의 문장 카드', kw: ['전환', '흐름', '새로운 시작'], theme: '새로운 전환을 맞이하는 해', quote: '새로운 흐름은 새로운 이야기의 시작이다.', c1: '#14204A', c2: '#060B1E', short: '운명의 문장' }
+];
+export function pickCard(theme) { var n = theme && theme.name; for (var i = 0; i < CARDS.length; i++) if (CARDS[i].theme === n) return CARDS[i]; return CARDS[6]; }
 export const SUMMARY4 = [
   { id: 'earn', label: '돈을 버는 운', title: '꾸준한 수입 기반', text: '새로운 수입원보다 기존 경제활동에 주목하는 흐름.' },
   { id: 'save', label: '돈을 모으는 운', title: '축적과 정비', text: '소비 습관과 자산관리 방식을 돌아보는 흐름.' },
