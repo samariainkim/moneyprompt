@@ -349,7 +349,7 @@
       '<section class="rdc" id="cmp"><div class="rk">THREE PERSPECTIVES</div><h3>나의 재물운, 세 가지 해석</h3><div id="cmpbody">' + compareHtml() + '</div></section>' + aiBuilder() +
       '<section class="rdc fcsec" id="share"><div class="rk">2027 DONBUFF FORTUNE CARD</div><h3>나의 행운 카드가 도착했어요</h3><p class="hint" style="margin:-6px 0 0">당신의 새해를 상징하는 행운 카드가 도착했어요.<br>8가지 재물운 카드 중 나의 운세와 어울리는 카드는 무엇일까요?</p>' +
       '<div class="fcwrap"><div class="fcard" id="fcard" role="button" tabindex="0" aria-label="카드 뒤집기"><div class="fcf fcbk"><canvas id="cvb" width="540" height="675"></canvas></div><div class="fcf fcfr"><canvas id="cv" width="1080" height="1350" role="img" aria-label="나의 2027년 재물운 카드 미리보기"></canvas></div></div></div>' +
-      '<p class="fcmsg" id="fcmsg"></p><p class="shs" style="margin-top:6px">이름·생년월일·시간·고민은 카드에 담기지 않아요.</p>' +
+      '<p class="fcmsg" id="fcmsg"></p>' +
       '<div class="shbtn"><button class="btn2 shp" data-act2="save">나의 행운 카드 저장하기</button><div class="shrow"><button class="btn2 g" data-act2="nshare" id="nshare" hidden>친구에게 공유하기</button><button class="btn2 g" data-act2="cards">전체 카드 보기</button></div></div></section></div>';
   }
   var HEAD = { saju: ['SAJU · 四柱八字', '나의 사주팔자 만세력', '나의 타고난 명식과 시간에 따른 운세의 흐름'], ziwei: ['ZIWEI · 紫微斗數', '나의 자미두수 명반', '12궁과 별의 배치로 읽는 나의 운명 지도'], astro: ['ASTRO · NATAL CHART', '나의 서양 점성차트', '태어난 순간의 행성과 별자리가 담긴 운명 지도'] };
