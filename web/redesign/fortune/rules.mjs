@@ -28,7 +28,7 @@ export function deriveSignals(c) {
 }
 
 // ───── 결과 화면 문구 (⚠ 모두 '시안 샘플' — 규칙표 확정 전) ─────
-export const THEME = { name: '내실을 다지는 해', sub: '확장보다 관리에 주목하는 재물운', keywords: ['자산 축적', '변화와 정비', '지출 점검'] };
+export const THEME = { name: '내실을 다지는 해', sub: '확장보다 관리에 주목하는 재물운', keywords: ['자산 축적', '변화와 정비', '지출 점검'], tagline: '올해는 더 벌기보다 새는 돈을 막는 해', type: '관리형' };
 export const SUMMARY4 = [
   { id: 'earn', label: '돈을 버는 운', title: '꾸준한 수입 기반', text: '새로운 수입원보다 기존 경제활동에 주목하는 흐름.' },
   { id: 'save', label: '돈을 모으는 운', title: '축적과 정비', text: '소비 습관과 자산관리 방식을 돌아보는 흐름.' },

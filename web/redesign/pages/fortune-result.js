@@ -347,7 +347,7 @@
       '<section class="rdc" id="sum"><div class="rk">MY MONEY FORTUNE</div><h3>한눈에 보는 나의 재물운</h3><p class="hint" style="margin:-6px 0 12px">2027년, 나의 돈 이야기를 네 가지 관점에서 살펴봤어요.</p><div class="sum4">' + E.SUMMARY4.map(function (s4) { return '<div class="s4"><i>' + s4.label + '</i><b class="serif">' + s4.title + '</b><span>' + s4.text + '</span></div>'; }).join('') + '</div></section>' +
       '<section class="rdc" id="maps"><div class="rk">MY THREE FORTUNE MAPS</div><h3>나의 세 가지 운명 지도</h3><p class="hint" style="margin:-6px 0 12px">서로 다른 세 가지 운세 체계로 나의 재물운을 살펴봐요. 전체 명반은 각 탭에서 확인할 수 있어요.</p><div id="mapsbody">' + mapsHtml() + '</div></section>' +
       '<section class="rdc" id="cmp"><div class="rk">THREE PERSPECTIVES</div><h3>나의 재물운, 세 가지 해석</h3><div id="cmpbody">' + compareHtml() + '</div></section>' + aiBuilder() +
-      '<section class="rdc" id="share" style="background:var(--cream);border-color:#EBDCC6;text-align:center"><div class="rk">SHARE</div><h3 style="text-align:center">나의 재물운을 카드로 남기기</h3><p class="hint" style="margin:-6px 0 0">이름·생년월일·시간·고민은 카드에 담기지 않아요.</p><div class="sharecard"><canvas id="cv" width="1080" height="1350" role="img" aria-label="공유 카드 미리보기"></canvas></div><div class="shbtn"><button class="btn2" data-act2="save">결과 카드 이미지 저장</button><button class="btn2 g" data-act2="link">서비스 링크 복사</button><button class="btn2 g" data-act2="nshare" id="nshare" hidden>공유하기</button></div><p class="hint" style="text-align:left">\'결과 카드 저장\'은 내 결과를 이미지로 남기는 기능이고, \'링크 복사\'는 결과 없이 서비스 주소만 전달해요.</p></section></div>';
+      '<section class=\"rdc\" id=\"share\" style=\"background:var(--cream);border-color:#EBDCC6;text-align:center\"><div class=\"rk\">SHARE</div><h3 style=\"text-align:center\">내 재물운 리포트 카드</h3><p class=\"hint\" style=\"margin:-6px 0 0\">이름·생년월일·시간·고민은 카드에 담기지 않아요.</p><div class=\"sharecard\"><canvas id=\"cv\" width=\"1080\" height=\"1350\" role=\"img\" aria-label=\"내 재물운 리포트 카드 미리보기\"></canvas></div><div class=\"shbtn\"><button class=\"btn2 shp\" data-act2=\"save\">내 운세 카드 저장</button><p class=\"shs\">내 재물운 카드를 저장해 두고 2027년 내내 참고해 보세요.</p><div class=\"shrow\"><button class=\"btn2 g\" data-act2=\"nshare\" id=\"nshare\" hidden>친구에게 공유하기</button><button class=\"btn2 g\" data-act2=\"link\">서비스 링크 복사</button></div><p class=\"shs\">SNS에 공유하고 친구와 운세를 비교해 보세요. 링크에는 내 결과가 담기지 않아요.</p></div></section></div>';
   }
   var HEAD = { saju: ['SAJU · 四柱八字', '나의 사주팔자 만세력', '나의 타고난 명식과 시간에 따른 운세의 흐름'], ziwei: ['ZIWEI · 紫微斗數', '나의 자미두수 명반', '12궁과 별의 배치로 읽는 나의 운명 지도'], astro: ['ASTRO · NATAL CHART', '나의 서양 점성차트', '태어난 순간의 행성과 별자리가 담긴 운명 지도'] };
   function card(title, sc, idx, extra) { return '<section class="dsec"><div class="dh"><h4>' + title + '</h4>' + (extra || '') + '</div><div class="dsvg">' + secSvg(sc) + '</div></section>'; }
@@ -395,23 +395,40 @@
 
   /* ───── 공유 카드(1080×1350 네이비 골드) ───── */
   function wrapText(c, t, x, y, mw, lh) { var line = '', yy = y; for (var i = 0; i < t.length; i++) { var test = line + t[i]; if (c.measureText(test).width > mw && line) { c.fillText(line, x, yy); line = t[i]; yy += lh; } else line = test; } c.fillText(line, x, yy); return yy + lh; }
+  function rr(c, x, y, w, h, r) { c.beginPath(); if (c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h); }
+  function fit(c, text, maxW, size, weight, font) { var s = size; c.font = weight + ' ' + s + 'px ' + font; while (c.measureText(text).width > maxW && s > 20) { s -= 2; c.font = weight + ' ' + s + 'px ' + font; } return s; }
   function drawShare(cv) {
-    var c = cv.getContext('2d'), th = E.THEME, GOLD = '#E5B98A', G2 = '#D9B26A', SANS = FONT, SERIF = "'Noto Serif KR','Nanum Myeongjo',serif";
-    var g = c.createLinearGradient(0, 0, 0, 1350); g.addColorStop(0, '#1E2D47'); g.addColorStop(.6, '#27364D'); g.addColorStop(1, '#18233A'); c.fillStyle = g; c.fillRect(0, 0, 1080, 1350);
+    var c = cv.getContext('2d'), th = E.THEME, S4 = E.SUMMARY4, GOLD = '#E5B98A', G2 = '#D9B26A', SANS = FONT, SERIF = "'Noto Serif KR','Nanum Myeongjo',serif", W0 = 1080, H0 = 1350;
+    // 배경: 세로 그라데이션 + 은은한 방사형 광택 + 별 점 + 미세한 입자
+    var g = c.createLinearGradient(0, 0, 0, H0); g.addColorStop(0, '#1E2D47'); g.addColorStop(.55, '#27364D'); g.addColorStop(1, '#18233A'); c.fillStyle = g; c.fillRect(0, 0, W0, H0);
+    var gl = c.createRadialGradient(820, 220, 10, 820, 220, 520); gl.addColorStop(0, 'rgba(229,185,138,.26)'); gl.addColorStop(1, 'rgba(229,185,138,0)'); c.fillStyle = gl; c.fillRect(0, 0, W0, H0);
     var seed = 7; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
-    for (var i = 0; i < 70; i++) { c.fillStyle = 'rgba(229,185,138,' + (0.15 + rnd() * .5) + ')'; c.beginPath(); c.arc(rnd() * 1080, rnd() * 1350, 1 + rnd() * 2.2, 0, 7); c.fill(); }
-    c.strokeStyle = 'rgba(229,185,138,.45)'; c.lineWidth = 2; [[840, 330, 250], [840, 330, 190], [840, 330, 120]].forEach(function (a) { c.beginPath(); c.arc(a[0], a[1], a[2], 0, 7); c.stroke(); });
-    for (var k = 0; k < 12; k++) { var an = k * Math.PI / 6; c.beginPath(); c.moveTo(840 + 190 * Math.cos(an), 330 + 190 * Math.sin(an)); c.lineTo(840 + 250 * Math.cos(an), 330 + 250 * Math.sin(an)); c.stroke(); }
-    var cg = c.createRadialGradient(830, 320, 4, 840, 330, 70); cg.addColorStop(0, '#F6D79A'); cg.addColorStop(1, '#C8923F'); c.fillStyle = cg; c.beginPath(); c.arc(840, 330, 64, 0, 7); c.fill(); c.fillStyle = '#27364D'; c.font = '900 56px ' + SANS; c.textAlign = 'center'; c.fillText('₩', 840, 350); c.textAlign = 'left';
-    c.fillStyle = GOLD; c.font = '900 30px ' + SANS; c.fillText('D O N B U F F  ·  2 0 2 7', 80, 120); c.fillStyle = 'rgba(255,255,255,.7)'; c.font = '700 26px ' + SANS; c.fillText('MY MONEY FORTUNE', 80, 166);
-    c.fillStyle = 'rgba(255,255,255,.75)'; c.font = '700 34px ' + SANS; c.fillText('나의 2027년 재물운 테마', 80, 520);
-    c.fillStyle = '#fff'; c.font = '700 112px ' + SERIF; var y = wrapText(c, th.name, 80, 640, 920, 130);
-    c.fillStyle = GOLD; c.font = '700 40px ' + SANS; y = wrapText(c, th.sub, 80, y + 10, 920, 56);
-    var x = 80; y += 22; c.font = '800 34px ' + SANS; th.keywords.forEach(function (kw) { var w = c.measureText('# ' + kw).width + 56; c.strokeStyle = G2; c.lineWidth = 2.5; c.beginPath(); if (c.roundRect) c.roundRect(x, y - 44, w, 70, 35); else c.rect(x, y - 44, w, 70); c.stroke(); c.fillStyle = GOLD; c.fillText('# ' + kw, x + 28, y + 3); x += w + 16; });
-    c.fillStyle = 'rgba(255,255,255,.14)'; c.fillRect(80, 1090, 920, 2);
-    c.fillStyle = '#fff'; c.font = '800 38px ' + SANS; c.fillText('세 가지 운명 지도에 AI를 더하다.', 80, 1160);
-    c.fillStyle = GOLD; c.font = '700 30px ' + SANS; c.fillText('사주팔자 · 자미두수 · 점성술', 80, 1214);
-    c.fillStyle = 'rgba(255,255,255,.7)'; c.font = '600 26px ' + SANS; c.fillText('donbuff.com · 오락·참고용', 80, 1290);
+    for (var i = 0; i < 90; i++) { c.fillStyle = 'rgba(229,185,138,' + (0.12 + rnd() * .5) + ')'; c.beginPath(); c.arc(rnd() * W0, rnd() * H0, 0.8 + rnd() * 2.2, 0, 7); c.fill(); }
+    for (var n = 0; n < 1400; n++) { c.fillStyle = 'rgba(255,255,255,' + (rnd() * .04) + ')'; c.fillRect(rnd() * W0, rnd() * H0, 2, 2); }
+    // 상단: 브랜드 + 3중 운명 지도 심볼(사주 기둥 · 자미두수 12궁 · 점성 휠 · 코인)
+    c.fillStyle = GOLD; c.font = '900 30px ' + SANS; c.fillText('D O N B U F F  ·  2 0 2 7', 80, 112); c.fillStyle = 'rgba(255,255,255,.72)'; c.font = '700 26px ' + SANS; c.fillText('MY MONEY FORTUNE', 80, 158);
+    var cx = 850, cy = 170, R = 118; c.strokeStyle = 'rgba(229,185,138,.6)'; c.lineWidth = 2;
+    [R, R - 26].forEach(function (r) { c.beginPath(); c.arc(cx, cy, r, 0, 7); c.stroke(); });
+    for (var k = 0; k < 12; k++) { var an = k * Math.PI / 6; c.beginPath(); c.moveTo(cx + (R - 26) * Math.cos(an), cy + (R - 26) * Math.sin(an)); c.lineTo(cx + R * Math.cos(an), cy + R * Math.sin(an)); c.stroke(); }
+    var gs = 38, gx = cx - gs * 2, gy = cy - gs * 2; c.lineWidth = 1.6; c.strokeStyle = 'rgba(229,185,138,.8)'; c.strokeRect(gx, gy, gs * 4, gs * 4); for (var q = 1; q < 4; q++) { c.beginPath(); c.moveTo(gx + q * gs, gy); c.lineTo(gx + q * gs, gy + gs * 4); c.moveTo(gx, gy + q * gs); c.lineTo(gx + gs * 4, gy + q * gs); c.stroke(); }
+    c.fillStyle = '#1E2D47'; c.fillRect(gx + gs + 1, gy + gs + 1, gs * 2 - 2, gs * 2 - 2);
+    var cg = c.createRadialGradient(cx - 6, cy - 6, 3, cx, cy, 34); cg.addColorStop(0, '#F6D79A'); cg.addColorStop(1, '#C8923F'); c.fillStyle = cg; c.beginPath(); c.arc(cx, cy, 30, 0, 7); c.fill(); c.fillStyle = '#27364D'; c.font = '900 34px ' + SANS; c.textAlign = 'center'; c.fillText('₩', cx, cy + 12); c.textAlign = 'left';
+    for (var pi = 0; pi < 4; pi++) { c.fillStyle = 'rgba(229,185,138,' + (0.35 + pi * .15) + ')'; rr(c, cx - 66 + pi * 36, cy + R + 14, 24, 36, 5); c.fill(); }
+    // 중단: 테마 + 유형 라벨 + 한 줄 인상평 + 키워드
+    c.fillStyle = 'rgba(255,255,255,.75)'; c.font = '700 30px ' + SANS; c.fillText('나의 2027년 재물운 테마', 80, 372);
+    var tw = c.measureText('나의 2027년 재물운 테마').width; c.font = '800 24px ' + SANS; var tl = th.type + ' 재물운', tlw = c.measureText(tl).width + 36; c.strokeStyle = G2; c.lineWidth = 2; rr(c, 80 + tw + 20, 346, tlw, 38, 19); c.stroke(); c.fillStyle = GOLD; c.fillText(tl, 80 + tw + 38, 373);
+    c.fillStyle = '#fff'; var ts = fit(c, th.name, 920, 104, 700, SERIF); c.fillText(th.name, 80, 372 + ts + 14);
+    var y = 372 + ts + 14; c.fillStyle = GOLD; c.font = '700 36px ' + SANS; c.fillText(th.sub, 80, y + 58);
+    y += 100; c.fillStyle = 'rgba(229,185,138,.12)'; rr(c, 80, y, 920, 118, 22); c.fill(); c.strokeStyle = 'rgba(229,185,138,.45)'; c.lineWidth = 2; rr(c, 80, y, 920, 118, 22); c.stroke();
+    c.fillStyle = G2; c.font = '700 70px ' + SERIF; c.fillText('“', 104, y + 84); c.fillStyle = '#fff'; var tg = fit(c, th.tagline, 800, 46, 700, SERIF); c.fillText(th.tagline, 168, y + 60 + tg / 3);
+    y += 118 + 54; var x = 80; c.font = '800 32px ' + SANS; th.keywords.forEach(function (kw) { var w = c.measureText('# ' + kw).width + 52; c.strokeStyle = G2; c.lineWidth = 2.5; rr(c, x, y - 40, w, 64, 32); c.stroke(); c.fillStyle = GOLD; c.fillText('# ' + kw, x + 26, y + 2); x += w + 14; });
+    // 하단: 돈 벌기·모으기·불리기·지키기 4요약 + 3관점 배지 + 브랜드
+    y += 54; var cw = 450, ch = 118, gp = 20;
+    S4.forEach(function (s4, i) { var bx = 80 + (i % 2) * (cw + gp), by = y + Math.floor(i / 2) * (ch + gp); c.fillStyle = 'rgba(255,255,255,.06)'; rr(c, bx, by, cw, ch, 20); c.fill(); c.strokeStyle = 'rgba(229,185,138,.35)'; c.lineWidth = 1.5; rr(c, bx, by, cw, ch, 20); c.stroke(); c.fillStyle = GOLD; c.font = '800 24px ' + SANS; c.fillText(E.TOPICS4[s4.id].label, bx + 26, by + 42); c.fillStyle = '#fff'; var fs = fit(c, s4.title, cw - 52, 36, 800, SANS); c.fillText(s4.title, bx + 26, by + 88); });
+    y += 2 * ch + gp + 44; c.fillStyle = 'rgba(255,255,255,.14)'; c.fillRect(80, y, 920, 2);
+    y += 46; var bd = [['SAJU', '사주팔자'], ['ZIWEI', '자미두수'], ['ASTRO', '점성술']]; var bx2 = 80; bd.forEach(function (b) { c.font = '900 22px ' + SANS; var w1 = c.measureText(b[0]).width; c.font = '700 26px ' + SANS; var w2 = c.measureText(b[1]).width, w = w1 + w2 + 66; c.fillStyle = 'rgba(229,185,138,.16)'; rr(c, bx2, y - 34, w, 52, 26); c.fill(); c.fillStyle = G2; c.font = '900 22px ' + SANS; c.fillText(b[0], bx2 + 24, y); c.fillStyle = '#fff'; c.font = '700 26px ' + SANS; c.fillText(b[1], bx2 + 24 + w1 + 14, y); bx2 += w + 14; });
+    c.fillStyle = '#fff'; c.font = '800 30px ' + SANS; c.fillText('세 가지 운명 지도에 AI를 더하다.', 80, y + 70);
+    c.fillStyle = 'rgba(255,255,255,.7)'; c.font = '600 24px ' + SANS; c.fillText('donbuff.com · 오락·참고용', 80, y + 118);
   }
 
   /* ───── 명반 이미지 저장(전문 명반 이미지: 공유 카드와 별개) ───── */

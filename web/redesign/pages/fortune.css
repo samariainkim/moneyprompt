@@ -243,3 +243,9 @@ details.fold{padding:0}.fold>summary{list-style:none;cursor:pointer;padding:16px
 .v3head{margin:22px 0 4px;font-size:14px;font-weight:900;color:var(--muted);letter-spacing:.04em}
 .v3 .ev{margin-top:10px;padding-top:8px;border-top:1px dashed var(--line);font-size:12px;line-height:1.7;color:var(--muted)}.v3 .ev b{display:inline-block;margin-right:6px;color:var(--navy)}.v3 .ev div{display:inline}.v3 .ev div:after{content:' · '}.v3 .ev div:last-child:after{content:''}
 .imgbar .btn2{width:100%}
+
+/* v5: 공유 카드 영역 */
+.sharecard{max-width:480px;margin:20px auto 0}
+.shbtn{display:block;max-width:480px;margin:18px auto 0}.shbtn .shp{width:100%;padding:18px;font-size:17px}
+.shrow{display:flex;gap:10px;margin-top:6px}.shrow .btn2{flex:1;min-width:0}
+.shs{font-size:13px;color:var(--muted);line-height:1.6;margin:10px 0 0}
