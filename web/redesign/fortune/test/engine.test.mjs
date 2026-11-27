@@ -55,11 +55,11 @@ test('2027 목성·토성 연초·연말 위치와 하우스', () => {
 
 test('하우스가 0°를 가로지르는 출생도 오류 없이 계산된다 (라이브러리 House.id 누락 회피)', () => {
   for (const k of [[1993, 3, 14, 9, 2], [1986, 3, 25, 7, 15], [1934, 10, 11, 18, 57], [1951, 12, 19, 13, 21], [1932, 7, 4, 1, 9]]) {
-    const c = calculate({ ...base, y: k[0], m: k[1], d: k[2], hh: k[3], mm: k[4] });
+    const c = calculate({ ...base, transit: false, y: k[0], m: k[1], d: k[2], hh: k[3], mm: k[4] });
     for (const b of c.western.bodies) assert.ok(b.house >= 1 && b.house <= 12, k.join('-') + ' ' + b.k);
   }
 });
 test('무작위 출생 300건 모두 계산 성공', () => {
   let s = 7; const r = (a, b) => { s = (s * 16807) % 2147483647; return a + (s % (b - a + 1)); };
-  for (let i = 0; i < 300; i++) { const c = calculate({ ...base, y: r(1930, 2026), m: r(1, 12), d: r(1, 28), hh: r(0, 23), mm: r(0, 59), gender: i % 2 ? 'male' : 'female' }); assert.equal(c.western.bodies.length, 10); }
+  for (let i = 0; i < 300; i++) { const c = calculate({ ...base, transit: false, y: r(1930, 2026), m: r(1, 12), d: r(1, 28), hh: r(0, 23), mm: r(0, 59), gender: i % 2 ? 'male' : 'female' }); assert.equal(c.western.bodies.length, 10); }
 });

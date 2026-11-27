@@ -8,8 +8,10 @@ export function deriveSignals(c) {
   const s = c.saju, z = c.ziwei, w = c.western;
   const wealthTG = ['정재', '편재'];
   const cai = s.pillars.filter((p) => p.hidden.some((h) => wealthTG.includes(h.tg)) || wealthTG.includes(p.stemTG)).map((p) => p.label);
+  // 재성이 놓인 위치를 종류별로 구분한다 (천간 / 지장간 본기 / 지장간 중기·여기). 개수가 많다고 유리하다는 뜻은 아니다.
+  const caiDetail = []; s.pillars.forEach((p) => { if (wealthTG.includes(p.stemTG)) caiDetail.push(p.label + ' 천간 ' + p.stemTG); p.hidden.forEach((h) => { if (wealthTG.includes(h.tg)) caiDetail.push(p.label + ' 지장간 ' + (h.main ? '본기' : '중기·여기') + ' ' + h.s + '(' + h.tg + ')'); }); });
   const zw = z.palaces.filter((p) => WEALTH_STARS_Z.includes(p.name)).map((p) => ({ name: p.name, stars: stars(p), at: p.stem + p.branch }));
-  const astro = [2, 8, 10].map((n) => ({ house: n, sign: w.houseSign[n - 1] }));
+  const astro = [2, 5, 8, 10].map((n) => ({ house: n, sign: w.houseSign[n - 1] }));
   const wealthPlanets = ['jupiter', 'saturn', 'venus'].map((k) => w.bodies.find((b) => b.k === k)).map((b) => ({ n: b.ko, sign: b.sign, house: b.house }));
   const evidence = {
     saju: `${cai.length ? '재성이 ' + cai.join('·') + '에 있어요' : '재성(정재·편재)이 드러나지 않아요'} · 2027 세운 ${s.sewoon.gz}(${s.sewoon.tg})`,
@@ -21,7 +23,7 @@ export function deriveSignals(c) {
     keySentence: '새해에는 들어오는 돈을 늘리는 일보다, 새는 구멍을 먼저 살피면 좋은 흐름이에요.',
     keywords: ['축적', '변화', '지출 점검'],
     topics: { earn: { label: '돈 벌기' }, save: { label: '돈 모으기' }, invest: { label: '투자 습관' } },
-    evidence, parts: { cai, zw, astro, wealthPlanets },
+    evidence, parts: { cai, caiDetail, zw, astro, wealthPlanets },
   };
 }
 
@@ -51,9 +53,9 @@ export const EASY = {
 export const GLOSSARY = {
   saju: [['재성(정재·편재)', '재물을 뜻하는 기운이에요. 정재는 꾸준한 수입, 편재는 변동이 있는 수입의 결로 풀이해요.'], ['십성', '내 일간을 기준으로 다른 글자와의 관계를 열 가지로 나눈 이름이에요.'], ['지장간', '지지 속에 숨어 있는 천간이에요. 겉으로 드러나지 않은 기운으로 봐요.'], ['대운·세운', '대운은 10년 단위, 세운은 그해(2027 정미년)의 흐름이에요.']],
   zw: [['재백궁', '돈을 버는 방식과 재물의 자리예요.'], ['복덕궁', '돈을 쓰는 마음과 만족의 자리예요.'], ['전택궁', '집·부동산 등 자산이 쌓이는 자리예요.'], ['사화', '그해 특정 별에 붙는 네 가지 변화(록·권·과·기)예요.']],
-  as: [['2하우스', '내가 버는 돈과 자원의 자리예요.'], ['8하우스', '공동 자산·대출 등 함께 묶인 돈의 자리예요.'], ['10하우스', '일과 사회적 역할의 자리예요.'], ['트랜짓', '지금 하늘의 행성이 내 출생차트를 지나는 위치예요. 이 서비스는 목성·토성의 2027년 이동만 살펴봐요.']],
+  as: [['2하우스', '내가 버는 돈과 자원의 자리예요.'], ['5하우스', '창조성·즐거움·투기적 활동의 자리예요. 투자 전반을 이 하우스 하나로 판단하지는 않아요.'], ['8하우스', '공동 자산·대출 등 함께 묶인 돈의 자리예요.'], ['10하우스', '일과 사회적 역할의 자리예요.'], ['트랜짓', '지금 하늘의 행성이 내 출생차트를 지나는 위치예요. 이 서비스는 목성·토성의 2027년 이동(월별 위치·별자리/하우스 진입·순행/역행 전환)만 살펴봐요.']],
 };
 
 // ───── 4탭 결과·프롬프트용 상수 ─────
 export const ZW_WEALTH = [['재백', '재물과 경제활동'], ['관록', '직업과 사회활동'], ['전택', '재산과 주거'], ['복덕', '가치관과 내적 만족']];
-export const AS_WEALTH = [[2, '개인 자산과 수입'], [8, '공동 자산과 재정'], [10, '직업과 사회적 활동']];
+export const AS_WEALTH = [[2, '개인 자산과 수입'], [5, '창조성·즐거움·투기적 활동'], [8, '공동 자산과 재정'], [10, '직업과 사회적 활동']];

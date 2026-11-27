@@ -2,12 +2,16 @@
    차트는 모두 SVG 로 그려 화면 표시·확대·이미지 저장에 같은 그림을 쓴다. 문장은 '시안 샘플', 근거 값은 실제 계산 결과. */
 (function () {
   'use strict';
-  var E, C, S, X, st = { tab: 'int', mode: 'y2027', topic: 'save', zwLayer: 'y2027', hl: true, astroLayer: 'y2027', ai2027: true, extra: '', pinfo: false, aiOk: false }, root;
+  var E, C, S, X, st = { noDates: false, tab: 'int', mode: 'y2027', topic: 'save', zwLayer: 'y2027', hl: true, astroLayer: 'y2027', ai2027: true, extra: '', pinfo: false, aiOk: false }, root;
   var FONT = "'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif";
   var COL = { wood: '#3E8E5A', fire: '#D9503B', earth: '#B8893A', metal: '#7C8696', water: '#2F6BB5' };
   var EKO = { wood: '목', fire: '화', earth: '토', metal: '금', water: '수' };
   var OR = '#BC6727', ORT = '#94582A', NAVY = '#27364D', MUT = '#6B6458', LINE = '#E7DFD2', CREAM = '#FBF1E6';
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function curLuck() { var l = C.saju.luck2027; return l && l.current; }
+  function isCurLuck(c) { var cl = curLuck(); return !!cl && c.from === cl.from; }
+  function isNextLuck(c) { var l = C.saju.luck2027; return !!(l && l.next && c.from === l.next.from); }
+  function fromTxt(c) { return st.noDates || !c.from ? '' : c.from.replace(/-/g, '.'); }
   function isCai(tg) { return tg === '정재' || tg === '편재'; }
   function pHasCai(p) { return isCai(p.stemTG) || p.hidden.some(function (h) { return isCai(h.tg); }); }
   function svgWrap(vb, inner, label) { return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + vb + '" role="img" aria-label="' + esc(label) + '" font-family="' + FONT + '"><rect x="-40" y="-40" width="500" height="520" fill="#FFFFFF"/>' + inner + '</svg>'; }
@@ -29,7 +33,7 @@
     ['wood', 'fire', 'earth', 'metal', 'water'].forEach(function (e, i) { var x = 16 + i * 74; g += '<circle cx="' + (x + 6) + '" cy="272" r="6" fill="' + COL[e] + '"/>' + T(x + 18, 277, EKO[e] + ' ' + cnt[e], { a: 'start', s: 13, w: 800 }); });
     g += T(16, 308, '대운 흐름 (10년 단위)', { a: 'start', s: 12, w: 800, c: MUT });
     s.cycles.slice(1, 6).forEach(function (c, i) {
-      var x = 16 + i * 74, now = c.year <= 2027 && 2027 < c.year + 10;
+      var x = 16 + i * 74, now = isCurLuck(c);
       g += '<rect x="' + x + '" y="318" width="68" height="58" rx="12" fill="' + (now ? CREAM : '#fff') + '" stroke="' + (now ? OR : LINE) + '" stroke-width="' + (now ? 2 : 1.5) + '"/>' + T(x + 34, 336, c.age + '세 · ' + c.year, { s: 10, c: MUT }) + T(x + 34, 358, c.gz, { s: 18, w: 800 }) + T(x + 34, 371, c.tg, { s: 10, c: now ? ORT : MUT, w: 700 });
     });
     if (st.mode === 'y2027') g += '<rect x="16" y="390" width="368" height="34" rx="17" fill="' + NAVY + '"/>' + T(200, 412, '2027 정미년 세운 · ' + s.sewoon.gz + ' (' + s.sewoon.tg + ')', { s: 13, w: 800, c: '#fff' });
@@ -63,7 +67,7 @@
     function pt(lon, r) { var a = (lon + rot) * Math.PI / 180; return [170 + r * Math.cos(-a), 170 + r * Math.sin(-a)]; }
     g += '<circle cx="170" cy="170" r="150" fill="#fff" stroke="' + NAVY + '" stroke-width="1.5"/><circle cx="170" cy="170" r="108" fill="none" stroke="' + LINE + '"/>';
     for (var i = 0; i < 12; i++) { var a = pt(i * 30, 108), b = pt(i * 30, 150), m = pt(i * 30 + 15, 129); g += '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke="' + LINE + '"/>' + T(m[0], m[1] + 6, E.SIGN_GL[i], { s: 17, c: MUT, w: 400 }); }
-    w.cusps.forEach(function (c, i) { var a = pt(c, 40), b = pt(c, 108), hl = [1, 7, 9].indexOf(i) >= 0; g += '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke="' + (hl ? OR : '#CFC6B6') + '" stroke-width="' + (hl ? 2.2 : 1) + '"/>'; var n = pt(c + 12, 96); g += T(n[0], n[1] + 4, i + 1, { s: 10, w: 800, c: hl ? ORT : '#A8A196' }); });
+    w.cusps.forEach(function (c, i) { var a = pt(c, 40), b = pt(c, 108), hl = [1, 4, 7, 9].indexOf(i) >= 0; g += '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke="' + (hl ? OR : '#CFC6B6') + '" stroke-width="' + (hl ? 2.2 : 1) + '"/>'; var n = pt(c + 12, 96); g += T(n[0], n[1] + 4, i + 1, { s: 10, w: 800, c: hl ? ORT : '#A8A196' }); });
     if (withAsp) w.aspects.forEach(function (q) { var A = w.bodies.filter(function (b) { return b.k === q.a; })[0], B = w.bodies.filter(function (b) { return b.k === q.b; })[0]; if (!A || !B) return; var p1 = pt(A.lon, 50), p2 = pt(B.lon, 50), col = q.t === 'trine' || q.t === 'sextile' ? '#2F6BB5' : q.t === 'conjunction' ? '#9A9285' : '#D9503B'; g += '<line x1="' + p1[0] + '" y1="' + p1[1] + '" x2="' + p2[0] + '" y2="' + p2[1] + '" stroke="' + col + '" stroke-width="1" opacity=".55"/>'; });
     w.bodies.forEach(function (bd) { var q = pt(bd.lon, 72), wp = ['jupiter', 'saturn', 'venus'].indexOf(bd.k) >= 0; g += '<circle cx="' + q[0] + '" cy="' + q[1] + '" r="13" fill="' + (wp ? CREAM : '#fff') + '" stroke="' + (wp ? OR : '#CFC6B6') + '"/>' + T(q[0], q[1] + 5, bd.gl, { s: 14, w: 400 }); });
     if (y27) w.transit.forEach(function (t) {
@@ -101,13 +105,13 @@
     var s = C.saju, L = [], lu = s.lunar;
     var sol = S.conv || { y: S.y, m: S.m, d: S.d };
     L.push('양력 ' + sol.y + '.' + String(sol.m).padStart(2, '0') + '.' + String(sol.d).padStart(2, '0') + ' ' + String(S.hh).padStart(2, '0') + ':' + String(S.mm).padStart(2, '0') + ' (한국 표준시 입력)');
-    if (lu) L.push('음력 ' + lu.y + '.' + String(lu.m).padStart(2, '0') + '.' + String(lu.d).padStart(2, '0') + (lu.leap ? ' (윤달)' : ''));
+    if (lu) L.push('음력(한국 기준) ' + lu.y + '.' + String(lu.m).padStart(2, '0') + '.' + String(lu.d).padStart(2, '0') + (lu.leap ? ' (윤달)' : ''));
     if (s.trueSolar) L.push('사주 시각: 진태양시 ' + s.trueSolar.time + ' (경도 보정 ' + s.trueSolar.lonMin + '분, 균시차 ' + (s.trueSolar.eotMin >= 0 ? '+' : '') + s.trueSolar.eotMin + '분) · 자시 23시 기준');
     if (personal) { L.push('출생지 ' + (S.place ? S.place.label : '-') + ' · ' + (S.gender === 'male' ? '남성' : '여성') + (S.name ? ' · ' + S.name : '')); }
     return L;
   }
-  function basisLines(k) {
-    var B = { saju: ['사주: 진태양시 적용, 자시 23시 기준, 절기 기준 월주 · 대운은 엔진 계산값', '십성은 일간(' + C.saju.dm + ') 기준'], ziwei: ['자미두수: 입력한 시계 시각 기준 시진, 오행국·명궁은 엔진 계산값', '생년 사화·유년(2027) 사화는 엔진(iztro) 기본 학파 기준'], astro: ['점성술: 트로피컬 · 플라시더스 하우스 · 출생지 위경도 기준', '애스펙트는 주요 5종(합·섹스타일·스퀘어·트라인·오포지션)'] };
+  function basisLines(k, pub) {
+    var b = pub ? C.basisPublic : C.basis, B = { saju: [b.saju, b.periods.sewoon, '십성은 일간(' + C.saju.dm + ') 기준 · 대운 나이는 엔진 기준(시작 일자 병기), 자미두수 대한은 세는나이(허수)와 달라요'], ziwei: [b.ziwei, b.periods.yearly, '사화·유년은 엔진(iztro) 기본 학파 기준 · 베트남식 기준과의 일치는 검증 중이에요'], astro: [b.astro, b.periods.transit, '애스펙트는 주요 5종(합·섹스타일·스퀘어·트라인·오포지션) · 트랜짓은 목성·토성만 계산해요'] };
     return B[k];
   }
 
@@ -139,10 +143,10 @@
     var rel = s.relations.length ? s.relations : [{ text: '뚜렷한 관계 없음', where: '' }];
     rel.forEach(function (r, i) { g += T(8, 40 + i * 20, r.text + (r.where ? '  ·  ' + r.where : ''), { a: 'start', s: 13, w: 700 }); });
     out.push(sec(48 + rel.length * 20, g));
-    g = T(4, 18, '대운 (10년 단위) · 시작 ' + (s.cycles[0] ? s.cycles[0].age + '세' : ''), { a: 'start', s: 12, w: 800, c: MUT });
+    g = T(4, 18, '대운 (10년 단위) · 첫 대운 ' + (s.cycles[0] ? s.cycles[0].age + '세' : '') + (s.luck2027 && s.luck2027.switchDate ? ' · 2027년 중 대운 전환' : ''), { a: 'start', s: 12, w: 800, c: MUT });
     s.cycles.slice(0, 8).forEach(function (c, i) {
-      var x = 8 + (i % 4) * 106, y = 30 + Math.floor(i / 4) * 80, now = c.year <= 2027 && 2027 <= (c.endYear || c.year + 9);
-      g += box(x, y, 100, 72, { f: now ? CREAM : '#fff', s: now ? OR : LINE, sw: now ? 2 : 1.2, r: 12 }) + T(x + 50, y + 16, c.age + '~' + (c.endAge || c.age + 9) + '세', { s: 11, w: 700, c: MUT }) + T(x + 50, y + 30, c.year + '~' + (c.endYear || c.year + 9), { s: 10, c: MUT }) + T(x + 50, y + 54, c.gz, { s: 22, w: 800 }) + T(x + 50, y + 67, c.tg + (now ? ' · 현재' : ''), { s: 10.5, w: 800, c: now ? ORT : MUT });
+      var x = 8 + (i % 4) * 106, y = 30 + Math.floor(i / 4) * 80, now = isCurLuck(c), nx = isNextLuck(c);
+      g += box(x, y, 100, 72, { f: now ? CREAM : '#fff', s: now ? OR : (nx ? '#E5B98A' : LINE), sw: now ? 2 : (nx ? 1.8 : 1.2), r: 12 }) + T(x + 50, y + 16, c.age + '~' + (c.endAge || c.age + 9) + '세', { s: 11, w: 700, c: MUT }) + T(x + 50, y + 30, fromTxt(c) ? fromTxt(c) + ' 시작' : (c.year + '~' + (c.endYear || c.year + 9)), { s: 10, c: MUT }) + T(x + 50, y + 54, c.gz, { s: 22, w: 800 }) + T(x + 50, y + 67, c.tg + (now ? ' · 2027 초' : nx ? ' · 2027 중 전환' : ''), { s: 10.5, w: 800, c: now || nx ? ORT : MUT });
     });
     out.push(sec(196, g));
     g = T(4, 18, '세운 (연도별)', { a: 'start', s: 12, w: 800, c: MUT });
@@ -175,7 +179,6 @@
       });
       if (!p.major.length) g += T(x + 6, y + 34, '주성 없음', { a: 'start', s: 10, c: '#B5AFA3' });
       p.minor.slice(0, 4).forEach(function (s, i) { var mm = ''; g += T(x + 6, y + 66 + i * 10, s.n, { a: 'start', s: 9, w: 600, c: MUT }); });
-      g += T(x + 6, y + cs - 5, p.c12 || '', { a: 'start', s: 9, w: 700, c: '#9A9285' });
       g += T(x + cs - 6, y + cs - 5, p.range[0] + '~' + p.range[1] + (cur ? ' ★' : ''), { a: 'end', s: 9.5, w: cur ? 900 : 600, c: cur ? ORT : MUT });
       if (y27) g += T(x + cs - 6, y + 26, p.yname, { a: 'end', s: 8.5, w: 700, c: '#2F6BB5' });
       if (p.isBody) g += T(x + cs - 6, y + cs - 16, '신궁', { a: 'end', s: 9, w: 800, c: ORT });
@@ -227,6 +230,11 @@
     g2 += T(4, oy + 10 * cs + 22, '☌ 합  ⚹ 섹스타일  □ 스퀘어  △ 트라인  ☍ 오포지션', { a: 'start', s: 11, w: 700, c: MUT });
     out.push(sec(oy + 10 * cs + 34, g2));
     out.push(tbl([{ h: '2027 트랜짓', w: 92, a: 'start' }, { h: '연초 (1/1)', w: 130 }, { h: '연말 (12/31)', w: 130 }, { h: '출생 하우스', w: 88 }], w.transit.map(function (t) { return { c: [{ t: t.ko, a: 'start', w: 800 }, t.start.sign + ' ' + degS(t.start.lon), t.end.sign + ' ' + degS(t.end.lon), t.start.house + 'H → ' + t.end.house + 'H'] }; }), { rh: 28 }));
+    // 2027 트랜짓 — 월별 위치 / 별자리·하우스 진입 및 순행·역행 전환 (한국 정오 기준, 일 단위)
+    var rowsM = []; for (var mo = 0; mo < 12; mo++) { var jm = w.transit[0].months[mo], sm = w.transit[1].months[mo]; rowsM.push({ c: [{ t: (mo + 1) + '월 1일', a: 'start', w: 700 }, { t: jm.sign.replace('자리', '') + ' ' + degS(jm.lon) + ' ' + jm.house + 'H' + (jm.retro ? ' ℞' : ''), s: 11.5 }, { t: sm.sign.replace('자리', '') + ' ' + degS(sm.lon) + ' ' + sm.house + 'H' + (sm.retro ? ' ℞' : ''), s: 11.5 }] }); }
+    out.push(tbl([{ h: '월별 위치', w: 80, a: 'start' }, { h: '목성 (별자리·도수·하우스)', w: 180 }, { h: '토성', w: 180 }], rowsM, { rh: 25 }));
+    var evs = w.transit[0].events.concat(w.transit[1].events).sort(function (a, b) { return a.doy - b.doy; });
+    out.push(tbl([{ h: '날짜', w: 100, a: 'start' }, { h: '이동·전환', w: 340, a: 'start' }], (evs.length ? evs : [{ date: '-', text: '2027년 중 별자리·하우스 이동 없음' }]).map(function (e) { return { c: [{ t: e.date, a: 'start', w: 700 }, { t: e.text, a: 'start', w: 700 }] }; }), { rh: 26 }));
     return out;
   }
   function sections(k) { return k === 'saju' ? sajuSections() : k === 'ziwei' ? ziweiSections() : astroSections(); }
@@ -241,12 +249,13 @@
       L.push('오행 분포(8글자): ' + ['wood', 'fire', 'earth', 'metal', 'water'].map(function (e) { return EKO[e] + ' ' + cnt[e]; }).join(', '));
       L.push('합·충 등 관계: ' + (s.relations.map(function (r) { return r.text + '(' + r.where + ')'; }).join(', ') || '없음'));
       L.push('대운(시작 나이 기준): ' + s.cycles.slice(0, 8).map(function (c) { return c.age + '세 ' + c.gz + '(' + c.tg + ')'; }).join(', '));
+      if (y27 && s.luck2027 && s.luck2027.current) L.push('2027년 초 적용 대운: ' + s.luck2027.current.gz + '(' + s.luck2027.current.tg + ')' + (s.luck2027.next ? ' → 2027년 ' + (+s.luck2027.switchDate.slice(5, 7)) + '월경 ' + s.luck2027.next.gz + '(' + s.luck2027.next.tg + ')로 전환' : ''));
       if (s.trueSolar) L.push('시각 기준: 진태양시 ' + s.trueSolar.time + ', 자시 23시 기준');
       if (y27) { var ys27 = { 甲: '丙', 己: '丙', 乙: '戊', 庚: '戊', 丙: '庚', 辛: '庚', 丁: '壬', 壬: '壬', 戊: '甲', 癸: '甲' }[gzOfYear(2027)[0]], mb = '寅卯辰巳午未申酉戌亥子丑', ms = []; for (var m = 0; m < 12; m++) { var st2 = STEMS[(STEMS.indexOf(ys27) + m) % 10]; ms.push(st2 + mb[m] + '(' + E.tenGod(s.dm, st2) + ')'); }
         L.push('2027 세운: ' + s.sewoon.gz + '(' + s.sewoon.tg + ') / 2025~2029 세운: ' + [2025, 2026, 2027, 2028, 2029].map(function (y) { return gzOfYear(y) + '(' + E.tenGod(s.dm, gzOfYear(y)[0]) + ')'; }).join(', ')); L.push('2027 월운(절기 기준 인월~축월): ' + ms.join(', ')); }
     } else if (k === 'ziwei') {
       L.push('오행국: ' + z.five + ', 명궁 ' + z.soul + ', 신궁 ' + z.body);
-      L.push('12궁(궁 간지 대한나이 주성·보조성 / 장생12신): ' + z.palaces.map(function (p) { return p.name + '(' + p.stem + p.branch + ' ' + p.range[0] + '~' + p.range[1] + ') ' + (p.major.map(function (x) { return x.n + (x.m ? '화' + x.m : ''); }).join('·') || '주성 없음') + (p.minor.length ? ' + ' + p.minor.map(function (x) { return x.n; }).join('·') : '') + ' / ' + (p.c12 || ''); }).join('\n'));
+      L.push('12궁(궁 간지 대한나이(세는나이) 주성·보조성): ' + z.palaces.map(function (p) { return p.name + '(' + p.stem + p.branch + ' ' + p.range[0] + '~' + p.range[1] + ') ' + (p.major.map(function (x) { return x.n + (x.m ? '화' + x.m : ''); }).join('·') || '주성 없음') + (p.minor.length ? ' + ' + p.minor.map(function (x) { return x.n; }).join('·') : ''); }).join('\n'));
       L.push('재물 관련 궁의 삼방사정: ' + Object.keys(z.sanfang).map(function (n) { return n + '→' + z.sanfang[n].join('·'); }).join(', '));
       L.push('생년 사화: ' + z.palaces.reduce(function (a, p) { p.major.forEach(function (x) { if (x.m) a.push('화' + x.m + ' ' + x.n + '(' + p.name + ')'); }); return a; }, []).join(', '));
       if (y27) { L.push('현재 대한: ' + (z.curDecadal >= 0 ? z.palaces[z.curDecadal].range[0] + '~' + z.palaces[z.curDecadal].range[1] + '세' : '-') + ', 대한 사화: ' + (z.decMutagen || []).join('·')); L.push('2027 유년 사화: ' + ['록', '권', '과', '기'].map(function (m, i) { return '화' + m + ' ' + z.mutagen[i]; }).join(', ')); L.push('2027 유년 12궁(본명 궁 → 유년 궁): ' + z.palaces.map(function (p) { return p.name + '→' + p.yname; }).join(', ')); }
@@ -254,9 +263,14 @@
       L.push('주요 지점: ASC ' + signOf(w.asc) + ' ' + degS(w.asc) + ', DSC ' + signOf((w.asc + 180) % 360) + ', MC ' + signOf(w.mc) + ' ' + degS(w.mc) + ', IC ' + signOf((w.mc + 180) % 360) + ' (트로피컬·플라시더스)');
       L.push('행성: ' + w.bodies.map(function (b) { return b.ko + ' ' + b.sign + ' ' + degS(b.lon) + ' ' + b.house + '하우스' + (b.retro ? '(역행)' : ''); }).join(', '));
       L.push('하우스 시작점: ' + w.cusps.map(function (c, i) { return (i + 1) + 'H ' + signOf(c).replace(/^\S+ /, '') + ' ' + degS(c); }).join(', '));
+      L.push('재물 관련 하우스(2·5·8·10): ' + E.AS_WEALTH.map(function (a) { var inH = w.bodies.filter(function (b) { return b.house === a[0]; }).map(function (b) { return b.ko; }); return a[0] + 'H ' + w.houseSign[a[0] - 1] + (inH.length ? '(' + inH.join('·') + ')' : '(행성 없음)'); }).join(', '));
       var NAME = { conjunction: '합', sextile: '섹스타일', square: '스퀘어', trine: '트라인', opposition: '오포지션' }, nm = {}; w.bodies.forEach(function (b) { nm[b.k] = b.ko; });
       L.push('애스펙트(주요 5종): ' + w.aspects.map(function (q) { return nm[q.a] + '-' + nm[q.b] + ' ' + NAME[q.t] + '(오브 ' + q.orb.toFixed(1) + ')'; }).join(', '));
-      if (y27) L.push('2027 트랜짓(목성·토성): ' + w.transit.map(function (t) { return t.ko + ' 연초 ' + t.start.sign + ' ' + degS(t.start.lon) + '(출생 ' + t.start.house + 'H) → 연말 ' + t.end.sign + ' ' + degS(t.end.lon) + '(출생 ' + t.end.house + 'H)'; }).join(', '));
+      if (y27) {
+        L.push('2027 트랜짓(목성·토성만 계산, 한국 정오 기준 일 단위): ' + w.transit.map(function (t) { return t.ko + ' 연초 ' + t.start.sign + ' ' + degS(t.start.lon) + '(출생 ' + t.start.house + 'H) → 연말 ' + t.end.sign + ' ' + degS(t.end.lon) + '(출생 ' + t.end.house + 'H)'; }).join(', '));
+        L.push('2027 월별(매월 1일, ℞=역행): ' + w.transit.map(function (t) { return t.ko + ' ' + t.months.map(function (x) { return x.m + '월 ' + x.sign.replace('자리', '') + x.house + 'H' + (x.retro ? '℞' : ''); }).join(' '); }).join(' / '));
+        L.push('2027 진입·전환일: ' + (w.transit[0].events.concat(w.transit[1].events).sort(function (a, b) { return a.doy - b.doy; }).map(function (e) { return e.date + ' ' + e.text; }).join(', ') || '없음'));
+      }
     }
     return L.join('\n');
   }
@@ -275,11 +289,12 @@
     var ctx = []; if (S.useAi) { if (S.job) ctx.push('현재 상황: ' + S.job); if (S.wants.length) ctx.push('새해 바라는 점: ' + S.wants.join(', ')); if (S.habit) ctx.push('바꾸고 싶은 돈 습관: ' + S.habit); if (S.ask) ctx.push('궁금한 점: ' + S.ask); }
     if (st.extra) ctx.push('추가로 궁금한 내용: ' + st.extra);
     if (ctx.length) P.push('[CONTEXT]\n' + ctx.join('\n'));
+    P.push('[BASIS · 계산 기준과 적용 기간]\n- ' + [C.basisPublic.saju, C.basisPublic.ziwei, C.basisPublic.astro, C.basisPublic.periods.sewoon, C.basisPublic.periods.yearly, C.basisPublic.periods.transit].join('\n- ') + '\n- 사주 대운 나이와 자미두수 대한 나이는 산정 방식이 달라 같은 시기라도 숫자가 다를 수 있습니다.\n- 12운성·별 밝기(묘왕평함) 등 검증되지 않은 항목은 제공하지 않았습니다.');
     P.push('[TASK]\n' + M.task + (y27 ? '' : '\n(2027년 데이터는 포함하지 않았으니 타고난 성향 중심으로 답해 주세요.)'));
     P.push('[VERIFY]\n위 데이터는 이미 계산된 값입니다. 명반을 다시 계산하거나 없는 데이터를 만들어 내지 말고, 주어진 값에 근거해서만 해석해 주세요. 근거가 부족하면 모른다고 답해 주세요.');
     P.push('[OUTPUT]\n' + M.out);
     P.push('[ACTION]\n운세와 구분해서, 지금 바로 해 볼 수 있는 현실적인 가계 점검 질문 3가지를 제안해 주세요.');
-    P.push('[주의]\n특정 종목·금융상품 추천, 매수·매도 시점, 수익률 예측은 하지 마세요. 이름과 생년월일은 이 질문에 포함하지 않았습니다.');
+    P.push('[주의]\n특정 종목·금융상품 추천, 매수·매도 시점, 수익률 예측은 하지 마세요. 이름과 생년월일은 이 질문에 포함하지 않았습니다. 재성의 개수나 위치만으로 부유함을 판단하지 말고, 주성이 없는 궁을 부정적으로 해석하지 마세요. 트랜짓은 목성·토성만 계산되었으며 다른 행성의 연간 흐름은 알 수 없습니다.');
     return P.join('\n\n');
   }
   /* ───── 화면 조각 ───── */
@@ -289,14 +304,14 @@
   var MAPS = [
     ['saju', 'SAJU', '사주팔자', '四柱', '재성 · 오행 · 십성', '전체 만세력 보기 →', '주황색: 재성(정재·편재)이 있는 기둥과 글자'],
     ['ziwei', 'ZIWEI', '자미두수', '紫微斗數', '재백궁 · 관록궁 · 전택궁 · 복덕궁', '전체 명반 보기 →', '주황색: 재물 관련 궁 · 동그라미: 사화'],
-    ['astro', 'ASTRO', '점성술', '트로피컬 · 플라시더스', '행성 · 별자리 · 하우스', '전체 차트 보기 →', '주황색: 2·8·10하우스와 재물 관련 행성 · 바깥 호: 2027 목성·토성']
+    ['astro', 'ASTRO', '점성술', '트로피컬 · 플라시더스', '행성 · 별자리 · 하우스', '전체 차트 보기 →', '주황색: 2·5·8·10하우스와 참고 주요 행성 · 바깥 호: 2027 목성·토성']
   ];
   function mapsHtml() {
     return '<div class="maps">' + MAPS.map(function (m) { var k = m[0]; return '<article class="mapc"><div class="mapsvg">' + SVG[k]() + '</div><div class="mapt"><div class="rk">' + m[1] + '</div><h3>' + m[2] + ' <small>' + m[3] + '</small></h3><div class="mp-sub">' + m[4] + '</div><button type="button" class="go" data-tab="' + k + '">' + m[5] + '</button></div></article>'; }).join('') + '</div>';
   }
   function proEvidence(k) {
     var s = C.saju, z = C.ziwei, w = C.western, y27 = st.mode === 'y2027', sg = C.signals.parts, r = [];
-    if (k === 'saju') { r.push(sg.cai.length ? '재성(정재·편재, 지장간 포함): ' + sg.cai.join('·') : '재성(정재·편재)이 드러나지 않음'); if (y27) { var nd = s.cycles.filter(function (c) { return c.year <= 2027 && 2027 <= (c.endYear || c.year + 9); })[0]; r.push('2027 세운 ' + s.sewoon.gz + '(' + s.sewoon.tg + ')' + (nd ? ' · 대운 ' + nd.gz + '(' + nd.tg + ')' : '')); } }
+    if (k === 'saju') { r.push(sg.cai.length ? '재성(정재·편재, 지장간 포함): ' + sg.cai.join('·') : '재성(정재·편재)이 드러나지 않음'); if (y27) { var lk = s.luck2027, nd = lk && lk.current; r.push('2027 세운 ' + s.sewoon.gz + '(' + s.sewoon.tg + ')' + (nd ? ' · 대운 ' + nd.gz + '(' + nd.tg + ')' + (lk.next ? ' → ' + lk.next.gz + '(2027년 중 전환)' : '') : '')); } }
     else if (k === 'zw') { r.push(E.ZW_WEALTH.map(function (zw) { var p = z.palaces.filter(function (q) { return q.name === zw[0]; })[0]; return zw[0] + '궁 ' + (p.major.map(function (x) { return x.n; }).join('·') || '주성 없음'); }).join(' / ')); if (y27) r.push('2027 유년 사화 ' + ['록', '권', '과', '기'].map(function (m, i) { return '화' + m + ' ' + z.mutagen[i]; }).join(' · ')); }
     else { r.push(sg.astro.map(function (a) { return a.house + '하우스 ' + a.sign; }).join(' · ')); r.push(sg.wealthPlanets.map(function (p) { return p.n + ' ' + p.sign + '(' + p.house + 'H)'; }).join(', ')); if (y27) r.push('2027 ' + w.transit.map(function (t) { return t.ko + ' ' + t.start.sign + '(' + t.start.house + 'H) → ' + t.end.sign + '(' + t.end.house + 'H)'; }).join(' · ')); }
     return r.map(function (x) { return '<div>' + esc(x) + '</div>'; }).join('');
@@ -336,7 +351,7 @@
   }
   var HEAD = { saju: ['SAJU · 四柱八字', '나의 사주팔자 만세력', '나의 타고난 명식과 시간에 따른 운세의 흐름'], ziwei: ['ZIWEI · 紫微斗數', '나의 자미두수 명반', '12궁과 별의 배치로 읽는 나의 운명 지도'], astro: ['ASTRO · NATAL CHART', '나의 서양 점성차트', '태어난 순간의 행성과 별자리가 담긴 운명 지도'] };
   function card(title, sc, idx, extra) { return '<section class="dsec"><div class="dh"><h4>' + title + '</h4>' + (extra || '') + '<button type="button" class="zbtn" data-zoom="' + idx + '" aria-label="' + title + ' 확대 보기">확대</button></div><div class="dsvg">' + secSvg(sc) + '</div></section>'; }
-  var NOTE = { saju: '대운·세운은 엔진 계산값이고, 월운은 절기 기준 12개월의 간지·십성만 보여 줘요(양력 날짜 미제공).', ziwei: '2027 유년 사화·유년 12궁은 계산돼요. 월별 유월 흐름은 제공하지 않아요.', astro: '2027 트랜짓은 목성·토성의 연초(1/1)·연말(12/31) 위치만 계산해요. 다른 행성과 월별 이동은 제공하지 않아요.' };
+  var NOTE = { saju: '대운·세운은 엔진 계산값이고, 월운은 절기 기준 12개월의 간지·십성만 보여 줘요(양력 날짜 미제공).', ziwei: '2027 유년 사화·유년 12궁은 계산돼요. 월별 유월 흐름은 제공하지 않아요.', astro: '2027 트랜짓은 목성·토성만 계산해요(월별 위치, 별자리·하우스 진입일, 순행·역행 전환일 / 한국 정오 기준 일 단위). 다른 행성은 계산하지 않아요.' };
   function layerSeg(k) {
     if (k === 'ziwei') return '<div class="seg lay"><button class="chip' + (st.zwLayer === 'birth' ? ' on' : '') + '" data-lay="birth">타고난 명반 (생년 사화)</button><button class="chip' + (st.zwLayer === 'y2027' ? ' on' : '') + '" data-lay="y2027">2027 유년 사화</button></div>';
     if (k === 'astro') return '<div class="seg lay"><button class="chip' + (st.astroLayer === 'birth' ? ' on' : '') + '" data-lay="birth">출생차트</button><button class="chip' + (st.astroLayer === 'y2027' ? ' on' : '') + '" data-lay="y2027">2027 트랜짓</button></div>';
@@ -345,9 +360,9 @@
   function coreCards(k) {
     var z = C.ziwei, w = C.western, s = C.saju, sg = C.signals.parts, cards = [];
     if (k === 'saju') {
-      var nd = s.cycles.filter(function (c) { return c.year <= 2027 && 2027 <= (c.endYear || c.year + 9); })[0], cnt = { wood: 0, fire: 0, earth: 0, metal: 0, water: 0 };
+      var lk = s.luck2027, nd = lk && lk.current, cnt = { wood: 0, fire: 0, earth: 0, metal: 0, water: 0 };
       s.pillars.forEach(function (p) { cnt[E.EL_STEM[p.stem]]++; cnt[E.EL_BR[p.branch]]++; });
-      cards = [['재성 (정재·편재)', sg.cai.length ? sg.cai.join('·') : '드러나지 않음', '지장간 포함 위치'], ['현재 대운', nd ? nd.gz + ' · ' + nd.tg : '-', nd ? nd.age + '~' + (nd.endAge || nd.age + 9) + '세' : ''], ['2027 세운', s.sewoon.gz + ' · ' + s.sewoon.tg, '정미년'], ['오행 분포', ['wood', 'fire', 'earth', 'metal', 'water'].map(function (e) { return EKO[e] + cnt[e]; }).join(' '), '8글자 기준']];
+      cards = [['재성 (정재·편재)', sg.cai.length ? sg.cai.join('·') : '드러나지 않음', sg.caiDetail.length ? sg.caiDetail.slice(0, 3).join(' / ') : '위치 구분: 천간·지장간 본기·중기·여기'], ['2027년 대운', nd ? nd.gz + ' · ' + nd.tg + (lk.next ? ' → ' + lk.next.gz : '') : '-', lk && lk.next ? (st.noDates ? '2027년 중 전환' : lk.switchDate.replace(/-/g, '.') + ' 전환') : (nd ? nd.age + '~' + (nd.endAge || nd.age + 9) + '세' : '')], ['2027 세운', s.sewoon.gz + ' · ' + s.sewoon.tg, '정미년'], ['오행 분포', ['wood', 'fire', 'earth', 'metal', 'water'].map(function (e) { return EKO[e] + cnt[e]; }).join(' '), '8글자 기준']];
     } else if (k === 'ziwei') {
       cards = E.ZW_WEALTH.map(function (zw) { var p = z.palaces.filter(function (q) { return q.name === zw[0]; })[0]; return [zw[0] + '궁', p.major.map(function (x) { return x.n + (x.m ? '(화' + x.m + ')' : ''); }).join('·') || '주성 없음', zw[1]]; });
     } else {
@@ -359,7 +374,7 @@
   var DETAIL = {
     saju: [['오행 분포', 1], ['합·충 관계', 2], ['대운 전체표', 3], ['세운 (2025~2029)', 4], ['2027 월운', 5]],
     ziwei: [['재물 궁 · 삼방사정', 1], ['사화 (생년 · 대한 · 2027 유년)', 2], ['대한 전체표 (10년 단위)', 3]],
-    astro: [['주요 지점', 1], ['행성 위치표', 2], ['하우스 위치표', 3], ['애스펙트 매트릭스', 4], ['2027 트랜짓 상세', 5]]
+    astro: [['주요 지점', 1], ['행성 위치표', 2], ['하우스 위치표', 3], ['애스펙트 매트릭스', 4], ['2027 트랜짓 · 연초·연말', 5], ['2027 트랜짓 · 월별 위치', 6], ['2027 트랜짓 · 별자리·하우스 진입, 순행·역행 전환', 7]]
   };
   function paneDetail(k) {
     var h = HEAD[k], secs = sections(k), gl = E.GLOSSARY[k === 'ziwei' ? 'zw' : k === 'astro' ? 'as' : 'saju'];
@@ -406,7 +421,7 @@
     var secs = sections(k), M = 20, w = W + 2 * M, y = M, g = '';
     g += T(M, y + 14, 'DONBUFF · 2027 MY MONEY FORTUNE', { a: 'start', s: 12, w: 900, c: ORT, ls: 1.5 }); y += 40;
     g += T(M, y, TITLE[k], { a: 'start', s: 26, w: 800 }); y += 22;
-    basisLines(k).forEach(function (l) { g += T(M, y, l, { a: 'start', s: 11, w: 600, c: MUT }); y += 16; });
+    basisLines(k, !st.pinfo).forEach(function (l) { g += T(M, y, l, { a: 'start', s: 11, w: 600, c: MUT }); y += 16; });
     if (st.pinfo) birthLines(true).forEach(function (l) { g += T(M, y, l, { a: 'start', s: 11, w: 700, c: NAVY }); y += 16; });
     y += 10;
     secs.forEach(function (sc) { g += '<g transform="translate(' + M + ',' + y + ')">' + sc.svg + '</g>'; y += sc.h + 16; });
@@ -441,7 +456,7 @@
       else if (a === 'nshare') { var cv2 = el.querySelector('#cv'); cv2.toBlob(function (b) { var f = new File([b], 'donbuff-2027.png', { type: 'image/png' }); var d = { files: [f], title: '돈버프 새해 재테크 운세', text: '나의 2027년 재물운 테마 · donbuff.com' }; if (navigator.canShare(d)) navigator.share(d).then(function () { X.ev('fortune_share', { channel: 'native' }); }, function () {}); else X.toast('이 기기에서는 이미지 공유를 지원하지 않아요'); }); }
       else if (a === 'imgopen') { st.saveK = t.getAttribute('data-tab-k'); el.querySelector('#sv-hl').checked = true; el.querySelector('#sv-pi').checked = false; el.querySelector('#saveov').hidden = false; el.querySelector('#sv-hl').focus(); }
       else if (a === 'saveclose') el.querySelector('#saveov').hidden = true;
-      else if (a === 'imgsave') { var k = st.saveK, hl0 = st.hl; st.hl = el.querySelector('#sv-hl').checked; st.pinfo = el.querySelector('#sv-pi').checked; var cp = compose(k); st.hl = hl0; el.querySelector('#saveov').hidden = true; rasterize(cp.svg, cp.w, cp.h, 'donbuff-' + k + '-2027.png'); X.ev('fortune_map', { action: 'save', system: k, personal: st.pinfo ? 1 : 0 }); }
+      else if (a === 'imgsave') { var k = st.saveK, hl0 = st.hl; st.hl = el.querySelector('#sv-hl').checked; st.pinfo = el.querySelector('#sv-pi').checked; st.noDates = !st.pinfo; var cp = compose(k); st.hl = hl0; st.noDates = false; el.querySelector('#saveov').hidden = true; rasterize(cp.svg, cp.w, cp.h, 'donbuff-' + k + '-2027.png'); X.ev('fortune_map', { action: 'save', system: k, personal: st.pinfo ? 1 : 0 }); }
       else if (a === 'datacopy') { var k2 = t.getAttribute('data-tab-k'); copy(TITLE[k2] + '\n' + dataText(k2, true), '데이터를 복사했어요. 붙여 넣는 곳으로 내용이 전달돼요.'); X.ev('fortune_map', { action: 'copy', system: k2 }); }
       else if (a === 'aiopen') { st.aiOpen = !st.aiOpen; var bx = el.querySelector('#aibox'); bx.hidden = !st.aiOpen; if (st.aiOpen) { bx.innerHTML = builderPanel(); X.ev('fortune_ai_open'); } }
       else if (a === 'aicopy') { if (!st.aiOk) { X.toast('먼저 안내 확인에 체크해 주세요'); return; } copy(el.querySelector('#aip').value, '프롬프트를 복사했어요'); X.ev('fortune_ai_copy'); }
