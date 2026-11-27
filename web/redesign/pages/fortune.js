@@ -43,27 +43,36 @@
     return '<div class="foot"><div class="in">' + (skip ? '<button class="btn2 g" data-act="' + skip + '">건너뛰기</button>' : '') + '<button class="btn2" data-act="' + next + '"' + (disabled ? ' disabled' : '') + '>' + nextLabel + '</button></div></div>';
   }
 
+  var CTA = '나의 2027 재테크 운세 보기 →';
   function intro() {
-    var pil = '<div style="display:flex;gap:8px">' + [['庚', '午'], ['辛', '巳'], ['庚', '辰'], ['癸', '未']].map(function (p) { return '<div class="pil" style="padding:6px 0"><div class="g">' + p[0] + '</div><div class="g">' + p[1] + '</div></div>'; }).join('') + '</div>';
-    var gridCells = ''; var names = ['', '', '', '', '', '', '', '', '', '', '', ''];
-    for (var i = 0; i < 16; i++) { var mid = (i === 5 || i === 6 || i === 9 || i === 10); gridCells += i === 5 ? '<div style="grid-area:2/2/4/4;background:var(--navy);border-radius:8px"></div>' : (mid ? '' : '<div style="height:30px;border-radius:8px;border:1px solid var(--line)' + ([1, 7, 13].indexOf(i) >= 0 ? ';border:2px solid var(--orange);background:var(--cream)' : '') + '"></div>'); }
+    function step(i, b, sp, k) { return '<div class="st' + (k ? ' k' : '') + '"><i>STEP 0' + i + '</i><b>' + b + '</b><span>' + sp + '</span></div>'; }
     return '<div class="ih"><div class="ih-in"><div>' +
       '<div class="eyb">NEW YEAR · 재테크 운세</div>' +
       '<h1>새해 나의<br><em>재테크 운세</em>는?</h1>' +
-      '<p class="d">동양의 사주팔자와 자미두수, 서양의 점성술은 각각 다른 방식으로 \'돈\'을 읽습니다.</p>' +
-      '<p class="d">돈버프 재테크 운세는 동서양을 대표하는 세 가지 시선에서 <b>\'나만의 재물운과 투자 신호\'</b>만을 뽑아 새로운 기회를 포착할 수 있도록 만들어졌습니다.</p>' +
-      '<p class="d">지금 바로 나만의 새해 재테크 운세를 점쳐보세요.</p>' +
-      '<button class="cta-o" data-act="start">나만의 재테크 운세 보기 →</button></div>' +
-      '<div class="vis"><div class="cd c1">' + pil + '</div><div class="cd c2"><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px">' + gridCells + '</div></div><div class="cd c3"><svg viewBox="0 0 100 100" style="width:100%" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="#27364D" stroke-width="1.5"/><circle cx="50" cy="50" r="30" fill="none" stroke="#E7DFD2" stroke-width="1"/>' + [0, 30, 60, 90, 120, 150].map(function (a) { return '<line x1="50" y1="4" x2="50" y2="96" stroke="#E7DFD2" transform="rotate(' + a + ' 50 50)"/>'; }).join('') + '<circle cx="70" cy="30" r="4" fill="#BC6727"/><circle cx="32" cy="62" r="3.2" fill="#27364D"/></svg></div>' +
-      '<span class="tg t1">四柱 · 사주팔자</span><span class="tg t2">紫微斗數 · 자미두수</span><span class="tg t3">ASTROLOGY · 점성술</span></div></div></div>' +
-      '<div class="sec"><div class="eyb">WHY DONBUFF</div><h2>돈버프 재테크 운세는 달라요!</h2><p class="ld">동서양을 대표하는 세 가지 관점을 한 번에 비교해서 나만의 재물운, 투자운을 집중적으로 분석해요.</p><div class="flow3">' +
-      '<div class="fl"><i>동양</i><b>사주팔자</b><span>태어난 연·월·일·시의 네 기둥으로 타고난 재물의 구조와 시기별 흐름을 살펴요.</span></div>' +
-      '<div class="fl"><i>동양</i><b>자미두수</b><span>12개의 궁에 배치된 별로 재물과 관련된 자리를 읽어요.</span></div>' +
-      '<div class="fl"><i>서양</i><b>점성술</b><span>출생 시각과 장소의 행성 배치로 수입과 투자의 자리를 살펴요.</span></div></div></div>' +
-      '<div class="sec"><div class="eyb">HOW IT WORKS</div><h2>이렇게 진행돼요</h2><p class="ld">태어난 날짜와 원하는 정보를 입력하면 세 가지 분석 결과를 함께 만들어요.</p><div class="flow3">' +
-      '<div class="fl"><i>STEP 1~2</i><b>출생정보와 나의 돈 이야기를 골라요</b></div><div class="fl"><i>STEP 3</i><b>내 재물운, 투자운 결과 보기</b></div><div class="fl k"><i>MORE THAN</i><b>추가적인 궁금증을 AI와 상담받기</b></div></div>' +
-      '<div class="cta-b"><h2>3분이면 충분해요. 나만의 재테크 운세를 확인해 볼까요?</h2><button class="cta-o" data-act="start">나만의 재테크 운세 보기 →</button></div>' +
-      '<p class="note" style="text-align:center">해당 결과는 참고자료이며, 투자 권유가 아닙니다. 상업용 재배포는 금지합니다.</p></div><div style="height:40px"></div>';
+      '<p class="lead serif">동서양의 세 가지 시선으로 읽는<br>나의 재물운</p>' +
+      '<p class="d">한국의 사주팔자, 베트남식 자미두수, 서양의 점성술까지. 돈버프는 동서양을 대표하는 세 가지 시선에서 오직 <b>\'재물운과 투자운\'</b>만 뽑아 <b>\'나만의 투자 신호\'</b>를 살펴봅니다.</p>' +
+      '<div class="chips"><div><b class="serif">4</b><span>단계</span></div><div><b class="serif">3</b><span>분 소요</span></div><div><b class="serif">3</b><span>가지 결과</span></div></div>' +
+      '<button class="cta-o" id="heroCta" data-act="start">' + CTA + '</button></div>' +
+      '<div class="vis"><img src="/redesign/img/fortune/hero.jpg" width="1200" height="880" alt="사주팔자·자미두수·점성술 차트와 금화 일러스트" fetchpriority="high"></div></div></div>' +
+      '<div class="sec why"><div class="eyb">WHY DONBUFF</div><h2>돈버프 재테크 운세는 달라요!</h2><p class="ld">하나의 사주로 여러 가지 운세를 보는 대신,<br>동서양의 세 가지 운세로 오직 나의 재물운과 투자운을 살펴봐요.</p><div class="three">' +
+      '<div class="wc"><div class="re">한국 · 四柱八字</div><h3>사주팔자</h3><div class="tp">타고난 재물의 흐름</div><p>오행과 재성의 관계를 통해 타고난 재물 성향과 경제활동의 흐름을 살펴봐요.</p><div class="pt"><span>재성</span><span>세운·대운</span></div></div>' +
+      '<div class="wc"><div class="re">베트남 · 紫微斗數</div><h3>자미두수</h3><div class="tp">돈과 마음, 자산의 자리</div><p>재백궁, 복덕궁, 전택궁을 통해 돈을 버는 방식과 쓰는 마음, 자산이 쌓이는 자리를 살펴봐요.</p><div class="pt"><span>재백궁</span><span>복덕궁</span><span>전택궁</span></div></div>' +
+      '<div class="wc"><div class="re">서양 · ASTROLOGY</div><h3>점성술</h3><div class="tp">재물과 자원 활용의 성향</div><p>행성과 하우스의 배치를 통해 돈과 자원 활용에 관한 상징적 성향을 살펴봐요.</p><div class="pt"><span>2·8·10하우스</span><span>목성·토성·금성</span></div></div></div>' +
+      '<div class="conv" aria-hidden="true"><svg viewBox="0 0 1000 56" preserveAspectRatio="none"><g fill="none" stroke="#BC6727" stroke-width="2" stroke-linecap="round"><path d="M167 0 V18 Q167 28 177 28 H490 Q500 28 500 38 V56"/><path d="M500 0 V56"/><path d="M833 0 V18 Q833 28 823 28 H510 Q500 28 500 38"/></g></svg></div>' +
+      '<div class="core"><small>세 가지 운명 지도, 하나의 질문</small><b>나의 재물운은?</b><span>서로 다른 세 가지 관점의 공통점과 차이점을 통해 나의 재물운을 더욱 입체적으로 살펴보세요.</span></div></div>' +
+      '<div class="sec how"><div class="eyb">HOW IT WORKS</div><h2>이렇게 진행돼요</h2><p class="ld">간단한 정보 입력부터 나만의 AI 질문까지.</p><div class="steps">' +
+      step(1, '나의 출생정보 입력', '생년월일과 태어난 시간, 장소를 알려주세요.') + step(2, '나의 돈 이야기 선택', '새해 바라는 점과 궁금한 돈 이야기를 골라요.') + step(3, '세 가지 운명 지도 확인', '사주팔자, 자미두수, 점성 차트를 한 번에 확인해요.') + step(4, 'AI 맞춤 질문 만들기', '나만의 프롬프트로 평소 쓰는 AI에게 재물운을 물어봐요.', true) + '</div></div>' +
+      '<div class="fin"><div class="band" id="finBand"><small>2027 MY MONEY FORTUNE</small><h2>세 가지 운명 지도에 AI를 더하다.</h2><p>2027년, 나의 재테크 운세는 어떨까요?</p><button class="cta-o" data-act="start">' + CTA + '</button></div>' +
+      '<p class="note" style="text-align:center;margin:18px 0 0">해당 결과는 참고자료이며, 투자 권유가 아닙니다. 상업용 재배포를 금지합니다.</p></div><div style="height:90px"></div>' +
+      '<div class="stk" id="stk" aria-hidden="true"><button class="cta-o" data-act="start" tabindex="-1">' + CTA + '</button></div>';
+  }
+  function watchSticky() {
+    var stk = document.getElementById('stk'), h = document.getElementById('heroCta'), f = document.getElementById('finBand');
+    if (!stk || !h || !('IntersectionObserver' in window)) return;
+    var hv = true, fv = false;
+    function upd() { var on = !hv && !fv; stk.classList.toggle('on', on); stk.setAttribute('aria-hidden', on ? 'false' : 'true'); var bt = stk.querySelector('button'); if (bt) bt.tabIndex = on ? 0 : -1; }
+    new IntersectionObserver(function (e) { hv = e[0].isIntersecting; upd(); }).observe(h);
+    new IntersectionObserver(function (e) { fv = e[0].isIntersecting; upd(); }).observe(f);
   }
 
   function birth() {
@@ -201,6 +210,7 @@
     var map = { intro: intro, birth: birth, place: place, who: who, story: story, confirm: confirm, load: loading, result: result };
     $app.innerHTML = map[S.screen]();
     if (S.screen === 'result') { drawCard(); window.scrollTo(0, 0); }
+    if (S.screen === 'intro') watchSticky();
   }
   function calc() {
     go('load'); var t0 = Date.now();
