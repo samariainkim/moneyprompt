@@ -77,7 +77,10 @@ export function calculate(input) {
 
   const origin = new Origin({ year: y, month: m - 1, date: d, hour: hh, minute: mm, latitude: lat, longitude: lon });
   const hs = new Horoscope({ origin, houseSystem: 'placidus', zodiac: 'tropical', aspectPoints: ['bodies', 'angles'], aspectWithPoints: ['bodies', 'angles'], aspectTypes: ['major'], customOrbs: {}, language: 'en' });
-  const bodies = BODIES.map(([k, ko, gl]) => { const b = hs.CelestialBodies[k]; return { k, ko, gl, lon: b.ChartPosition.Ecliptic.DecimalDegrees, sign: SIGN_KO[b.Sign.label], deg: b.ChartPosition.Ecliptic.ArcDegreesFormatted30, house: b.House.id, retro: b.isRetrograde }; });
+  // 하우스는 라이브러리의 House.id 를 쓰지 않고 시작점(cusp) 기준으로 직접 판정한다.
+  // (라이브러리는 12하우스가 0°를 가로지를 때 행성에 하우스를 주지 않아 약 3%의 출생 입력에서 오류가 났다.)
+  const cuspLons = hs.Houses.map((h) => h.ChartPosition.StartPosition.Ecliptic.DecimalDegrees);
+  const bodies = BODIES.map(([k, ko, gl]) => { const b = hs.CelestialBodies[k]; const lon = b.ChartPosition.Ecliptic.DecimalDegrees; return { k, ko, gl, lon, sign: SIGN_KO[b.Sign.label], deg: b.ChartPosition.Ecliptic.ArcDegreesFormatted30, house: houseOf(lon, cuspLons), retro: b.isRetrograde }; });
   const western = { bodies, cusps: hs.Houses.map((h) => h.ChartPosition.StartPosition.Ecliptic.DecimalDegrees), houseSign: hs.Houses.map((h) => SIGN_KO[h.Sign.label]),
     asc: hs.Ascendant.ChartPosition.Ecliptic.DecimalDegrees, mc: hs.Midheaven.ChartPosition.Ecliptic.DecimalDegrees, mcSign: SIGN_KO[hs.Midheaven.Sign.label],
     transit: null, aspects: (hs.Aspects.all || []).filter((a) => BODIES.some((b) => b[0] === a.point1Key) && BODIES.some((b) => b[0] === a.point2Key)).map((a) => ({ a: a.point1Key, b: a.point2Key, t: a.aspectKey, orb: a.orb })) };
