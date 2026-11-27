@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "build:fortune": "node scripts/build-fortune.mjs",
+    "test:fortune": "node --test redesign/fortune/test/*.test.mjs",
     "sync-static": "node scripts/sync-static.mjs",
-    "dev": "npm run sync-static && next dev",
-    "build": "npm run sync-static && next build",
+    "dev": "npm run build:fortune && npm run sync-static && next dev",
+    "build": "npm run build:fortune && npm run sync-static && next build",
     "start": "next start",
     "typecheck": "tsc --noEmit"
   },
@@ -17,9 +19,13 @@
     "react-dom": "19.3.1"
   },
   "devDependencies": {
+    "@openfate/bazi-engine": "^2.2.0",
     "@types/node": "22.20.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "circular-natal-horoscope-js": "^1.1.0",
+    "esbuild": "^0.28.2",
+    "iztro": "^2.6.5",
     "terser": "5.51.2",
     "typescript": "5.9.3"
   },

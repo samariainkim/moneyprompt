@@ -7,3 +7,6 @@ next-env.d.ts
 .env.*.local
 # 빌드 때 저장소 루트의 정적 페이지를 복사해 만드는 폴더 (scripts/sync-static.mjs)
 /public/
+
+# 새해 재테크 운세 계산 엔진 번들(빌드 때 생성)
+/redesign/pages/fortune-engine.js
