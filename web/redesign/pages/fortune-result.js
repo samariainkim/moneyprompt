@@ -437,34 +437,24 @@
     var g = c.createLinearGradient(0, 0, 0, H0); g.addColorStop(0, card.c1); g.addColorStop(1, card.c2); c.fillStyle = g; c.fillRect(0, 0, W0, H0);
     if (art) { coverDraw(c, art, W0, H0); }
     else {
-      var gl = c.createRadialGradient(CX, 430, 10, CX, 430, 520); gl.addColorStop(0, 'rgba(229,185,138,.30)'); gl.addColorStop(1, 'rgba(229,185,138,0)'); c.fillStyle = gl; c.fillRect(0, 0, W0, H0);
+      var gl = c.createRadialGradient(CX, 330, 10, CX, 330, 430); gl.addColorStop(0, 'rgba(229,185,138,.30)'); gl.addColorStop(1, 'rgba(229,185,138,0)'); c.fillStyle = gl; c.fillRect(0, 0, W0, H0);
       var seed = 11 + card.no; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
       for (var i = 0; i < 80; i++) { c.fillStyle = 'rgba(229,185,138,' + (0.10 + rnd() * .45) + ')'; c.beginPath(); c.arc(rnd() * W0, rnd() * H0, 0.8 + rnd() * 2.2, 0, 7); c.fill(); }
-      c.strokeStyle = 'rgba(229,185,138,.35)'; c.lineWidth = 2; c.beginPath(); c.arc(CX, 430, 250, 0, 7); c.stroke(); c.beginPath(); c.arc(CX, 430, 232, 0, 7); c.stroke();
-      emblem(c, card.no, CX, 430, 170, GOLD);
+      c.strokeStyle = 'rgba(229,185,138,.35)'; c.lineWidth = 2; c.beginPath(); c.arc(CX, 330, 200, 0, 7); c.stroke(); c.beginPath(); c.arc(CX, 330, 184, 0, 7); c.stroke();
+      emblem(c, card.no, CX, 330, 130, GOLD);
     }
-    // 하단 가독성용 어두운 막(그림이 어떤 것이든 글자가 읽히도록)
-    var sc = c.createLinearGradient(0, 560, 0, H0); sc.addColorStop(0, 'rgba(8,10,24,0)'); sc.addColorStop(.28, 'rgba(8,10,24,.72)'); sc.addColorStop(1, 'rgba(8,10,24,.9)'); c.fillStyle = sc; c.fillRect(0, 560, W0, H0 - 560);
-    var tp = c.createLinearGradient(0, 0, 0, 230); tp.addColorStop(0, 'rgba(8,10,24,.6)'); tp.addColorStop(1, 'rgba(8,10,24,0)'); c.fillStyle = tp; c.fillRect(0, 0, W0, 230);
-    // 금색 이중 테두리
-    c.strokeStyle = 'rgba(229,185,138,.9)'; c.lineWidth = 3; rr(c, 26, 26, W0 - 52, H0 - 52, 30); c.stroke(); c.strokeStyle = 'rgba(229,185,138,.4)'; c.lineWidth = 1.5; rr(c, 44, 44, W0 - 88, H0 - 88, 22); c.stroke();
-    // 상단
-    c.fillStyle = GOLD; c.font = '900 28px ' + SANS; c.fillText('D O N B U F F  ·  2 0 2 7', 84, 110); c.fillStyle = 'rgba(255,255,255,.85)'; c.font = '700 26px ' + SANS; c.fillText('MY MONEY FORTUNE CARD', 84, 154);
-    c.textAlign = 'right'; c.fillStyle = GOLD; c.font = '700 70px ' + SERIF; c.fillText(card.roman, W0 - 84, 150); c.textAlign = 'left';
-    // 이름
-    c.textAlign = 'center'; c.fillStyle = GOLD; c.font = '700 26px ' + SANS; c.fillText('✧  ' + card.roman + '  ·  2027  ✧', CX, 690);
-    c.fillStyle = '#fff'; fit(c, card.en, 880, 74, 700, SERIF); c.fillText(card.en, CX, 770);
-    c.fillStyle = GOLD; c.font = '800 40px ' + SANS; c.fillText(card.ko, CX, 828);
-    c.fillStyle = 'rgba(255,255,255,.78)'; c.font = '600 27px ' + SANS; c.fillText('나의 2027년 재물운  ·  ' + card.theme, CX, 884);
-    c.fillStyle = '#fff'; fit(c, '“' + card.quote + '”', 880, 32, 600, SERIF); c.fillText('“' + card.quote + '”', CX, 940); c.textAlign = 'left';
-    // 4요약
-    var cw = 448, ch = 70, gp = 16, y0 = 976;
-    S4.forEach(function (s4, i) { var bx = 84 + (i % 2) * (cw + gp), by = y0 + Math.floor(i / 2) * (ch + gp); c.fillStyle = 'rgba(255,255,255,.08)'; rr(c, bx, by, cw, ch, 16); c.fill(); c.strokeStyle = 'rgba(229,185,138,.4)'; c.lineWidth = 1.5; rr(c, bx, by, cw, ch, 16); c.stroke(); c.fillStyle = GOLD; c.font = '800 22px ' + SANS; c.fillText(E.TOPICS4[s4.id].label, bx + 20, by + 43); c.font = '700 22px ' + SANS; var lw = c.measureText(E.TOPICS4[s4.id].label).width; c.fillStyle = '#fff'; fit(c, s4.title, cw - 56 - lw, 28, 800, SANS); c.fillText(s4.title, bx + 36 + lw, by + 45); });
-    // 키워드·3관점
-    c.textAlign = 'center'; c.fillStyle = G2; c.font = '800 28px ' + SANS; c.fillText(card.kw.map(function (k) { return '#' + k; }).join('   '), CX, 1186);
-    c.fillStyle = 'rgba(255,255,255,.7)'; c.font = '600 24px ' + SANS; c.fillText('사주팔자  ·  자미두수  ·  점성술', CX, 1228); c.textAlign = 'left';
-    c.fillStyle = 'rgba(229,185,138,.35)'; c.fillRect(84, 1252, W0 - 168, 1.5);
-    c.fillStyle = '#fff'; c.font = '800 26px ' + SANS; c.fillText('돈에 AI를 더하다. DONBUFF', 84, 1298); c.textAlign = 'right'; c.fillStyle = 'rgba(255,255,255,.75)'; c.font = '600 24px ' + SANS; c.fillText('donbuff.com', W0 - 84, 1298); c.textAlign = 'left';
+    if (!art) { c.strokeStyle = 'rgba(229,185,138,.9)'; c.lineWidth = 3; rr(c, 26, 26, W0 - 52, H0 - 52, 30); c.stroke(); c.strokeStyle = 'rgba(229,185,138,.4)'; c.lineWidth = 1.5; rr(c, 44, 44, W0 - 88, H0 - 88, 22); c.stroke(); }
+    // 글자 영역: 그림 아래 빈 공간(y 640~1120). 상단·하단 장식은 그림에 맡기고 글자는 최소화
+    c.textAlign = 'center'; c.fillStyle = 'rgba(255,255,255,.82)'; c.font = '700 24px ' + SANS; c.fillText('M Y   M O N E Y   F O R T U N E   C A R D', CX, 668);
+    c.fillStyle = GOLD; c.font = '700 26px ' + SANS; c.fillText('✧  ' + card.roman + '  ·  2027  ✧', CX, 710);
+    c.fillStyle = '#fff'; fit(c, card.en, 820, 68, 700, SERIF); c.fillText(card.en, CX, 786);
+    c.fillStyle = GOLD; c.font = '800 38px ' + SANS; c.fillText(card.ko, CX, 840);
+    c.fillStyle = 'rgba(255,255,255,.8)'; c.font = '600 25px ' + SANS; c.fillText('나의 2027년 재물운  ·  ' + card.theme, CX, 884);
+    c.fillStyle = '#fff'; fit(c, '“' + card.quote + '”', 800, 29, 600, SERIF); c.fillText('“' + card.quote + '”', CX, 928); c.textAlign = 'left';
+    var cw = 404, ch = 62, gp = 14, x0 = (W0 - 2 * cw - gp) / 2, y0 = 954;
+    S4.forEach(function (s4, i) { var bx = x0 + (i % 2) * (cw + gp), by = y0 + Math.floor(i / 2) * (ch + gp); c.fillStyle = 'rgba(0,0,0,.28)'; rr(c, bx, by, cw, ch, 14); c.fill(); c.strokeStyle = 'rgba(229,185,138,.45)'; c.lineWidth = 1.5; rr(c, bx, by, cw, ch, 14); c.stroke(); c.fillStyle = GOLD; c.font = '800 21px ' + SANS; c.fillText(E.TOPICS4[s4.id].label, bx + 18, by + 39); var lw = c.measureText(E.TOPICS4[s4.id].label).width; c.fillStyle = '#fff'; fit(c, s4.title, cw - 48 - lw, 26, 800, SANS); c.fillText(s4.title, bx + 32 + lw, by + 41); });
+    c.textAlign = 'center'; c.fillStyle = G2; c.font = '800 26px ' + SANS; c.fillText(card.kw.map(function (k) { return '#' + k; }).join('   '), CX, 1128);
+    c.fillStyle = 'rgba(255,255,255,.6)'; c.font = '600 21px ' + SANS; c.fillText('donbuff.com', CX, 1162); c.textAlign = 'left';
   }
   function cardMsg(card) { return '당신의 카드는 <b>' + card.short + '</b>이에요.<br>올해의 재물운 테마는 ‘' + card.theme + '’이에요.<br><i>“' + card.quote + '”</i>'; }
   function setupCard(el) {
